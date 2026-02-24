@@ -1,0 +1,70 @@
+{
+	"name": "metascope",
+	"version": "0.0.0",
+	"description": "A cli+library project.",
+	"keywords": [
+		"cli",
+		"npm-package"
+	],
+	"homepage": "https://github.com/kitschpatrol/metascope",
+	"bugs": "https://github.com/kitschpatrol/metascope/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kitschpatrol/metascope.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com",
+		"url": "https://ericmika.com"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/lib/index.d.ts",
+			"import": "./dist/lib/index.js"
+		}
+	},
+	"main": "./dist/lib/index.js",
+	"module": "./dist/lib/index.js",
+	"types": "./dist/lib/index.d.ts",
+	"bin": {
+		"metascope": "dist/bin/cli.js"
+	},
+	"files": [
+		"dist/*"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
+		"fix": "ksc fix",
+		"lint": "ksc lint",
+		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@types/node": "~20.19.33",
+		"@types/yargs": "^17.0.35",
+		"lognow": "^0.4.1",
+		"yargs": "^18.0.0"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/core": "^0.18.2",
+		"@kitschpatrol/shared-config": "^6.0.0",
+		"bumpp": "^10.4.1",
+		"mdat-plugin-cli-help": "^1.0.7",
+		"publint": "^0.3.17",
+		"tsdown": "^0.20.3",
+		"typescript": "~5.9.3"
+	},
+	"packageManager": "pnpm@10.30.2",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"version": ">=22.21.0"
+		}
+	}
+}
