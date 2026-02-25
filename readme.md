@@ -15,25 +15,55 @@
 
 <!-- short-description -->
 
-**A cli+library project.**
+**A CLI tool and TypeScript library for extracting comprehensive metadata from code repositories.**
 
 <!-- /short-description -->
 
 ## Overview
 
+Metascope aggregates metadata from a local code repository into a single JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a unified view of the project's metadata.
+
+A template system lets you define exactly which fields to include and how to shape the output, useful for generating badges, populating dashboards, or feeding data into other tools.
+
+Key characteristics:
+
+- **Graceful degradation.** Each source checks its own availability before fetching. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
+- **Parallel fetching.** After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and fetched concurrently.
+- **Typed templates.** The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
+- **CLI and library.** Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
+
 ## Getting started
 
 ### Dependencies
 
+Metascope requires Node.js `>=20.19.0`. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+
+Optional external tools:
+
+- [**tokei**](https://github.com/XAMPPRocky/tokei) — Required for the `loc` (lines of code) source. Install via your package manager (e.g. `brew install tokei`). If not present, the `loc` source is simply skipped.
+- [**GitHub CLI**](https://cli.github.com) (`gh`) — Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`.
+
 ### Installation
 
+Invoke directly:
+
+```sh
+npx metascope
+```
+
+...or install locally:
+
+```sh
+npm install metascope
+```
+
+...or install globally:
+
+```sh
+npm install --global metascope
+```
+
 ## Usage
-
-### Library
-
-#### API
-
-#### Examples
 
 ### CLI
 
@@ -41,80 +71,363 @@
 
 #### Command: `metascope`
 
-Run a metascope command.
-
-This section lists top-level commands for `metascope`.
-
-If no command is provided, `metascope do-something` is run by default.
+Extract metadata from a code repository.
 
 Usage:
 
 ```txt
-metascope [command]
+metascope [path]
 ```
 
-| Command             | Description                                        |
-| ------------------- | -------------------------------------------------- |
-| `do-something`      | Run the do-something command. _(Default command.)_ |
-| `do-something-else` | Run the do-something-else command.                 |
+| Positional Argument | Description            | Type     | Default |
+| ------------------- | ---------------------- | -------- | ------- |
+| `path`              | Project directory path | `string` | `"."`   |
 
-_See the sections below for more information on each subcommand._
-
-#### Subcommand: `metascope do-something`
-
-Run the do-something command.
-
-Usage:
-
-```txt
-metascope do-something
-```
-
-| Option              | Description              | Type      |
-| ------------------- | ------------------------ | --------- |
-| `--verbose`         | Run with verbose logging | `boolean` |
-| `--help`<br>`-h`    | Show help                | `boolean` |
-| `--version`<br>`-v` | Show version number      | `boolean` |
-
-#### Subcommand: `metascope do-something-else`
-
-Run the do-something-else command.
-
-Usage:
-
-```txt
-metascope do-something-else
-```
-
-| Option              | Description              | Type      |
-| ------------------- | ------------------------ | --------- |
-| `--verbose`         | Run with verbose logging | `boolean` |
-| `--help`<br>`-h`    | Show help                | `boolean` |
-| `--version`<br>`-v` | Show version number      | `boolean` |
+| Option               | Description                             | Type      |
+| -------------------- | --------------------------------------- | --------- |
+| `--template`<br>`-t` | Path to template config file (.ts/.js)  | `string`  |
+| `--preset`<br>`-p`   | Built-in preset name (e.g., "summary")  | `string`  |
+| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN) | `string`  |
+| `--verbose`          | Run with verbose logging                | `boolean` |
+| `--help`<br>`-h`     | Show help                               | `boolean` |
+| `--version`<br>`-v`  | Show version number                     | `boolean` |
 
 <!-- /cli-help -->
 
-#### Commands
+#### Examples
+
+##### Basic metadata extraction
+
+Extract all available metadata from the current directory:
+
+```sh
+metascope
+```
+
+Output is pretty-printed JSON when writing to a terminal, compact JSON when piped.
+
+##### Scan a specific directory
+
+```sh
+metascope /path/to/project
+```
+
+##### Use a built-in preset
+
+```sh
+metascope --preset summary
+```
+
+##### Use a custom template
+
+```sh
+metascope --template ./my-template.ts
+```
+
+Where `my-template.ts` might look like:
+
+```ts
+import { defineTemplate } from 'metascope'
+
+export default defineTemplate(({ codemeta, git, github }) => ({
+  commits: git.commitCount,
+  name: codemeta.name,
+  stars: github.stargazerCount,
+  version: codemeta.version,
+}))
+```
+
+##### Pipe compact JSON to another tool
+
+```sh
+metascope | jq '.github.stargazerCount'
+```
+
+##### Provide a GitHub token
+
+```sh
+metascope --github-token ghp_xxxxxxxxxxxx
+```
+
+Or set the `GITHUB_TOKEN` environment variable, or authenticate via `gh auth login`.
+
+##### Verbose logging
+
+```sh
+metascope --verbose
+```
+
+Logs source availability checks, fetch durations, and other diagnostics to stderr.
+
+### API
+
+The `metascope` library exports `getMetadata` as its primary function, along with `defineTemplate` for type-safe template authoring.
+
+#### `getMetadata`
+
+```ts
+// Without a template — returns full MetadataContext
+function getMetadata(options: GetMetadataOptions): Promise<MetadataContext>
+
+// With a template — returns the template's return type
+function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
+```
+
+The function accepts a project directory path, optional credentials, and an optional template or preset name. It returns a promise resolving to either the full `MetadataContext` or the shaped output of your template.
+
+All `undefined` values and empty source objects are deep-stripped from the output before returning.
+
+#### `defineTemplate`
+
+```ts
+function defineTemplate<T>(fn: (context: MetadataContext) => T): Template<T>
+```
+
+An identity wrapper that provides autocomplete and type inference when authoring templates.
 
 #### Examples
 
+##### Get all metadata
+
+```ts
+import { getMetadata } from 'metascope'
+
+const metadata = await getMetadata({ path: '.' })
+console.log(metadata.codemeta.name)
+console.log(metadata.github.stargazerCount)
+console.log(metadata.git.commitCount)
+```
+
+##### Get shaped metadata via a template
+
+```ts
+import { defineTemplate, getMetadata } from 'metascope'
+
+const template = defineTemplate(({ codemeta, github }) => ({
+  name: codemeta.name,
+  stars: github.stargazerCount,
+}))
+
+// Result is typed as { name: ..., stars: ... }
+const result = await getMetadata({ path: '.', template })
+```
+
+##### Provide credentials
+
+```ts
+import { getMetadata } from 'metascope'
+
+const metadata = await getMetadata({
+  credentials: { githubToken: 'ghp_xxxxxxxxxxxx' },
+  path: '.',
+})
+```
+
+##### Use a built-in preset
+
+```ts
+import { getMetadata } from 'metascope'
+
+const summary = await getMetadata({ path: '.', preset: 'summary' })
+```
+
+## Sources
+
+Metascope fetches data from seven sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
+
+### codemeta
+
+Extracts package metadata from `package.json` (and other supported manifest files) via the [`@kitschpatrol/codemeta`](https://github.com/kitschpatrol/codemeta) library, normalized to the [CodeMeta](https://codemeta.github.io) standard.
+
+Always available. Fetched first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
+
+### git
+
+Local git repository metadata via [simple-git](https://github.com/steveukx/git-js).
+
+Available when the project directory contains a `.git` directory.
+
+| Field              | Type      | Description                    |
+| ------------------ | --------- | ------------------------------ |
+| `branchCount`      | `number`  | Number of branches             |
+| `commitCount`      | `number`  | Total commits                  |
+| `contributorCount` | `number`  | Unique commit author emails    |
+| `currentBranch`    | `string`  | Currently checked-out branch   |
+| `firstCommitDate`  | `string`  | ISO 8601 date of first commit  |
+| `isClean`          | `boolean` | Working tree has no changes    |
+| `isDirty`          | `boolean` | Working tree has changes       |
+| `lastCommitDate`   | `string`  | ISO 8601 date of latest commit |
+| `lastTagDate`      | `string`  | ISO 8601 date of latest tag    |
+| `lastTagName`      | `string`  | Name of latest tag             |
+| `tagCount`         | `number`  | Total tags                     |
+| `trackedFileCount` | `number`  | Number of tracked files        |
+
+### github
+
+GitHub repository metadata via the [Octokit](https://github.com/octokit/octokit.js) GraphQL and REST APIs.
+
+Available when a git remote points to `github.com`. Requires a GitHub token for private repositories and for higher rate limits. Token resolution order: `--github-token` flag > `$GITHUB_TOKEN` environment variable > `gh auth token` CLI fallback.
+
+| Field                     | Type                     | Description                                  |
+| ------------------------- | ------------------------ | -------------------------------------------- |
+| `closedIssueCount`        | `number`                 | Closed issues                                |
+| `commitsBehindUpstream`   | `number`                 | Commits behind upstream (forks only)         |
+| `contributorCount`        | `number`                 | Number of contributors                       |
+| `createdAt`               | `string`                 | Repository creation date                     |
+| `defaultBranch`           | `string`                 | Default branch name                          |
+| `description`             | `string`                 | Repository description                       |
+| `diskUsageKb`             | `number`                 | Disk usage in KB                             |
+| `forkCount`               | `number`                 | Number of forks                              |
+| `hasDiscussions`          | `boolean`                | Discussions enabled                          |
+| `hasLfs`                  | `boolean`                | Git LFS is used                              |
+| `hasPages`                | `boolean`                | GitHub Pages is enabled                      |
+| `hasWiki`                 | `boolean`                | Wiki is enabled                              |
+| `homepage`                | `string`                 | Homepage URL                                 |
+| `isArchived`              | `boolean`                | Repository is archived                       |
+| `isFork`                  | `boolean`                | Repository is a fork                         |
+| `isPrivate`               | `boolean`                | Repository is private                        |
+| `isTemplate`              | `boolean`                | Repository is a template                     |
+| `languages`               | `Record<string, number>` | Language breakdown (bytes)                   |
+| `lastReleaseDate`         | `string`                 | Date of most recent release                  |
+| `lastReleaseVersion`      | `string`                 | Version of most recent release               |
+| `license`                 | `string`                 | SPDX license identifier                      |
+| `openIssueCount`          | `number`                 | Open issues                                  |
+| `openPullRequestCount`    | `number`                 | Open pull requests                           |
+| `ownerLogin`              | `string`                 | Repository owner                             |
+| `primaryLanguage`         | `string`                 | Primary programming language                 |
+| `releaseCount`            | `number`                 | Total releases                               |
+| `releaseDownloadCount`    | `number`                 | Total release asset downloads                |
+| `repoName`                | `string`                 | Repository name                              |
+| `repoUrl`                 | `string`                 | Repository URL                               |
+| `stargazerCount`          | `number`                 | Stars                                        |
+| `submoduleCount`          | `number`                 | Number of git submodules                     |
+| `topics`                  | `string[]`               | Repository topics                            |
+| `updatedAt`               | `string`                 | Last updated date                            |
+| `vulnerabilityAlertCount` | `number`                 | Open Dependabot alerts (requires permission) |
+| `watcherCount`            | `number`                 | Watchers                                     |
+
+### loc
+
+Lines of code analysis via [tokei](https://github.com/XAMPPRocky/tokei).
+
+Available when the `tokei` command-line tool is installed. Supports 260+ programming languages. Each language entry includes:
+
+| Field      | Type     | Description     |
+| ---------- | -------- | --------------- |
+| `blanks`   | `number` | Blank lines     |
+| `code`     | `number` | Lines of code   |
+| `comments` | `number` | Comment lines   |
+| `files`    | `number` | Number of files |
+
+A `Total` entry aggregates counts across all languages.
+
+### metascope
+
+Metadata about the metascope scan itself.
+
+Always available.
+
+| Field        | Type     | Description                          |
+| ------------ | -------- | ------------------------------------ |
+| `durationMs` | `number` | Total scan duration in milliseconds  |
+| `path`       | `string` | Absolute path of the scanned project |
+| `scannedAt`  | `string` | ISO 8601 timestamp of the scan       |
+| `version`    | `string` | Metascope version used               |
+
+### npm
+
+NPM registry metadata via [package-json](https://github.com/sindresorhus/package-json) and the NPM downloads API.
+
+Available when the codemeta `name` field resolves to an NPM package.
+
+| Field               | Type      | Description                    |
+| ------------------- | --------- | ------------------------------ |
+| `dependentCount`    | `number`  | Packages depending on this one |
+| `deprecated`        | `string`  | Deprecation message, if any    |
+| `fileCount`         | `number`  | Files in the published package |
+| `hasTypes`          | `boolean` | TypeScript types are included  |
+| `lastPublishDate`   | `string`  | Date of last publish           |
+| `latestVersion`     | `string`  | Latest version on the registry |
+| `monthlyDownloads`  | `number`  | Downloads in the last 30 days  |
+| `totalDownloads`    | `number`  | All-time downloads             |
+| `unpackedSizeBytes` | `number`  | Unpacked size in bytes         |
+| `weeklyDownloads`   | `number`  | Downloads in the last 7 days   |
+| `yearlyDownloads`   | `number`  | Downloads in the last 365 days |
+
+### obsidian
+
+Obsidian community plugin metadata, fetched from the Obsidian community plugin registry and GitHub release stats.
+
+Available when the codemeta keywords include `obsidian-plugin`.
+
+| Field           | Type     | Description                         |
+| --------------- | -------- | ----------------------------------- |
+| `downloadCount` | `number` | Total downloads across all releases |
+| `pluginId`      | `string` | Plugin identifier in the registry   |
+
+## Templates
+
+Templates are pure functions that receive the full `MetadataContext` and return whatever shape you like. They are applied _after_ all sources have been fetched, so all available data is accessible.
+
+### Defining a template
+
+Use `defineTemplate()` for type inference and autocomplete:
+
+```ts
+// Metascope-template.ts
+import { defineTemplate } from 'metascope'
+
+export default defineTemplate(({ codemeta, git, github, loc }) => ({
+  commits: git.commitCount,
+  forks: github.forkCount,
+  linesOfCode: loc.TypeScript?.code,
+  name: codemeta.name,
+  stars: github.stargazerCount,
+  version: codemeta.version,
+}))
+```
+
+### Using a template via the CLI
+
+```sh
+metascope --template ./metascope-template.ts
+```
+
+Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScript works out of the box without a build step.
+
+### Built-in presets
+
+Presets are named built-in templates. Use them via the `--preset` flag or the `preset` option in the API.
+
+#### `summary`
+
+A compact overview of the project:
+
+```ts
+defineTemplate(({ codemeta, github, npm }) => ({
+  author: codemeta.author,
+  description: codemeta.description,
+  downloads: npm.weeklyDownloads,
+  forks: github.forkCount,
+  issues: github.openIssueCount,
+  license: codemeta.license,
+  name: codemeta.name,
+  stars: github.stargazerCount,
+  version: codemeta.version,
+}))
+```
+
 ## Background
 
-### Motivation
+Metascope was built to support automated generation of project dashboards, badges, and documentation where a single source of truth for project metadata is useful. Rather than querying each API individually, metascope handles the discovery, authentication, and aggregation in one pass.
 
-### Implementation notes
+The codemeta source is fetched first to provide discovery hints — the package name resolves NPM lookups, the repository URL resolves GitHub lookups, and keywords trigger niche sources like Obsidian. Remaining sources are checked for availability and fetched concurrently.
 
-### Similar projects
-
-## The future
+Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 
 ## Maintainers
 
-_List maintainer(s) for a repository, along with one way of contacting them (e.g. GitHub link or email)._
-
-## Acknowledgments
-
-_State anyone or anything that significantly helped with the development of your project. State public contact hyper-links if applicable._
+[@kitschpatrol](https://github.com/kitschpatrol)
 
 <!-- contributing -->
 

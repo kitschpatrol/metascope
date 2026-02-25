@@ -1,0 +1,104 @@
+import { describe, expect, it } from 'vitest'
+import type { MetadataContext } from '../src/lib/types'
+import { defineTemplate } from '../src/lib/types'
+
+const mockContext: MetadataContext = {
+	codemeta: {
+		'@context': 'https://w3id.org/codemeta/3.1',
+		'@type': 'SoftwareSourceCode',
+		author: [
+			{
+				'@type': 'Person' as const,
+				familyName: 'Doe',
+				givenName: 'John',
+			},
+		],
+		description: 'A test package',
+		name: 'test-package',
+		version: '1.2.3',
+	},
+	git: {
+		commitCount: 42,
+		currentBranch: 'main',
+		isClean: true,
+		isDirty: false,
+	},
+	github: {
+		closedIssueCount: 3,
+		forkCount: 10,
+		openIssueCount: 5,
+		stargazerCount: 100,
+	},
+	loc: {
+		// eslint-disable-next-line ts/naming-convention -- Tokei language keys are PascalCase
+		TypeScript: { blanks: 100, code: 500, comments: 50, files: 10 },
+	},
+	metascope: {
+		path: '/test/project',
+		scannedAt: '2026-01-01T00:00:00.000Z',
+		version: '0.0.0',
+	},
+	npm: {
+		weeklyDownloads: 1000,
+	},
+	obsidian: {},
+}
+
+const identityFn = (context: MetadataContext) => ({ name: context.codemeta.name })
+
+describe('defineTemplate', () => {
+	it('should be an identity function', () => {
+		const template = defineTemplate(identityFn)
+		expect(template).toBe(identityFn)
+	})
+
+	it('should produce the expected output shape', () => {
+		const template = defineTemplate(({ codemeta, github }) => ({
+			name: codemeta.name,
+			stars: github.stargazerCount,
+		}))
+
+		const result = template(mockContext)
+		expect(result).toEqual({
+			name: 'test-package',
+			stars: 100,
+		})
+	})
+
+	it('should support string interpolation', () => {
+		const template = defineTemplate(({ codemeta }) => {
+			const authors = Array.isArray(codemeta.author) ? codemeta.author : []
+			// eslint-disable-next-line ts/no-unsafe-type-assertion -- Test code with known mock data shape
+			const firstAuthor = authors[0] as unknown as
+				| undefined
+				| { familyName?: string; givenName?: string }
+			return {
+				author: `${firstAuthor?.givenName ?? ''} ${firstAuthor?.familyName ?? ''}`.trim(),
+			}
+		})
+
+		const result = template(mockContext)
+		expect(result).toEqual({ author: 'John Doe' })
+	})
+
+	it('should support computed values', () => {
+		const template = defineTemplate(({ github }) => ({
+			popularity: (github.stargazerCount ?? 0) + (github.forkCount ?? 0),
+		}))
+
+		const result = template(mockContext)
+		expect(result).toEqual({ popularity: 110 })
+	})
+
+	it('should handle missing optional fields gracefully', () => {
+		const template = defineTemplate(({ github }) => ({
+			hasWiki: github.hasWiki,
+			homepage: github.homepage,
+		}))
+
+		const result = template(mockContext)
+		// Fields not set in mockContext are undefined
+		expect(result.hasWiki).toBeUndefined()
+		expect(result.homepage).toBeUndefined()
+	})
+})

@@ -19,7 +19,7 @@ export default defineConfig([
 		fixedExtension: false,
 		minify: true,
 		outDir: 'dist/lib',
-		platform: 'neutral',
+		platform: 'node',
 		publint: true,
 		tsconfig: 'tsconfig.build.json',
 	},

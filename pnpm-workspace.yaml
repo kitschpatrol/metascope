@@ -1,14 +1,15 @@
-# Required by @kitschpatrol/shared-config
-
 onlyBuiltDependencies:
   - esbuild
   - puppeteer
   - unrs-resolver
 
+overrides:
+  '@kitschpatrol/codemeta': link:../codemeta
+
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
   - '@kitschpatrol/typescript-config'
-  - 'case-police'
+  - case-police
   - '*cspell*'
   - '*eslint*'
   - '*knip*'

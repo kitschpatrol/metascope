@@ -4,7 +4,7 @@ import { createLogger, injectionHelper } from 'lognow'
 /**
  * The default logger instance for the library.
  */
-export let log = createLogger()
+export let log = createLogger({ verbose: false })
 
 /**
  * Set the logger instance for the module.
