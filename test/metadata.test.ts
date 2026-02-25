@@ -14,7 +14,7 @@ describe('getMetadata', () => {
 
 		// Should have git data
 		expect(result.git).toBeDefined()
-		expect(result.git.currentBranch).toBe('main')
+		expect(result.git.branchCurrent).toBe('main')
 	})
 
 	it('should not contain undefined values in output', async () => {
@@ -36,7 +36,7 @@ describe('getMetadata', () => {
 
 	it('should apply a template function', async () => {
 		const template = defineTemplate(({ codemeta, git }) => ({
-			branch: git.currentBranch,
+			branch: git.branchCurrent,
 			name: codemeta.name,
 		}))
 

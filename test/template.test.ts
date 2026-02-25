@@ -18,15 +18,15 @@ const mockContext: MetadataContext = {
 		version: '1.2.3',
 	},
 	git: {
+		branchCurrent: 'main',
 		commitCount: 42,
-		currentBranch: 'main',
 		isClean: true,
 		isDirty: false,
 	},
 	github: {
-		closedIssueCount: 3,
 		forkCount: 10,
-		openIssueCount: 5,
+		issueCountClosed: 3,
+		issueCountOpen: 5,
 		stargazerCount: 100,
 	},
 	loc: {
@@ -39,7 +39,7 @@ const mockContext: MetadataContext = {
 		version: '0.0.0',
 	},
 	npm: {
-		weeklyDownloads: 1000,
+		downloadsWeekly: 1000,
 	},
 	obsidian: {},
 }

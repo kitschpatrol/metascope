@@ -6,12 +6,10 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type GitHubData = {
-	closedIssueCount?: number
-	closedPullRequestCount?: number
+	branchDefault?: string
 	commitsBehindUpstream?: number
 	contributorCount?: number
 	createdAt?: string
-	defaultBranch?: string
 	description?: string
 	diskUsageKb?: number
 	forkCount?: number
@@ -24,17 +22,19 @@ export type GitHubData = {
 	isFork?: boolean
 	isPrivate?: boolean
 	isTemplate?: boolean
+	issueCountClosed?: number
+	issueCountOpen?: number
+	languagePrimary?: string
 	languages?: Record<string, number>
-	lastReleaseDate?: string
-	lastReleaseVersion?: string
 	license?: string
-	openIssueCount?: number
-	mergedPullRequestCount?: number
-	openPullRequestCount?: number
 	ownerLogin?: string
-	primaryLanguage?: string
+	pullRequestCountClosed?: number
+	pullRequestCountMerged?: number
+	pullRequestCountOpen?: number
+	releaseDateLatest?: string
 	releaseCount?: number
 	releaseDownloadCount?: number
+	releaseVersionLatest?: string
 	repoName?: string
 	repoUrl?: string
 	stargazerCount?: number
@@ -277,12 +277,10 @@ function mapRepoData(
 		0
 
 	return {
-		closedIssueCount: data.closedIssues.totalCount,
-		closedPullRequestCount: data.closedPullRequests.totalCount,
+		branchDefault: data.defaultBranchRef?.name ?? undefined,
 		commitsBehindUpstream: extras.commitsBehindUpstream,
 		contributorCount: data.contributorCount,
 		createdAt: data.createdAt,
-		defaultBranch: data.defaultBranchRef?.name ?? undefined,
 		description: data.description ?? undefined,
 		diskUsageKb: data.diskUsage ?? undefined,
 		forkCount: data.forkCount,
@@ -295,17 +293,19 @@ function mapRepoData(
 		isFork: data.isFork,
 		isPrivate: data.isPrivate,
 		isTemplate: data.isTemplate,
+		issueCountClosed: data.closedIssues.totalCount,
+		issueCountOpen: data.openIssues.totalCount,
+		languagePrimary: data.primaryLanguage?.name ?? undefined,
 		languages: extractLanguages(data),
-		lastReleaseDate: data.latestRelease?.createdAt ?? undefined,
-		lastReleaseVersion: data.latestRelease?.tagName ?? undefined,
 		license: undefined, // License from GitHub requires REST; codemeta already provides this
-		mergedPullRequestCount: data.mergedPullRequests.totalCount,
-		openIssueCount: data.openIssues.totalCount,
-		openPullRequestCount: data.openPullRequests.totalCount,
 		ownerLogin: data.owner.login,
-		primaryLanguage: data.primaryLanguage?.name ?? undefined,
+		pullRequestCountClosed: data.closedPullRequests.totalCount,
+		pullRequestCountMerged: data.mergedPullRequests.totalCount,
+		pullRequestCountOpen: data.openPullRequests.totalCount,
 		releaseCount: data.releases.totalCount,
+		releaseDateLatest: data.latestRelease?.createdAt ?? undefined,
 		releaseDownloadCount,
+		releaseVersionLatest: data.latestRelease?.tagName ?? undefined,
 		repoName: data.name,
 		repoUrl: data.url,
 		stargazerCount: data.stargazerCount,

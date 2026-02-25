@@ -6,15 +6,15 @@ import { log } from '../log'
 export type NpmData = {
 	dependentCount?: number
 	deprecated?: string
+	downloadsMonthly?: number
+	downloadsTotal?: number
+	downloadsWeekly?: number
+	downloadsYearly?: number
 	fileCount?: number
 	hasTypes?: boolean
-	lastPublishDate?: string
-	latestVersion?: string
-	monthlyDownloads?: number
-	totalDownloads?: number
+	publishDateLatest?: string
 	unpackedSizeBytes?: number
-	weeklyDownloads?: number
-	yearlyDownloads?: number
+	versionLatest?: string
 }
 
 const npmDownloadsSchema = z.object({
@@ -52,7 +52,7 @@ export const npmSource: MetadataSource<'npm'> = {
 		const name = getPackageName(context)
 		if (!name) return {}
 
-		const [metadata, weeklyDownloads, monthlyDownloads, yearlyDownloads, totalDownloads] =
+		const [metadata, downloadsWeekly, downloadsMonthly, downloadsYearly, downloadsTotal] =
 			await Promise.all([
 				packageJson(name, { fullMetadata: true }).catch(
 					// Return undefined if package metadata lookup fails
@@ -77,16 +77,16 @@ export const npmSource: MetadataSource<'npm'> = {
 
 		return {
 			deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
+			downloadsMonthly,
+			downloadsTotal,
+			downloadsWeekly,
+			downloadsYearly,
 			fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,
 			hasTypes,
-			lastPublishDate: time?.modified,
-			latestVersion: metadata.version,
-			monthlyDownloads,
-			totalDownloads,
+			publishDateLatest: time?.modified,
 			unpackedSizeBytes:
 				typeof distribution?.unpackedSize === 'number' ? distribution.unpackedSize : undefined,
-			weeklyDownloads,
-			yearlyDownloads,
+			versionLatest: metadata.version,
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

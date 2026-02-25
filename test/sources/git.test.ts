@@ -24,7 +24,7 @@ describe('git source', () => {
 	it('should fetch git metadata', async () => {
 		const result = await gitSource.fetch(context)
 
-		expect(result.currentBranch).toBe('main')
+		expect(result.branchCurrent).toBe('main')
 		expect(result.commitCount).toBeGreaterThanOrEqual(1)
 		expect(result.branchCount).toBeGreaterThanOrEqual(1)
 		expect(result.contributorCount).toBeGreaterThanOrEqual(1)
@@ -34,10 +34,10 @@ describe('git source', () => {
 		expect(result.tagCount).toBeGreaterThanOrEqual(0)
 	})
 
-	it('should return a valid lastCommitDate', async () => {
+	it('should return a valid commitDateLast', async () => {
 		const result = await gitSource.fetch(context)
-		expect(result.lastCommitDate).toBeDefined()
+		expect(result.commitDateLast).toBeDefined()
 		// Should be a valid date string
-		expect(Number.isNaN(Date.parse(result.lastCommitDate!))).toBe(false)
+		expect(Number.isNaN(Date.parse(result.commitDateLast!))).toBe(false)
 	})
 })

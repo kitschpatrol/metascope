@@ -6,16 +6,16 @@ import { log } from '../log'
 
 export type GitData = {
 	branchCount?: number
+	branchCurrent?: string
 	commitCount?: number
+	commitDateFirst?: string
+	commitDateLast?: string
 	contributorCount?: number
-	currentBranch?: string
-	firstCommitDate?: string
 	isClean?: boolean
 	isDirty?: boolean
-	lastCommitDate?: string
-	lastTagDate?: string
-	lastTagName?: string
 	tagCount?: number
+	tagDateLatest?: string
+	tagNameLatest?: string
 	trackedFileCount?: number
 }
 
@@ -24,7 +24,7 @@ export const gitSource: MetadataSource<'git'> = {
 		log.debug('Fetching git metadata...')
 		const git = simpleGit(context.path)
 
-		const [statusResult, logResult, branchResult, tagResult, firstCommitDate, fileCountResult] =
+		const [statusResult, logResult, branchResult, tagResult, commitDateFirst, fileCountResult] =
 			await Promise.all([
 				git.status(),
 				git.log(),
@@ -43,12 +43,12 @@ export const gitSource: MetadataSource<'git'> = {
 
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
 
-		let lastTagDate: string | undefined
-		const lastTagName = tagResult.latest ?? undefined
-		if (lastTagName) {
+		let tagDateLatest: string | undefined
+		const tagNameLatest = tagResult.latest ?? undefined
+		if (tagNameLatest) {
 			try {
-				const tagDate = await git.raw(['log', '-1', '--format=%aI', lastTagName])
-				lastTagDate = tagDate.trim() || undefined
+				const tagDate = await git.raw(['log', '-1', '--format=%aI', tagNameLatest])
+				tagDateLatest = tagDate.trim() || undefined
 			} catch {
 				// Tag might not have associated commit info
 			}
@@ -56,16 +56,16 @@ export const gitSource: MetadataSource<'git'> = {
 
 		return {
 			branchCount: branchResult.all.length,
+			branchCurrent: branchResult.current,
 			commitCount: logResult.total,
+			commitDateFirst,
+			commitDateLast: logResult.latest?.date ?? undefined,
 			contributorCount: contributors.size,
-			currentBranch: branchResult.current,
-			firstCommitDate,
 			isClean: statusResult.isClean(),
 			isDirty: !statusResult.isClean(),
-			lastCommitDate: logResult.latest?.date ?? undefined,
-			lastTagDate,
-			lastTagName,
 			tagCount: tagResult.all.length,
+			tagDateLatest,
+			tagNameLatest,
 			trackedFileCount: fileCountResult,
 		}
 	},

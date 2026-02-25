@@ -250,16 +250,16 @@ Available when the project directory contains a `.git` directory.
 | Field              | Type      | Description                    |
 | ------------------ | --------- | ------------------------------ |
 | `branchCount`      | `number`  | Number of branches             |
+| `branchCurrent`    | `string`  | Currently checked-out branch   |
 | `commitCount`      | `number`  | Total commits                  |
+| `commitDateFirst`  | `string`  | ISO 8601 date of first commit  |
+| `commitDateLast`   | `string`  | ISO 8601 date of latest commit |
 | `contributorCount` | `number`  | Unique commit author emails    |
-| `currentBranch`    | `string`  | Currently checked-out branch   |
-| `firstCommitDate`  | `string`  | ISO 8601 date of first commit  |
 | `isClean`          | `boolean` | Working tree has no changes    |
 | `isDirty`          | `boolean` | Working tree has changes       |
-| `lastCommitDate`   | `string`  | ISO 8601 date of latest commit |
-| `lastTagDate`      | `string`  | ISO 8601 date of latest tag    |
-| `lastTagName`      | `string`  | Name of latest tag             |
 | `tagCount`         | `number`  | Total tags                     |
+| `tagDateLatest`    | `string`  | ISO 8601 date of latest tag    |
+| `tagNameLatest`    | `string`  | Name of latest tag             |
 | `trackedFileCount` | `number`  | Number of tracked files        |
 
 ### github
@@ -270,12 +270,10 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 
 | Field                     | Type                     | Description                                  |
 | ------------------------- | ------------------------ | -------------------------------------------- |
-| `closedIssueCount`        | `number`                 | Closed issues                                |
-| `closedPullRequestCount`  | `number`                 | Closed (unmerged) pull requests              |
+| `branchDefault`           | `string`                 | Default branch name                          |
 | `commitsBehindUpstream`   | `number`                 | Commits behind upstream (forks only)         |
 | `contributorCount`        | `number`                 | Number of contributors                       |
 | `createdAt`               | `string`                 | Repository creation date                     |
-| `defaultBranch`           | `string`                 | Default branch name                          |
 | `description`             | `string`                 | Repository description                       |
 | `diskUsageKb`             | `number`                 | Disk usage in KB                             |
 | `forkCount`               | `number`                 | Number of forks                              |
@@ -288,17 +286,19 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 | `isFork`                  | `boolean`                | Repository is a fork                         |
 | `isPrivate`               | `boolean`                | Repository is private                        |
 | `isTemplate`              | `boolean`                | Repository is a template                     |
+| `issueCountClosed`        | `number`                 | Closed issues                                |
+| `issueCountOpen`          | `number`                 | Open issues                                  |
+| `languagePrimary`         | `string`                 | Primary programming language                 |
 | `languages`               | `Record<string, number>` | Language breakdown (bytes)                   |
-| `lastReleaseDate`         | `string`                 | Date of most recent release                  |
-| `lastReleaseVersion`      | `string`                 | Version of most recent release               |
 | `license`                 | `string`                 | SPDX license identifier                      |
-| `mergedPullRequestCount`  | `number`                 | Merged pull requests                         |
-| `openIssueCount`          | `number`                 | Open issues                                  |
-| `openPullRequestCount`    | `number`                 | Open pull requests                           |
 | `ownerLogin`              | `string`                 | Repository owner                             |
-| `primaryLanguage`         | `string`                 | Primary programming language                 |
+| `pullRequestCountClosed`  | `number`                 | Closed (unmerged) pull requests              |
+| `pullRequestCountMerged`  | `number`                 | Merged pull requests                         |
+| `pullRequestCountOpen`    | `number`                 | Open pull requests                           |
 | `releaseCount`            | `number`                 | Total releases                               |
+| `releaseDateLatest`       | `string`                 | Date of most recent release                  |
 | `releaseDownloadCount`    | `number`                 | Total release asset downloads                |
+| `releaseVersionLatest`    | `string`                 | Version of most recent release               |
 | `repoName`                | `string`                 | Repository name                              |
 | `repoUrl`                 | `string`                 | Repository URL                               |
 | `stargazerCount`          | `number`                 | Stars                                        |
@@ -346,15 +346,15 @@ Available when the codemeta `name` field resolves to an NPM package.
 | ------------------- | --------- | ------------------------------ |
 | `dependentCount`    | `number`  | Packages depending on this one |
 | `deprecated`        | `string`  | Deprecation message, if any    |
+| `downloadsMonthly`  | `number`  | Downloads in the last 30 days  |
+| `downloadsTotal`    | `number`  | All-time downloads             |
+| `downloadsWeekly`   | `number`  | Downloads in the last 7 days   |
+| `downloadsYearly`   | `number`  | Downloads in the last 365 days |
 | `fileCount`         | `number`  | Files in the published package |
 | `hasTypes`          | `boolean` | TypeScript types are included  |
-| `lastPublishDate`   | `string`  | Date of last publish           |
-| `latestVersion`     | `string`  | Latest version on the registry |
-| `monthlyDownloads`  | `number`  | Downloads in the last 30 days  |
-| `totalDownloads`    | `number`  | All-time downloads             |
+| `publishDateLatest` | `string`  | Date of last publish           |
 | `unpackedSizeBytes` | `number`  | Unpacked size in bytes         |
-| `weeklyDownloads`   | `number`  | Downloads in the last 7 days   |
-| `yearlyDownloads`   | `number`  | Downloads in the last 365 days |
+| `versionLatest`     | `string`  | Latest version on the registry |
 
 ### obsidian
 
@@ -409,9 +409,9 @@ A compact overview of the project:
 defineTemplate(({ codemeta, github, npm }) => ({
   author: codemeta.author,
   description: codemeta.description,
-  downloads: npm.weeklyDownloads,
+  downloads: npm.downloadsWeekly,
   forks: github.forkCount,
-  issues: github.openIssueCount,
+  issues: github.issueCountOpen,
   license: codemeta.license,
   name: codemeta.name,
   stars: github.stargazerCount,
