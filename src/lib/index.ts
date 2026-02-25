@@ -10,6 +10,7 @@ export type {
 	GitData,
 	GitHubData,
 	LocData,
+	LocLanguageEntry,
 	LocLanguageStats,
 	MetadataContext,
 	MetascopeData,

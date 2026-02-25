@@ -1,7 +1,7 @@
 export type { CodemetaData } from './sources/codemeta'
 export type { GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
-export type { LocData, LocLanguageStats } from './sources/loc'
+export type { LocData, LocLanguageEntry, LocLanguageStats } from './sources/loc'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData } from './sources/obsidian'

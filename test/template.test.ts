@@ -30,8 +30,8 @@ const mockContext: MetadataContext = {
 		stargazerCount: 100,
 	},
 	loc: {
-		// eslint-disable-next-line ts/naming-convention -- Tokei language keys are PascalCase
-		TypeScript: { blanks: 100, code: 500, comments: 50, files: 10 },
+		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript' }],
+		total: { blanks: 100, code: 500, comments: 50, files: 10 },
 	},
 	metascope: {
 		path: '/test/project',

@@ -312,16 +312,24 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 
 Lines of code analysis via [tokei](https://github.com/XAMPPRocky/tokei).
 
-Available when the `tokei` command-line tool is installed. Supports 260+ programming languages. Each language entry includes:
+Available when the `tokei` command-line tool is installed. Supports 260+ programming languages.
 
-| Field      | Type     | Description     |
-| ---------- | -------- | --------------- |
-| `blanks`   | `number` | Blank lines     |
-| `code`     | `number` | Lines of code   |
-| `comments` | `number` | Comment lines   |
-| `files`    | `number` | Number of files |
+| Field       | Type                 | Description                            |
+| ----------- | -------------------- | -------------------------------------- |
+| `breakdown` | `LocLanguageEntry[]` | Per-language stats (see below)         |
+| `total`     | `LocLanguageStats`   | Aggregated counts across all languages |
 
-A `Total` entry aggregates counts across all languages.
+Each `LocLanguageEntry`:
+
+| Field      | Type     | Description              |
+| ---------- | -------- | ------------------------ |
+| `blanks`   | `number` | Blank lines              |
+| `code`     | `number` | Lines of code            |
+| `comments` | `number` | Comment lines            |
+| `files`    | `number` | Number of files          |
+| `language` | `string` | Language name from tokei |
+
+The `total` object has the same shape without the `language` field.
 
 ### metascope
 
@@ -406,7 +414,7 @@ import { defineTemplate } from 'metascope'
 export default defineTemplate(({ codemeta, git, github, loc }) => ({
   commits: git.commitCount,
   forks: github.forkCount,
-  linesOfCode: loc.TypeScript?.code,
+  linesOfCode: loc.total?.code,
   name: codemeta.name,
   stars: github.stargazerCount,
   version: codemeta.version,
