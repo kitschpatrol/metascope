@@ -34,7 +34,6 @@ function getPackageName(context: SourceContext): string | undefined {
 
 async function fetchDownloads(packageName: string, period: string): Promise<number | undefined> {
 	try {
-		// eslint-disable-next-line node/no-unsupported-features/node-builtins
 		const response = await fetch(
 			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
 		)

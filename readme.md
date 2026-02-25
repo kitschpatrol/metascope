@@ -15,7 +15,7 @@
 
 <!-- short-description -->
 
-**A CLI tool and TypeScript library for extracting comprehensive metadata from code repositories.**
+**Extract metadata from a code repository.**
 
 <!-- /short-description -->
 
@@ -233,7 +233,7 @@ const summary = await getMetadata({ path: '.', preset: 'summary' })
 
 ## Sources
 
-Metascope fetches data from seven sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
+Metascope fetches data from eight sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
 
 ### codemeta
 
@@ -366,6 +366,30 @@ Available when the codemeta keywords include `obsidian-plugin`.
 | --------------- | -------- | ----------------------------------- |
 | `downloadCount` | `number` | Total downloads across all releases |
 | `pluginId`      | `string` | Plugin identifier in the registry   |
+
+### updates
+
+Dependency update analysis via [updates](https://github.com/silverwind/updates).
+
+Available when the project contains a `package.json`, `pyproject.toml`, `go.mod`, or `.github` workflows directory. Scans for outdated dependencies and classifies version bumps by severity.
+
+| Field      | Type               | Description                                                    |
+| ---------- | ------------------ | -------------------------------------------------------------- |
+| `libyears` | `number`           | Total years behind across all outdated packages                |
+| `major`    | `UpdatesPackage[]` | Dependencies with major version bumps (or non-semver versions) |
+| `minor`    | `UpdatesPackage[]` | Dependencies with minor version bumps                          |
+| `patch`    | `UpdatesPackage[]` | Dependencies with patch version bumps                          |
+| `total`    | `number`           | Total outdated dependencies                                    |
+
+Each `UpdatesPackage`:
+
+| Field  | Type     | Description                       |
+| ------ | -------- | --------------------------------- |
+| `age`  | `string` | How long since the latest version |
+| `info` | `string` | URL to the package or repository  |
+| `name` | `string` | Package name                      |
+| `new`  | `string` | Latest available version          |
+| `old`  | `string` | Currently installed version       |
 
 ## Templates
 

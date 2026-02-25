@@ -17,4 +17,6 @@ export type {
 	ObsidianData,
 	SourceName,
 	Template,
+	UpdatesData,
+	UpdatesPackage,
 } from './types'

@@ -17,6 +17,7 @@ import { locSource } from './sources/loc'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
+import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
 
 const execFileAsync = promisify(execFile)
@@ -33,6 +34,7 @@ const sources: MetadataSource[] = [
 	metascopeSource,
 	npmSource,
 	obsidianSource,
+	updatesSource,
 ]
 
 /**
@@ -159,6 +161,7 @@ export async function getMetadata<T>(
 		metascope: {},
 		npm: {},
 		obsidian: {},
+		updates: {},
 	}
 
 	for (const result of fetchResults) {

@@ -5,6 +5,7 @@ export type { LocData, LocLanguageStats } from './sources/loc'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData } from './sources/obsidian'
+export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
 import type { CodemetaData } from './sources/codemeta'
 import type { GitData } from './sources/git'
@@ -13,6 +14,7 @@ import type { LocData } from './sources/loc'
 import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
+import type { UpdatesData } from './sources/updates'
 
 // ── Aggregate Context ──────────────────────────────────
 
@@ -28,6 +30,7 @@ export type MetadataContext = {
 	metascope: MetascopeData
 	npm: NpmData
 	obsidian: ObsidianData
+	updates: UpdatesData
 }
 
 /**

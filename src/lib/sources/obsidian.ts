@@ -47,7 +47,6 @@ export const obsidianSource: MetadataSource<'obsidian'> = {
 		if (!pluginId) return {}
 
 		try {
-			// eslint-disable-next-line node/no-unsupported-features/node-builtins
 			const response = await fetch(communityPluginsUrl)
 			if (!response.ok) return { pluginId }
 

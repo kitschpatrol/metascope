@@ -42,6 +42,7 @@ const mockContext: MetadataContext = {
 		downloadsWeekly: 1000,
 	},
 	obsidian: {},
+	updates: {},
 }
 
 const identityFn = (context: MetadataContext) => ({ name: context.codemeta.name })

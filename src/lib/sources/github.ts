@@ -21,9 +21,9 @@ export type GitHubData = {
 	isArchived?: boolean
 	isFork?: boolean
 	isPrivate?: boolean
-	isTemplate?: boolean
 	issueCountClosed?: number
 	issueCountOpen?: number
+	isTemplate?: boolean
 	languagePrimary?: string
 	languages?: Record<string, number>
 	license?: string
@@ -31,8 +31,8 @@ export type GitHubData = {
 	pullRequestCountClosed?: number
 	pullRequestCountMerged?: number
 	pullRequestCountOpen?: number
-	releaseDateLatest?: string
 	releaseCount?: number
+	releaseDateLatest?: string
 	releaseDownloadCount?: number
 	releaseVersionLatest?: string
 	repoName?: string
@@ -48,6 +48,7 @@ export type GitHubData = {
 const gitHubRepoSchema = z.object({
 	repository: z.object({
 		closedIssues: z.object({ totalCount: z.number() }),
+		closedPullRequests: z.object({ totalCount: z.number() }),
 		contributorCount: z.number().optional(),
 		createdAt: z.string(),
 		defaultBranchRef: z
@@ -94,8 +95,10 @@ const gitHubRepoSchema = z.object({
 				tagName: z.string(),
 			})
 			.nullable(),
+		mergedPullRequests: z.object({ totalCount: z.number() }),
 		name: z.string(),
 		openIssues: z.object({ totalCount: z.number() }),
+		openPullRequests: z.object({ totalCount: z.number() }),
 		owner: z.object({ login: z.string() }),
 		parent: z
 			.object({
@@ -109,9 +112,6 @@ const gitHubRepoSchema = z.object({
 				name: z.string(),
 			})
 			.nullable(),
-		closedPullRequests: z.object({ totalCount: z.number() }),
-		mergedPullRequests: z.object({ totalCount: z.number() }),
-		openPullRequests: z.object({ totalCount: z.number() }),
 		releases: z.object({ totalCount: z.number() }),
 		repositoryTopics: z.object({
 			nodes: z.array(z.object({ topic: z.object({ name: z.string() }) })),
@@ -292,9 +292,9 @@ function mapRepoData(
 		isArchived: data.isArchived,
 		isFork: data.isFork,
 		isPrivate: data.isPrivate,
-		isTemplate: data.isTemplate,
 		issueCountClosed: data.closedIssues.totalCount,
 		issueCountOpen: data.openIssues.totalCount,
+		isTemplate: data.isTemplate,
 		languagePrimary: data.primaryLanguage?.name ?? undefined,
 		languages: extractLanguages(data),
 		license: undefined, // License from GitHub requires REST; codemeta already provides this

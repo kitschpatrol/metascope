@@ -35,12 +35,18 @@ importers:
       package-json:
         specifier: ^10.0.1
         version: 10.0.1
+      semver:
+        specifier: ^7.7.4
+        version: 7.7.4
       simple-git:
         specifier: ^3.32.2
         version: 3.32.2
       tinyexec:
         specifier: ^1.0.2
         version: 1.0.2
+      updates:
+        specifier: ^17.6.2
+        version: 17.6.2
       yargs:
         specifier: ^18.0.0
         version: 18.0.0
@@ -54,6 +60,9 @@ importers:
       '@kitschpatrol/shared-config':
         specifier: ^6.0.0
         version: 6.0.0(@pnpm/logger@1001.0.1)(@types/estree@1.0.8)(@types/node@20.19.33)(@typescript-eslint/utils@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(jiti@2.6.1)(postcss-html@1.8.1)(stylelint-order@7.0.1(stylelint@17.3.0(typescript@5.9.3)))(svelte@5.53.3)(typescript@5.9.3)(vitest@4.0.18(@types/node@20.19.33)(jiti@2.6.1)(yaml@2.8.2))
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
       bumpp:
         specifier: ^10.4.1
         version: 10.4.1
@@ -1538,6 +1547,9 @@ packages:
   '@types/parse-path@7.1.0':
     resolution: {integrity: sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==}
     deprecated: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/supports-color@8.1.3':
     resolution: {integrity: sha512-Hy6UMpxhE3j1tLpl27exp1XqHD7n8chAiNPzWfz16LPZoMMoSc4dzLl6w9qijkEb/r5O1ozdu1CWGA2L83ZeZg==}
@@ -5047,6 +5059,11 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
+  updates@17.6.2:
+    resolution: {integrity: sha512-wRRqonywmcJJfohCozyhH9m32g3KCMrlCAypeqXhG4ZTP14pfCvshgkCfB1F61b2EH6aXXfohjWjZgldrmvRKQ==}
+    engines: {node: '>=22'}
+    hasBin: true
+
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
@@ -7037,6 +7054,8 @@ snapshots:
   '@types/parse-path@7.1.0':
     dependencies:
       parse-path: 7.1.0
+
+  '@types/semver@7.7.1': {}
 
   '@types/supports-color@8.1.3': {}
 
@@ -11577,6 +11596,8 @@ snapshots:
       browserslist: 4.28.1
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  updates@17.6.2: {}
 
   uri-js@4.4.1:
     dependencies:
