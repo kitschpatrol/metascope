@@ -271,6 +271,7 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 | Field                     | Type                     | Description                                  |
 | ------------------------- | ------------------------ | -------------------------------------------- |
 | `closedIssueCount`        | `number`                 | Closed issues                                |
+| `closedPullRequestCount`  | `number`                 | Closed (unmerged) pull requests              |
 | `commitsBehindUpstream`   | `number`                 | Commits behind upstream (forks only)         |
 | `contributorCount`        | `number`                 | Number of contributors                       |
 | `createdAt`               | `string`                 | Repository creation date                     |
@@ -291,6 +292,7 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 | `lastReleaseDate`         | `string`                 | Date of most recent release                  |
 | `lastReleaseVersion`      | `string`                 | Version of most recent release               |
 | `license`                 | `string`                 | SPDX license identifier                      |
+| `mergedPullRequestCount`  | `number`                 | Merged pull requests                         |
 | `openIssueCount`          | `number`                 | Open issues                                  |
 | `openPullRequestCount`    | `number`                 | Open pull requests                           |
 | `ownerLogin`              | `string`                 | Repository owner                             |

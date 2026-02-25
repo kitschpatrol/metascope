@@ -48,15 +48,14 @@ describe('getMetadata', () => {
 	})
 
 	it('should strip undefined from template output', async () => {
-		const template = defineTemplate(({ github }) => ({
-			stars: github.stargazerCount,
+		const template = defineTemplate(({ obsidian }) => ({
+			downloads: obsidian.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
-		// Github source is not available locally, so stargazerCount is undefined
+		// Obsidian source is not available (no obsidian-plugin keyword), so downloadCount is undefined
 		// stripUndefined should remove it, resulting in empty object (which is also stripped)
-		// The result should be an empty object or have no stars key
-		expect(result).not.toHaveProperty('stars')
+		expect(result).not.toHaveProperty('downloads')
 	})
 
 	it('should resolve path to absolute', async () => {

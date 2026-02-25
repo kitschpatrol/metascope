@@ -7,6 +7,7 @@ import { log } from '../log'
 
 export type GitHubData = {
 	closedIssueCount?: number
+	closedPullRequestCount?: number
 	commitsBehindUpstream?: number
 	contributorCount?: number
 	createdAt?: string
@@ -28,6 +29,7 @@ export type GitHubData = {
 	lastReleaseVersion?: string
 	license?: string
 	openIssueCount?: number
+	mergedPullRequestCount?: number
 	openPullRequestCount?: number
 	ownerLogin?: string
 	primaryLanguage?: string
@@ -107,7 +109,9 @@ const gitHubRepoSchema = z.object({
 				name: z.string(),
 			})
 			.nullable(),
-		pullRequests: z.object({ totalCount: z.number() }),
+		closedPullRequests: z.object({ totalCount: z.number() }),
+		mergedPullRequests: z.object({ totalCount: z.number() }),
+		openPullRequests: z.object({ totalCount: z.number() }),
 		releases: z.object({ totalCount: z.number() }),
 		repositoryTopics: z.object({
 			nodes: z.array(z.object({ topic: z.object({ name: z.string() }) })),
@@ -182,7 +186,9 @@ const graphqlQuery = `
 			}
 			openIssues: issues(states: OPEN) { totalCount }
 			closedIssues: issues(states: CLOSED) { totalCount }
-			pullRequests(states: OPEN) { totalCount }
+			openPullRequests: pullRequests(states: OPEN) { totalCount }
+			closedPullRequests: pullRequests(states: CLOSED) { totalCount }
+			mergedPullRequests: pullRequests(states: MERGED) { totalCount }
 			vulnerabilityAlerts(states: OPEN) { totalCount }
 			watchers { totalCount }
 			releases { totalCount }
@@ -272,6 +278,7 @@ function mapRepoData(
 
 	return {
 		closedIssueCount: data.closedIssues.totalCount,
+		closedPullRequestCount: data.closedPullRequests.totalCount,
 		commitsBehindUpstream: extras.commitsBehindUpstream,
 		contributorCount: data.contributorCount,
 		createdAt: data.createdAt,
@@ -292,8 +299,9 @@ function mapRepoData(
 		lastReleaseDate: data.latestRelease?.createdAt ?? undefined,
 		lastReleaseVersion: data.latestRelease?.tagName ?? undefined,
 		license: undefined, // License from GitHub requires REST; codemeta already provides this
+		mergedPullRequestCount: data.mergedPullRequests.totalCount,
 		openIssueCount: data.openIssues.totalCount,
-		openPullRequestCount: data.pullRequests.totalCount,
+		openPullRequestCount: data.openPullRequests.totalCount,
 		ownerLogin: data.owner.login,
 		primaryLanguage: data.primaryLanguage?.name ?? undefined,
 		releaseCount: data.releases.totalCount,
