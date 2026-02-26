@@ -2,7 +2,7 @@ import type { CodeMeta } from '@kitschpatrol/codemeta'
 import type { Credentials, MetadataContext, SourceName } from '../types'
 
 /**
- * Context provided to each metadata source during availability checks and fetching.
+ * Context provided to each metadata source during availability checks and extraction.
  */
 export type SourceContext = {
 	/** CodeMeta data, available after the codemeta source runs first. Used for discovery hints. */
@@ -21,8 +21,8 @@ export type SourceContext = {
 export type MetadataSource<K extends SourceName = SourceName> = {
 	/** The top-level key this source populates in MetadataContext. */
 	key: K
-	/** Fetch all available metadata from this source. */
-	fetch(context: SourceContext): Promise<MetadataContext[K]>
+	/** Extract all available metadata from this source. */
+	extract(context: SourceContext): Promise<MetadataContext[K]>
 	/** Check if this source can provide data for the given project. */
 	isAvailable(context: SourceContext): Promise<boolean>
 }

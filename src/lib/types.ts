@@ -81,21 +81,18 @@ export type GetMetadataOptions = {
 	credentials?: Credentials
 	/** Project directory path. */
 	path: string
-	/** Named built-in preset. Ignored if `template` is provided. */
-	preset?: string
-	template?: never
+	/** Built-in template name (e.g., "summary") or omit for full output. */
+	template?: string
 }
 
 /**
- * Options for `getMetadata` with a template (returns the template's return type).
+ * Options for `getMetadata` with a template function (returns the template's return type).
  */
 export type GetMetadataTemplateOptions<T> = {
 	/** API credentials for remote sources. */
 	credentials?: Credentials
 	/** Project directory path. */
 	path: string
-	/** Named built-in preset. Ignored if `template` is provided. */
-	preset?: string
-	/** Custom template function. */
+	/** Template function that transforms MetadataContext into a custom shape. */
 	template: Template<T>
 }

@@ -4,7 +4,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { bin, version } from '../../package.json'
 import { createLogger } from 'lognow'
-import { getMetadata, setLogger } from '../lib'
+import { getMetadata, setLogger, templates } from '../lib'
 import type { Template } from '../lib'
 
 const cliCommandName = Object.keys(bin).at(0)!
@@ -24,12 +24,7 @@ await yargsInstance
 				})
 				.option('template', {
 					alias: 't',
-					description: 'Path to template config file (.ts/.js)',
-					type: 'string',
-				})
-				.option('preset', {
-					alias: 'p',
-					description: 'Built-in preset name (e.g., "summary")',
+					description: 'Built-in template name (e.g., "summary") or path to a template file (.ts/.js)',
 					type: 'string',
 				})
 				.option('github-token', {
@@ -46,29 +41,34 @@ await yargsInstance
 
 			log.debug('Starting metadata extraction...')
 
-			// Load template from file if specified
+			// Resolve template: try built-in template first, then load as file
 			let template: Template<unknown> | undefined
 			if (argv.template) {
-				try {
-					const { createJiti } = await import('jiti')
-					const jiti = createJiti(import.meta.url)
-					const templateModule = (await jiti.import(argv.template)) as {
-						default?: Template<unknown>
-					}
-					template = templateModule.default
-					if (typeof template !== 'function') {
+				const builtIn = templates[argv.template]
+				if (builtIn) {
+					template = builtIn
+				} else {
+					try {
+						const { createJiti } = await import('jiti')
+						const jiti = createJiti(import.meta.url)
+						const templateModule = (await jiti.import(argv.template)) as {
+							default?: Template<unknown>
+						}
+						template = templateModule.default
+						if (typeof template !== 'function') {
+							log.error(
+								'Template file must export a function as default export. Use defineTemplate().',
+							)
+							process.exitCode = 1
+							return
+						}
+					} catch (error) {
 						log.error(
-							'Template file must export a function as default export. Use defineTemplate().',
+							`Failed to load template: ${error instanceof Error ? error.message : String(error)}`,
 						)
 						process.exitCode = 1
 						return
 					}
-				} catch (error) {
-					log.error(
-						`Failed to load template: ${error instanceof Error ? error.message : String(error)}`,
-					)
-					process.exitCode = 1
-					return
 				}
 			}
 
@@ -76,11 +76,7 @@ await yargsInstance
 				const credentials = argv.githubToken ? { githubToken: argv.githubToken } : undefined
 				const result = template
 					? await getMetadata({ credentials, path: argv.path, template })
-					: await getMetadata({
-							credentials,
-							path: argv.path,
-							preset: argv.preset,
-						})
+					: await getMetadata({ credentials, path: argv.path })
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

@@ -14,13 +14,13 @@ describe('codemeta source', () => {
 	})
 
 	it('should fetch metadata from package.json', async () => {
-		const result = await codemetaSource.fetch(context)
+		const result = await codemetaSource.extract(context)
 		expect(result.name).toBe('metascope')
 		expect(result['@type']).toBe('SoftwareSourceCode')
 	})
 
 	it('should include author info', async () => {
-		const result = await codemetaSource.fetch(context)
+		const result = await codemetaSource.extract(context)
 		expect(result.author).toBeDefined()
 	})
 })

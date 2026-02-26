@@ -27,8 +27,8 @@ A template system lets you define exactly which fields to include and how to sha
 
 Key characteristics:
 
-- **Graceful degradation.** Each source checks its own availability before fetching. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
-- **Parallel fetching.** After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and fetched concurrently.
+- **Graceful degradation.** Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
+- **Parallel extraction.** After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
 - **Typed templates.** The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
 - **CLI and library.** Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
 
@@ -83,14 +83,13 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option               | Description                             | Type      |
-| -------------------- | --------------------------------------- | --------- |
-| `--template`<br>`-t` | Path to template config file (.ts/.js)  | `string`  |
-| `--preset`<br>`-p`   | Built-in preset name (e.g., "summary")  | `string`  |
-| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN) | `string`  |
-| `--verbose`          | Run with verbose logging                | `boolean` |
-| `--help`<br>`-h`     | Show help                               | `boolean` |
-| `--version`<br>`-v`  | Show version number                     | `boolean` |
+| Option               | Description                                                              | Type      |
+| -------------------- | ------------------------------------------------------------------------ | --------- |
+| `--template`<br>`-t` | Built-in template name (e.g., "summary") or path to a template file (.ts/.js) | `string`  |
+| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                  | `string`  |
+| `--verbose`          | Run with verbose logging                                                 | `boolean` |
+| `--help`<br>`-h`     | Show help                                                                | `boolean` |
+| `--version`<br>`-v`  | Show version number                                                      | `boolean` |
 
 <!-- /cli-help -->
 
@@ -112,13 +111,13 @@ Output is pretty-printed JSON when writing to a terminal, compact JSON when pipe
 metascope /path/to/project
 ```
 
-##### Use a built-in preset
+##### Use a built-in template
 
 ```sh
-metascope --preset summary
+metascope --template summary
 ```
 
-##### Use a custom template
+##### Use a custom template file
 
 ```sh
 metascope --template ./my-template.ts
@@ -157,7 +156,7 @@ Or set the `GITHUB_TOKEN` environment variable, or authenticate via `gh auth log
 metascope --verbose
 ```
 
-Logs source availability checks, fetch durations, and other diagnostics to stderr.
+Logs source availability checks, extraction durations, and other diagnostics to stderr.
 
 ### API
 
@@ -173,7 +172,7 @@ function getMetadata(options: GetMetadataOptions): Promise<MetadataContext>
 function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
 ```
 
-The function accepts a project directory path, optional credentials, and an optional template or preset name. It returns a promise resolving to either the full `MetadataContext` or the shaped output of your template.
+The function accepts a project directory path, optional credentials, and an optional template (a built-in name or a template function). It returns a promise resolving to either the full `MetadataContext` or the shaped output of your template.
 
 All `undefined` values and empty source objects are deep-stripped from the output before returning.
 
@@ -223,23 +222,23 @@ const metadata = await getMetadata({
 })
 ```
 
-##### Use a built-in preset
+##### Use a built-in template
 
 ```ts
 import { getMetadata } from 'metascope'
 
-const summary = await getMetadata({ path: '.', preset: 'summary' })
+const summary = await getMetadata({ path: '.', template: 'summary' })
 ```
 
 ## Sources
 
-Metascope fetches data from eight sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
+Metascope extracts data from eight sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
 
 ### codemeta
 
 Extracts package metadata from `package.json` (and other supported manifest files) via the [`@kitschpatrol/codemeta`](https://github.com/kitschpatrol/codemeta) library, normalized to the [CodeMeta](https://codemeta.github.io) standard.
 
-Always available. Fetched first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
+Always available. Extracted first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
 
 ### git
 
@@ -401,7 +400,7 @@ Each `UpdatesPackage`:
 
 ## Templates
 
-Templates are pure functions that receive the full `MetadataContext` and return whatever shape you like. They are applied _after_ all sources have been fetched, so all available data is accessible.
+Templates are pure functions that receive the full `MetadataContext` and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
 
 ### Defining a template
 
@@ -429,9 +428,9 @@ metascope --template ./metascope-template.ts
 
 Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScript works out of the box without a build step.
 
-### Built-in presets
+### Built-in templates
 
-Presets are named built-in templates. Use them via the `--preset` flag or the `preset` option in the API.
+Several built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
 
 #### `summary`
 
@@ -455,7 +454,7 @@ defineTemplate(({ codemeta, github, npm }) => ({
 
 Metascope was built to support automated generation of project dashboards, badges, and documentation where a single source of truth for project metadata is useful. Rather than querying each API individually, metascope handles the discovery, authentication, and aggregation in one pass.
 
-The codemeta source is fetched first to provide discovery hints — the package name resolves NPM lookups, the repository URL resolves GitHub lookups, and keywords trigger niche sources like Obsidian. Remaining sources are checked for availability and fetched concurrently.
+The codemeta source is extracted first to provide discovery hints — the package name resolves NPM lookups, the repository URL resolves GitHub lookups, and keywords trigger niche sources like Obsidian. Remaining sources are checked for availability and extracted concurrently.
 
 Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 

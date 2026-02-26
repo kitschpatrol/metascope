@@ -119,8 +119,8 @@ function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor'
 }
 
 export const updatesSource: MetadataSource<'updates'> = {
-	async fetch(context: SourceContext): Promise<UpdatesData> {
-		log.debug('Fetching dependency update information via updates...')
+	async extract(context: SourceContext): Promise<UpdatesData> {
+		log.debug('Extracting dependency update information via updates...')
 
 		const updatesBinary = resolveUpdatesBinary()
 		const result = await exec('node', [updatesBinary, '--file', context.path, '--json'])

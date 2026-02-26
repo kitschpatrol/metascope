@@ -1,6 +1,6 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
-export { presets } from './presets/index'
+export { templates } from './templates/index'
 export { defineTemplate } from './types'
 export type {
 	CodemetaData,

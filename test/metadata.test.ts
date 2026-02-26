@@ -64,9 +64,9 @@ describe('getMetadata', () => {
 		expect(result.codemeta).toBeDefined()
 	})
 
-	it('should handle preset name', async () => {
-		const result = await getMetadata({ path: '.', preset: 'summary' })
-		// Summary preset should return a shaped object
+	it('should handle built-in template name', async () => {
+		const result = await getMetadata({ path: '.', template: 'summary' })
+		// Built-in template should return a shaped object
 		expect(result).toHaveProperty('name')
 	})
 })

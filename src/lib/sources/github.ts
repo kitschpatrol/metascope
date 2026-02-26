@@ -318,8 +318,8 @@ function mapRepoData(
 }
 
 export const githubSource: MetadataSource<'github'> = {
-	async fetch(context: SourceContext): Promise<GitHubData> {
-		log.debug('Fetching GitHub metadata...')
+	async extract(context: SourceContext): Promise<GitHubData> {
+		log.debug('Extracting GitHub metadata...')
 		const remote = await getGitHubRemote(context.path)
 		if (!remote) return {}
 

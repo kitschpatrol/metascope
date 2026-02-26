@@ -41,8 +41,8 @@ function getPluginId(context: SourceContext): string | undefined {
 }
 
 export const obsidianSource: MetadataSource<'obsidian'> = {
-	async fetch(context: SourceContext): Promise<ObsidianData> {
-		log.debug('Fetching Obsidian metadata...')
+	async extract(context: SourceContext): Promise<ObsidianData> {
+		log.debug('Extracting Obsidian metadata...')
 		const pluginId = getPluginId(context)
 		if (!pluginId) return {}
 

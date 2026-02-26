@@ -61,17 +61,23 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
 }
 
 /**
- * Resolve a preset name to a template function.
+ * Resolve a template option to a template function.
+ * Accepts a built-in template name (string) or a template function.
  */
-async function resolvePreset(presetName: string): Promise<Template<unknown> | undefined> {
-	const { presets } = await import('./presets/index.js')
-	const preset = presets[presetName]
-	if (!preset) {
-		log.warn(`Unknown preset: "${presetName}". Using default (all fields).`)
+async function resolveTemplate(
+	template: Template<unknown> | string | undefined,
+): Promise<Template<unknown> | undefined> {
+	if (template === undefined) return undefined
+	if (typeof template === 'function') return template
+
+	const { templates } = await import('./templates/index.js')
+	const builtIn = templates[template]
+	if (!builtIn) {
+		log.warn(`Unknown template: "${template}". Using default (all fields).`)
 		return undefined
 	}
 
-	return preset
+	return builtIn
 }
 
 // Overload: no template → full context
@@ -87,16 +93,15 @@ export async function getMetadata<T>(
 	const startTime = Date.now()
 	const absolutePath = resolve(options.path)
 
-	// Resolve template from options or preset
-	let template: Template<unknown> | undefined = options.template as Template<unknown> | undefined
-	if (!template && options.preset) {
-		template = await resolvePreset(options.preset)
-	}
+	// Resolve template from options (built-in name or function)
+	const template = await resolveTemplate(
+		options.template as Template<unknown> | string | undefined,
+	)
 
 	const credentials = await resolveCredentials(options.credentials)
 
-	// Phase 1: Always fetch codemeta first (provides discovery hints)
-	log.debug('Phase 1: Fetching codemeta for discovery hints...')
+	// Phase 1: Always extract codemeta first (provides discovery hints)
+	log.debug('Phase 1: Extracting codemeta for discovery hints...')
 	const codemetaContext: SourceContext = { credentials, path: absolutePath }
 	// Fallback empty codemeta if source fails; required fields are provided as empty defaults
 	let codemetaData: MetadataContext['codemeta'] = {
@@ -104,12 +109,12 @@ export async function getMetadata<T>(
 		'@type': 'SoftwareSourceCode',
 	}
 	try {
-		codemetaData = await codemetaSource.fetch(codemetaContext)
+		codemetaData = await codemetaSource.extract(codemetaContext)
 	} catch (error) {
 		log.warn(`Codemeta source failed: ${error instanceof Error ? error.message : String(error)}`)
 	}
 
-	// Phase 2: Check availability and fetch remaining sources in parallel
+	// Phase 2: Check availability and extract remaining sources in parallel
 	const remainingSources = sources.filter((source) => source.key !== 'codemeta')
 	const sourceContext: SourceContext = { codemeta: codemetaData, credentials, path: absolutePath }
 
@@ -133,19 +138,19 @@ export async function getMetadata<T>(
 		.filter((result) => result.available)
 		.map((result) => result.source)
 
-	// Phase 3: Fetch data from available sources in parallel
-	log.debug(`Phase 3: Fetching from ${availableSources.length} available sources...`)
-	const fetchResults = await Promise.all(
+	// Phase 3: Extract data from available sources in parallel
+	log.debug(`Phase 3: Extracting from ${availableSources.length} available sources...`)
+	const extractResults = await Promise.all(
 		availableSources.map(async (source) => {
 			try {
 				const startTime = Date.now()
-				const data = await source.fetch(sourceContext)
+				const data = await source.extract(sourceContext)
 				const duration = Date.now() - startTime
-				log.debug(`Source "${source.key}" fetched in ${duration}ms`)
+				log.debug(`Source "${source.key}" extracted in ${duration}ms`)
 				return { data, key: source.key }
 			} catch (error) {
 				log.warn(
-					`Source "${source.key}" fetch failed: ${error instanceof Error ? error.message : String(error)}`,
+					`Source "${source.key}" extraction failed: ${error instanceof Error ? error.message : String(error)}`,
 				)
 				return { data: {}, key: source.key }
 			}
@@ -164,7 +169,7 @@ export async function getMetadata<T>(
 		updates: {},
 	}
 
-	for (const result of fetchResults) {
+	for (const result of extractResults) {
 		// Key and data are correlated but TypeScript can't narrow the union
 		Object.assign(context, { [result.key]: result.data })
 	}

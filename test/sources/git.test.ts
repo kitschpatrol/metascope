@@ -22,7 +22,7 @@ describe('git source', () => {
 	})
 
 	it('should fetch git metadata', async () => {
-		const result = await gitSource.fetch(context)
+		const result = await gitSource.extract(context)
 
 		expect(result.branchCurrent).toBe('main')
 		expect(result.commitCount).toBeGreaterThanOrEqual(1)
@@ -35,7 +35,7 @@ describe('git source', () => {
 	})
 
 	it('should return a valid commitDateLast', async () => {
-		const result = await gitSource.fetch(context)
+		const result = await gitSource.extract(context)
 		expect(result.commitDateLast).toBeDefined()
 		// Should be a valid date string
 		expect(Number.isNaN(Date.parse(result.commitDateLast!))).toBe(false)

@@ -28,7 +28,7 @@ function getVersion(): string | undefined {
 
 export const metascopeSource: MetadataSource<'metascope'> = {
 	// eslint-disable-next-line ts/require-await
-	async fetch(context: SourceContext): Promise<MetascopeData> {
+	async extract(context: SourceContext): Promise<MetascopeData> {
 		return {
 			path: context.path,
 			scannedAt: new Date().toISOString(),

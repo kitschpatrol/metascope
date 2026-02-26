@@ -18,6 +18,7 @@
 		"email": "eric@ericmika.com",
 		"url": "https://ericmika.com"
 	},
+	"sideEffects": false,
 	"type": "module",
 	"exports": {
 		".": {
@@ -43,16 +44,16 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@kitschpatrol/codemeta": "link:../codemeta",
-		"@types/node": "~20.19.33",
+		"@kitschpatrol/codemeta": "^0.3.2",
+		"@types/node": "~20.19.35",
 		"@types/yargs": "^17.0.35",
 		"git-url-parse": "^16.1.0",
 		"jiti": "^2.6.1",
-		"lognow": "^0.4.1",
+		"lognow": "^0.5.2",
 		"octokit": "^5.0.5",
 		"package-json": "^10.0.1",
 		"semver": "^7.7.4",
-		"simple-git": "^3.32.2",
+		"simple-git": "^3.32.3",
 		"tinyexec": "^1.0.2",
 		"updates": "^17.6.2",
 		"yargs": "^18.0.0",
@@ -60,7 +61,7 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.2",
-		"@kitschpatrol/shared-config": "^6.0.0",
+		"@kitschpatrol/shared-config": "^6.0.1",
 		"@types/semver": "^7.7.1",
 		"bumpp": "^10.4.1",
 		"mdat-plugin-cli-help": "^1.0.7",
@@ -69,14 +70,8 @@
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.18"
 	},
-	"packageManager": "pnpm@10.30.2",
+	"packageManager": "pnpm@10.30.3",
 	"engines": {
 		"node": ">=22.0.0"
-	},
-	"devEngines": {
-		"runtime": {
-			"name": "node",
-			"version": ">=22.21.0"
-		}
 	}
 }

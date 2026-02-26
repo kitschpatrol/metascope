@@ -20,8 +20,8 @@ export type GitData = {
 }
 
 export const gitSource: MetadataSource<'git'> = {
-	async fetch(context: SourceContext): Promise<GitData> {
-		log.debug('Fetching git metadata...')
+	async extract(context: SourceContext): Promise<GitData> {
+		log.debug('Extracting git metadata...')
 		const git = simpleGit(context.path)
 
 		const [statusResult, logResult, branchResult, tagResult, commitDateFirst, fileCountResult] =

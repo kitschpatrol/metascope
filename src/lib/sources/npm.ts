@@ -46,8 +46,8 @@ async function fetchDownloads(packageName: string, period: string): Promise<numb
 }
 
 export const npmSource: MetadataSource<'npm'> = {
-	async fetch(context: SourceContext): Promise<NpmData> {
-		log.debug('Fetching npm metadata...')
+	async extract(context: SourceContext): Promise<NpmData> {
+		log.debug('Extracting npm metadata...')
 		const name = getPackageName(context)
 		if (!name) return {}
 

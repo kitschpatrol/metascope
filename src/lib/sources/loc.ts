@@ -57,8 +57,8 @@ function parseTokeiOutput(raw: z.infer<typeof tokeiOutputSchema>): LocData {
 }
 
 export const locSource: MetadataSource<'loc'> = {
-	async fetch(context: SourceContext): Promise<LocData> {
-		log.debug('Fetching lines of code via tokei...')
+	async extract(context: SourceContext): Promise<LocData> {
+		log.debug('Extracting lines of code via tokei...')
 
 		const result = await exec('tokei', [context.path, '--compact', '--output', 'json'])
 		const raw = tokeiOutputSchema.parse(JSON.parse(result.stdout))
