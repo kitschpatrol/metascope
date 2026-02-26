@@ -24,7 +24,8 @@ await yargsInstance
 				})
 				.option('template', {
 					alias: 't',
-					description: 'Built-in template name (e.g., "summary") or path to a template file (.ts/.js)',
+					description:
+						'Built-in template name (e.g., "summary") or path to a template file (.ts/.js)',
 					type: 'string',
 				})
 				.option('github-token', {

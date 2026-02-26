@@ -1,4 +1,4 @@
-import type { CodeMeta } from '@kitschpatrol/codemeta'
+import type { CodeMetaBasic } from '@kitschpatrol/codemeta'
 import type { Credentials, MetadataContext, SourceName } from '../types'
 
 /**
@@ -6,7 +6,7 @@ import type { Credentials, MetadataContext, SourceName } from '../types'
  */
 export type SourceContext = {
 	/** CodeMeta data, available after the codemeta source runs first. Used for discovery hints. */
-	codemeta?: CodeMeta
+	codemeta?: CodeMetaBasic
 	/** API credentials for remote sources. */
 	credentials: Credentials
 	/** Absolute path to the project directory. */

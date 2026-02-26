@@ -3,7 +3,7 @@ export { getMetadata } from './metadata'
 export { templates } from './templates/index'
 export { defineTemplate } from './types'
 export type {
-	CodemetaData,
+	CodeMetaData,
 	Credentials,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,

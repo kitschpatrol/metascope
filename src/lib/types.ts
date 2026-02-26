@@ -1,4 +1,4 @@
-export type { CodemetaData } from './sources/codemeta'
+export type { CodeMetaData } from './sources/codemeta'
 export type { GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
 export type { LocData, LocLanguageEntry, LocLanguageStats } from './sources/loc'
@@ -7,7 +7,7 @@ export type { NpmData } from './sources/npm'
 export type { ObsidianData } from './sources/obsidian'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
-import type { CodemetaData } from './sources/codemeta'
+import type { CodeMetaData } from './sources/codemeta'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
 import type { LocData } from './sources/loc'
@@ -23,7 +23,7 @@ import type { UpdatesData } from './sources/updates'
  * Each key corresponds to a metadata source.
  */
 export type MetadataContext = {
-	codemeta: CodemetaData
+	codemeta: CodeMetaData
 	git: GitData
 	github: GitHubData
 	loc: LocData

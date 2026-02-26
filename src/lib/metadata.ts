@@ -65,7 +65,7 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
  * Accepts a built-in template name (string) or a template function.
  */
 async function resolveTemplate(
-	template: Template<unknown> | string | undefined,
+	template: string | Template<unknown> | undefined,
 ): Promise<Template<unknown> | undefined> {
 	if (template === undefined) return undefined
 	if (typeof template === 'function') return template
@@ -94,9 +94,7 @@ export async function getMetadata<T>(
 	const absolutePath = resolve(options.path)
 
 	// Resolve template from options (built-in name or function)
-	const template = await resolveTemplate(
-		options.template as Template<unknown> | string | undefined,
-	)
+	const template = await resolveTemplate(options.template as string | Template<unknown> | undefined)
 
 	const credentials = await resolveCredentials(options.credentials)
 

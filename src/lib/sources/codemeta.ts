@@ -1,14 +1,15 @@
-import type { CodeMeta } from '@kitschpatrol/codemeta'
+import type { CodeMetaBasic } from '@kitschpatrol/codemeta'
 import { generate } from '@kitschpatrol/codemeta'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
-export type CodemetaData = CodeMeta
+export type CodeMetaData = CodeMetaBasic
 
 export const codemetaSource: MetadataSource<'codemeta'> = {
 	async extract(context: SourceContext) {
 		log.debug('Extracting codemeta...')
 		return generate(context.path, {
+			basic: true,
 			enrich: true,
 			recursive: false,
 		})

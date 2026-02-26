@@ -15,7 +15,7 @@
 
 <!-- short-description -->
 
-**Extract metadata from a code repository.**
+**Easily extract all kinds of metadata from a code repository.**
 
 <!-- /short-description -->
 
@@ -36,7 +36,7 @@ Key characteristics:
 
 ### Dependencies
 
-Metascope requires Node.js `>=20.19.0`. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+Metascope requires Node.js `>=22.17.0`. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
 Optional external tools:
 
@@ -63,6 +63,16 @@ npm install metascope
 npm install --global metascope
 ```
 
+If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their WASM.
+
+In your `pnpm-workspace.yaml`:
+
+```yaml
+ignoredBuiltDependencies:
+  - tree-sitter-python
+  - tree-sitter-ruby
+```
+
 ## Usage
 
 ### CLI
@@ -83,13 +93,13 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option               | Description                                                              | Type      |
-| -------------------- | ------------------------------------------------------------------------ | --------- |
+| Option               | Description                                                                   | Type      |
+| -------------------- | ----------------------------------------------------------------------------- | --------- |
 | `--template`<br>`-t` | Built-in template name (e.g., "summary") or path to a template file (.ts/.js) | `string`  |
-| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                  | `string`  |
-| `--verbose`          | Run with verbose logging                                                 | `boolean` |
-| `--help`<br>`-h`     | Show help                                                                | `boolean` |
-| `--version`<br>`-v`  | Show version number                                                      | `boolean` |
+| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                       | `string`  |
+| `--verbose`          | Run with verbose logging                                                      | `boolean` |
+| `--help`<br>`-h`     | Show help                                                                     | `boolean` |
+| `--version`<br>`-v`  | Show version number                                                           | `boolean` |
 
 <!-- /cli-help -->
 
@@ -236,7 +246,7 @@ Metascope extracts data from eight sources. Each source independently checks its
 
 ### codemeta
 
-Extracts package metadata from `package.json` (and other supported manifest files) via the [`@kitschpatrol/codemeta`](https://github.com/kitschpatrol/codemeta) library, normalized to the [CodeMeta](https://codemeta.github.io) standard.
+Extracts package metadata from `package.json` (and other supported manifest files) via the [`@kitschpatrol/codemeta`](https://github.com/kitschpatrol/codemeta) library, mapped to the [CodeMeta](https://codemeta.github.io) standard, and then normalized and simplified into a consistent JSON structure.
 
 Always available. Extracted first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
 
@@ -382,7 +392,7 @@ Available when the project contains a `package.json`, `pyproject.toml`, `go.mod`
 
 | Field      | Type               | Description                                                    |
 | ---------- | ------------------ | -------------------------------------------------------------- |
-| `libyears` | `number`           | Total years behind across all outdated packages                |
+| `libYears` | `number`           | Total years behind across all outdated packages                |
 | `major`    | `UpdatesPackage[]` | Dependencies with major version bumps (or non-semver versions) |
 | `minor`    | `UpdatesPackage[]` | Dependencies with minor version bumps                          |
 | `patch`    | `UpdatesPackage[]` | Dependencies with patch version bumps                          |

@@ -4,13 +4,11 @@ import { defineTemplate } from '../src/lib/types'
 
 const mockContext: MetadataContext = {
 	codemeta: {
-		'@context': 'https://w3id.org/codemeta/3.1',
-		'@type': 'SoftwareSourceCode',
 		author: [
 			{
-				'@type': 'Person' as const,
 				familyName: 'Doe',
 				givenName: 'John',
+				type: 'Person' as const,
 			},
 		],
 		description: 'A test package',

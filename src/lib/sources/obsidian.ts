@@ -33,6 +33,7 @@ function getPluginId(context: SourceContext): string | undefined {
 	const name = context.codemeta?.name
 	if (!name) return undefined
 	if (Array.isArray(name)) {
+		// eslint-disable-next-line ts/no-unsafe-assignment
 		const first = name[0]
 		return typeof first === 'string' ? first : undefined
 	}
