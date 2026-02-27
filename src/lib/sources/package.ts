@@ -10,7 +10,7 @@ import { log } from '../log'
 // Compelling alternative, but prefer strong normalization
 // https://github.com/unjs/pkg-types
 
-export type PackageData = NormalizedPackageJson
+export type PackageData = Partial<NormalizedPackageJson>
 
 export const packageSource: MetadataSource<'package'> = {
 	async extract(context: SourceContext): Promise<PackageData> {

@@ -167,11 +167,9 @@ export async function getMetadata<T>(
 		metascope: {},
 		npm: {},
 		obsidian: {},
-		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
-		package: {} as MetadataContext['package'],
+		package: {},
 		pypi: {},
-		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
-		pyproject: {} as MetadataContext['pyproject'],
+		pyproject: {},
 		updates: {},
 	}
 

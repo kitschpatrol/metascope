@@ -47,9 +47,9 @@ const mockContext: MetadataContext = {
 		name: 'test-package',
 		readme: '',
 		version: '1.2.3',
-	} satisfies MetadataContext['package'],
+	},
 	pypi: {},
-	pyproject: {} satisfies MetadataContext['pyproject'],
+	pyproject: {},
 	updates: {},
 }
 
