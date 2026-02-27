@@ -1,7 +1,10 @@
 import type { CodeMetaBasic } from '@kitschpatrol/codemeta'
-import { generate } from '@kitschpatrol/codemeta'
+import { generate, setLogger } from '@kitschpatrol/codemeta'
+import { getChildLogger } from 'lognow'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
+
+setLogger(getChildLogger(log, 'codemeta'))
 
 export type CodeMetaData = CodeMetaBasic
 

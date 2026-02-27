@@ -1,3 +1,5 @@
+import { access } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
@@ -90,6 +92,12 @@ export const npmSource: MetadataSource<'npm'> = {
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
+		try {
+			await access(resolve(context.path, 'package.json'))
+		} catch {
+			return false
+		}
+
 		const name = getPackageName(context)
 		if (!name) return false
 

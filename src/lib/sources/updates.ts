@@ -134,6 +134,8 @@ export const updatesSource: MetadataSource<'updates'> = {
 		for (const mode of Object.values(parsed.results)) {
 			for (const depGroup of Object.values(mode)) {
 				for (const [name, dep] of Object.entries(depGroup)) {
+					if (name === '@types/node') continue
+
 					if (dep.age) {
 						libYears += parseAgeToYears(dep.age)
 					}

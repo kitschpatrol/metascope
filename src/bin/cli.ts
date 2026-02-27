@@ -3,9 +3,11 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { bin, version } from '../../package.json'
-import { createLogger } from 'lognow'
+import { createLogger, getChildLogger } from 'lognow'
 import { getMetadata, setLogger, templates } from '../lib'
 import type { Template } from '../lib'
+import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
+import { setLogger as setLoggerCodeMeta } from '@kitschpatrol/codemeta'
 
 const cliCommandName = Object.keys(bin).at(0)!
 const yargsInstance = yargs(hideBin(process.argv))
@@ -35,10 +37,16 @@ await yargsInstance
 				.option('verbose', {
 					description: 'Run with verbose logging',
 					type: 'boolean',
+					default: false,
 				}),
 		async (argv) => {
-			const log = createLogger({ verbose: argv.verbose ?? false })
+			const log = createLogger({
+				verbose: argv.verbose ?? false,
+				logToConsole: { showTime: false },
+			})
 			setLogger(log)
+			setLoggerReadPyproject(getChildLogger(log, 'read-pyproject'))
+			setLoggerCodeMeta(getChildLogger(log, 'codemeta'))
 
 			log.debug('Starting metadata extraction...')
 
@@ -84,7 +92,7 @@ await yargsInstance
 					? JSON.stringify(result, undefined, 2)
 					: JSON.stringify(result)
 
-				process.stdout.write(json + '\n')
+				// process.stdout.write(json + '\n')
 			} catch (error) {
 				log.error(
 					`Metadata extraction failed: ${error instanceof Error ? error.message : String(error)}`,

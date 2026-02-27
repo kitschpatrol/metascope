@@ -18,6 +18,7 @@ const mockContext: MetadataContext = {
 	git: {
 		branchCurrent: 'main',
 		commitCount: 42,
+		config: {},
 		isClean: true,
 		isDirty: false,
 	},
@@ -40,6 +41,14 @@ const mockContext: MetadataContext = {
 		downloadsWeekly: 1000,
 	},
 	obsidian: {},
+	package: {
+		// eslint-disable-next-line ts/naming-convention
+		_id: 'test-package@1.2.3',
+		name: 'test-package',
+		readme: '',
+		version: '1.2.3',
+	} satisfies MetadataContext['package'],
+	pyproject: {} satisfies MetadataContext['pyproject'],
 	updates: {},
 }
 

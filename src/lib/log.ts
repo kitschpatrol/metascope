@@ -4,7 +4,12 @@ import { createLogger, injectionHelper } from 'lognow'
 /**
  * The default logger instance for the library.
  */
-export let log = createLogger({ verbose: false })
+export let log = createLogger({
+	logToConsole: {
+		showTime: false,
+	},
+	verbose: false,
+})
 
 /**
  * Set the logger instance for the module.

@@ -17,6 +17,8 @@ import { locSource } from './sources/loc'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
+import { packageSource } from './sources/package'
+import { pyprojectSource } from './sources/pyproject'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
 
@@ -34,6 +36,8 @@ const sources: MetadataSource[] = [
 	metascopeSource,
 	npmSource,
 	obsidianSource,
+	packageSource,
+	pyprojectSource,
 	updatesSource,
 ]
 
@@ -101,11 +105,8 @@ export async function getMetadata<T>(
 	// Phase 1: Always extract codemeta first (provides discovery hints)
 	log.debug('Phase 1: Extracting codemeta for discovery hints...')
 	const codemetaContext: SourceContext = { credentials, path: absolutePath }
-	// Fallback empty codemeta if source fails; required fields are provided as empty defaults
-	let codemetaData: MetadataContext['codemeta'] = {
-		'@context': 'https://w3id.org/codemeta/3.1',
-		'@type': 'SoftwareSourceCode',
-	}
+	// Fallback empty codemeta if source fails
+	let codemetaData: MetadataContext['codemeta'] = {}
 	try {
 		codemetaData = await codemetaSource.extract(codemetaContext)
 	} catch (error) {
@@ -164,6 +165,10 @@ export async function getMetadata<T>(
 		metascope: {},
 		npm: {},
 		obsidian: {},
+		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
+		package: {} as MetadataContext['package'],
+		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
+		pyproject: {} as MetadataContext['pyproject'],
 		updates: {},
 	}
 

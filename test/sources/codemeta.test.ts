@@ -16,7 +16,7 @@ describe('codemeta source', () => {
 	it('should fetch metadata from package.json', async () => {
 		const result = await codemetaSource.extract(context)
 		expect(result.name).toBe('metascope')
-		expect(result['@type']).toBe('SoftwareSourceCode')
+		expect(result.description).toBeDefined()
 	})
 
 	it('should include author info', async () => {

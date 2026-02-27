@@ -32,6 +32,15 @@ importers:
       package-json:
         specifier: ^10.0.1
         version: 10.0.1
+      pkg-types:
+        specifier: ^2.3.0
+        version: 2.3.0
+      read-pkg:
+        specifier: ^10.1.0
+        version: 10.1.0
+      read-pyproject:
+        specifier: link:../read-pyproject
+        version: link:../read-pyproject
       semver:
         specifier: ^7.7.4
         version: 7.7.4

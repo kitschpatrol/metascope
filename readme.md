@@ -27,10 +27,17 @@ A template system lets you define exactly which fields to include and how to sha
 
 Key characteristics:
 
-- **Graceful degradation.** Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
-- **Parallel extraction.** After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
-- **Typed templates.** The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
-- **CLI and library.** Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
+- **Graceful degradation**  
+  Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
+
+- **Parallel extraction**  
+  After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
+
+- **Typed templates**  
+  The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
+
+- **CLI and library**  
+  Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
 
 ## Getting started
 
