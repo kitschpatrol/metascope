@@ -25,6 +25,7 @@ describe('pypi source', () => {
 		expect(result.versionLatest).toBeDefined()
 		expect(typeof result.versionLatest).toBe('string')
 		expect(result.releaseCount).toBeGreaterThan(0)
+		expect(result.downloads180Days).toBeGreaterThanOrEqual(0)
 		expect(result.downloadsDaily).toBeGreaterThanOrEqual(0)
 		expect(result.downloadsWeekly).toBeGreaterThanOrEqual(0)
 		expect(result.downloadsMonthly).toBeGreaterThanOrEqual(0)

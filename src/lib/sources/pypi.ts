@@ -7,6 +7,7 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type PypiData = {
+	downloads180Days?: number
 	downloadsDaily?: number
 	downloadsMonthly?: number
 	downloadsWeekly?: number
@@ -33,12 +34,21 @@ const pypiResponseSchema = z.object({
 	),
 })
 
-const pypistatsResponseSchema = z.object({
+const pypistatsRecentSchema = z.object({
 	data: z.object({
 		last_day: z.number(),
 		last_month: z.number(),
 		last_week: z.number(),
 	}),
+})
+
+const pypistatsOverallSchema = z.object({
+	data: z.array(
+		z.object({
+			category: z.string(),
+			downloads: z.number(),
+		}),
+	),
 })
 
 function getPackageName(context: SourceContext): string | undefined {
@@ -59,7 +69,7 @@ export const pypiSource: MetadataSource<'pypi'> = {
 		const name = getPackageName(context)
 		if (!name) return {}
 
-		const [pypiResult, pypistatsResult] = await Promise.all([
+		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
 			fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
 				.then(async (response) => {
 					if (!response.ok) return
@@ -69,7 +79,13 @@ export const pypiSource: MetadataSource<'pypi'> = {
 			fetch(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`)
 				.then(async (response) => {
 					if (!response.ok) return
-					return pypistatsResponseSchema.parse(await response.json())
+					return pypistatsRecentSchema.parse(await response.json())
+				})
+				.catch((): undefined => undefined),
+			fetch(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`)
+				.then(async (response) => {
+					if (!response.ok) return
+					return pypistatsOverallSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
 		])
@@ -97,10 +113,17 @@ export const pypiSource: MetadataSource<'pypi'> = {
 			}
 		}
 
-		if (pypistatsResult) {
-			data.downloadsDaily = pypistatsResult.data.last_day
-			data.downloadsMonthly = pypistatsResult.data.last_month
-			data.downloadsWeekly = pypistatsResult.data.last_week
+		if (pypistatsRecentResult) {
+			data.downloadsDaily = pypistatsRecentResult.data.last_day
+			data.downloadsMonthly = pypistatsRecentResult.data.last_month
+			data.downloadsWeekly = pypistatsRecentResult.data.last_week
+		}
+
+		if (pypistatsOverallResult) {
+			data.downloads180Days = pypistatsOverallResult.data.reduce(
+				(sum, entry) => sum + entry.downloads,
+				0,
+			)
 		}
 
 		return data
