@@ -14,6 +14,7 @@ export type PypiData = {
 	publishDateLatest?: string
 	releaseCount?: number
 	sizeBytes?: number
+	url?: string
 	versionLatest?: string
 	yanked?: boolean
 	yankedReason?: string
@@ -102,6 +103,7 @@ export const pypiSource: MetadataSource<'pypi'> = {
 			publishDateLatest: latestUploadTime,
 			releaseCount: Object.keys(pypiResult.releases).length,
 			sizeBytes,
+			url: `https://pypi.org/project/${encodeURIComponent(name)}/`,
 			versionLatest: pypiResult.info.version,
 		}
 

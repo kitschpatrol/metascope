@@ -17,6 +17,7 @@ export type {
 	MetascopeData,
 	NpmData,
 	ObsidianData,
+	ObsidianManifest,
 	PackageData,
 	PypiData,
 	PyprojectData,

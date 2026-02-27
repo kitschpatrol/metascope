@@ -16,6 +16,7 @@ export type NpmData = {
 	hasTypes?: boolean
 	publishDateLatest?: string
 	unpackedSizeBytes?: number
+	url?: string
 	versionLatest?: string
 }
 
@@ -88,6 +89,7 @@ export const npmSource: MetadataSource<'npm'> = {
 			publishDateLatest: time?.modified,
 			unpackedSizeBytes:
 				typeof distribution?.unpackedSize === 'number' ? distribution.unpackedSize : undefined,
+			url: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
 			versionLatest: metadata.version,
 		}
 	},
