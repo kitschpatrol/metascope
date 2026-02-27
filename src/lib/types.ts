@@ -6,6 +6,7 @@ export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData } from './sources/obsidian'
 export type { PackageData } from './sources/package'
+export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
@@ -17,6 +18,7 @@ import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
 import type { PackageData } from './sources/package'
+import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject'
 import type { UpdatesData } from './sources/updates'
 
@@ -35,6 +37,7 @@ export type MetadataContext = {
 	npm: NpmData
 	obsidian: ObsidianData
 	package: PackageData
+	pypi: PypiData
 	pyproject: PyprojectData
 	updates: UpdatesData
 }

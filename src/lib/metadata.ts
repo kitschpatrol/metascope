@@ -18,6 +18,7 @@ import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
 import { packageSource } from './sources/package'
+import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
@@ -37,6 +38,7 @@ const sources: MetadataSource[] = [
 	npmSource,
 	obsidianSource,
 	packageSource,
+	pypiSource,
 	pyprojectSource,
 	updatesSource,
 ]
@@ -167,6 +169,7 @@ export async function getMetadata<T>(
 		obsidian: {},
 		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
 		package: {} as MetadataContext['package'],
+		pypi: {},
 		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Fallback empty object; overwritten when source extracts successfully
 		pyproject: {} as MetadataContext['pyproject'],
 		updates: {},

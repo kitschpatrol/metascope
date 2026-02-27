@@ -92,7 +92,7 @@ await yargsInstance
 					? JSON.stringify(result, undefined, 2)
 					: JSON.stringify(result)
 
-				// process.stdout.write(json + '\n')
+				process.stdout.write(json + '\n')
 			} catch (error) {
 				log.error(
 					`Metadata extraction failed: ${error instanceof Error ? error.message : String(error)}`,

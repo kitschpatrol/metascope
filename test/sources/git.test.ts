@@ -33,7 +33,7 @@ describe('git source', () => {
 		expect(result.isDirty).toBe(!result.isClean)
 		expect(result.tagCount).toBeGreaterThanOrEqual(0)
 		expect(result.config).toBeDefined()
-		expect(typeof result.config?.remote?.origin?.url).toBe('string')
+		expect(typeof result.config?.remote?.origin.url).toBe('string')
 	})
 
 	it('should return a valid commitDateLast', async () => {
