@@ -13,7 +13,10 @@ export type PyprojectData = ReadPyprojectData
 export const pyprojectSource: MetadataSource<'pyproject'> = {
 	async extract(context: SourceContext): Promise<PyprojectData> {
 		log.debug('Extracting pyproject.toml metadata...')
-		return readPyproject(context.path, 'strip')
+		return readPyproject(context.path, {
+			camelCase: true,
+			unknownKeyPolicy: 'strip',
+		})
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

@@ -39,8 +39,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       read-pyproject:
-        specifier: link:../read-pyproject
-        version: link:../read-pyproject
+        specifier: ^0.2.0
+        version: 0.2.0
       semver:
         specifier: ^7.7.4
         version: 7.7.4
@@ -4475,6 +4475,10 @@ packages:
     resolution: {integrity: sha512-I8g2lArQiP78ll51UeMZojewtYgIRCKCWqZEgOO8c/uefTI+XDXvCSXu3+YNUaTNvZzobrL5+SqHjBrByRRTdg==}
     engines: {node: '>=20'}
 
+  read-pyproject@0.2.0:
+    resolution: {integrity: sha512-K0jd37yWT3Kk9R/A7+R/yJr3FlcWJgsv6qEzVIjTkxLj1d0NGJm2cJzdwKoUcwxxDDnGkAV0xm1yZdX1BE7ohg==}
+    engines: {node: '>=20.17.0'}
+
   readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
@@ -4865,6 +4869,9 @@ packages:
 
   spdx-expression-parse@4.0.0:
     resolution: {integrity: sha512-Clya5JIij/7C6bRR22+tnGXbc4VKlibKSVj2iHvVeX5iMW7s1SIQlqu699JkODJJIhh/pUu8L0/VLh8xflD+LQ==}
+
+  spdx-expression-validate@2.0.0:
+    resolution: {integrity: sha512-b3wydZLM+Tc6CFvaRDBOF9d76oGIHNCLYFeHbftFXUWjnfZWganmDmvtM5sm1cRwJc/VDBMLyGGrsLFd1vOxbg==}
 
   spdx-license-ids@3.0.23:
     resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
@@ -10831,6 +10838,15 @@ snapshots:
       type-fest: 5.4.4
       unicorn-magic: 0.4.0
 
+  read-pyproject@0.2.0:
+    dependencies:
+      lognow: 0.5.2
+      smol-toml: 1.6.0
+      spdx-correct: 3.2.0
+      spdx-expression-validate: 2.0.0
+      type-fest: 5.4.4
+      zod: 4.3.6
+
   readable-stream@3.6.2:
     dependencies:
       inherits: 2.0.4
@@ -11553,6 +11569,10 @@ snapshots:
     dependencies:
       spdx-exceptions: 2.5.0
       spdx-license-ids: 3.0.23
+
+  spdx-expression-validate@2.0.0:
+    dependencies:
+      spdx-expression-parse: 3.0.1
 
   spdx-license-ids@3.0.23: {}
 
