@@ -26,7 +26,12 @@ describe('pypi source', () => {
 		expect(typeof result.versionLatest).toBe('string')
 		expect(result.releaseCount).toBeGreaterThan(0)
 		// Download fields depend on pypistats API which may be rate-limited
-		const downloadFields = ['downloads180Days', 'downloadsDaily', 'downloadsWeekly', 'downloadsMonthly'] as const
+		const downloadFields = [
+			'downloads180Days',
+			'downloadsDaily',
+			'downloadsWeekly',
+			'downloadsMonthly',
+		] as const
 		for (const field of downloadFields) {
 			expect(result[field] === undefined || typeof result[field] === 'number').toBe(true)
 		}

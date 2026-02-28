@@ -23,6 +23,7 @@ export type {
 	PyprojectData,
 	SourceName,
 	Template,
+	TemplateData,
 	UpdatesData,
 	UpdatesPackage,
 } from './types'

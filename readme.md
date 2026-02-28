@@ -27,16 +27,16 @@ A template system lets you define exactly which fields to include and how to sha
 
 Key characteristics:
 
-- **Graceful degradation**  
+- **Graceful degradation**\
   Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
 
-- **Parallel extraction**  
+- **Parallel extraction**\
   After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
 
-- **Typed templates**  
+- **Typed templates**\
   The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
 
-- **CLI and library**  
+- **CLI and library**\
   Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
 
 ## Getting started
@@ -104,6 +104,8 @@ metascope [path]
 | -------------------- | ----------------------------------------------------------------------------- | --------- |
 | `--template`<br>`-t` | Built-in template name (e.g., "summary") or path to a template file (.ts/.js) | `string`  |
 | `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                       | `string`  |
+| `--author-name`      | Optional author name(s) for ownership checks in templates                     | `array`   |
+| `--github-account`   | Optional GitHub account name(s) for ownership checks in templates             | `array`   |
 | `--verbose`          | Run with verbose logging                                                      | `boolean` |
 | `--help`<br>`-h`     | Show help                                                                     | `boolean` |
 | `--version`<br>`-v`  | Show version number                                                           | `boolean` |
@@ -132,6 +134,20 @@ metascope /path/to/project
 
 ```sh
 metascope --template summary
+```
+
+##### Pass template data for ownership checks
+
+Some preset templates return information based on the (relative) ownership status of a repo. This requires additional context data, which can be passed in via additional CLI flags:
+
+```sh
+metascope --template project --author-name "Jane Doe" --github-account janedoe
+```
+
+Multiple values are supported:
+
+```sh
+metascope --template project --author-name "Jane Doe" "John Doe" --github-account janedoe johndoe
 ```
 
 ##### Use a custom template file
@@ -196,10 +212,12 @@ All `undefined` values and empty source objects are deep-stripped from the outpu
 #### `defineTemplate`
 
 ```ts
-function defineTemplate<T>(fn: (context: MetadataContext) => T): Template<T>
+function defineTemplate<T>(
+  fn: (context: MetadataContext, templateData: TemplateData) => T,
+): Template<T>
 ```
 
-An identity wrapper that provides autocomplete and type inference when authoring templates.
+An identity wrapper that provides autocomplete and type inference when authoring templates. The optional second `templateData` argument provides user-supplied values (like author names or GitHub accounts) for parameterized ownership checks. Templates that don't need it can simply ignore the argument. Template developers can pass additional values as needed.
 
 #### Examples
 
@@ -236,6 +254,23 @@ import { getMetadata } from 'metascope'
 const metadata = await getMetadata({
   credentials: { githubToken: 'ghp_xxxxxxxxxxxx' },
   path: '.',
+})
+```
+
+##### Pass template data
+
+```ts
+import { defineTemplate, getMetadata } from 'metascope'
+
+const template = defineTemplate(({ codemeta }, { authorName }) => ({
+  isAuthoredByMe: codemeta.author?.some((a) => a.name === authorName),
+  name: codemeta.name,
+}))
+
+const result = await getMetadata({
+  path: '.',
+  template,
+  templateData: { authorName: 'Jane Doe' },
 })
 ```
 
@@ -417,7 +452,7 @@ Each `UpdatesPackage`:
 
 ## Templates
 
-Templates are pure functions that receive the full `MetadataContext` and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
+Templates are pure functions that receive the full `MetadataContext` and an optional `TemplateData` object, and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
 
 ### Defining a template
 
@@ -436,6 +471,22 @@ export default defineTemplate(({ codemeta, git, github, loc }) => ({
   version: codemeta.version,
 }))
 ```
+
+### Template data
+
+The second argument to a template function is a `TemplateData` object with optional `authorName` and `githubAccount` fields. This lets templates parameterize ownership checks instead of hardcoding author names:
+
+```ts
+import { defineTemplate, isAuthoredBy, isOnGithubAccountOf } from 'metascope'
+
+export default defineTemplate(({ codemeta }, { authorName, githubAccount }) => ({
+  isMyProject: isAuthoredBy(codemeta, authorName),
+  isOnMyGitHub: isOnGithubAccountOf(codemeta, githubAccount),
+  name: codemeta.name,
+}))
+```
+
+Values are provided via the `--author-name` and `--github-account` CLI flags, or via the `templateData` option in the API. Templates that don't need this data can simply omit the second argument.
 
 ### Using a template via the CLI
 

@@ -184,7 +184,7 @@ export async function getMetadata<T>(
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
 		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Template return type T is guaranteed by the overload signatures
-		return (stripUndefined(template(context)) ?? {}) as unknown as T
+		return (stripUndefined(template(context, options.templateData ?? {})) ?? {}) as unknown as T
 	}
 
 	// Strip undefined values and empty source objects from raw output

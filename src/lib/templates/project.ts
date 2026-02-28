@@ -3,6 +3,7 @@ import {
 	basicLicense,
 	getStatus,
 	isAuthoredBy,
+	isOnGithubAccountOf,
 	toLocalUrl,
 	usesPnpm,
 	usesSharedConfig,
@@ -12,7 +13,10 @@ import {
  * Legacy structure used in AllWork desktop app
  */
 export const project = defineTemplate(
-	({ codemeta, git, github, metascope, npm, packageJson, updates }) => ({
+	(
+		{ codemeta, git, github, metascope, npm, packageJson, updates },
+		{ authorName, githubAccount },
+	) => ({
 		description: codemeta.description,
 		firstCommitDate: git.commitDateFirst,
 		gitHubLink: github.repoUrl,
@@ -21,8 +25,8 @@ export const project = defineTemplate(
 		gitIsDirty: git.isDirty,
 		gitRemoteCount: git.remoteCount,
 		homepage: github.homepage ?? codemeta.url ?? github.repoUrl,
-		isAuthoredByMe: isAuthoredBy(codemeta, ['Eric Mika']),
-		isOnMyGitHub: packageJson.repository?.url.toLowerCase().includes('kitschpatrol') ?? false,
+		isAuthoredByMe: isAuthoredBy(codemeta, authorName),
+		isOnMyGitHub: isOnGithubAccountOf(codemeta, githubAccount),
 		isOnNpm: npm.url !== undefined,
 		isPublic: !(github.isPrivate ?? false),
 		isRemoteAhead: git.isRemoteAhead,
@@ -38,7 +42,7 @@ export const project = defineTemplate(
 		semverUpdateList: undefined, // TODO
 		tags: codemeta.keywords,
 		title: codemeta.name,
-		type: getStatus(codemeta, ['Eric Mika'], ['kitschpatrol']),
+		type: getStatus(codemeta, authorName, githubAccount),
 		usesPnpm: usesPnpm(packageJson),
 		usesSharedConfig: usesSharedConfig(codemeta),
 		version: codemeta.version,

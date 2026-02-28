@@ -5,7 +5,7 @@ import { hideBin } from 'yargs/helpers'
 import { bin, version } from '../../package.json'
 import { createLogger, getChildLogger } from 'lognow'
 import { getMetadata, setLogger, templates } from '../lib'
-import type { Template } from '../lib'
+import type { Template, TemplateData } from '../lib'
 import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
 import { setLogger as setLoggerCodeMeta } from '@kitschpatrol/codemeta'
 
@@ -34,10 +34,19 @@ await yargsInstance
 					description: 'GitHub API token (or set $GITHUB_TOKEN)',
 					type: 'string',
 				})
+				.option('author-name', {
+					description: 'Optional author name(s) for ownership checks in templates',
+					type: 'string',
+					array: true,
+				})
+				.option('github-account', {
+					description: 'Optional GitHub account name(s) for ownership checks in templates',
+					type: 'string',
+					array: true,
+				})
 				.option('verbose', {
 					description: 'Run with verbose logging',
 					type: 'boolean',
-					default: false,
 				}),
 		async (argv) => {
 			const log = createLogger({
@@ -83,9 +92,13 @@ await yargsInstance
 
 			try {
 				const credentials = argv.githubToken ? { githubToken: argv.githubToken } : undefined
+				const templateData: TemplateData = {
+					...(argv.authorName ? { authorName: argv.authorName } : {}),
+					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
+				}
 				const result = template
-					? await getMetadata({ credentials, path: argv.path, template })
-					: await getMetadata({ credentials, path: argv.path })
+					? await getMetadata({ credentials, path: argv.path, template, templateData })
+					: await getMetadata({ credentials, path: argv.path, templateData })
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

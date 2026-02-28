@@ -69,4 +69,27 @@ describe('getMetadata', () => {
 		// Built-in template should return a shaped object
 		expect(result).toHaveProperty('name')
 	})
+
+	it('should pass templateData through to template function', async () => {
+		const template = defineTemplate((_context, templateData) => ({
+			account: templateData.githubAccount,
+			author: templateData.authorName,
+		}))
+
+		const result = await getMetadata({
+			path: '.',
+			template,
+			templateData: { authorName: 'Test Author', githubAccount: 'testAccount' },
+		})
+		expect(result).toEqual({ account: 'testAccount', author: 'Test Author' })
+	})
+
+	it('should default templateData to empty object when not provided', async () => {
+		const template = defineTemplate((_context, templateData) => ({
+			hasData: Object.keys(templateData).length > 0,
+		}))
+
+		const result = await getMetadata({ path: '.', template })
+		expect(result).toEqual({ hasData: false })
+	})
 })

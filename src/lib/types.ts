@@ -50,9 +50,20 @@ export type SourceName = keyof MetadataContext
 // ── Template ───────────────────────────────────────────
 
 /**
- * A template function that transforms MetadataContext into a custom shape.
+ * User-supplied data passed to templates for parameterized ownership checks.
+ * All fields are optional; templates that don't need them can ignore the argument.
  */
-export type Template<T> = (context: MetadataContext) => T
+export type TemplateData = {
+	[key: string]: unknown
+	authorName?: string | string[]
+	githubAccount?: string | string[]
+}
+
+/**
+ * A template function that transforms MetadataContext into a custom shape.
+ * The optional second argument provides user-supplied template data.
+ */
+export type Template<T> = (context: MetadataContext, templateData: TemplateData) => T
 
 /**
  * Identity wrapper for type inference in config files.
@@ -92,6 +103,8 @@ export type GetMetadataOptions = {
 	path: string
 	/** Built-in template name (e.g., "summary") or omit for full output. */
 	template?: string
+	/** User-supplied data passed to templates. */
+	templateData?: TemplateData
 }
 
 /**
@@ -104,4 +117,6 @@ export type GetMetadataTemplateOptions<T> = {
 	path: string
 	/** Template function that transforms MetadataContext into a custom shape. */
 	template: Template<T>
+	/** User-supplied data passed to templates. */
+	templateData?: TemplateData
 }

@@ -168,7 +168,7 @@ export function isAuthoredBy(
 /**
  * True if project is on a specific github account(s)
  */
-function isOnGithubAccountOf(
+export function isOnGithubAccountOf(
 	codemeta?: CodeMetaBasic,
 	githubUserName?: string | string[],
 ): boolean | undefined {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { MetadataContext } from '../src/lib/types'
+import type { MetadataContext, TemplateData } from '../src/lib/types'
 import { defineTemplate } from '../src/lib/types'
 
 const mockContext: MetadataContext = {
@@ -67,7 +67,7 @@ describe('defineTemplate', () => {
 			stars: github.stargazerCount,
 		}))
 
-		const result = template(mockContext)
+		const result = template(mockContext, {})
 		expect(result).toEqual({
 			name: 'test-package',
 			stars: 100,
@@ -86,7 +86,7 @@ describe('defineTemplate', () => {
 			}
 		})
 
-		const result = template(mockContext)
+		const result = template(mockContext, {})
 		expect(result).toEqual({ author: 'John Doe' })
 	})
 
@@ -95,7 +95,7 @@ describe('defineTemplate', () => {
 			popularity: (github.stargazerCount ?? 0) + (github.forkCount ?? 0),
 		}))
 
-		const result = template(mockContext)
+		const result = template(mockContext, {})
 		expect(result).toEqual({ popularity: 110 })
 	})
 
@@ -105,9 +105,40 @@ describe('defineTemplate', () => {
 			homepage: github.homepage,
 		}))
 
-		const result = template(mockContext)
+		const result = template(mockContext, {})
 		// Fields not set in mockContext are undefined
 		expect(result.hasWiki).toBeUndefined()
 		expect(result.homepage).toBeUndefined()
+	})
+
+	it('should pass templateData to template function', () => {
+		const template = defineTemplate((_context, templateData) => ({
+			account: templateData.githubAccount,
+			author: templateData.authorName,
+		}))
+
+		const data: TemplateData = { authorName: 'Jane Doe', githubAccount: 'fooBar' }
+		const result = template(mockContext, data)
+		expect(result).toEqual({ account: 'fooBar', author: 'Jane Doe' })
+	})
+
+	it('should work with empty templateData', () => {
+		const template = defineTemplate((_context, templateData) => ({
+			author: templateData.authorName,
+		}))
+
+		const result = template(mockContext, {})
+		expect(result.author).toBeUndefined()
+	})
+
+	it('should support single-arg templates (legacy compat)', () => {
+		// Templates that only use the first arg still work since
+		// JS allows calling a function with more args than declared
+		// eslint-disable-next-line unicorn/consistent-function-scoping
+		const singleArgTemplate = (context: MetadataContext) => ({ name: context.codemeta.name })
+		const template = defineTemplate(singleArgTemplate)
+
+		const result = template(mockContext, {})
+		expect(result).toEqual({ name: 'test-package' })
 	})
 })
