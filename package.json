@@ -46,7 +46,7 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@kitschpatrol/codemeta": "^0.3.2",
+		"@kitschpatrol/codemeta": "^0.4.0",
 		"@types/node": "~22.17.2",
 		"@types/yargs": "^17.0.35",
 		"git-url-parse": "^16.1.0",

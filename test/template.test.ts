@@ -41,7 +41,7 @@ const mockContext: MetadataContext = {
 		downloadsWeekly: 1000,
 	},
 	obsidian: {},
-	package: {
+	packageJson: {
 		// eslint-disable-next-line ts/naming-convention
 		_id: 'test-package@1.2.3',
 		name: 'test-package',
@@ -49,7 +49,7 @@ const mockContext: MetadataContext = {
 		version: '1.2.3',
 	},
 	pypi: {},
-	pyproject: {},
+	pyprojectToml: {},
 	updates: {},
 }
 

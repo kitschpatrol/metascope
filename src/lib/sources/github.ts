@@ -268,6 +268,7 @@ function extractLanguages(data: GitHubRepoData): Record<string, number> {
 	return languages
 }
 
+// eslint-disable-next-line complexity
 function mapRepoData(
 	data: GitHubRepoData,
 	extras: { commitsBehindUpstream?: number; hasPages: boolean },
@@ -288,7 +289,7 @@ function mapRepoData(
 		hasLfs: detectLfs(data.gitattributes?.text ?? undefined),
 		hasPages: extras.hasPages,
 		hasWiki: data.hasWikiEnabled,
-		homepage: data.homepageUrl ?? undefined,
+		homepage: data.homepageUrl === '' ? undefined : (data.homepageUrl ?? undefined),
 		isArchived: data.isArchived,
 		isFork: data.isFork,
 		isPrivate: data.isPrivate,

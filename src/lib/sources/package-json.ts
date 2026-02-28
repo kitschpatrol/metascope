@@ -12,7 +12,7 @@ import { log } from '../log'
 
 export type PackageData = Partial<NormalizedPackageJson>
 
-export const packageSource: MetadataSource<'package'> = {
+export const packageSource: MetadataSource<'packageJson'> = {
 	async extract(context: SourceContext): Promise<PackageData> {
 		log.debug('Extracting package.json metadata...')
 		return readPackage({ cwd: context.path })
@@ -25,5 +25,5 @@ export const packageSource: MetadataSource<'package'> = {
 			return false
 		}
 	},
-	key: 'package',
+	key: 'packageJson',
 }

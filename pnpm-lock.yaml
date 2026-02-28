@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@kitschpatrol/codemeta':
-        specifier: ^0.3.2
-        version: 0.3.2
+        specifier: ^0.4.0
+        version: 0.4.0
       '@types/node':
         specifier: ~22.17.2
         version: 22.17.2
@@ -783,8 +783,8 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@kitschpatrol/codemeta@0.3.2':
-    resolution: {integrity: sha512-4DaH9ixlaR2GmkxzrP9eH40E8fK+JwXKayiEq9iIAam8ZKiIzrftfqw9fN7Mxgqna+zb4FhgfpnQl8nT9kQeag==}
+  '@kitschpatrol/codemeta@0.4.0':
+    resolution: {integrity: sha512-2M1NhF2K6QZLX0rcuuTVp9tjzPyP5tE3hxyKJq3kPk2dh23Rgy6c55liIz8LPGvsZ//erZMPqnDkC14KVh6MGg==}
     engines: {node: '>=22.17.0'}
     hasBin: true
 
@@ -5462,13 +5462,8 @@ packages:
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
 
-  web-tree-sitter@0.25.10:
-    resolution: {integrity: sha512-Y09sF44/13XvgVKgO2cNDw5rGk6s26MgoZPXLESvMXeefBf7i6/73eFurre0IsTW6E14Y0ArIzhUMmjoc7xyzA==}
-    peerDependencies:
-      '@types/emscripten': ^1.40.0
-    peerDependenciesMeta:
-      '@types/emscripten':
-        optional: true
+  web-tree-sitter@0.26.6:
+    resolution: {integrity: sha512-fSPR7VBW/fZQdUSp/bXTDLT+i/9dwtbnqgEBMzowrM4U3DzeCwDbY3MKo0584uQxID4m/1xpLflrlT/rLIRPew==}
 
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
@@ -6314,7 +6309,7 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@kitschpatrol/codemeta@0.3.2':
+  '@kitschpatrol/codemeta@0.4.0':
     dependencies:
       '@sindresorhus/is': 7.2.0
       es-toolkit: 1.44.0
@@ -6334,11 +6329,10 @@ snapshots:
       tree-sitter-ruby: 0.23.1
       try: 1.0.3
       unified: 11.0.5
-      web-tree-sitter: 0.25.10
+      web-tree-sitter: 0.26.6
       yaml: 2.8.2
       yargs: 18.0.0
     transitivePeerDependencies:
-      - '@types/emscripten'
       - supports-color
       - tree-sitter
 
@@ -12249,7 +12243,7 @@ snapshots:
 
   web-namespaces@2.0.1: {}
 
-  web-tree-sitter@0.25.10: {}
+  web-tree-sitter@0.26.6: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:

@@ -17,9 +17,9 @@ import { locSource } from './sources/loc'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
-import { packageSource } from './sources/package'
+import { packageSource } from './sources/package-json.js'
 import { pypiSource } from './sources/pypi'
-import { pyprojectSource } from './sources/pyproject'
+import { pyprojectSource } from './sources/pyproject-toml.js'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
 
@@ -167,9 +167,9 @@ export async function getMetadata<T>(
 		metascope: {},
 		npm: {},
 		obsidian: {},
-		package: {},
+		packageJson: {},
 		pypi: {},
-		pyproject: {},
+		pyprojectToml: {},
 		updates: {},
 	}
 

@@ -5,9 +5,9 @@ export type { LocData, LocLanguageEntry, LocLanguageStats } from './sources/loc'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
-export type { PackageData } from './sources/package'
+export type { PackageData } from './sources/package-json'
 export type { PypiData } from './sources/pypi'
-export type { PyprojectData } from './sources/pyproject'
+export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
 import type { CodeMetaData } from './sources/codemeta'
@@ -17,9 +17,9 @@ import type { LocData } from './sources/loc'
 import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
-import type { PackageData } from './sources/package'
+import type { PackageData } from './sources/package-json'
 import type { PypiData } from './sources/pypi'
-import type { PyprojectData } from './sources/pyproject'
+import type { PyprojectData } from './sources/pyproject-toml'
 import type { UpdatesData } from './sources/updates'
 
 // ── Aggregate Context ──────────────────────────────────
@@ -36,9 +36,9 @@ export type MetadataContext = {
 	metascope: MetascopeData
 	npm: NpmData
 	obsidian: ObsidianData
-	package: PackageData
+	packageJson: PackageData
 	pypi: PypiData
-	pyproject: PyprojectData
+	pyprojectToml: PyprojectData
 	updates: UpdatesData
 }
 

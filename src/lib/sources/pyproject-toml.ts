@@ -10,7 +10,7 @@ setLogger(getChildLogger(log, 'read-pyproject'))
 
 export type PyprojectData = ReadPyprojectData
 
-export const pyprojectSource: MetadataSource<'pyproject'> = {
+export const pyprojectSource: MetadataSource<'pyprojectToml'> = {
 	async extract(context: SourceContext): Promise<PyprojectData> {
 		log.debug('Extracting pyproject.toml metadata...')
 		return readPyproject(context.path, {
@@ -26,5 +26,5 @@ export const pyprojectSource: MetadataSource<'pyproject'> = {
 			return false
 		}
 	},
-	key: 'pyproject',
+	key: 'pyprojectToml',
 }

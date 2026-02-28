@@ -18,6 +18,9 @@ export type GitData = {
 	contributorCount?: number
 	isClean?: boolean
 	isDirty?: boolean
+	isRemoteAhead?: boolean
+	remoteCount?: number
+	remoteStatus?: Record<string, { ahead: number; behind: number }>
 	tagCount?: number
 	tagDateLatest?: string
 	tagNameLatest?: string
@@ -37,6 +40,7 @@ export const gitSource: MetadataSource<'git'> = {
 			commitDateFirst,
 			fileCountResult,
 			config,
+			remotes,
 		] = await Promise.all([
 			git.status(),
 			git.log(),
@@ -52,6 +56,7 @@ export const gitSource: MetadataSource<'git'> = {
 			}),
 			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean).length),
 			readGitConfig(context.path),
+			git.getRemotes(),
 		])
 
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
@@ -67,6 +72,29 @@ export const gitSource: MetadataSource<'git'> = {
 			}
 		}
 
+		// Compare HEAD against each remote's main/master branch
+		const remoteStatusEntries = await Promise.all(
+			remotes.map(async (remote) => {
+				for (const branch of ['main', 'master']) {
+					const ref = `${remote.name}/${branch}`
+					try {
+						const output = await git.raw(['rev-list', '--left-right', '--count', `HEAD...${ref}`])
+						const [ahead, behind] = output.trim().split('\t').map(Number)
+						return [remote.name, { ahead, behind }] as const
+					} catch {
+						// Branch doesn't exist on this remote
+					}
+				}
+			}),
+		)
+
+		const remoteStatus: Record<string, { ahead: number; behind: number }> = {}
+		for (const entry of remoteStatusEntries) {
+			if (entry) {
+				remoteStatus[entry[0]] = entry[1]
+			}
+		}
+
 		return {
 			branchCount: branchResult.all.length,
 			branchCurrent: branchResult.current,
@@ -77,6 +105,9 @@ export const gitSource: MetadataSource<'git'> = {
 			contributorCount: contributors.size,
 			isClean: statusResult.isClean(),
 			isDirty: !statusResult.isClean(),
+			isRemoteAhead: Object.values(remoteStatus).some((s) => s.behind > 0) || undefined,
+			remoteCount: remotes.length,
+			remoteStatus: Object.keys(remoteStatus).length > 0 ? remoteStatus : undefined,
 			tagCount: tagResult.all.length,
 			tagDateLatest,
 			tagNameLatest,
