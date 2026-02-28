@@ -23,9 +23,14 @@
 
 Metascope aggregates metadata from a local code repository into a single JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a unified view of the project's metadata.
 
-A template system lets you define exactly which fields to include and how to shape the output, useful for generating badges, populating dashboards, or feeding data into other tools.
+An (optional) template system lets you define exactly which fields to include and how to shape the output, useful for generating badges, populating dashboards, or feeding data into other tools.
 
-Key characteristics:
+Metascope is _not_ designed for perfectly normalized and consistent output across different project types (see [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta) for that), instead, it provides a maximalist and possibly duplicative assortment of project metadata from various sources.
+
+Highlights:
+
+- **A wide net**\
+  Metascope pulls project metadata from many available sources: `package.json`, `pyproject.toml`, NPM, PyPi, GitHub, git, and many more.
 
 - **Graceful degradation**\
   Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
@@ -34,7 +39,7 @@ Key characteristics:
   After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
 
 - **Typed templates**\
-  The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you defined.
+  The `defineTemplate()` helper provides full autocomplete on available fields. TypeScript infers the return type from your template function, so `getMetadata()` returns exactly the shape you need.
 
 - **CLI and library**\
   Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
@@ -43,12 +48,21 @@ Key characteristics:
 
 ### Dependencies
 
-Metascope requires Node.js `>=22.17.0`. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
 Optional external tools:
 
-- [**tokei**](https://github.com/XAMPPRocky/tokei) — Required for the `loc` (lines of code) source. Install via your package manager (e.g. `brew install tokei`). If not present, the `loc` source is simply skipped.
-- [**GitHub CLI**](https://cli.github.com) (`gh`) — Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`.
+- [tokei](https://github.com/XAMPPRocky/tokei)  
+  Required for the `loc` (lines of code) source. If not present, the `loc` source is simply skipped.
+
+- [GitHub CLI](https://cli.github.com) (`gh`)  
+  Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`.
+
+To install with [Homebrew](https://brew.sh/):
+
+```sh
+brew install tokei gh
+```
 
 ### Installation
 
