@@ -6,20 +6,30 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type GitHubData = {
+	archivedAt?: string
 	branchDefault?: string
+	codeOfConduct?: string
 	commitsBehindUpstream?: number
 	contributorCount?: number
 	createdAt?: string
 	description?: string
+	discussionCount?: number
 	diskUsageKb?: number
 	forkCount?: number
+	fundingLinks?: { platform: string; url: string }[]
+	hasContributing?: boolean
 	hasDiscussions?: boolean
+	hasIssues?: boolean
 	hasLfs?: boolean
 	hasPages?: boolean
+	hasSecurityPolicy?: boolean
+	hasSponsorships?: boolean
 	hasWiki?: boolean
 	homepage?: string
 	isArchived?: boolean
 	isFork?: boolean
+	isInOrganization?: boolean
+	isMirror?: boolean
 	isPrivate?: boolean
 	issueCountClosed?: number
 	issueCountOpen?: number
@@ -27,16 +37,28 @@ export type GitHubData = {
 	languagePrimary?: string
 	languages?: Record<string, number>
 	license?: string
+	licenseSpdxId?: string
 	ownerLogin?: string
 	pullRequestCountClosed?: number
 	pullRequestCountMerged?: number
 	pullRequestCountOpen?: number
+	pushedAt?: string
 	releaseCount?: number
 	releaseDateLatest?: string
 	releaseDownloadCount?: number
 	releaseVersionLatest?: string
 	repoName?: string
 	repoUrl?: string
+	settings?: {
+		allowAutoMerge?: boolean
+		allowForking?: boolean
+		allowUpdateBranch?: boolean
+		deleteBranchOnMerge?: boolean
+		mergeCommitAllowed?: boolean
+		rebaseMergeAllowed?: boolean
+		squashMergeAllowed?: boolean
+		webCommitSignoffRequired?: boolean
+	}
 	stargazerCount?: number
 	submoduleCount?: number
 	topics?: string[]
@@ -47,8 +69,13 @@ export type GitHubData = {
 
 const gitHubRepoSchema = z.object({
 	repository: z.object({
+		archivedAt: z.string().nullable(),
+		autoMergeAllowed: z.boolean(),
+		allowUpdateBranch: z.boolean(),
 		closedIssues: z.object({ totalCount: z.number() }),
 		closedPullRequests: z.object({ totalCount: z.number() }),
+		codeOfConduct: z.object({ name: z.string() }).nullable(),
+		contributingGuidelines: z.object({ body: z.string() }).nullable(),
 		contributorCount: z.number().optional(),
 		createdAt: z.string(),
 		defaultBranchRef: z
@@ -56,9 +83,13 @@ const gitHubRepoSchema = z.object({
 				name: z.string(),
 			})
 			.nullable(),
+		deleteBranchOnMerge: z.boolean(),
 		description: z.string().nullable(),
+		discussions: z.object({ totalCount: z.number() }),
 		diskUsage: z.number().nullable(),
 		forkCount: z.number(),
+		forkingAllowed: z.boolean(),
+		fundingLinks: z.array(z.object({ platform: z.string(), url: z.string() })),
 		gitattributes: z
 			.object({
 				text: z.string().nullable(),
@@ -70,11 +101,16 @@ const gitHubRepoSchema = z.object({
 			})
 			.nullable(),
 		hasDiscussionsEnabled: z.boolean(),
+		hasIssuesEnabled: z.boolean(),
+		hasSponsorshipsEnabled: z.boolean(),
 		hasWikiEnabled: z.boolean(),
 		homepageUrl: z.string().nullable(),
 		isArchived: z.boolean(),
 		isFork: z.boolean(),
+		isInOrganization: z.boolean(),
+		isMirror: z.boolean(),
 		isPrivate: z.boolean(),
+		isSecurityPolicyEnabled: z.boolean(),
 		isTemplate: z.boolean(),
 		languages: z
 			.object({
@@ -95,6 +131,8 @@ const gitHubRepoSchema = z.object({
 				tagName: z.string(),
 			})
 			.nullable(),
+		licenseInfo: z.object({ spdxId: z.string().nullable() }).nullable(),
+		mergeCommitAllowed: z.boolean(),
 		mergedPullRequests: z.object({ totalCount: z.number() }),
 		name: z.string(),
 		openIssues: z.object({ totalCount: z.number() }),
@@ -112,15 +150,19 @@ const gitHubRepoSchema = z.object({
 				name: z.string(),
 			})
 			.nullable(),
+		pushedAt: z.string().nullable(),
+		rebaseMergeAllowed: z.boolean(),
 		releases: z.object({ totalCount: z.number() }),
 		repositoryTopics: z.object({
 			nodes: z.array(z.object({ topic: z.object({ name: z.string() }) })),
 		}),
+		squashMergeAllowed: z.boolean(),
 		stargazerCount: z.number(),
 		updatedAt: z.string(),
 		url: z.string(),
 		vulnerabilityAlerts: z.object({ totalCount: z.number() }).nullable(),
 		watchers: z.object({ totalCount: z.number() }),
+		webCommitSignoffRequired: z.boolean(),
 	}),
 })
 
@@ -162,8 +204,12 @@ const graphqlQuery = `
 			homepageUrl
 			createdAt
 			updatedAt
+			pushedAt
+			archivedAt
 			isArchived
 			isFork
+			isInOrganization
+			isMirror
 			isPrivate
 			isTemplate
 			diskUsage
@@ -171,6 +217,21 @@ const graphqlQuery = `
 			forkCount
 			hasWikiEnabled
 			hasDiscussionsEnabled
+			hasIssuesEnabled
+			hasSponsorshipsEnabled
+			isSecurityPolicyEnabled
+			autoMergeAllowed
+			allowUpdateBranch
+			deleteBranchOnMerge
+			forkingAllowed
+			mergeCommitAllowed
+			rebaseMergeAllowed
+			squashMergeAllowed
+			webCommitSignoffRequired
+			codeOfConduct { name }
+			contributingGuidelines { body }
+			fundingLinks { platform url }
+			licenseInfo { spdxId }
 			defaultBranchRef { name }
 			primaryLanguage { name }
 			parent {
@@ -189,6 +250,7 @@ const graphqlQuery = `
 			openPullRequests: pullRequests(states: OPEN) { totalCount }
 			closedPullRequests: pullRequests(states: CLOSED) { totalCount }
 			mergedPullRequests: pullRequests(states: MERGED) { totalCount }
+			discussions { totalCount }
 			vulnerabilityAlerts(states: OPEN) { totalCount }
 			watchers { totalCount }
 			releases { totalCount }
@@ -278,20 +340,33 @@ function mapRepoData(
 		0
 
 	return {
+		archivedAt: data.archivedAt ?? undefined,
 		branchDefault: data.defaultBranchRef?.name ?? undefined,
+		codeOfConduct: data.codeOfConduct?.name ?? undefined,
 		commitsBehindUpstream: extras.commitsBehindUpstream,
 		contributorCount: data.contributorCount,
 		createdAt: data.createdAt,
 		description: data.description ?? undefined,
+		discussionCount: data.discussions.totalCount,
 		diskUsageKb: data.diskUsage ?? undefined,
 		forkCount: data.forkCount,
+		fundingLinks:
+			data.fundingLinks.length > 0
+				? data.fundingLinks.map((link) => ({ platform: link.platform, url: link.url }))
+				: undefined,
+		hasContributing: data.contributingGuidelines !== null,
 		hasDiscussions: data.hasDiscussionsEnabled,
+		hasIssues: data.hasIssuesEnabled,
 		hasLfs: detectLfs(data.gitattributes?.text ?? undefined),
 		hasPages: extras.hasPages,
+		hasSecurityPolicy: data.isSecurityPolicyEnabled,
+		hasSponsorships: data.hasSponsorshipsEnabled,
 		hasWiki: data.hasWikiEnabled,
 		homepage: data.homepageUrl === '' ? undefined : (data.homepageUrl ?? undefined),
 		isArchived: data.isArchived,
 		isFork: data.isFork,
+		isInOrganization: data.isInOrganization,
+		isMirror: data.isMirror,
 		isPrivate: data.isPrivate,
 		issueCountClosed: data.closedIssues.totalCount,
 		issueCountOpen: data.openIssues.totalCount,
@@ -299,16 +374,28 @@ function mapRepoData(
 		languagePrimary: data.primaryLanguage?.name ?? undefined,
 		languages: extractLanguages(data),
 		license: undefined, // License from GitHub requires REST; codemeta already provides this
+		licenseSpdxId: data.licenseInfo?.spdxId ?? undefined,
 		ownerLogin: data.owner.login,
 		pullRequestCountClosed: data.closedPullRequests.totalCount,
 		pullRequestCountMerged: data.mergedPullRequests.totalCount,
 		pullRequestCountOpen: data.openPullRequests.totalCount,
+		pushedAt: data.pushedAt ?? undefined,
 		releaseCount: data.releases.totalCount,
 		releaseDateLatest: data.latestRelease?.createdAt ?? undefined,
 		releaseDownloadCount,
 		releaseVersionLatest: data.latestRelease?.tagName ?? undefined,
 		repoName: data.name,
 		repoUrl: data.url,
+		settings: {
+			allowAutoMerge: data.autoMergeAllowed,
+			allowForking: data.forkingAllowed,
+			allowUpdateBranch: data.allowUpdateBranch,
+			deleteBranchOnMerge: data.deleteBranchOnMerge,
+			mergeCommitAllowed: data.mergeCommitAllowed,
+			rebaseMergeAllowed: data.rebaseMergeAllowed,
+			squashMergeAllowed: data.squashMergeAllowed,
+			webCommitSignoffRequired: data.webCommitSignoffRequired,
+		},
 		stargazerCount: data.stargazerCount,
 		submoduleCount: countSubmodules(data.gitmodules?.text ?? undefined),
 		topics: data.repositoryTopics.nodes.map((n) => n.topic.name),

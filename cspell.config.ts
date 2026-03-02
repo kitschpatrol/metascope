@@ -6,7 +6,6 @@ export default cspellConfig({
 		'metascope',
 		'premajor',
 		'preminor',
-		'pypi',
 		'pypistats',
 		'timerel',
 		'tinyexec',

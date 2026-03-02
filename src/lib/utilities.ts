@@ -198,7 +198,14 @@ export function getStatus(
 	codemeta?: CodeMetaBasic,
 	authorName?: string | string[],
 	githubUserName?: string | string[],
-): ('fork' | 'source' | 'unmaintained') | undefined {
+): 
+(
+	/** It's a fork on GitHub */
+	'fork' | 
+	/** I am original author, local or on github */
+	'source' | 
+	/** Someone else's local code */
+	'unmaintained') | undefined {
 	if (codemeta === undefined || authorName === undefined || githubUserName === undefined) {
 		return undefined
 	}
