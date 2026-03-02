@@ -38,8 +38,8 @@ export const project = defineTemplate(
 		npmDownloadCount: npm.downloadsTotal,
 		readmePath: toLocalUrl(codemeta.readme, metascope.path),
 		repositoryPath: metascope.path === undefined ? undefined : `file://${metascope.path}`,
-		semverUpdateCount: undefined, // TODO
-		semverUpdateList: undefined, // TODO
+		semverUpdateCount: undefined, // TODO, Not well supported by `updates` package
+		semverUpdateList: undefined, // TODO, Not well supported by `updates` package
 		tags: codemeta.keywords,
 		title: codemeta.name,
 		type: getStatus(codemeta, authorName, githubAccount),
