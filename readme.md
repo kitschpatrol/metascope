@@ -333,45 +333,87 @@ GitHub repository metadata via the [Octokit](https://github.com/octokit/octokit.
 
 Available when a git remote points to `github.com`. Requires a GitHub token for private repositories and for higher rate limits. Token resolution order: `--github-token` flag > `$GITHUB_TOKEN` environment variable > `gh auth token` CLI fallback.
 
-| Field                     | Type                     | Description                                  |
-| ------------------------- | ------------------------ | -------------------------------------------- |
-| `branchDefault`           | `string`                 | Default branch name                          |
-| `commitsBehindUpstream`   | `number`                 | Commits behind upstream (forks only)         |
-| `contributorCount`        | `number`                 | Number of contributors                       |
-| `createdAt`               | `string`                 | Repository creation date                     |
-| `description`             | `string`                 | Repository description                       |
-| `diskUsageKb`             | `number`                 | Disk usage in KB                             |
-| `forkCount`               | `number`                 | Number of forks                              |
-| `hasDiscussions`          | `boolean`                | Discussions enabled                          |
-| `hasLfs`                  | `boolean`                | Git LFS is used                              |
-| `hasPages`                | `boolean`                | GitHub Pages is enabled                      |
-| `hasWiki`                 | `boolean`                | Wiki is enabled                              |
-| `homepage`                | `string`                 | Homepage URL                                 |
-| `isArchived`              | `boolean`                | Repository is archived                       |
-| `isFork`                  | `boolean`                | Repository is a fork                         |
-| `isPrivate`               | `boolean`                | Repository is private                        |
-| `isTemplate`              | `boolean`                | Repository is a template                     |
-| `issueCountClosed`        | `number`                 | Closed issues                                |
-| `issueCountOpen`          | `number`                 | Open issues                                  |
-| `languagePrimary`         | `string`                 | Primary programming language                 |
-| `languages`               | `Record<string, number>` | Language breakdown (bytes)                   |
-| `license`                 | `string`                 | SPDX license identifier                      |
-| `ownerLogin`              | `string`                 | Repository owner                             |
-| `pullRequestCountClosed`  | `number`                 | Closed (unmerged) pull requests              |
-| `pullRequestCountMerged`  | `number`                 | Merged pull requests                         |
-| `pullRequestCountOpen`    | `number`                 | Open pull requests                           |
-| `releaseCount`            | `number`                 | Total releases                               |
-| `releaseDateLatest`       | `string`                 | Date of most recent release                  |
-| `releaseDownloadCount`    | `number`                 | Total release asset downloads                |
-| `releaseVersionLatest`    | `string`                 | Version of most recent release               |
-| `repoName`                | `string`                 | Repository name                              |
-| `repoUrl`                 | `string`                 | Repository URL                               |
-| `stargazerCount`          | `number`                 | Stars                                        |
-| `submoduleCount`          | `number`                 | Number of git submodules                     |
-| `topics`                  | `string[]`               | Repository topics                            |
-| `updatedAt`               | `string`                 | Last updated date                            |
-| `vulnerabilityAlertCount` | `number`                 | Open Dependabot alerts (requires permission) |
-| `watcherCount`            | `number`                 | Watchers                                     |
+| Field                            | Type                     | Description                                      |
+| -------------------------------- | ------------------------ | ------------------------------------------------ |
+| `archivedAt`                     | `string`                 | Date the repository was archived                 |
+| `codeOfConduct`                  | `string`                 | Code of conduct name                             |
+| `commitsAheadUpstream`           | `number`                 | Commits ahead of upstream (forks only)           |
+| `commitsBehindUpstream`          | `number`                 | Commits behind upstream (forks only)             |
+| `contributorCount`               | `number`                 | Number of contributors                           |
+| `createdAt`                      | `string`                 | Repository creation date                         |
+| `databaseId`                     | `number`                 | Numeric repository ID                            |
+| `defaultBranch`                  | `string`                 | Default branch name                              |
+| `description`                    | `string`                 | Repository description                           |
+| `discussionCount`                | `number`                 | Number of discussions                            |
+| `diskUsageBytes`                 | `number`                 | Disk usage in bytes                              |
+| `forkCount`                      | `number`                 | Number of forks                                  |
+| `forkedFrom`                     | `string`                 | URL of parent repository (forks only)            |
+| `fundingLinks`                   | `Array<{platform, url}>` | Funding/sponsorship links                       |
+| `hasContributing`                | `boolean`                | Has CONTRIBUTING guidelines                      |
+| `hasDiscussionsEnabled`          | `boolean`                | Discussions enabled                              |
+| `hasIssuesEnabled`               | `boolean`                | Issues enabled                                   |
+| `hasLfs`                         | `boolean`                | Git LFS is used                                  |
+| `hasPages`                       | `boolean`                | GitHub Pages is enabled                          |
+| `hasProjectsEnabled`             | `boolean`                | Projects feature enabled                         |
+| `hasSponsorshipsEnabled`         | `boolean`                | Sponsorships enabled                             |
+| `hasVulnerabilityAlertsEnabled`  | `boolean`                | Dependabot alerts enabled                        |
+| `hasWikiEnabled`                 | `boolean`                | Wiki is enabled                                  |
+| `homepageUrl`                    | `string`                 | Homepage URL                                     |
+| `isArchived`                     | `boolean`                | Repository is archived                           |
+| `isDisabled`                     | `boolean`                | Repository is disabled                           |
+| `isFork`                         | `boolean`                | Repository is a fork                             |
+| `isInOrganization`               | `boolean`                | Repository belongs to an organization            |
+| `isMirror`                       | `boolean`                | Repository is a mirror                           |
+| `isPrivate`                      | `boolean`                | Repository is private                            |
+| `isSecurityPolicyEnabled`        | `boolean`                | Security policy is enabled                       |
+| `isTemplate`                     | `boolean`                | Repository is a template                         |
+| `issueCountClosed`               | `number`                 | Closed issues                                    |
+| `issueCountOpen`                 | `number`                 | Open issues                                      |
+| `languages`                      | `Record<string, number>` | Language breakdown (bytes)                       |
+| `licenseKey`                     | `string`                 | License key (e.g. `mit`)                         |
+| `licenseName`                    | `string`                 | License name (e.g. `MIT License`)                |
+| `licenseSpdxId`                  | `string`                 | SPDX license identifier                         |
+| `licenseUrl`                     | `string`                 | URL to license text                              |
+| `mirrorUrl`                      | `string`                 | Mirror URL                                       |
+| `name`                           | `string`                 | Repository name                                  |
+| `nameWithOwner`                  | `string`                 | Full "owner/repo" name                           |
+| `openGraphImageUrl`              | `string`                 | Social preview image URL                         |
+| `ownerLogin`                     | `string`                 | Repository owner login                           |
+| `ownerType`                      | `string`                 | Owner type (`User` or `Organization`)            |
+| `parentNameWithOwner`            | `string`                 | Parent "owner/repo" name (forks only)            |
+| `primaryLanguage`                | `string`                 | Primary programming language                     |
+| `pullRequestCountClosed`         | `number`                 | Closed (unmerged) pull requests                  |
+| `pullRequestCountMerged`         | `number`                 | Merged pull requests                             |
+| `pullRequestCountOpen`           | `number`                 | Open pull requests                               |
+| `pushedAt`                       | `string`                 | Date of most recent push                         |
+| `releaseCount`                   | `number`                 | Total releases                                   |
+| `releaseDateLatest`              | `string`                 | Date of most recent release                      |
+| `releaseDownloadCount`           | `number`                 | Total release asset downloads                    |
+| `releaseVersionLatest`           | `string`                 | Version of most recent release                   |
+| `securityPolicyUrl`              | `string`                 | URL to SECURITY.md                               |
+| `settings.allowUpdateBranch`     | `boolean`                | Allow updating PR branches                       |
+| `settings.autoMergeAllowed`      | `boolean`                | Auto-merge allowed                               |
+| `settings.deleteBranchOnMerge`   | `boolean`                | Delete branch on merge                           |
+| `settings.forkingAllowed`        | `boolean`                | Forking allowed                                  |
+| `settings.mergeCommitAllowed`    | `boolean`                | Merge commits allowed                            |
+| `settings.mergeCommitMessage`    | `string`                 | Merge commit message style                       |
+| `settings.mergeCommitTitle`      | `string`                 | Merge commit title style                         |
+| `settings.rebaseMergeAllowed`    | `boolean`                | Rebase merging allowed                           |
+| `settings.squashMergeAllowed`    | `boolean`                | Squash merging allowed                           |
+| `settings.squashMergeCommitMessage` | `string`              | Squash merge commit message style                |
+| `settings.squashMergeCommitTitle`   | `string`              | Squash merge commit title style                  |
+| `settings.webCommitSignoffRequired` | `boolean`             | Web commit sign-off required                     |
+| `sshUrl`                         | `string`                 | SSH clone URL                                    |
+| `stargazerCount`                 | `number`                 | Stars                                            |
+| `submoduleCount`                 | `number`                 | Number of git submodules                         |
+| `templateFrom`                   | `string`                 | URL of template repository                       |
+| `topics`                         | `string[]`               | Repository topics                                |
+| `updatedAt`                      | `string`                 | Last updated date                                |
+| `url`                            | `string`                 | Repository URL                                   |
+| `usesCustomOpenGraphImage`       | `boolean`                | Custom social preview image is set               |
+| `visibility`                     | `string`                 | Visibility (`PUBLIC`, `PRIVATE`, `INTERNAL`)     |
+| `vulnerabilityAlertCount`        | `number`                 | Open Dependabot alerts (requires permission)     |
+| `watcherCount`                   | `number`                 | Watchers                                         |
 
 ### loc
 
@@ -448,7 +490,7 @@ Available when the project contains a `package.json`, `pyproject.toml`, `go.mod`
 
 | Field      | Type               | Description                                                    |
 | ---------- | ------------------ | -------------------------------------------------------------- |
-| `libYears` | `number`           | Total years behind across all outdated packages                |
+| `libyears` | `number`           | Total years behind across all outdated packages                |
 | `major`    | `UpdatesPackage[]` | Dependencies with major version bumps (or non-semver versions) |
 | `minor`    | `UpdatesPackage[]` | Dependencies with minor version bumps                          |
 | `patch`    | `UpdatesPackage[]` | Dependencies with patch version bumps                          |

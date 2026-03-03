@@ -1,4 +1,4 @@
-import { defineTemplate } from '../types'
+import { defineTemplate } from '../metadata-types'
 import {
 	basicLicense,
 	getStatus,
@@ -19,12 +19,12 @@ export const project = defineTemplate(
 	) => ({
 		description: codemeta.description,
 		firstCommitDate: git.commitDateFirst,
-		gitHubLink: github.repoUrl,
+		gitHubLink: github.url,
 		gitHubStarCount: github.stargazerCount,
 		gitIsClean: git.isClean,
 		gitIsDirty: git.isDirty,
 		gitRemoteCount: git.remoteCount,
-		homepage: github.homepage ?? codemeta.url ?? github.repoUrl,
+		homepage: github.homepageUrl ?? codemeta.url ?? github.url,
 		isAuthoredByMe: isAuthoredBy(codemeta, authorName),
 		isOnMyGitHub: isOnGithubAccountOf(codemeta, githubAccount),
 		isOnNpm: npm.url !== undefined,

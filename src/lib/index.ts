@@ -1,10 +1,11 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
 export { templates } from './templates/index'
-export { defineTemplate } from './types'
+export { defineTemplate } from './metadata-types'
 export type {
 	CodeMetaData,
 	Credentials,
+	FilesystemData,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	GitConfig,
@@ -26,4 +27,4 @@ export type {
 	TemplateData,
 	UpdatesData,
 	UpdatesPackage,
-} from './types'
+} from './metadata-types'

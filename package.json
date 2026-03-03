@@ -46,8 +46,9 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@kitschpatrol/codemeta": "^0.4.1",
-		"@types/node": "~22.17.2",
+		"@kitschpatrol/codemeta": "^0.5.0",
+		"@sindresorhus/is": "^7.2.0",
+		"@types/node": "~24.1.0",
 		"@types/yargs": "^17.0.35",
 		"git-url-parse": "^16.1.0",
 		"jiti": "^2.6.1",
@@ -57,6 +58,7 @@
 		"pkg-types": "^2.3.0",
 		"read-pkg": "^10.1.0",
 		"read-pyproject": "^0.2.0",
+		"scule": "^1.3.0",
 		"semver": "^7.7.4",
 		"simple-git": "^3.32.3",
 		"tinyexec": "^1.0.2",
@@ -70,13 +72,13 @@
 		"@types/semver": "^7.7.1",
 		"bumpp": "^10.4.1",
 		"mdat-plugin-cli-help": "^1.0.7",
-		"publint": "^0.3.17",
+		"publint": "^0.3.18",
 		"tsdown": "^0.20.3",
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.18"
 	},
 	"packageManager": "pnpm@10.30.3",
 	"engines": {
-		"node": ">=22.17.0"
+		"node": ">=24.1.0"
 	}
 }

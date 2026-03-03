@@ -1,5 +1,5 @@
 import type { CodeMetaBasic } from '@kitschpatrol/codemeta'
-import type { Credentials, MetadataContext, SourceName } from '../types'
+import type { Credentials, MetadataContext, SourceName } from '../metadata-types'
 
 /**
  * Context provided to each metadata source during availability checks and extraction.

@@ -7,38 +7,53 @@ import { log } from '../log'
 
 export type GitHubData = {
 	archivedAt?: string
-	branchDefault?: string
 	codeOfConduct?: string
+	commitsAheadUpstream?: number
 	commitsBehindUpstream?: number
 	contributorCount?: number
 	createdAt?: string
+	databaseId?: number
+	defaultBranch?: string
 	description?: string
 	discussionCount?: number
-	diskUsageKb?: number
+	diskUsageBytes?: number
 	forkCount?: number
-	fundingLinks?: { platform: string; url: string }[]
+	forkedFrom?: string
+	fundingLinks?: Array<{ platform: string; url: string }>
 	hasContributing?: boolean
-	hasDiscussions?: boolean
-	hasIssues?: boolean
+	hasDiscussionsEnabled?: boolean
+	hasIssuesEnabled?: boolean
 	hasLfs?: boolean
 	hasPages?: boolean
-	hasSecurityPolicy?: boolean
-	hasSponsorships?: boolean
-	hasWiki?: boolean
-	homepage?: string
+	hasProjectsEnabled?: boolean
+	hasSponsorshipsEnabled?: boolean
+	hasVulnerabilityAlertsEnabled?: boolean
+	hasWikiEnabled?: boolean
+	homepageUrl?: string
 	isArchived?: boolean
+	isDisabled?: boolean
 	isFork?: boolean
 	isInOrganization?: boolean
 	isMirror?: boolean
 	isPrivate?: boolean
+	isSecurityPolicyEnabled?: boolean
 	issueCountClosed?: number
 	issueCountOpen?: number
 	isTemplate?: boolean
-	languagePrimary?: string
 	languages?: Record<string, number>
 	license?: string
+	licenseKey?: string
+	licenseName?: string
 	licenseSpdxId?: string
+	licenseUrl?: string
+	mirrorUrl?: string
+	name?: string
+	nameWithOwner?: string
+	openGraphImageUrl?: string
 	ownerLogin?: string
+	ownerType?: string
+	parentNameWithOwner?: string
+	primaryLanguage?: string
 	pullRequestCountClosed?: number
 	pullRequestCountMerged?: number
 	pullRequestCountOpen?: number
@@ -47,37 +62,46 @@ export type GitHubData = {
 	releaseDateLatest?: string
 	releaseDownloadCount?: number
 	releaseVersionLatest?: string
-	repoName?: string
-	repoUrl?: string
+	securityPolicyUrl?: string
 	settings?: {
-		allowAutoMerge?: boolean
-		allowForking?: boolean
 		allowUpdateBranch?: boolean
+		autoMergeAllowed?: boolean
 		deleteBranchOnMerge?: boolean
+		forkingAllowed?: boolean
 		mergeCommitAllowed?: boolean
+		mergeCommitMessage?: string
+		mergeCommitTitle?: string
 		rebaseMergeAllowed?: boolean
 		squashMergeAllowed?: boolean
+		squashMergeCommitMessage?: string
+		squashMergeCommitTitle?: string
 		webCommitSignoffRequired?: boolean
 	}
+	sshUrl?: string
 	stargazerCount?: number
 	submoduleCount?: number
+	templateFrom?: string
 	topics?: string[]
 	updatedAt?: string
+	url?: string
+	usesCustomOpenGraphImage?: boolean
+	visibility?: string
 	vulnerabilityAlertCount?: number
 	watcherCount?: number
 }
 
 const gitHubRepoSchema = z.object({
 	repository: z.object({
+		allowUpdateBranch: z.boolean(),
 		archivedAt: z.string().nullable(),
 		autoMergeAllowed: z.boolean(),
-		allowUpdateBranch: z.boolean(),
 		closedIssues: z.object({ totalCount: z.number() }),
 		closedPullRequests: z.object({ totalCount: z.number() }),
 		codeOfConduct: z.object({ name: z.string() }).nullable(),
 		contributingGuidelines: z.object({ body: z.string() }).nullable(),
 		contributorCount: z.number().optional(),
 		createdAt: z.string(),
+		databaseId: z.number(),
 		defaultBranchRef: z
 			.object({
 				name: z.string(),
@@ -102,10 +126,13 @@ const gitHubRepoSchema = z.object({
 			.nullable(),
 		hasDiscussionsEnabled: z.boolean(),
 		hasIssuesEnabled: z.boolean(),
+		hasProjectsEnabled: z.boolean(),
 		hasSponsorshipsEnabled: z.boolean(),
+		hasVulnerabilityAlertsEnabled: z.boolean(),
 		hasWikiEnabled: z.boolean(),
 		homepageUrl: z.string().nullable(),
 		isArchived: z.boolean(),
+		isDisabled: z.boolean(),
 		isFork: z.boolean(),
 		isInOrganization: z.boolean(),
 		isMirror: z.boolean(),
@@ -131,18 +158,32 @@ const gitHubRepoSchema = z.object({
 				tagName: z.string(),
 			})
 			.nullable(),
-		licenseInfo: z.object({ spdxId: z.string().nullable() }).nullable(),
+		licenseInfo: z
+			.object({
+				key: z.string(),
+				name: z.string(),
+				spdxId: z.string().nullable(),
+				url: z.string().nullable(),
+			})
+			.nullable(),
 		mergeCommitAllowed: z.boolean(),
+		mergeCommitMessage: z.string(),
+		mergeCommitTitle: z.string(),
 		mergedPullRequests: z.object({ totalCount: z.number() }),
+		mirrorUrl: z.string().nullable(),
 		name: z.string(),
+		nameWithOwner: z.string(),
+		openGraphImageUrl: z.string(),
 		openIssues: z.object({ totalCount: z.number() }),
 		openPullRequests: z.object({ totalCount: z.number() }),
-		owner: z.object({ login: z.string() }),
+		owner: z.object({ __typename: z.string(), login: z.string() }),
 		parent: z
 			.object({
 				defaultBranchRef: z.object({ name: z.string() }).nullable(),
 				name: z.string(),
+				nameWithOwner: z.string(),
 				owner: z.object({ login: z.string() }),
+				url: z.string(),
 			})
 			.nullable(),
 		primaryLanguage: z
@@ -156,10 +197,23 @@ const gitHubRepoSchema = z.object({
 		repositoryTopics: z.object({
 			nodes: z.array(z.object({ topic: z.object({ name: z.string() }) })),
 		}),
+		securityPolicyUrl: z.string().nullable(),
 		squashMergeAllowed: z.boolean(),
+		squashMergeCommitMessage: z.string(),
+		squashMergeCommitTitle: z.string(),
+		sshUrl: z.string(),
 		stargazerCount: z.number(),
+		templateRepository: z
+			.object({
+				name: z.string(),
+				owner: z.object({ login: z.string() }),
+				url: z.string(),
+			})
+			.nullable(),
 		updatedAt: z.string(),
 		url: z.string(),
+		usesCustomOpenGraphImage: z.boolean(),
+		visibility: z.string(),
 		vulnerabilityAlerts: z.object({ totalCount: z.number() }).nullable(),
 		watchers: z.object({ totalCount: z.number() }),
 		webCommitSignoffRequired: z.boolean(),
@@ -175,7 +229,15 @@ async function getGitHubRemote(path: string): Promise<ParsedRemote | undefined> 
 	try {
 		const repo = git(path)
 		const remotes = await repo.getRemotes(true)
-		for (const remote of remotes) {
+
+		// Prefer "origin" remote, fall back to first GitHub remote
+		const sorted = [...remotes].sort((a, b) => {
+			if (a.name === 'origin') return -1
+			if (b.name === 'origin') return 1
+			return 0
+		})
+
+		for (const remote of sorted) {
 			const url = remote.refs.fetch || remote.refs.push
 			if (!url) continue
 			try {
@@ -198,7 +260,8 @@ const graphqlQuery = `
 	query($owner: String!, $repo: String!) {
 		repository(owner: $owner, name: $repo) {
 			name
-			owner { login }
+			nameWithOwner
+			owner { __typename login }
 			url
 			description
 			homepageUrl
@@ -206,38 +269,59 @@ const graphqlQuery = `
 			updatedAt
 			pushedAt
 			archivedAt
+			databaseId
 			isArchived
+			isDisabled
 			isFork
 			isInOrganization
 			isMirror
 			isPrivate
 			isTemplate
+			visibility
 			diskUsage
 			stargazerCount
 			forkCount
+			sshUrl
 			hasWikiEnabled
 			hasDiscussionsEnabled
 			hasIssuesEnabled
+			hasProjectsEnabled
 			hasSponsorshipsEnabled
+			hasVulnerabilityAlertsEnabled
 			isSecurityPolicyEnabled
+			securityPolicyUrl
+			openGraphImageUrl
+			usesCustomOpenGraphImage
 			autoMergeAllowed
 			allowUpdateBranch
 			deleteBranchOnMerge
 			forkingAllowed
 			mergeCommitAllowed
+			mergeCommitMessage
+			mergeCommitTitle
+			mirrorUrl
 			rebaseMergeAllowed
 			squashMergeAllowed
+			squashMergeCommitMessage
+			squashMergeCommitTitle
 			webCommitSignoffRequired
 			codeOfConduct { name }
 			contributingGuidelines { body }
 			fundingLinks { platform url }
-			licenseInfo { spdxId }
+			licenseInfo { key name spdxId url }
 			defaultBranchRef { name }
 			primaryLanguage { name }
 			parent {
 				owner { login }
 				name
+				nameWithOwner
+				url
 				defaultBranchRef { name }
+			}
+			templateRepository {
+				owner { login }
+				name
+				url
 			}
 			gitattributes: object(expression: "HEAD:.gitattributes") {
 				... on Blob { text }
@@ -286,13 +370,13 @@ async function checkHasPages(octokit: Octokit, owner: string, repo: string): Pro
 
 type GitHubRepoData = z.infer<typeof gitHubRepoSchema>['repository']
 
-async function getCommitsBehindUpstream(
+async function getUpstreamComparison(
 	octokit: Octokit,
 	owner: string,
 	repo: string,
 	defaultBranch: string,
 	parent: NonNullable<GitHubRepoData['parent']>,
-): Promise<number | undefined> {
+): Promise<{ ahead: number; behind: number } | undefined> {
 	const parentBranch = parent.defaultBranchRef?.name
 	if (!parentBranch) return undefined
 
@@ -302,7 +386,7 @@ async function getCommitsBehindUpstream(
 			owner,
 			repo,
 		})
-		return response.data.behind_by
+		return { ahead: response.data.ahead_by, behind: response.data.behind_by }
 	} catch {
 		return undefined
 	}
@@ -333,7 +417,7 @@ function extractLanguages(data: GitHubRepoData): Record<string, number> {
 // eslint-disable-next-line complexity
 function mapRepoData(
 	data: GitHubRepoData,
-	extras: { commitsBehindUpstream?: number; hasPages: boolean },
+	extras: { commitsAheadUpstream?: number; commitsBehindUpstream?: number; hasPages: boolean },
 ): GitHubData {
 	const releaseDownloadCount =
 		data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
@@ -341,41 +425,56 @@ function mapRepoData(
 
 	return {
 		archivedAt: data.archivedAt ?? undefined,
-		branchDefault: data.defaultBranchRef?.name ?? undefined,
 		codeOfConduct: data.codeOfConduct?.name ?? undefined,
+		commitsAheadUpstream: extras.commitsAheadUpstream,
 		commitsBehindUpstream: extras.commitsBehindUpstream,
 		contributorCount: data.contributorCount,
 		createdAt: data.createdAt,
+		databaseId: data.databaseId,
+		defaultBranch: data.defaultBranchRef?.name ?? undefined,
 		description: data.description ?? undefined,
 		discussionCount: data.discussions.totalCount,
-		diskUsageKb: data.diskUsage ?? undefined,
+		diskUsageBytes: data.diskUsage === null ? undefined : data.diskUsage * 1024,
 		forkCount: data.forkCount,
+		forkedFrom: data.parent?.url ?? undefined,
 		fundingLinks:
 			data.fundingLinks.length > 0
 				? data.fundingLinks.map((link) => ({ platform: link.platform, url: link.url }))
 				: undefined,
 		hasContributing: data.contributingGuidelines !== null,
-		hasDiscussions: data.hasDiscussionsEnabled,
-		hasIssues: data.hasIssuesEnabled,
+		hasDiscussionsEnabled: data.hasDiscussionsEnabled,
+		hasIssuesEnabled: data.hasIssuesEnabled,
 		hasLfs: detectLfs(data.gitattributes?.text ?? undefined),
 		hasPages: extras.hasPages,
-		hasSecurityPolicy: data.isSecurityPolicyEnabled,
-		hasSponsorships: data.hasSponsorshipsEnabled,
-		hasWiki: data.hasWikiEnabled,
-		homepage: data.homepageUrl === '' ? undefined : (data.homepageUrl ?? undefined),
+		hasProjectsEnabled: data.hasProjectsEnabled,
+		hasSponsorshipsEnabled: data.hasSponsorshipsEnabled,
+		hasVulnerabilityAlertsEnabled: data.hasVulnerabilityAlertsEnabled,
+		hasWikiEnabled: data.hasWikiEnabled,
+		homepageUrl: data.homepageUrl === '' ? undefined : (data.homepageUrl ?? undefined),
 		isArchived: data.isArchived,
+		isDisabled: data.isDisabled,
 		isFork: data.isFork,
 		isInOrganization: data.isInOrganization,
 		isMirror: data.isMirror,
 		isPrivate: data.isPrivate,
+		isSecurityPolicyEnabled: data.isSecurityPolicyEnabled,
 		issueCountClosed: data.closedIssues.totalCount,
 		issueCountOpen: data.openIssues.totalCount,
 		isTemplate: data.isTemplate,
-		languagePrimary: data.primaryLanguage?.name ?? undefined,
 		languages: extractLanguages(data),
 		license: undefined, // License from GitHub requires REST; codemeta already provides this
+		licenseKey: data.licenseInfo?.key ?? undefined,
+		licenseName: data.licenseInfo?.name ?? undefined,
 		licenseSpdxId: data.licenseInfo?.spdxId ?? undefined,
+		licenseUrl: data.licenseInfo?.url ?? undefined,
+		mirrorUrl: data.mirrorUrl ?? undefined,
+		name: data.name,
+		nameWithOwner: data.nameWithOwner,
+		openGraphImageUrl: data.openGraphImageUrl,
 		ownerLogin: data.owner.login,
+		ownerType: data.owner.__typename,
+		parentNameWithOwner: data.parent?.nameWithOwner ?? undefined,
+		primaryLanguage: data.primaryLanguage?.name ?? undefined,
 		pullRequestCountClosed: data.closedPullRequests.totalCount,
 		pullRequestCountMerged: data.mergedPullRequests.totalCount,
 		pullRequestCountOpen: data.openPullRequests.totalCount,
@@ -384,22 +483,30 @@ function mapRepoData(
 		releaseDateLatest: data.latestRelease?.createdAt ?? undefined,
 		releaseDownloadCount,
 		releaseVersionLatest: data.latestRelease?.tagName ?? undefined,
-		repoName: data.name,
-		repoUrl: data.url,
+		securityPolicyUrl: data.securityPolicyUrl ?? undefined,
 		settings: {
-			allowAutoMerge: data.autoMergeAllowed,
-			allowForking: data.forkingAllowed,
 			allowUpdateBranch: data.allowUpdateBranch,
+			autoMergeAllowed: data.autoMergeAllowed,
 			deleteBranchOnMerge: data.deleteBranchOnMerge,
+			forkingAllowed: data.forkingAllowed,
 			mergeCommitAllowed: data.mergeCommitAllowed,
+			mergeCommitMessage: data.mergeCommitMessage,
+			mergeCommitTitle: data.mergeCommitTitle,
 			rebaseMergeAllowed: data.rebaseMergeAllowed,
 			squashMergeAllowed: data.squashMergeAllowed,
+			squashMergeCommitMessage: data.squashMergeCommitMessage,
+			squashMergeCommitTitle: data.squashMergeCommitTitle,
 			webCommitSignoffRequired: data.webCommitSignoffRequired,
 		},
+		sshUrl: data.sshUrl,
 		stargazerCount: data.stargazerCount,
 		submoduleCount: countSubmodules(data.gitmodules?.text ?? undefined),
+		templateFrom: data.templateRepository?.url ?? undefined,
 		topics: data.repositoryTopics.nodes.map((n) => n.topic.name),
 		updatedAt: data.updatedAt,
+		url: data.url,
+		usesCustomOpenGraphImage: data.usesCustomOpenGraphImage,
+		visibility: data.visibility,
 		vulnerabilityAlertCount: data.vulnerabilityAlerts?.totalCount ?? undefined,
 		watcherCount: data.watchers.totalCount,
 	}
@@ -425,19 +532,22 @@ export const githubSource: MetadataSource<'github'> = {
 		const parsed = gitHubRepoSchema.parse(graphqlResult)
 		const data = parsed.repository
 
-		// If the repo is a fork, check how many commits behind upstream
+		// If the repo is a fork, check how many commits ahead/behind upstream
+		let commitsAheadUpstream: number | undefined
 		let commitsBehindUpstream: number | undefined
 		if (data.isFork && data.parent && data.defaultBranchRef) {
-			commitsBehindUpstream = await getCommitsBehindUpstream(
+			const comparison = await getUpstreamComparison(
 				octokit,
 				owner,
 				repo,
 				data.defaultBranchRef.name,
 				data.parent,
 			)
+			commitsAheadUpstream = comparison?.ahead
+			commitsBehindUpstream = comparison?.behind
 		}
 
-		return mapRepoData(data, { commitsBehindUpstream, hasPages })
+		return mapRepoData(data, { commitsAheadUpstream, commitsBehindUpstream, hasPages })
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const remote = await getGitHubRemote(context.path)

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getMetadata } from '../src/lib/metadata'
-import { defineTemplate } from '../src/lib/types'
+import { defineTemplate } from '../src/lib/metadata-types'
 
 // @case-police-ignore github
 

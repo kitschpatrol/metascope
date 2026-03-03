@@ -1,4 +1,5 @@
 export type { CodeMetaData } from './sources/codemeta'
+export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
 export type { LocData, LocLanguageEntry, LocLanguageStats } from './sources/loc'
@@ -11,6 +12,7 @@ export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
 import type { CodeMetaData } from './sources/codemeta'
+import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
 import type { LocData } from './sources/loc'
@@ -30,6 +32,7 @@ import type { UpdatesData } from './sources/updates'
  */
 export type MetadataContext = {
 	codemeta: CodeMetaData
+	filesystem: FilesystemData
 	git: GitData
 	github: GitHubData
 	loc: LocData

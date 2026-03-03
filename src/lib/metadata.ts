@@ -1,16 +1,17 @@
 import { execFile } from 'node:child_process'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
-import type { MetadataSource, SourceContext } from './sources/source'
 import type {
 	Credentials,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	MetadataContext,
 	Template,
-} from './types'
+} from './metadata-types.js'
+import type { MetadataSource, SourceContext } from './sources/source'
 import { log } from './log'
 import { codemetaSource } from './sources/codemeta'
+import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
 import { locSource } from './sources/loc'
@@ -31,6 +32,7 @@ const execFileAsync = promisify(execFile)
  */
 const sources: MetadataSource[] = [
 	codemetaSource,
+	filesystemSource,
 	gitSource,
 	githubSource,
 	locSource,
@@ -161,6 +163,7 @@ export async function getMetadata<T>(
 	// Assemble context
 	const context: MetadataContext = {
 		codemeta: codemetaData,
+		filesystem: {},
 		git: {},
 		github: {},
 		loc: {},

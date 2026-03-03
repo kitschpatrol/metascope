@@ -1,9 +1,84 @@
 import type { BasicPersonOrOrg, CodeMetaBasic } from '@kitschpatrol/codemeta'
+import is from '@sindresorhus/is'
 import path from 'node:path'
-import type { PackageData } from './types'
+import { titleCase } from 'scule'
+import type { PackageData } from './metadata-types'
+/**
+ * TODO
+ */
+export function exists<T>(value: T): value is NonNullable<T> {
+	if (is.nullOrUndefined(value)) return false
+	if (is.emptyStringOrWhitespace(value)) return false
+	if (is.emptyArray(value)) return false
+	if (is.emptyMap(value)) return false
+	if (is.emptySet(value)) return false
+	if (is.emptyObject(value)) return false
+	return true
+}
+
+/**
+ * TODO
+ */
+export function toMarkdownLink(value: string | undefined): string | undefined {
+	if (is.nonEmptyStringAndNotWhitespace(value)) {
+		return `[${path.basename(value)}](${value})`
+	}
+}
+
+/**
+ * Get MB
+ */
+export function toMb(bytes: unknown): number | undefined {
+	if (is.positiveNumber(bytes)) {
+		return Math.round(bytes / 1024 / 1024)
+	}
+	return undefined
+}
+
+declare global {
+	// eslint-disable-next-line ts/consistent-type-definitions
+	interface RegExpConstructor {
+		escape(string_: string): string
+	}
+}
 
 function ensureArray<T>(value: T | T[]): T[] {
 	return Array.isArray(value) ? value : [value]
+}
+
+// Codemeta is casual about capitalization...
+export const REPLACEMENTS = new Map<string, string>([
+	['javascript', 'JavaScript'],
+	['typescript', 'TypeScript'],
+])
+
+/**
+ * Takes any value and extracts all strings from it.
+ * Returns string[] if any strings were found, or undefined otherwise.
+ * Optionally performs case-insensitive string replacement with `replacements`
+ */
+export function mixedStringsToArray(
+	value: unknown,
+	replacements?: Map<string, string>,
+): string[] | undefined {
+	if (value === undefined) {
+		return undefined
+	}
+
+	const array = ensureArray(value)
+	const filtered = array
+		.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+		.map((item) => {
+			if (!replacements) return item
+			let result = item
+			for (const [search, replace] of replacements) {
+				const pattern = new RegExp(RegExp.escape(search), 'gi')
+				result = result.replace(pattern, replace)
+			}
+			return result
+		})
+
+	return filtered.length > 0 ? filtered : undefined
 }
 
 /**
@@ -51,8 +126,18 @@ export function stripUndefined<T>(value: T): T {
 /**
  * TODO
  */
-export function stripNamespace(value: string | undefined): string | undefined {
-	return value === undefined ? undefined : path.basename(value)
+export function stripNamespace(value: string): string {
+	return path.basename(value)
+}
+
+/**
+ * Obsidian alias
+ */
+export function toAlias(value: string | undefined): string | undefined {
+	if (is.nonEmptyString(value)) {
+		return titleCase(stripNamespace(value))
+	}
+	return undefined
 }
 
 /**
@@ -66,7 +151,7 @@ export function toLocalUrl(
 		return undefined
 	}
 
-	return `files://${path.join(repoPath, path.basename(value))}`
+	return `file://${path.join(repoPath, path.basename(value))}`
 }
 
 /**
@@ -198,14 +283,15 @@ export function getStatus(
 	codemeta?: CodeMetaBasic,
 	authorName?: string | string[],
 	githubUserName?: string | string[],
-): 
-(
-	/** It's a fork on GitHub */
-	'fork' | 
-	/** I am original author, local or on github */
-	'source' | 
-	/** Someone else's local code */
-	'unmaintained') | undefined {
+):
+	| /** It's a fork on GitHub */
+	(| 'fork'
+			/** I am original author, local or on github */
+			| 'source'
+			/** Someone else's local code */
+			| 'unmaintained'
+	  )
+	| undefined {
 	if (codemeta === undefined || authorName === undefined || githubUserName === undefined) {
 		return undefined
 	}

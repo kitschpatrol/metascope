@@ -1,7 +1,7 @@
-import type {Rolldown} from 'tsdown';
+import type { Rolldown } from 'tsdown'
 import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { defineConfig  } from 'tsdown'
+import { defineConfig } from 'tsdown'
 
 /**
  * Plugin that copies tree-sitter WASM files to the output directory and patches
@@ -34,19 +34,11 @@ function treeSitterWasmPlugin(): Rolldown.Plugin {
 			)
 
 			// Copy grammar WASMs from codemeta's vendored grammars
-			const codemetaGrammars = join(
-				'node_modules',
-				'@kitschpatrol',
-				'codemeta',
-				'dist',
-				'grammars',
-			)
+			const codemetaGrammars = join('node_modules', '@kitschpatrol', 'codemeta', 'dist', 'grammars')
 			// eslint-disable-next-line unicorn/no-await-expression-member
 			const wasmFiles = (await readdir(codemetaGrammars)).filter((f) => f.endsWith('.wasm'))
 			await Promise.all(
-				wasmFiles.map(async (f) =>
-					copyFile(join(codemetaGrammars, f), join(grammarsDirectory, f)),
-				),
+				wasmFiles.map(async (f) => copyFile(join(codemetaGrammars, f), join(grammarsDirectory, f))),
 			)
 
 			// Patch the bundle: change '../grammars/' to './grammars/' so the paths
@@ -82,6 +74,7 @@ export default defineConfig([
 		dts: false,
 		entry: 'src/bin/cli.ts',
 		fixedExtension: false,
+		inlineOnly: false,
 		minify: true,
 		noExternal: /.+/,
 		outDir: 'dist/bin',

@@ -1,5 +1,5 @@
 import type { GitConfig } from 'pkg-types'
-import { access } from 'node:fs/promises'
+import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { readGitConfig } from 'pkg-types'
 import { simpleGit } from 'simple-git'
@@ -24,7 +24,10 @@ export type GitData = {
 	tagCount?: number
 	tagDateLatest?: string
 	tagNameLatest?: string
+	totalAhead?: number
+	totalBehind?: number
 	trackedFileCount?: number
+	trackedSizeBytes?: number
 }
 
 export const gitSource: MetadataSource<'git'> = {
@@ -38,7 +41,7 @@ export const gitSource: MetadataSource<'git'> = {
 			branchResult,
 			tagResult,
 			commitDateFirst,
-			fileCountResult,
+			trackedFiles,
 			config,
 			remotes,
 		] = await Promise.all([
@@ -54,10 +57,23 @@ export const gitSource: MetadataSource<'git'> = {
 					.filter((line) => !line.startsWith('commit '))
 				return lines.at(-1) ?? undefined
 			}),
-			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean).length),
+			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean)),
 			readGitConfig(context.path),
 			git.getRemotes(),
 		])
+
+		const trackedSizeBytes = (
+			await Promise.all(
+				trackedFiles.map(async (file) => {
+					try {
+						const fileStat = await stat(join(context.path, file))
+						return fileStat.size
+					} catch {
+						return 0
+					}
+				}),
+			)
+		).reduce((sum, size) => sum + size, 0)
 
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
 
@@ -95,6 +111,16 @@ export const gitSource: MetadataSource<'git'> = {
 			}
 		}
 
+		const remoteStatusValues = Object.values(remoteStatus)
+		const totalAhead =
+			remoteStatusValues.length > 0
+				? remoteStatusValues.reduce((sum, s) => sum + s.ahead, 0)
+				: undefined
+		const totalBehind =
+			remoteStatusValues.length > 0
+				? remoteStatusValues.reduce((sum, s) => sum + s.behind, 0)
+				: undefined
+
 		return {
 			branchCount: branchResult.all.length,
 			branchCurrent: branchResult.current,
@@ -111,7 +137,10 @@ export const gitSource: MetadataSource<'git'> = {
 			tagCount: tagResult.all.length,
 			tagDateLatest,
 			tagNameLatest,
-			trackedFileCount: fileCountResult,
+			totalAhead,
+			totalBehind,
+			trackedFileCount: trackedFiles.length,
+			trackedSizeBytes,
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

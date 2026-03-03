@@ -15,7 +15,7 @@ export type UpdatesPackage = {
 }
 
 export type UpdatesData = {
-	libYears?: number
+	libyears?: number
 	major?: UpdatesPackage[]
 	minor?: UpdatesPackage[]
 	patch?: UpdatesPackage[]
@@ -129,7 +129,7 @@ export const updatesSource: MetadataSource<'updates'> = {
 		const major: UpdatesPackage[] = []
 		const minor: UpdatesPackage[] = []
 		const patch: UpdatesPackage[] = []
-		let libYears = 0
+		let libyears = 0
 
 		for (const mode of Object.values(parsed.results)) {
 			for (const depGroup of Object.values(mode)) {
@@ -137,7 +137,7 @@ export const updatesSource: MetadataSource<'updates'> = {
 					if (name === '@types/node') continue
 
 					if (dep.age) {
-						libYears += parseAgeToYears(dep.age)
+						libyears += parseAgeToYears(dep.age)
 					}
 
 					const pkg: UpdatesPackage = {
@@ -171,7 +171,7 @@ export const updatesSource: MetadataSource<'updates'> = {
 		}
 
 		return {
-			libYears: Math.round(libYears * 10) / 10,
+			libyears: Math.round(libyears * 10) / 10,
 			major,
 			minor,
 			patch,

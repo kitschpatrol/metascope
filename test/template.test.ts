@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { MetadataContext, TemplateData } from '../src/lib/types'
-import { defineTemplate } from '../src/lib/types'
+import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
+import { defineTemplate } from '../src/lib/metadata-types'
 
 const mockContext: MetadataContext = {
 	codemeta: {
@@ -14,6 +14,11 @@ const mockContext: MetadataContext = {
 		description: 'A test package',
 		name: 'test-package',
 		version: '1.2.3',
+	},
+	filesystem: {
+		totalDirectoryCount: 20,
+		totalFileCount: 150,
+		totalSizeBytes: 1_048_576,
 	},
 	git: {
 		branchCurrent: 'main',
@@ -101,14 +106,14 @@ describe('defineTemplate', () => {
 
 	it('should handle missing optional fields gracefully', () => {
 		const template = defineTemplate(({ github }) => ({
-			hasWiki: github.hasWiki,
-			homepage: github.homepage,
+			hasWikiEnabled: github.hasWikiEnabled,
+			homepageUrl: github.homepageUrl,
 		}))
 
 		const result = template(mockContext, {})
 		// Fields not set in mockContext are undefined
-		expect(result.hasWiki).toBeUndefined()
-		expect(result.homepage).toBeUndefined()
+		expect(result.hasWikiEnabled).toBeUndefined()
+		expect(result.homepageUrl).toBeUndefined()
 	})
 
 	it('should pass templateData to template function', () => {

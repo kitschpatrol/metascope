@@ -6,7 +6,6 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type NpmData = {
-	dependentCount?: number
 	deprecated?: string
 	downloadsMonthly?: number
 	downloadsTotal?: number
