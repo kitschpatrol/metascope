@@ -122,10 +122,8 @@ export const pypiSource: MetadataSource<'pypi'> = {
 		}
 
 		if (pypistatsOverallResult) {
-			data.downloads180Days = pypistatsOverallResult.data.reduce(
-				(sum, entry) => sum + entry.downloads,
-				0,
-			)
+			data.downloads180Days =
+				pypistatsOverallResult.data.reduce((sum, entry) => sum + entry.downloads, 0) || undefined
 		}
 
 		return data

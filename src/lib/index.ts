@@ -1,6 +1,5 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
-export { templates } from './templates/index'
 export { defineTemplate } from './metadata-types'
 export type {
 	CodeMetaData,
@@ -28,3 +27,4 @@ export type {
 	UpdatesData,
 	UpdatesPackage,
 } from './metadata-types'
+export { templates } from './templates/index'

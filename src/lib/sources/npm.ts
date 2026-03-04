@@ -80,7 +80,7 @@ export const npmSource: MetadataSource<'npm'> = {
 		return {
 			deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
 			downloadsMonthly,
-			downloadsTotal,
+			downloadsTotal: downloadsTotal || undefined,
 			downloadsWeekly,
 			downloadsYearly,
 			fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,

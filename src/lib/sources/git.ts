@@ -16,14 +16,20 @@ export type GitData = {
 	commitDateLast?: string
 	config?: GitConfig
 	contributorCount?: number
+	hasLfs?: boolean
 	isClean?: boolean
 	isDirty?: boolean
+	uncommittedFileCount?: number
 	isRemoteAhead?: boolean
 	remoteCount?: number
 	remoteStatus?: Record<string, { ahead: number; behind: number }>
+	submoduleCount?: number
 	tagCount?: number
 	tagDateLatest?: string
 	tagNameLatest?: string
+	tagReleaseCount?: number
+	tagVersionDateLatest?: string
+	tagVersionLatest?: string
 	totalAhead?: number
 	totalBehind?: number
 	trackedFileCount?: number
@@ -44,6 +50,8 @@ export const gitSource: MetadataSource<'git'> = {
 			trackedFiles,
 			config,
 			remotes,
+			submoduleCount,
+			hasLfs,
 		] = await Promise.all([
 			git.status(),
 			git.log(),
@@ -60,6 +68,17 @@ export const gitSource: MetadataSource<'git'> = {
 			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean)),
 			readGitConfig(context.path),
 			git.getRemotes(),
+			git
+				.raw(['submodule', 'status'])
+				.then((output) => {
+					const count = output.trim().split('\n').filter(Boolean).length
+					return count > 0 ? count : undefined
+				})
+				.catch(() => undefined),
+			git
+				.raw(['lfs', 'ls-files'])
+				.then((output) => (output.trim().length > 0 ? true : undefined))
+				.catch(() => undefined),
 		])
 
 		const trackedSizeBytes = (
@@ -86,6 +105,26 @@ export const gitSource: MetadataSource<'git'> = {
 			} catch {
 				// Tag might not have associated commit info
 			}
+		}
+
+		// Find the latest tag matching a version pattern (v1.2.3, 1.2, etc.)
+		const versionTagPattern = /^v?\d+(?:\.\d+){1,2}$/
+		let tagReleaseCount: number | undefined
+		let tagVersionLatest: string | undefined
+		let tagVersionDateLatest: string | undefined
+		try {
+			const tagsByDate = await git.raw(['tag', '--sort=-creatordate'])
+			const allTags = tagsByDate.trim().split('\n').filter(Boolean)
+			const versionTags = allTags.filter((tag) => versionTagPattern.test(tag))
+			tagReleaseCount = versionTags.length > 0 ? versionTags.length : undefined
+			const match = versionTags[0]
+			if (match) {
+				const tagDate = await git.raw(['log', '-1', '--format=%aI', match])
+				tagVersionLatest = match.replace(/^v/, '')
+				tagVersionDateLatest = tagDate.trim() || undefined
+			}
+		} catch {
+			// No tags or git error
 		}
 
 		// Compare HEAD against each remote's main/master branch
@@ -129,14 +168,20 @@ export const gitSource: MetadataSource<'git'> = {
 			commitDateLast: logResult.latest?.date ?? undefined,
 			config,
 			contributorCount: contributors.size,
+			hasLfs,
 			isClean: statusResult.isClean(),
 			isDirty: !statusResult.isClean(),
+			uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
 			isRemoteAhead: Object.values(remoteStatus).some((s) => s.behind > 0) || undefined,
 			remoteCount: remotes.length,
 			remoteStatus: Object.keys(remoteStatus).length > 0 ? remoteStatus : undefined,
+			submoduleCount,
 			tagCount: tagResult.all.length,
 			tagDateLatest,
 			tagNameLatest,
+			tagReleaseCount,
+			tagVersionDateLatest,
+			tagVersionLatest,
 			totalAhead,
 			totalBehind,
 			trackedFileCount: trackedFiles.length,

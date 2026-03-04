@@ -98,7 +98,7 @@ export const obsidianSource: MetadataSource<'obsidian'> = {
 			const stats = pluginStatsSchema.parse(await response.json())
 			if (!(manifest.id in stats)) return { manifest, url }
 			const pluginStats = stats[manifest.id]
-			const downloadCount = pluginStats.downloads
+			const downloadCount = pluginStats.downloads || undefined
 
 			return {
 				downloadCount,

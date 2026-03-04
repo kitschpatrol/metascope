@@ -176,6 +176,7 @@ const gitHubRepoSchema = z.object({
 		openGraphImageUrl: z.string(),
 		openIssues: z.object({ totalCount: z.number() }),
 		openPullRequests: z.object({ totalCount: z.number() }),
+		// eslint-disable-next-line ts/naming-convention
 		owner: z.object({ __typename: z.string(), login: z.string() }),
 		parent: z
 			.object({
@@ -231,7 +232,7 @@ async function getGitHubRemote(path: string): Promise<ParsedRemote | undefined> 
 		const remotes = await repo.getRemotes(true)
 
 		// Prefer "origin" remote, fall back to first GitHub remote
-		const sorted = [...remotes].sort((a, b) => {
+		const sorted = [...remotes].toSorted((a, b) => {
 			if (a.name === 'origin') return -1
 			if (b.name === 'origin') return 1
 			return 0
@@ -376,7 +377,7 @@ async function getUpstreamComparison(
 	repo: string,
 	defaultBranch: string,
 	parent: NonNullable<GitHubRepoData['parent']>,
-): Promise<{ ahead: number; behind: number } | undefined> {
+): Promise<undefined | { ahead: number; behind: number }> {
 	const parentBranch = parent.defaultBranchRef?.name
 	if (!parentBranch) return undefined
 
@@ -420,8 +421,9 @@ function mapRepoData(
 	extras: { commitsAheadUpstream?: number; commitsBehindUpstream?: number; hasPages: boolean },
 ): GitHubData {
 	const releaseDownloadCount =
-		data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
-		0
+		(data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
+			0) ||
+		undefined
 
 	return {
 		archivedAt: data.archivedAt ?? undefined,
@@ -479,7 +481,7 @@ function mapRepoData(
 		pullRequestCountMerged: data.mergedPullRequests.totalCount,
 		pullRequestCountOpen: data.openPullRequests.totalCount,
 		pushedAt: data.pushedAt ?? undefined,
-		releaseCount: data.releases.totalCount,
+		releaseCount: data.releases.totalCount || undefined,
 		releaseDateLatest: data.latestRelease?.createdAt ?? undefined,
 		releaseDownloadCount,
 		releaseVersionLatest: data.latestRelease?.tagName ?? undefined,

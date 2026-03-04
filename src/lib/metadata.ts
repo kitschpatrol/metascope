@@ -98,7 +98,7 @@ export async function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Pr
 export async function getMetadata<T>(
 	options: GetMetadataOptions | GetMetadataTemplateOptions<T>,
 ): Promise<MetadataContext | T> {
-	const startTime = Date.now()
+	const startTime = performance.now()
 	const absolutePath = resolve(options.path)
 
 	// Resolve template from options (built-in name or function)
@@ -146,9 +146,9 @@ export async function getMetadata<T>(
 	const extractResults = await Promise.all(
 		availableSources.map(async (source) => {
 			try {
-				const startTime = Date.now()
+				const startTime = performance.now()
 				const data = await source.extract(sourceContext)
-				const duration = Date.now() - startTime
+				const duration = Math.round(performance.now() - startTime)
 				log.debug(`Source "${source.key}" extracted in ${duration}ms`)
 				return { data, key: source.key }
 			} catch (error) {
@@ -182,7 +182,7 @@ export async function getMetadata<T>(
 	}
 
 	// Inject total scan duration into metascope data
-	context.metascope.durationMs = Date.now() - startTime
+	context.metascope.durationMs = Math.round(performance.now() - startTime)
 
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
