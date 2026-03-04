@@ -10,6 +10,7 @@ import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
 import { setLogger as setLoggerCodeMeta } from '@kitschpatrol/codemeta'
 
 const cliCommandName = Object.keys(bin).at(0)!
+const builtInTemplateNames = Object.keys(templates)
 const yargsInstance = yargs(hideBin(process.argv))
 
 await yargsInstance
@@ -26,8 +27,7 @@ await yargsInstance
 				})
 				.option('template', {
 					alias: 't',
-					description:
-						'Built-in template name (e.g., "summary") or path to a template file (.ts/.js)',
+					description: `Built-in template name (${builtInTemplateNames.map((n) => `"${n}"`).join(', ')}) or path to a template file (.ts/.js)`,
 					type: 'string',
 				})
 				.option('github-token', {

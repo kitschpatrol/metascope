@@ -52,7 +52,7 @@ Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in T
 
 Optional external tools:
 
-- [tokei](https://github.com/XAMPPRocky/tokei)  
+- [tokei](https://github.com/XAMPPRocky/tokei)\
   Required for the `loc` (lines of code) source. If not present, the `loc` source is simply skipped.
 
 - [GitHub CLI](https://cli.github.com)
@@ -293,7 +293,7 @@ const result = await getMetadata({
 ```ts
 import { getMetadata } from 'metascope'
 
-const summary = await getMetadata({ path: '.', template: 'summary' })
+const result = await getMetadata({ path: '.', template: 'frontmatter' })
 ```
 
 ## Sources
@@ -630,24 +630,22 @@ Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScrip
 
 ### Built-in templates
 
-Several built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
+Two built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
 
-#### `summary`
+#### `frontmatter`
 
-A compact overview of the project:
+A compact, non-nested, polyglot overview of the project. Designed for Obsidian frontmatter — flat keys with natural language names, blending all available sources into a single trackable snapshot. Uses `null` for missing values to ensure stable keys.
 
-```ts
-defineTemplate(({ codemeta, github, npm }) => ({
-  author: codemeta.author,
-  description: codemeta.description,
-  downloads: npm.downloadsWeekly,
-  forks: github.forkCount,
-  issues: github.issueCountOpen,
-  license: codemeta.license,
-  name: codemeta.name,
-  stars: github.stargazerCount,
-  version: codemeta.version,
-}))
+```sh
+metascope --template frontmatter
+```
+
+#### `project`
+
+A legacy structure used in the AllWork desktop app. Includes ownership checks via `authorName` and `githubAccount` template data.
+
+```sh
+metascope --template project --author-name "Jane Doe" --github-account janedoe
 ```
 
 ## Background

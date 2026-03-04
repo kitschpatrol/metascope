@@ -104,8 +104,8 @@ export type GetMetadataOptions = {
 	credentials?: Credentials
 	/** Project directory path. */
 	path: string
-	/** Built-in template name (e.g., "summary") or omit for full output. */
-	template?: string
+	/** Built-in template name or omit for full output. */
+	template?: 'frontmatter' | 'project' | (string & {})
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
 }
