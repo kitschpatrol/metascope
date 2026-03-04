@@ -1,8 +1,22 @@
 import type { BasicPersonOrOrg, CodeMetaBasic } from '@kitschpatrol/codemeta'
 import is from '@sindresorhus/is'
+import { replaceCore } from 'case-police'
+import abbreviates from 'case-police/dict/abbreviates.json'
+import brands from 'case-police/dict/brands.json'
+import general from 'case-police/dict/general.json'
+import products from 'case-police/dict/products.json'
+import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
 import type { PackageData } from './metadata-types'
+
+const casePoliceDict: Record<string, string> = {
+	...abbreviates,
+	...brands,
+	...general,
+	...products,
+	...softwares,
+}
 /**
  * TODO
  */
@@ -135,7 +149,9 @@ export function stripNamespace(value: string): string {
  */
 export function toAlias(value: string | undefined): string | undefined {
 	if (is.nonEmptyString(value)) {
-		return titleCase(stripNamespace(value))
+		const result = titleCase(stripNamespace(value))
+		// Case police corrections, too
+		return replaceCore(result, casePoliceDict) ?? result
 	}
 	return undefined
 }

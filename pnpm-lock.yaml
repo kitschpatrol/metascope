@@ -20,6 +20,9 @@ importers:
       '@types/yargs':
         specifier: ^17.0.35
         version: 17.0.35
+      case-police:
+        specifier: ^2.2.0
+        version: 2.2.0
       git-url-parse:
         specifier: ^16.1.0
         version: 16.1.0

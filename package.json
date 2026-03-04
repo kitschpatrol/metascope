@@ -50,6 +50,7 @@
 		"@sindresorhus/is": "^7.2.0",
 		"@types/node": "~24.1.0",
 		"@types/yargs": "^17.0.35",
+		"case-police": "^2.2.0",
 		"git-url-parse": "^16.1.0",
 		"jiti": "^2.6.1",
 		"lognow": "^0.5.2",
