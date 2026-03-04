@@ -1,3 +1,8 @@
 import { knipConfig } from '@kitschpatrol/knip-config'
 
-export default knipConfig()
+export default knipConfig({
+	entry: [
+		// Many exported helpers not yet used elsewhere...
+		'./src/lib/utilities.ts',
+	],
+})

@@ -20,7 +20,7 @@ import {
  * Designed for Obsidian frontmatter — flat keys with natural language names,
  * blending all available sources into a single trackable snapshot.
  */
-export const obsidian = defineTemplate(
+export const frontmatter = defineTemplate(
 	(
 		{ codemeta, filesystem, git, github, loc, metascope, npm, obsidian, pypi, updates },
 		{ authorName, githubAccount },
