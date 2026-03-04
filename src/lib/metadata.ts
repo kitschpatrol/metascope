@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process'
+import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
 import type {
@@ -8,8 +9,8 @@ import type {
 	MetadataContext,
 	Template,
 } from './metadata-types.js'
-import type { TemplateMap, TemplateName } from './templates/index.js'
 import type { MetadataSource, SourceContext } from './sources/source'
+import type { TemplateMap, TemplateName } from './templates/index.js'
 import { log } from './log'
 import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
@@ -105,6 +106,18 @@ export async function getMetadata<T>(
 ): Promise<MetadataContext | T> {
 	const startTime = performance.now()
 	const absolutePath = resolve(options.path)
+
+	// Validate that the target directory exists
+	let stats: Awaited<ReturnType<typeof stat>>
+	try {
+		stats = await stat(absolutePath)
+	} catch {
+		throw new Error(`Path does not exist: ${absolutePath}`)
+	}
+
+	if (!stats.isDirectory()) {
+		throw new Error(`Path is not a directory: ${absolutePath}`)
+	}
 
 	// Resolve template from options (built-in name or function)
 	const template = await resolveTemplate(options.template as string | Template<unknown> | undefined)
