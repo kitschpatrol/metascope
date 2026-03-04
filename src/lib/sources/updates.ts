@@ -134,7 +134,14 @@ export const updatesSource: MetadataSource<'updates'> = {
 
 		const updatesBinary = resolveUpdatesBinary()
 		const result = await exec('node', [updatesBinary, '--file', context.path, '--json'])
-		const parsed = updatesOutputSchema.parse(JSON.parse(result.stdout))
+
+		let parsed: z.infer<typeof updatesOutputSchema>
+		try {
+			parsed = updatesOutputSchema.parse(JSON.parse(result.stdout))
+		} catch {
+			log.debug('No dependency files found for updates analysis.')
+			return {}
+		}
 
 		const major: UpdatesPackage[] = []
 		const minor: UpdatesPackage[] = []
