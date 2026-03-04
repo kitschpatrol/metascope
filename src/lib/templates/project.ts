@@ -1,9 +1,9 @@
 import { defineTemplate } from '../metadata-types'
 import {
-	basicLicense,
 	getStatus,
 	isAuthoredBy,
 	isOnGithubAccountOf,
+	toBasicLicenses,
 	toLocalUrl,
 	usesPnpm,
 	usesSharedConfig,
@@ -32,7 +32,7 @@ export const project = defineTemplate(
 		isRemoteAhead: git.isRemoteAhead,
 		issueCount: github.issueCountOpen,
 		lastCommitDate: git.commitDateLast,
-		license: basicLicense(codemeta.license),
+		license: toBasicLicenses(codemeta.license ?? github.licenseSpdxId)?.at(0),
 		majorUpdateCount: updates.major?.length ?? 0,
 		majorUpdateList: updates.major?.map((value) => value.name),
 		npmDownloadCount: npm.downloadsTotal,

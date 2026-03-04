@@ -7,7 +7,7 @@ import {
 	mixedStringsToArray,
 	REPLACEMENTS,
 	toAlias,
-	basicLicense as toBasicLicense,
+	toBasicLicenses,
 	basicNames as toBasicNames,
 	toLocalUrl,
 	toMb,
@@ -42,7 +42,7 @@ export const frontmatter = defineTemplate(
 		Status: toStatus(codemeta, authorName, githubAccount) ?? null,
 		'GitHub Owner': github.ownerLogin ?? null,
 		tags: codemeta.keywords ?? [], // Obsidian special field
-		License: toBasicLicense(codemeta.license ?? github.licenseSpdxId) ?? null,
+		License: toBasicLicenses(codemeta.license ?? github.licenseSpdxId) ?? null,
 		Languages:
 			mixedStringsToArray(codemeta.programmingLanguage ?? github.primaryLanguage, REPLACEMENTS) ??
 			null,

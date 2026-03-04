@@ -199,6 +199,21 @@ export function basicLicense(source: string | undefined): string | undefined {
 /**
  * TODO
  */
+export function toBasicLicenses(
+	...sources: Array<string | string[] | undefined>
+): string[] | undefined {
+	const result = sources
+		.flat()
+		.filter((value): value is string => value !== undefined)
+		.map((value) => basicLicense(value))
+		.filter((value) => value !== undefined)
+
+	return result.length === 0 ? undefined : result
+}
+
+/**
+ * TODO
+ */
 export function usesSharedConfig(codemeta: CodeMetaBasic): boolean {
 	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta)
 }
