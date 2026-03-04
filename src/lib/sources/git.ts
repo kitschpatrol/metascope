@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-await-expression-member */
+/* eslint-disable unicorn/no-useless-undefined */
 import type { GitConfig } from 'pkg-types'
 import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -9,31 +11,56 @@ import { log } from '../log'
 export type { GitConfig } from 'pkg-types'
 
 export type GitData = {
+	/** Total number of local branches. */
 	branchCount?: number
+	/** Name of the currently checked-out branch. */
 	branchCurrent?: string
+	/** Total number of commits in the current branch. */
 	commitCount?: number
+	/** ISO 8601 date of the repository's first commit. */
 	commitDateFirst?: string
+	/** ISO 8601 date of the most recent commit. */
 	commitDateLast?: string
+	/** Parsed .git/config contents. */
 	config?: GitConfig
+	/** Number of unique commit author emails. */
 	contributorCount?: number
+	/** Whether the repo uses Git LFS. */
 	hasLfs?: boolean
+	/** Whether the working tree has no uncommitted changes. */
 	isClean?: boolean
+	/** Whether the working tree has uncommitted changes. */
 	isDirty?: boolean
-	uncommittedFileCount?: number
+	/** Whether any remote is ahead of the local branch. */
 	isRemoteAhead?: boolean
+	/** Number of configured remotes. */
 	remoteCount?: number
+	/** Per-remote ahead/behind commit counts relative to HEAD. */
 	remoteStatus?: Record<string, { ahead: number; behind: number }>
+	/** Number of registered git submodules. */
 	submoduleCount?: number
+	/** Total number of tags. */
 	tagCount?: number
+	/** ISO 8601 date of the most recent tag. */
 	tagDateLatest?: string
+	/** Name of the most recent tag. */
 	tagNameLatest?: string
+	/** Number of tags matching a version pattern (e.g. v1.2.3). */
 	tagReleaseCount?: number
+	/** ISO 8601 date of the most recent version tag. */
 	tagVersionDateLatest?: string
+	/** Most recent version tag, without the leading "v". */
 	tagVersionLatest?: string
+	/** Total commits ahead of all remotes combined. */
 	totalAhead?: number
+	/** Total commits behind all remotes combined. */
 	totalBehind?: number
+	/** Number of files tracked by git. */
 	trackedFileCount?: number
+	/** Total size in bytes of all tracked files. */
 	trackedSizeBytes?: number
+	/** Number of files with staged or unstaged changes. */
+	uncommittedFileCount?: number
 }
 
 export const gitSource: MetadataSource<'git'> = {
@@ -171,7 +198,6 @@ export const gitSource: MetadataSource<'git'> = {
 			hasLfs,
 			isClean: statusResult.isClean(),
 			isDirty: !statusResult.isClean(),
-			uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
 			isRemoteAhead: Object.values(remoteStatus).some((s) => s.behind > 0) || undefined,
 			remoteCount: remotes.length,
 			remoteStatus: Object.keys(remoteStatus).length > 0 ? remoteStatus : undefined,
@@ -186,6 +212,7 @@ export const gitSource: MetadataSource<'git'> = {
 			totalBehind,
 			trackedFileCount: trackedFiles.length,
 			trackedSizeBytes,
+			uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

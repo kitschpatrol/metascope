@@ -5,9 +5,13 @@ import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
 
 export type MetascopeData = {
+	/** Total scan duration in milliseconds. */
 	durationMs?: number
+	/** Absolute path to the scanned project directory. */
 	path?: string
+	/** ISO 8601 timestamp of when the scan was performed. */
 	scannedAt?: string
+	/** Version of the metascope library used. */
 	version?: string
 }
 

@@ -7,18 +7,28 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type UpdatesPackage = {
+	/** Human-readable age of the update (e.g. "3 months"). */
 	age?: string
+	/** Additional info about the update (e.g. deprecation notice). */
 	info?: string
+	/** Package name. */
 	name: string
+	/** Latest available version. */
 	new: string
+	/** Currently installed version. */
 	old: string
 }
 
 export type UpdatesData = {
+	/** Total dependency staleness in libyears. */
 	libyears?: number
+	/** Packages with available major version updates. */
 	major?: UpdatesPackage[]
+	/** Packages with available minor version updates. */
 	minor?: UpdatesPackage[]
+	/** Packages with available patch version updates. */
 	patch?: UpdatesPackage[]
+	/** Total number of outdated packages. */
 	total?: number
 }
 

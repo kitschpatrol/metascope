@@ -5,20 +5,32 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type ObsidianManifest = {
+	/** Plugin author name. */
 	author?: string
+	/** URL for the plugin author. */
 	authorUrl?: string
+	/** Plugin description. */
 	description?: string
+	/** URL for funding or sponsorship. */
 	fundingUrl?: string
+	/** Unique plugin identifier. */
 	id: string
+	/** Whether the plugin is desktop-only. */
 	isDesktopOnly?: boolean
+	/** Minimum Obsidian app version required. */
 	minAppVersion?: string
+	/** Display name of the plugin. */
 	name?: string
+	/** Plugin version string. */
 	version?: string
 }
 
 export type ObsidianData = {
+	/** Total community download count. */
 	downloadCount?: number
+	/** Parsed manifest.json contents. */
 	manifest?: ObsidianManifest
+	/** Obsidian plugin directory URL. */
 	url?: string
 }
 

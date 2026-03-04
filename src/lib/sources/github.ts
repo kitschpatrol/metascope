@@ -6,87 +6,168 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type GitHubData = {
+	/** ISO 8601 date when the repo was archived, if applicable. */
 	archivedAt?: string
+	/** Name of the repository's code of conduct. */
 	codeOfConduct?: string
+	/** Commits the default branch is ahead of the upstream fork parent. */
 	commitsAheadUpstream?: number
+	/** Commits the default branch is behind the upstream fork parent. */
 	commitsBehindUpstream?: number
+	/** Number of contributors to the repository. */
 	contributorCount?: number
+	/** ISO 8601 date when the repo was created. */
 	createdAt?: string
+	/** GitHub's internal numeric repository ID. */
 	databaseId?: number
+	/** Name of the default branch (e.g. "main"). */
 	defaultBranch?: string
+	/** Repository description. */
 	description?: string
+	/** Total number of discussions. */
 	discussionCount?: number
+	/** Repository disk usage in bytes. */
 	diskUsageBytes?: number
+	/** Number of forks. */
 	forkCount?: number
+	/** URL of the upstream repository this was forked from. */
 	forkedFrom?: string
+	/** Funding links configured on the repository. */
 	fundingLinks?: Array<{ platform: string; url: string }>
+	/** Whether a CONTRIBUTING file exists. */
 	hasContributing?: boolean
+	/** Whether discussions are enabled. */
 	hasDiscussionsEnabled?: boolean
+	/** Whether issues are enabled. */
 	hasIssuesEnabled?: boolean
+	/** Whether the repo uses Git LFS (detected via .gitattributes). */
 	hasLfs?: boolean
+	/** Whether GitHub Pages is enabled. */
 	hasPages?: boolean
+	/** Whether projects are enabled. */
 	hasProjectsEnabled?: boolean
+	/** Whether sponsorships are enabled. */
 	hasSponsorshipsEnabled?: boolean
+	/** Whether vulnerability alerts are enabled. */
 	hasVulnerabilityAlertsEnabled?: boolean
+	/** Whether the wiki is enabled. */
 	hasWikiEnabled?: boolean
+	/** Homepage URL set on the repository. */
 	homepageUrl?: string
+	/** Whether the repository is archived. */
 	isArchived?: boolean
+	/** Whether the repository is disabled. */
 	isDisabled?: boolean
+	/** Whether the repository is a fork. */
 	isFork?: boolean
+	/** Whether the repository belongs to an organization. */
 	isInOrganization?: boolean
+	/** Whether the repository is a mirror. */
 	isMirror?: boolean
+	/** Whether the repository is private. */
 	isPrivate?: boolean
+	/** Whether a security policy is enabled. */
 	isSecurityPolicyEnabled?: boolean
+	/** Number of closed issues. */
 	issueCountClosed?: number
+	/** Number of open issues. */
 	issueCountOpen?: number
+	/** Whether the repository is a template. */
 	isTemplate?: boolean
+	/** Languages used in the repo, keyed by name with size in bytes. */
 	languages?: Record<string, number>
+	/** License identifier (unused; codemeta provides this). */
 	license?: string
+	/** SPDX license key (e.g. "mit"). */
 	licenseKey?: string
+	/** Human-readable license name. */
 	licenseName?: string
+	/** SPDX license identifier (e.g. "MIT"). */
 	licenseSpdxId?: string
+	/** URL to the license text. */
 	licenseUrl?: string
+	/** URL of the upstream mirror, if applicable. */
 	mirrorUrl?: string
+	/** Repository name. */
 	name?: string
+	/** Full "owner/repo" identifier. */
 	nameWithOwner?: string
+	/** URL to the repository's Open Graph image. */
 	openGraphImageUrl?: string
+	/** GitHub username of the repository owner. */
 	ownerLogin?: string
+	/** Owner type, e.g. "User" or "Organization". */
 	ownerType?: string
+	/** Full "owner/repo" of the parent fork source. */
 	parentNameWithOwner?: string
+	/** Primary programming language of the repository. */
 	primaryLanguage?: string
+	/** Number of closed pull requests. */
 	pullRequestCountClosed?: number
+	/** Number of merged pull requests. */
 	pullRequestCountMerged?: number
+	/** Number of open pull requests. */
 	pullRequestCountOpen?: number
+	/** ISO 8601 date of the most recent push. */
 	pushedAt?: string
+	/** Total number of releases. */
 	releaseCount?: number
+	/** ISO 8601 date of the latest release. */
 	releaseDateLatest?: string
+	/** Total download count across latest release assets. */
 	releaseDownloadCount?: number
+	/** Tag name of the latest release. */
 	releaseVersionLatest?: string
+	/** URL to the security policy. */
 	securityPolicyUrl?: string
+	/** Repository merge and branch settings. */
 	settings?: {
+		/** Whether "Update branch" button is enabled. */
 		allowUpdateBranch?: boolean
+		/** Whether auto-merge is allowed. */
 		autoMergeAllowed?: boolean
+		/** Whether branches are deleted after merge. */
 		deleteBranchOnMerge?: boolean
+		/** Whether forking is allowed. */
 		forkingAllowed?: boolean
+		/** Whether merge commits are allowed. */
 		mergeCommitAllowed?: boolean
+		/** Template for merge commit messages. */
 		mergeCommitMessage?: string
+		/** Template for merge commit titles. */
 		mergeCommitTitle?: string
+		/** Whether rebase merging is allowed. */
 		rebaseMergeAllowed?: boolean
+		/** Whether squash merging is allowed. */
 		squashMergeAllowed?: boolean
+		/** Template for squash merge commit messages. */
 		squashMergeCommitMessage?: string
+		/** Template for squash merge commit titles. */
 		squashMergeCommitTitle?: string
+		/** Whether web-based commits require sign-off. */
 		webCommitSignoffRequired?: boolean
 	}
+	/** SSH clone URL. */
 	sshUrl?: string
+	/** Number of stars. */
 	stargazerCount?: number
+	/** Number of git submodules (detected via .gitmodules). */
 	submoduleCount?: number
+	/** URL of the template repository this was created from. */
 	templateFrom?: string
+	/** Repository topics. */
 	topics?: string[]
+	/** ISO 8601 date the repo was last updated. */
 	updatedAt?: string
+	/** GitHub URL of the repository. */
 	url?: string
+	/** Whether a custom Open Graph image is set. */
 	usesCustomOpenGraphImage?: boolean
+	/** Repository visibility (e.g. "PUBLIC", "PRIVATE"). */
 	visibility?: string
+	/** Number of open vulnerability alerts. */
 	vulnerabilityAlertCount?: number
+	/** Number of watchers. */
 	watcherCount?: number
 }
 

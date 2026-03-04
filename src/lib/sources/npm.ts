@@ -6,16 +6,27 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type NpmData = {
+	/** Deprecation message, if the package is deprecated. */
 	deprecated?: string
+	/** Downloads in the last month. */
 	downloadsMonthly?: number
+	/** All-time total downloads. */
 	downloadsTotal?: number
+	/** Downloads in the last week. */
 	downloadsWeekly?: number
+	/** Downloads in the last year. */
 	downloadsYearly?: number
+	/** Number of files in the published package. */
 	fileCount?: number
+	/** Whether the package exposes TypeScript types. */
 	hasTypes?: boolean
+	/** ISO 8601 date the package was last published. */
 	publishDateLatest?: string
+	/** Unpacked size of the published package in bytes. */
 	unpackedSizeBytes?: number
+	/** The npmjs.com URL for the package. */
 	url?: string
+	/** Latest published version string. */
 	versionLatest?: string
 }
 
@@ -80,6 +91,7 @@ export const npmSource: MetadataSource<'npm'> = {
 		return {
 			deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
 			downloadsMonthly,
+			// eslint-disable-next-line ts/prefer-nullish-coalescing
 			downloadsTotal: downloadsTotal || undefined,
 			downloadsWeekly,
 			downloadsYearly,

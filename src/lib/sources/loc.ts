@@ -4,18 +4,25 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type LocLanguageStats = {
+	/** Number of blank lines. */
 	blanks: number
+	/** Number of lines of code. */
 	code: number
+	/** Number of comment lines. */
 	comments: number
+	/** Number of files. */
 	files: number
 }
 
 export type LocLanguageEntry = LocLanguageStats & {
+	/** Programming language name. */
 	language: string
 }
 
 export type LocData = {
+	/** Per-language line count breakdown. */
 	breakdown?: LocLanguageEntry[]
+	/** Aggregate line counts across all languages. */
 	total?: LocLanguageStats
 }
 

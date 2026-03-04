@@ -4,8 +4,11 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type FilesystemData = {
+	/** Total number of directories (recursive). */
 	totalDirectoryCount?: number
+	/** Total number of files (recursive). */
 	totalFileCount?: number
+	/** Total size of all files in bytes. */
 	totalSizeBytes?: number
 }
 
@@ -38,6 +41,7 @@ export const filesystemSource: MetadataSource<'filesystem'> = {
 			totalSizeBytes,
 		}
 	},
+	// eslint-disable-next-line ts/require-await
 	async isAvailable(): Promise<boolean> {
 		return true
 	},

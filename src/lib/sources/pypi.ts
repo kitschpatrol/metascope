@@ -7,16 +7,27 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
 export type PypiData = {
+	/** Total downloads over the last 180 days. */
 	downloads180Days?: number
+	/** Downloads in the last day. */
 	downloadsDaily?: number
+	/** Downloads in the last month. */
 	downloadsMonthly?: number
+	/** Downloads in the last week. */
 	downloadsWeekly?: number
+	/** ISO 8601 date the package was last published. */
 	publishDateLatest?: string
+	/** Total number of releases on PyPI. */
 	releaseCount?: number
+	/** Size in bytes of the latest release artifact. */
 	sizeBytes?: number
+	/** PyPI project URL. */
 	url?: string
+	/** Latest published version string. */
 	versionLatest?: string
+	/** Whether the latest version has been yanked. */
 	yanked?: boolean
+	/** Reason the version was yanked, if provided. */
 	yankedReason?: string
 }
 
