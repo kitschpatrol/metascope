@@ -4,7 +4,16 @@ import { getChildLogger } from 'lognow'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
-setLogger(getChildLogger(log, 'codemeta'))
+setLogger(
+	getChildLogger(log, 'codemeta').withFreshPlugins([
+		{
+			// Only log from codemeta if parent is verbose
+			shouldSendToLogger: ({ logLevel }, loglayer) => loglayer.isLevelEnabled(logLevel),
+			transformLogLevel: ({ logLevel }) =>
+				logLevel === 'error' || logLevel === 'warn' ? 'debug' : logLevel,
+		},
+	]),
+)
 
 export type CodeMetaData = CodeMetaBasic
 

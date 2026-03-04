@@ -55,7 +55,16 @@ await yargsInstance
 			})
 			setLogger(log)
 			setLoggerReadPyproject(getChildLogger(log, 'read-pyproject'))
-			setLoggerCodeMeta(getChildLogger(log, 'codemeta'))
+			setLoggerCodeMeta(
+				getChildLogger(log, 'codemeta').withFreshPlugins([
+					{
+						// Only log from codemeta if parent is verbose
+						transformLogLevel: ({ logLevel }) =>
+							logLevel === 'error' || logLevel === 'warn' ? 'debug' : logLevel,
+						shouldSendToLogger: ({ logLevel }, loglayer) => loglayer.isLevelEnabled(logLevel),
+					},
+				]),
+			)
 
 			log.debug('Starting metadata extraction...')
 
