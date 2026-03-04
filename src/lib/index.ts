@@ -28,3 +28,4 @@ export type {
 	UpdatesPackage,
 } from './metadata-types'
 export { templates } from './templates/index'
+export type { TemplateMap, TemplateName } from './templates/index'

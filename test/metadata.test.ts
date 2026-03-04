@@ -65,9 +65,9 @@ describe('getMetadata', () => {
 	})
 
 	it('should handle built-in template name', async () => {
-		const result = await getMetadata({ path: '.', template: 'summary' })
+		const result = await getMetadata({ path: '.', template: 'frontmatter' })
 		// Built-in template should return a shaped object
-		expect(result).toHaveProperty('name')
+		expect(result).toHaveProperty('Name')
 	})
 
 	it('should pass templateData through to template function', async () => {

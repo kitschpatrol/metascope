@@ -8,6 +8,7 @@ import type {
 	MetadataContext,
 	Template,
 } from './metadata-types.js'
+import type { TemplateMap, TemplateName } from './templates/index.js'
 import type { MetadataSource, SourceContext } from './sources/source'
 import { log } from './log'
 import { codemetaSource } from './sources/codemeta'
@@ -88,10 +89,14 @@ async function resolveTemplate(
 	return builtIn
 }
 
+// Overload: built-in template name → mapped return type
+export async function getMetadata<K extends TemplateName>(
+	options: Omit<GetMetadataOptions, 'template'> & { template: K },
+): Promise<TemplateMap[K]>
+// Overload: template function → inferred return type
+export async function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
 // Overload: no template → full context
 export async function getMetadata(options: GetMetadataOptions): Promise<MetadataContext>
-// Overload: with template → inferred return type
-export async function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
 /**
  * Extract metadata from a project directory.
  */
