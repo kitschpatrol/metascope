@@ -656,6 +656,12 @@ The codemeta source is extracted first to provide discovery hints — the packag
 
 Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 
+Some semi-related projects:
+
+- [git-truck](https://github.com/git-truck/git-truck)
+- [codemeta](https://codemeta.github.io/)
+- [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta)
+
 ## Slop factor
 
 _Medium._

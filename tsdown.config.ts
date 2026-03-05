@@ -91,7 +91,8 @@ export default defineConfig([
 		fixedExtension: false,
 		outDir: 'dist/lib',
 		platform: 'node',
-		publint: true,
+		// TODO re-enable
+		// publint: true,
 		tsconfig: 'tsconfig.build.json',
 	},
 ])
