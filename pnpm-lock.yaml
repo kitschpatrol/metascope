@@ -74,6 +74,9 @@ importers:
       smol-toml:
         specifier: ^1.6.0
         version: 1.6.0
+      spdx-license-list:
+        specifier: ^6.11.0
+        version: 6.11.0
       tinyexec:
         specifier: ^1.0.2
         version: 1.0.2
@@ -4855,6 +4858,10 @@ packages:
 
   spdx-license-ids@3.0.23:
     resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
+
+  spdx-license-list@6.11.0:
+    resolution: {integrity: sha512-p5ICd51dSnh7zIMtPgbB9ShBg3HMT77OeI6WVhrFFvxa5KIFYNcqxD4joAE+n1zZ7wlJdEkrOMwC75JUMMmsJA==}
+    engines: {node: '>=8'}
 
   split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
@@ -11462,6 +11469,8 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   spdx-license-ids@3.0.23: {}
+
+  spdx-license-list@6.11.0: {}
 
   split2@4.2.0: {}
 

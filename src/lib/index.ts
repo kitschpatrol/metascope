@@ -20,6 +20,7 @@ export type {
 	GitData,
 	GitHubData,
 	InfoPlistData,
+	LicenseFilesData,
 	LocData,
 	LocTotals,
 	MetadataContext,

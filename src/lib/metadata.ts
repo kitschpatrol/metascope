@@ -19,6 +19,7 @@ import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
+import { licenseFileSource } from './sources/license-file'
 import { infoPlistSource } from './sources/info-plist'
 import { locSource } from './sources/loc'
 import { metadataFileSource } from './sources/metadata'
@@ -50,6 +51,7 @@ const sources: MetadataSource[] = [
 	gitSource,
 	githubSource,
 	infoPlistSource,
+	licenseFileSource,
 	locSource,
 	metadataFileSource,
 	metascopeSource,
@@ -206,6 +208,7 @@ export async function getMetadata<T>(
 		infoPlist: {},
 		git: {},
 		github: {},
+		licenseFiles: {},
 		loc: {},
 		metadataFile: {},
 		metascope: {},

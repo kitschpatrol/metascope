@@ -14,6 +14,7 @@ export type { InfoPlistData } from './sources/info-plist'
 export type { CodeMetaData } from './sources/codemeta'
 export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
+export type { LicenseFilesData } from './sources/license-file'
 export type { GitHubData } from './sources/github'
 export type { LocData, LocTotals } from './sources/loc'
 export type { MetadataFileData } from './sources/metadata'
@@ -46,6 +47,7 @@ import type { CodeMetaData } from './sources/codemeta'
 import type { InfoPlistData } from './sources/info-plist'
 import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
+import type { LicenseFilesData } from './sources/license-file'
 import type { GitHubData } from './sources/github'
 import type { LocData } from './sources/loc'
 import type { MetadataFileData } from './sources/metadata'
@@ -76,6 +78,7 @@ export type MetadataContext = {
 	infoPlist: InfoPlistData
 	git: GitData
 	github: GitHubData
+	licenseFiles: LicenseFilesData
 	loc: LocData
 	metadataFile: MetadataFileData
 	metascope: MetascopeData
