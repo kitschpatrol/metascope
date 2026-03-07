@@ -11,6 +11,9 @@ importers:
       '@kitschpatrol/codemeta':
         specifier: link:../codemeta
         version: link:../codemeta
+      '@kitschpatrol/tokei':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@sindresorhus/is':
         specifier: ^7.2.0
         version: 7.2.0
@@ -60,8 +63,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       updates:
-        specifier: ^17.8.0
-        version: 17.8.0
+        specifier: ^17.8.1
+        version: 17.8.3
       yargs:
         specifier: ^18.0.0
         version: 18.0.0
@@ -832,6 +835,80 @@ packages:
     resolution: {integrity: sha512-R5WrZeshDwKVfSYuIjQv0mp88Xy6BxWNTYRBOVmF7sBbhCeleilgxXuBpNayezKaV3HFRi6ZHju6af67g/VBRg==}
     engines: {node: '>=20.19.0'}
     hasBin: true
+
+  '@kitschpatrol/tokei-darwin-arm64@1.1.0':
+    resolution: {integrity: sha512-lF9ZdGsgIRXzXe3bdKpHg07rbuRHWKY/MBHsu81zJyi5i2X7HCMyYUVezROjBrYO2Pn3eDtzny/idNoOtqEreg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@kitschpatrol/tokei-darwin-x64@1.1.0':
+    resolution: {integrity: sha512-qFl+rBcJDHIL2v6XPwjgFjuVY1jFrm00Q21FsHaJGGo5VLABxI9n11u2EafbjtH0Ws7V1YNJLUUAd2FxyFlDzw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@kitschpatrol/tokei-freebsd-x64@1.1.0':
+    resolution: {integrity: sha512-oPdZSxXtoqQKHE3XIeh+zvfayzSj1IVHBJF1EAuY8pn/ALBOQJLRUUCXxHk+F0e9C2Rv3Q5+InZpEGdyI8P+Ww==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@kitschpatrol/tokei-linux-arm-gnueabihf@1.1.0':
+    resolution: {integrity: sha512-sfZKkoFvoFTCmWNXc9lEHckHuaGLaTIY2GI8S5u5ZfgGyBPqZZ8/1zkBvRpoJxPpWBUjuQh6TBDLDUhFx7acfQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@kitschpatrol/tokei-linux-arm64-gnu@1.1.0':
+    resolution: {integrity: sha512-5YVrWtJK2pRTQ7KL9zd7NM35n1EfL4MuTy0SKTAkJtCtrqwysFdpFZ7V3JfjBiBlojhH7WHjTq37gDSWfDYL8w==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@kitschpatrol/tokei-linux-arm64-musl@1.1.0':
+    resolution: {integrity: sha512-tizeaa5v+giOLFwoTZZM8F3az9Zy7ysOSMeOBgqfm/x7niBYi/z07dd0cvmNZHFxKpXpeXz62LGgh9qHDjy4AA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@kitschpatrol/tokei-linux-x64-gnu@1.1.0':
+    resolution: {integrity: sha512-Rv61YtjfJCt0e8MZD/2nQLij5JzgtbZhiyB/+Do2IgD/D6nYJAaOHQDI9QVt2VP563gdPoJEXGcSpC2eS8rrxw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@kitschpatrol/tokei-linux-x64-musl@1.1.0':
+    resolution: {integrity: sha512-pJMfH97OSsg7t2EfVDdYoQ3MrIPGc2+7aSezwBJ4r167zV3LTAsxNrgqWI8PA5ZDnF/Gju5I//5HPloVwroZCQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@kitschpatrol/tokei-win32-arm64-msvc@1.1.0':
+    resolution: {integrity: sha512-DWXTWWqdHyRKxG14JEQvdgmy6JbXS3qjUT9lmI+yNN/dYU9Ewu6EX14ascsDLN9CdQEXPGe0aBneJloDviIBdA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@kitschpatrol/tokei-win32-ia32-msvc@1.1.0':
+    resolution: {integrity: sha512-OSDPZLWW45qv+NO7tPAvJPRRPzs3TkDSqHFxRQBLCpx5gPsEbxZ7gxYPxayx3e0lqbKHGUlhG6wg4/auegKGyQ==}
+    engines: {node: '>= 10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@kitschpatrol/tokei-win32-x64-msvc@1.1.0':
+    resolution: {integrity: sha512-RhpQXLU1BN/T8KCALZRB4l7t4rk8eNztqve1m4POknkKiTpj0FfeRqUSX2jHkvlsQG6RaP2mSE4jh3DmqMgSQA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@kitschpatrol/tokei@1.1.0':
+    resolution: {integrity: sha512-/UxVByyjeAVEDSF9Ttan61j1GsSkvVMUg+L4surFnnxqS16XGp2otuANhf5qAe/St27T1rMVEE6liHlaHnasuQ==}
+    engines: {node: '>= 10'}
 
   '@kitschpatrol/typescript-config@6.0.2':
     resolution: {integrity: sha512-VG8ZzwzyWiqHRz/pZyRIN7Jd/vq/RPDak5PsQdrtrgpUy12E/vPT5+4tQ2LCv8kEBqr63gG9ENJN7ey/u0+xKQ==}
@@ -5218,8 +5295,8 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
-  updates@17.8.0:
-    resolution: {integrity: sha512-aeV2ewU3etnRtoa/67wJresSbuR+FUY4kRQlcKd30uGolLU9dyi2wEzPB4jrAl49mEgECkazw3u6OZtahOQR7Q==}
+  updates@17.8.3:
+    resolution: {integrity: sha512-YTCzRy4rGdrDCuX8wrnDKn2KXYp5kJS1T94k/JKQED60+lMAxdxoasX61EG0zbWYBxQQpTvC3uAzyDu3U+2zZA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -6543,6 +6620,53 @@ snapshots:
       - stylelint-order
       - supports-color
       - typescript
+
+  '@kitschpatrol/tokei-darwin-arm64@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-darwin-x64@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-freebsd-x64@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-linux-arm-gnueabihf@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-linux-arm64-gnu@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-linux-arm64-musl@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-linux-x64-gnu@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-linux-x64-musl@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-win32-arm64-msvc@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-win32-ia32-msvc@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei-win32-x64-msvc@1.1.0':
+    optional: true
+
+  '@kitschpatrol/tokei@1.1.0':
+    optionalDependencies:
+      '@kitschpatrol/tokei-darwin-arm64': 1.1.0
+      '@kitschpatrol/tokei-darwin-x64': 1.1.0
+      '@kitschpatrol/tokei-freebsd-x64': 1.1.0
+      '@kitschpatrol/tokei-linux-arm-gnueabihf': 1.1.0
+      '@kitschpatrol/tokei-linux-arm64-gnu': 1.1.0
+      '@kitschpatrol/tokei-linux-arm64-musl': 1.1.0
+      '@kitschpatrol/tokei-linux-x64-gnu': 1.1.0
+      '@kitschpatrol/tokei-linux-x64-musl': 1.1.0
+      '@kitschpatrol/tokei-win32-arm64-msvc': 1.1.0
+      '@kitschpatrol/tokei-win32-ia32-msvc': 1.1.0
+      '@kitschpatrol/tokei-win32-x64-msvc': 1.1.0
 
   '@kitschpatrol/typescript-config@6.0.2(@types/node@24.1.0)(typescript@5.9.3)':
     dependencies:
@@ -11885,7 +12009,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  updates@17.8.0: {}
+  updates@17.8.3: {}
 
   uri-js@4.4.1:
     dependencies:

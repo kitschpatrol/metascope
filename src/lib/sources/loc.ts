@@ -1,5 +1,4 @@
-import { exec } from 'tinyexec'
-import { z } from 'zod'
+import { tokei } from '@kitschpatrol/tokei'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
@@ -26,61 +25,35 @@ export type LocData = {
 	total?: LocLanguageStats
 }
 
-const tokeiEntrySchema = z.object({
-	blanks: z.number(),
-	code: z.number(),
-	comments: z.number(),
-	reports: z.array(z.unknown()),
-})
-
-const tokeiOutputSchema = z.record(z.string(), tokeiEntrySchema)
-
-function parseTokeiOutput(raw: z.infer<typeof tokeiOutputSchema>): LocData {
-	const breakdown: LocLanguageEntry[] = []
-	let total: LocLanguageStats | undefined
-
-	for (const [language, entry] of Object.entries(raw)) {
-		const stats: LocLanguageStats = {
-			blanks: entry.blanks,
-			code: entry.code,
-			comments: entry.comments,
-			files: entry.reports.length,
-		}
-
-		if (language === 'Total') {
-			total = stats
-		} else {
-			breakdown.push({ ...stats, language })
-		}
-	}
-
-	// Total's reports is always empty — tokei stores per-file data in children instead.
-	// Compute Total's files as the sum of all other languages' file counts.
-	if (total?.files === 0) {
-		total.files = breakdown.reduce((sum, entry) => sum + entry.files, 0)
-	}
-
-	return { breakdown, total }
-}
-
 export const locSource: MetadataSource<'loc'> = {
+	// eslint-disable-next-line ts/require-await -- synchronous native binding wrapped in async interface
 	async extract(context: SourceContext): Promise<LocData> {
 		log.debug('Extracting lines of code via tokei...')
 
-		const result = await exec('tokei', [context.path, '--compact', '--output', 'json'])
-		const raw = tokeiOutputSchema.parse(JSON.parse(result.stdout))
-		return parseTokeiOutput(raw)
-	},
-	async isAvailable(): Promise<boolean> {
-		try {
-			await exec('tokei', ['--version'])
-			return true
-		} catch {
-			log.info(
-				'tokei is not installed. Install it for lines-of-code analysis: https://github.com/XAMPPRocky/tokei',
-			)
-			return false
+		const results = tokei({ exclude: ['node_modules'], include: [context.path] })
+
+		const breakdown: LocLanguageEntry[] = results
+			.map((entry) => ({
+				blanks: entry.blanks,
+				code: entry.code,
+				comments: entry.comments,
+				files: entry.files,
+				language: entry.lang,
+			}))
+			.toSorted((a, b) => b.code - a.code)
+
+		const total: LocLanguageStats = {
+			blanks: breakdown.reduce((sum, entry) => sum + entry.blanks, 0),
+			code: breakdown.reduce((sum, entry) => sum + entry.code, 0),
+			comments: breakdown.reduce((sum, entry) => sum + entry.comments, 0),
+			files: breakdown.reduce((sum, entry) => sum + entry.files, 0),
 		}
+
+		return { breakdown, total }
+	},
+	// eslint-disable-next-line ts/require-await -- interface requires async
+	async isAvailable(): Promise<boolean> {
+		return true
 	},
 	key: 'loc',
 }

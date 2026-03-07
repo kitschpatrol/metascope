@@ -47,6 +47,7 @@
 	},
 	"dependencies": {
 		"@kitschpatrol/codemeta": "link:../codemeta",
+		"@kitschpatrol/tokei": "^1.1.0",
 		"@sindresorhus/is": "^7.2.0",
 		"@types/node": "~24.1.0",
 		"@types/yargs": "^17.0.35",

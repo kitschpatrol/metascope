@@ -52,16 +52,13 @@ Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in T
 
 Optional external tools:
 
-- [tokei](https://github.com/XAMPPRocky/tokei)\
-  Required for the `loc` (lines of code) source. If not present, the `loc` source is simply skipped.
-
 - [GitHub CLI](https://cli.github.com)
   Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`.
 
-To install these with [Homebrew](https://brew.sh/):
+To install with [Homebrew](https://brew.sh/):
 
 ```sh
-brew install tokei gh
+brew install gh
 ```
 
 ### Installation
@@ -442,9 +439,9 @@ Available when a git remote points to `github.com`. Requires a GitHub token for 
 
 ### loc
 
-Lines of code analysis via [tokei](https://github.com/XAMPPRocky/tokei).
+Lines of code analysis via [tokei](https://github.com/XAMPPRocky/tokei) (using the [@kitschpatrol/tokei](https://github.com/kitschpatrol/napi-tokei) native binding).
 
-Available when the `tokei` command-line tool is installed. Supports 260+ programming languages.
+Always available. Supports 260+ programming languages.
 
 | Field       | Type                 | Description                                |
 | ----------- | -------------------- | ------------------------------------------ |
