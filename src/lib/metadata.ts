@@ -12,6 +12,7 @@ import type {
 import type { MetadataSource, SourceContext } from './sources/source'
 import type { TemplateMap, TemplateName } from './templates/index.js'
 import { log } from './log'
+import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
 import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
@@ -34,6 +35,7 @@ const execFileAsync = promisify(execFile)
  * Codemeta is first because other sources depend on its output for discovery.
  */
 const sources: MetadataSource[] = [
+	arduinoLibraryPropertiesSource,
 	codemetaSource,
 	filesystemSource,
 	gitSource,
@@ -182,6 +184,7 @@ export async function getMetadata<T>(
 
 	// Assemble context
 	const context: MetadataContext = {
+		arduinoLibraryProperties: {},
 		codemeta: codemetaData,
 		filesystem: {},
 		git: {},

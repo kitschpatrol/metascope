@@ -1,25 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import type { OpenFrameworksAddonConfig } from '../parsers/open-frameworks-addon-config-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseOpenFrameworksAddonConfig } from '../parsers/open-frameworks-addon-config-parser'
 
-export type OpenFrameworksAddonConfigData = {
-	/** `ADDON_AUTHOR` from `meta:` section. */
-	author?: string
-	/** `ADDON_DEPENDENCIES` from `common:` section (space-separated addon names). */
-	dependencies?: string[]
-	/** `ADDON_DESCRIPTION` from `meta:` section. */
-	description?: string
-	/** `ADDON_NAME` from `meta:` section. */
-	name?: string
-	/** Platform section names that contain at least one variable assignment. */
-	platformSections?: string[]
-	/** `ADDON_TAGS` from `meta:` section (quote-aware tokenized). */
-	tags?: string[]
-	/** `ADDON_URL` from `meta:` section. */
-	url?: string
-}
+export type OpenFrameworksAddonConfigData = Partial<OpenFrameworksAddonConfig>
 
 export const openFrameworksAddonConfigSource: MetadataSource<'openFrameworksAddonConfig'> = {
 	async extract(context: SourceContext): Promise<OpenFrameworksAddonConfigData> {

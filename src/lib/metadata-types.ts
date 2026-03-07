@@ -1,3 +1,9 @@
+export type {
+	ArduinoLibraryPropertiesCategory,
+	ArduinoLibraryPropertiesData,
+	ArduinoLibraryPropertiesDependencyEntry,
+	ArduinoLibraryPropertiesPersonEntry,
+} from './sources/arduino-library-properties'
 export type { CodeMetaData } from './sources/codemeta'
 export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
@@ -12,6 +18,7 @@ export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
+import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
 import type { CodeMetaData } from './sources/codemeta'
 import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
@@ -33,6 +40,7 @@ import type { UpdatesData } from './sources/updates'
  * Each key corresponds to a metadata source.
  */
 export type MetadataContext = {
+	arduinoLibraryProperties: ArduinoLibraryPropertiesData
 	codemeta: CodeMetaData
 	filesystem: FilesystemData
 	git: GitData

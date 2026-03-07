@@ -3,6 +3,10 @@ export { getMetadata } from './metadata'
 export { defineTemplate } from './metadata-types'
 export type { LanguageInfo } from '@kitschpatrol/tokei'
 export type {
+	ArduinoLibraryPropertiesCategory,
+	ArduinoLibraryPropertiesData,
+	ArduinoLibraryPropertiesDependencyEntry,
+	ArduinoLibraryPropertiesPersonEntry,
 	CodeMetaData,
 	Credentials,
 	FilesystemData,

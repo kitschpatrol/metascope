@@ -3,6 +3,7 @@ import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
 import { defineTemplate } from '../src/lib/metadata-types'
 
 const mockContext: MetadataContext = {
+	arduinoLibraryProperties: {},
 	codemeta: {
 		author: [
 			{
