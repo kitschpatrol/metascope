@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Reymenta"
+	id="fr.batchass.reymenta"
+	author="Bruce Lane"
+	license="MIT"
+	summary="Reymenta block for Cinder 0.9: utilities for Spout, OSC, WebSockets, Watchdog, Shaders, Parameters"
+	url="https://github.com/brucelane/Cinder-Reymenta"
+	git="git://github.com/brucelane/Cinder-Reymenta.git"
+	>
+	<supports os="msw" />
+  	<supports os="macosx" />
+    <supports os="ios" />
+	<requires>ocornut.imgui</requires>
+	<requires>com.wk.websocketpp</requires>
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	<headerPattern>include/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<sourcePattern>src/*.c</sourcePattern>
+	<platform os="msw">
+		<libraryPath>lib</libraryPath>
+		<requires>fr.batchass.spout</requires>
+		<requires>mb.cinder.midi2</requires>
+	</platform>
+</block>
+<template>templates/Reymenta/template.xml</template>
+</cinder>

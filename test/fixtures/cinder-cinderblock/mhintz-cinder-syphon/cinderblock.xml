@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+    name="Syphon"
+    id="info.v002.syphon"  
+    library="http://syphon.v002.info"
+    author="Tom Butterworth, Anton Marini, Anthony Stellato, Reza Ali, gaborpapp, Mark Hintz"
+    summary="An implementation of the Syphon framework for Cinder 0.9.0+"
+    version="Public Beta 2"
+    git=""
+    url=""
+    >
+    <supports os="macosx" />
+    <headerPattern>src/*.h</headerPattern>
+    <sourcePattern>src/*.mm</sourcePattern>
+    <header>lib/SyphonNameboundClient.h</header>
+    <source>lib/SyphonNameboundClient.m</source>
+    <platform os="macosx">
+        <framework>lib/Syphon.framework</framework>
+        <buildCopy destination="Frameworks">lib/Syphon.framework</buildCopy>
+        <frameworkPath>lib/</frameworkPath>
+    </platform>
+</block>
+</cinder>

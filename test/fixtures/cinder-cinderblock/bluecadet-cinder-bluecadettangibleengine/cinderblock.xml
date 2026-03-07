@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="BluecadetTangibleEngine"
+	id="com.bluecadet.cinder.tangibleengine"
+	git="git@github.com:bluecadet/Cinder-BluecadetTangibleEngine.git"
+	author="Bluecadet"
+	summary="Tangible Engine plugin for Cinder-BluecadetViews"
+	license=""
+	>
+	
+	<supports os="msw"></supports>
+	
+	<requires>com.bluecadet.cinder.views</requires>
+	<requires>com.bluecadet.cinder.gestureworks</requires>
+	
+	<headerPattern>include/ideum/tangibleengine/tangible_tracker.h</headerPattern>
+	
+	<headerPattern>src/bluecadet/tangibleengine/*.h</headerPattern>
+	<sourcePattern>src/bluecadet/tangibleengine/*.cpp</sourcePattern>
+	
+	<includePath>lib</includePath>
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	
+	<asset>assets/bluecadet_tangible_patterns.json</asset>
+	
+	<!-- <libraryPath>lib/$(PlatformTarget)</libraryPath> -->
+	<!-- <staticLibrary absolute="true">tangible_tracker.lib</staticLibrary> -->
+	<!-- <buildCopy>lib/$(PlatformTarget)/tangible_tracker.dll</buildCopy> -->
+	
+	<!-- Need to hard code to x64 unfortunately until TinderBox supports templated platform targets -->
+	<buildCopy>lib/x64/tangible_tracker.dll</buildCopy>
+	<staticLibrary>lib/x64/tangible_tracker.lib</staticLibrary>
+
+</block>
+</cinder>

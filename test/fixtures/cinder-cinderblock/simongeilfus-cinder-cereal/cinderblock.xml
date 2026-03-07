@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-Cereal"
+	id="sg.cinder.cereal"
+	author="Simon Geilfus"
+	version="0.1"
+	library="http://uscilab.github.io/cereal/"
+	git="https://github.com/simongeilfus/Cinder-Cereal.git"
+	>	
+	<includePath>include</includePath>
+	<includePath system="true">lib/cereal/include</includePath>
+	<header>include/CinderCereal.h</header>
+</block>
+</cinder>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+    <block
+        name="libfreenect2"
+        id="info.izumin.cinder.freenect2"
+        author="Masayuki Izumi"
+        license="Apache 2.0 / Apache 2.0 / NiTE / GNU LGPL"
+        summary="libfreenect2 + OpenNI2 + NiTE2 + libusb"
+        git="git://github.com/izumin5210/Cinder-Freenect2.git"
+        version="0.2.0"
+        libraryUrl="http://github.com/OpenKinect/libfreenect2"
+        >
+        <includePath system="true">include/libusb-1.0</includePath>
+        <includePath system="true">include/libfreenect2</includePath>
+        <includePath system="true">include/ni2</includePath>
+        <includePath system="true">include/nite2</includePath>
+        <platform os="macosx">
+            <dynamicLibrary>lib/libusb-1.0.0.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/libusb-1.0.dylib</dynamicLibrary>
+            <staticLibrary>lib/libusb-1.0.a</staticLibrary>
+
+            <dynamicLibrary>lib/ni2/libOpenNI2.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/libNiTE2.dylib</dynamicLibrary>
+
+            <dynamicLibrary>lib/libfreenect2.0.2.0.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/libfreenect2.0.2.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/libfreenect2.dylib</dynamicLibrary>
+
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libOniFile.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libFreenect2Driver.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libfreenect2-openni2.0.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libfreenect2-openni2.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libPS1080.dylib</dynamicLibrary>
+            <dynamicLibrary>lib/ni2/OpenNI2/Drivers/libPSLink.dylib</dynamicLibrary>
+        </platform>
+    </block>
+</cinder>

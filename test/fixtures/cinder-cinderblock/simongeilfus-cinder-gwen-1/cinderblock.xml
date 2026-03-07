@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Gwen"
+	id="org.rte.gwen"
+	author="Garry Newman (block: Richard Eakin)"
+	license="MIT"
+	summary="GWEN (GUI Without Extravagant Nonsense) for Cinder."
+	git="git://github.com/reakinator/Cinder-Gwen.git"
+	version="0.1"
+	libraryUrl="git://github.com/garrynewman/GWEN.git"
+	>
+
+	<headerPattern>src/cigwen/*.h</headerPattern>
+	<sourcePattern>src/cigwen/*.cpp</sourcePattern>
+
+	<headerPattern>gwen/gwen/include/Gwen/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Controls/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Controls/Dialogs/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Controls/Layout/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Controls/Property/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Skins/*</headerPattern>
+	<headerPattern>gwen/gwen/include/Gwen/Util/*</headerPattern>
+
+	<sourcePattern>gwen/gwen/src/*</sourcePattern>
+	<sourcePattern>gwen/gwen/src/Controls/*</sourcePattern>
+	<sourcePattern>gwen/gwen/src/Controls/Dialog/*</sourcePattern>
+
+	<includePath>src</includePath>
+	<includePath>gwen/gwen/include</includePath>
+
+	<asset>assets/DefaultSkin.png</asset>
+</block>
+</cinder>

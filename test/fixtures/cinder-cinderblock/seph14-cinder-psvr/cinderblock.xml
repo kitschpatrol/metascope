@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-PSVR"
+	id="com.solid-jellyfish.psvr"
+	author="seph li"
+	license="GPL, Commercial"
+	summary="A Cinder block that enables you to connect to PlaystationVR headset and read the fused gyro sensor data."
+	url="https://github.com/seph14/Cinder-PSVR.git"
+	git="git://github.com/seph14/Cinder-PSVR.git"
+	>
+	<supports os="msw" />
+	<supports os="macosx" />
+	<includePath>include</includePath>
+	<source>src/psvr.cpp</source>
+	
+	<platform os="msw">
+		<platform config="debug">
+			<staticLibrary>lib/msw/$(PlatformTarget)/cinder-psvr-$(PlatformToolset)_d.lib</staticLibrary>
+			<staticLibrary>lib/msw/$(PlatformTarget)/libusb-$(PlatformToolset)_d.lib</staticLibrary>
+		</platform>
+		<platform config="release">
+			<staticLibrary>lib/msw/$(PlatformTarget)/cinder-psvr-$(PlatformToolset).lib</staticLibrary>
+			<staticLibrary>lib/msw/$(PlatformTarget)/libusb-$(PlatformToolset).lib</staticLibrary>
+		</platform>
+	</platform>
+	<platform os="macosx">
+		<platform config="debug">
+			<staticLibrary>lib/macosx/cinder-psvr_d.a</staticLibrary>
+		</platform>
+		<platform config="release">
+			<staticLibrary>lib/macosx/cinder-psvr.a</staticLibrary>
+		</platform>
+		<dynamicLibrary>lib/macosx/libusb-1.0.0.dylib</dynamicLibrary>
+		<buildCopy>lib/macosx/libusb-1.0.0.dylib</buildCopy>
+	</platform>
+</block>
+</cinder>

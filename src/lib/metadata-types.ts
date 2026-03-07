@@ -4,6 +4,7 @@ export type {
 	ArduinoLibraryPropertiesDependencyEntry,
 	ArduinoLibraryPropertiesPersonEntry,
 } from './sources/arduino-library-properties'
+export type { CinderCinderblockData } from './sources/cinder-cinderblock'
 export type { CodeMetaData } from './sources/codemeta'
 export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
@@ -24,6 +25,7 @@ export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
+import type { CinderCinderblockData } from './sources/cinder-cinderblock'
 import type { CodeMetaData } from './sources/codemeta'
 import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
@@ -47,6 +49,7 @@ import type { UpdatesData } from './sources/updates'
  */
 export type MetadataContext = {
 	arduinoLibraryProperties: ArduinoLibraryPropertiesData
+	cinderCinderblock: CinderCinderblockData
 	codemeta: CodeMetaData
 	filesystem: FilesystemData
 	git: GitData

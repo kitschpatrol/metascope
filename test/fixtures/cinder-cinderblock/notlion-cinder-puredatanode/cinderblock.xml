@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="PureDataNode"
+	id="org.rte.puredatanode"
+	author="Richard Eakin"
+	license="BSD"
+	summary="Packages libpd and provides a 'PureDataNode' for ci::audio"
+	git="git@github.com:richardeakin/Cinder-PureDataNode.git"
+	version="0.5"
+	>
+
+	<includePath>libpd/cpp</includePath>
+	<includePath>libpd/libpd_wrapper</includePath>
+	<includePath>libpd/pure_data</includePath>
+	<includePath>src</includePath>
+
+	<headerPattern>src/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<headerPattern>libpd/cpp/*.hpp</headerPattern>
+	<sourcePattern>libpd/cpp/*.cpp</sourcePattern>
+	<headerPattern>libpd/pure-data/src/*.h</headerPattern>
+	<sourcePattern>libpd/pure-data/src/*.c</sourcePattern>
+	<headerPattern>libpd/libpd_wrapper/*.h</headerPattern>
+	<sourcePattern>libpd/libpd_wrapper/*.c</sourcePattern>
+	<headerPattern>libpd/libpd_wrapper/util/*.h</headerPattern>
+	<sourcePattern>libpd/libpd_wrapper/util/*.c</sourcePattern>
+
+	<preprocessorDefine>PD</preprocessorDefine>
+	<preprocessorDefine>USEAPI_DUMMY</preprocessorDefine>
+	<preprocessorDefine>HAVEAPI_DUMMY</preprocessorDefine>
+	<preprocessorDefine>HAVE_UNISTD_H</preprocessorDefine>
+</block>
+</cinder>

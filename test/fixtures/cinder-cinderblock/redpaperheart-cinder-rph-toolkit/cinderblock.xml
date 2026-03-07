@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-RPH-Toolkit"
+	id="com.redpaperheart.toolkit"
+  author="Red Paper Heart"
+	summary="Helper classes that are in development."
+  version="0.1"
+	url="https://github.com/redpaperheart/Cinder-RPH-Toolkit"
+	git="https://github.com/redpaperheart/Cinder-RPH-Toolkit.git"
+	>
+    <includePath>src</includePath>
+    <sourcePattern>src/rph/*.cpp</sourcePattern>
+    <headerPattern>src/rph/*.h</headerPattern>
+    <sourcePattern>src/rph/statehandler/*.cpp</sourcePattern>
+    <headerPattern>src/rph/statehandler/*.h</headerPattern>
+</block>
+</cinder>

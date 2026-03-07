@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+		name="Cinder DSAPI"
+		version="0.1"
+		id= "com.intel.cinderds"
+		git="https://github.com/SethGibson/Cinder-DSAPI.git"
+		author="Seth Gibson, Justin Hinman"
+		summary="Cinder wrapper for the DS4 (Intel R200) depth sensor native API"
+		>
+		<supports os="msw" />
+		<includePath>$(DSROOT)\Include</includePath>
+		<includePath>src/</includePath>	
+		<libraryPath>$(DSROOT)\Lib</libraryPath>
+		
+		<headerPattern>src/CiDSAPI.h</headerPattern>
+		<sourcePattern>src/CiDSAPI.cpp</sourcePattern>
+		
+		<platform os="msw">
+			<platform config="debug">
+				<staticLibrary>DSAPI32.dbg.lib</staticLibrary>
+			</platform>
+			<platform config="release">
+				<staticLibrary>DSAPI32.lib</staticLibrary>
+			</platform>			
+		</platform>
+	</block>
+</cinder>

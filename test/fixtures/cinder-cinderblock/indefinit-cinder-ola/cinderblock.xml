@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="OLA"
+	id="com.studioindefinit.ola"
+	author="Indefinit"
+	license="LGPL"
+	summary="Minimal Cinder wrapper for Open lighting Architecture. The Open Lighting Project's goal is to provide high quality, open source lighting control software for the entertainment lighting industry."
+	git=""
+	version="0.9.3"
+	libraryUrl="http://www.openlighting.org/"
+	>
+	<supports os="macosx" />
+	<header>include/CinderOLA.h</header>
+	<source>src/CinderOLA.cpp</source>
+	<headerPattern>include/*/*.h</headerPattern>
+	<sourcePattern>src/*/*.cpp</sourcePattern>
+	<platform os="macosx">
+		<libraryPath>/lib/macosx</libraryPath>
+		<staticLibrary>lib/macosx/libola.a</staticLibrary>	    
+		<staticLibrary>lib/macosx/libolaespnet.a</staticLibrary>    
+		<staticLibrary>lib/macosx/libolarenard.a</staticLibrary>		     
+		<staticLibrary>lib/macosx/libolaslpserver.a</staticLibrary>
+		<staticLibrary>lib/macosx/libolaartnet.a</staticLibrary>	    
+		<staticLibrary>lib/macosx/libolakarate.a</staticLibrary>    
+		<staticLibrary>lib/macosx/libolasandnet.a</staticLibrary>		     
+		<staticLibrary>lib/macosx/libolastageprofi.a</staticLibrary>
+		<staticLibrary>lib/macosx/libolaartnetconf.a</staticLibrary>  
+		<staticLibrary>lib/macosx/libolakinet.a</staticLibrary>    
+		<staticLibrary>lib/macosx/libolaserver.a</staticLibrary>		     
+		<staticLibrary>lib/macosx/libolatrigger.a</staticLibrary>
+		<staticLibrary>lib/macosx/libolacommon.a</staticLibrary>	    
+		<staticLibrary>lib/macosx/libolamilinst.a</staticLibrary>   
+		<staticLibrary>lib/macosx/libolaserverplugininterface.a</staticLibrary>  
+		<staticLibrary>lib/macosx/libolausbdmx.a</staticLibrary>
+		<staticLibrary>lib/macosx/liboladummy.a</staticLibrary>	    
+		<staticLibrary>lib/macosx/libolaopendmx.a</staticLibrary>   
+		<staticLibrary>lib/macosx/libolashownet.a</staticLibrary>		     
+		<staticLibrary>lib/macosx/libolausbpro.a</staticLibrary>
+		<staticLibrary>lib/macosx/libolae131.a</staticLibrary>	    
+		<staticLibrary>lib/macosx/libolaosc.a</staticLibrary>       
+		<staticLibrary>lib/macosx/libolaslpclient.a</staticLibrary>		     
+		<staticLibrary>lib/macosx/libolausbproconf.a</staticLibrary>
+		<staticLibrary>lib/macosx/libolae131conf.a</staticLibrary>    
+		<staticLibrary>lib/macosx/libolapathport.a</staticLibrary>  
+		<staticLibrary>lib/macosx/libolaslpcore.a</staticLibrary>
+		<staticLibrary>lib/macosx/libprotobuf-lite.a</staticLibrary>
+		<staticLibrary>lib/macosx/libprotobuf.a</staticLibrary>
+		<staticLibrary>lib/macosx/libprotoc.a</staticLibrary>
+	</platform>
+</block>
+<template></template>
+</cinder>

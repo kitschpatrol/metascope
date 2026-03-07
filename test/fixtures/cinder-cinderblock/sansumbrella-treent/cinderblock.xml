@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Treent"
+	id="com.sansumbrella.treent"
+	author="David Wicks"
+	summary="Tree-based prefab system for EntityX."
+	url="git@github.com:sansumbrella/Treent.git"
+	>
+	<!-- EntityX By Alec Thomas et al -->
+	<includePath>lib/entityx</includePath>
+	<headerPattern>lib/entityx/entityx/*.h</headerPattern>
+	<source>lib/entityx/entityx/Entity.cc</source>
+	<source>lib/entityx/entityx/Event.cc</source>
+	<source>lib/entityx/entityx/System.cc</source>
+	<!-- EntityX memory allocator. -->
+	<source>lib/entityx/entityx/help/Pool.cc</source>
+	<!-- Treent's config for EntityX. -->
+	<header>src/entityx/config.h</header>
+
+	<!-- Treent -->
+	<includePath>src</includePath>
+	<headerPattern>src/treent/*.h</headerPattern>
+	<sourcePattern>src/treent/*.cpp</sourcePattern>
+	<!-- 2d Reference Implementation -->
+	<headerPattern>src/treent/2d/*.h</headerPattern>
+	<sourcePattern>src/treent/2d/*.cpp</sourcePattern>
+	<!-- 3d Reference Implementation -->
+	<headerPattern>src/treent/3d/*.h</headerPattern>
+	<sourcePattern>src/treent/3d/*.cpp</sourcePattern>
+</block>
+<template>templates/Box2D Sandbox/template.xml</template>
+</cinder>

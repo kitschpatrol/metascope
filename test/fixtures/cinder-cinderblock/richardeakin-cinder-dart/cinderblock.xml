@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Dart"
+	id="org.libcinder.dart"
+	author="Richard Eakin"
+	license="BSD"
+	summary="Dart scripting in Cinder"
+	git="git://github.com/richardeakin/Cinder-Dart.git"
+	version="0.4"
+	libraryUrl="www.dartlang.org"
+	>
+
+	<includePath>dart-runtime</includePath>
+	<includePath>src</includePath>
+
+	<headerPattern>dart-runtime/*.h</headerPattern>
+	<headerPattern>src/cidart/*.h</headerPattern>
+	<sourcePattern>src/cidart/*.cpp</sourcePattern>
+
+	<platform os="macosx">
+		<platform config="Debug">
+			<staticLibrary>dart-runtime/lib/macosx/Debug/libdart_runtime.a</staticLibrary>
+		</platform>
+		<platform config="Release">
+			<staticLibrary>dart-runtime/lib/macosx/Release/libdart_runtime.a</staticLibrary>
+		</platform>
+
+	</platform>
+	<platform os="msw">
+		<platform config="Debug">
+			<staticLibrary>dart-runtime/lib/msw/x64/Debug/libdart_runtime.lib</staticLibrary>
+		</platform>
+		<platform config="Release">
+			<staticLibrary>dart-runtime/lib/msw/x64/Release/libdart_runtime.lib</staticLibrary>
+		</platform>
+	</platform>
+
+	<resource name="CIDART_RES_SNAPSHOT_BIN" type="IMAGE">dart-runtime/snapshot_gen.bin</resource>
+	<resource name="CIDART_RES_CINDER_DART" type="DART">src/cidart/cinder.dart</resource>
+
+</block>
+</cinder>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+    <block
+    name="Cinder-InputSimulation"
+    id="com.sharkbox.InputSimulation"
+    author="Charlei Whitney"
+    license="MIT"
+    summary="A small util to fkae native system input"
+    git="git@github.com:sharkbox/Cinder-InputSimulation.git"
+    version="0.1"
+    libraryUrl="www.sharkbox.com"
+    >
+
+	<supports os="macosx" />
+	<headerPattern>include/InputSimulation.h</headerPattern>
+</cinder>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="SpriteSheet"
+	id="com.proalias.spritesheet"
+	author="Alias Cummins"
+	summary="Basic sprite sheet support for Mac OS X, iOS and Windows."
+	>
+	<supports os="msw" />
+	<supports os="macosx" />
+	<includePath>src</includePath>
+	<source>src/SpriteSheet.cpp</source>
+	<header>src/SpriteSheet.h</header>
+	<source>src/SpriteDataParser.cpp</source>
+	<header>src/SpriteDataParser.h</header>
+</block>
+</cinder>

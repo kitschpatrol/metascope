@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+  name="buildmesh"
+  id="com.markhz.buildmesh"
+  author=""
+  summary=""
+  license=""
+  url=""
+  git=""
+  version=""
+  library=""
+  >
+  
+  <header>buildmesh.h</header>
+  <header>MathBase.h</header>
+  <header>Mesh.h</header>
+  <source>Mesh.cpp</source>
+  <header>MeshBuilds.h</header>
+  <source>MeshBuilds.cpp</source>
+  <header>MeshGroup.h</header>
+  <source>MeshGroup.cpp</source>
+  <header>Vertex.h</header>
+  <source>Vertex.cpp</source>
+</block>
+<template>templates/template.xml</template>
+</cinder>

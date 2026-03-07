@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+  <block 
+  	name="ciCSG" 
+  	id="com.sharkbox.cicsg"
+  	author="Charlie Whitney / Lars Berg"
+  	summary="A basic CSG library for Cinder 0.9.0 based on ofxCSG by Lars Berg"
+	git="https://github.com/cwhitney/ciCSG"
+  	>
+	<supports os="macosx" />
+	<supports os="msw" />
+	
+	<headerPattern>src/*.h</headerPattern>
+	<headerPattern>src/CSG/*.h</headerPattern>
+	<sourcePattern>src/CSG/*.cpp</sourcePattern>
+
+	<includePath>src</includePath>
+	<includePath>src/CSG</includePath>
+  </block>
+</cinder>

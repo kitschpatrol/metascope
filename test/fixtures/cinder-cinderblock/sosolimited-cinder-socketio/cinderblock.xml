@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name		= "Socket.io Client"
+	id			= "com.sosolimited.socketio-block"
+	author	= "Wes Thomas"
+	summary	= "CinderBlock for the Socket.io C++ client."
+	license	= "MIT"
+	>
+	<!-- socketio dependencies -->
+	<includePath system="true">src/socket.io-client-cpp/lib/rapidjson/include/</includePath>
+	<includePath system="true">src/socket.io-client-cpp/lib/websocketpp/</includePath>
+
+	<!-- socketio source and headers -->
+	<headerPattern>src/socket.io-client-cpp/src/*.h</headerPattern>
+	<sourcePattern>src/socket.io-client-cpp/src/*.cpp</sourcePattern>
+	<headerPattern>src/socket.io-client-cpp/src/internal/*.h</headerPattern>
+	<sourcePattern>src/socket.io-client-cpp/src/internal/*.cpp</sourcePattern>
+</block>
+</cinder>

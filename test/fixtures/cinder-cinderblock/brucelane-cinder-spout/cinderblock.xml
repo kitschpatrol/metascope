@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Spout"
+	id="fr.batchass.spout"
+	author="Bruce Lane/Eric Renaud-Houde"
+	license="MIT"
+	summary="Spout block for Cinder"
+	version="1.0.20251226"
+	url="https://github.com/brucelane/Cinder-Spout"
+	git="git://github.com/brucelane/Cinder-Spout.git"
+	>
+	<supports os="msw" />
+	<includePath>include</includePath>
+	<headerPattern>include/*.h</headerPattern>
+	<platform os="msw" config="debug">
+		<staticLibrary>lib/Spout_static_d.lib</staticLibrary>
+	</platform>
+	<platform os="msw" config="release">
+		<staticLibrary>lib/Spout_static.lib</staticLibrary>
+	</platform>
+</block>
+<template>templates/Spout/template.xml</template>
+</cinder>

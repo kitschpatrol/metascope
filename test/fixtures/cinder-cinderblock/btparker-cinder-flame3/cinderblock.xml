@@ -1,0 +1,11 @@
+<cinder>
+	<block
+		name="Flame3"
+		author="Flame3 by Scott Draves, Cinder Block by Tyler Parker"
+		summary="An implementation of the Flame renderer for Cinder"
+	>
+		<includePath>include</includePath>
+		<includePath>include/flam3</includePath>
+		<header>include/flam3/flam3.h</header>
+	</block>
+</cinder>

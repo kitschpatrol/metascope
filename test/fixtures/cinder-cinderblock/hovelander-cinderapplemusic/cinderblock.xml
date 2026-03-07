@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="CinderAppleMusic"
+	id="com.darkmatterlight.CinderAppleMusic"
+	author="D.S. Hoveland"
+	summary="CinderBlock for Music Media in the iOS 9+ Ecosystem"
+	core="false"
+    license="MIT"
+    url="https://github.com/Hovelander/CinderAppleMusic"
+    git="https://github.com/Hovelander/CinderAppleMusic.git"
+    version="0.1.0"
+    >
+
+	<supports os="ios" />
+    <headerPattern>include/*.h</headerPattern>
+    <sourcePattern>src/*.cpp</sourcePattern>
+    <includePath>include</includePath>
+    <includePath>src</includePath>
+	<platform os="ios">
+		<framework sdk="true">MediaPlayer.framework</framework>
+	</platform>
+</block>
+</cinder>

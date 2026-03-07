@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+		name="poScene" 
+		id="com.potiondesign.poscene"
+		git="git://github.com/Potion/Cinder-poScene.git"
+		author="Potion Design LLC"
+		summary="Potion's Scene Graph block for Cinder."
+		license="BSD New"
+		version="1.0"
+		url="http://www.potiondesign.com"
+		>
+
+		<supports os="macosx" />
+		<supports os="msw" />
+
+		<headerPattern>src/poScene/*.h</headerPattern>
+		<sourcePattern>src/poScene/*.cpp</sourcePattern>
+
+		<platform os="macosx">
+			<includePath>src</includePath>
+		</platform>
+
+		<platform os="msw">
+			<includePath>src</includePath>
+		</platform>
+
+	</block>
+
+	<template>templates/Basic poScene/template.xml</template>
+</cinder>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="ciG3log"
+	id="com.hurleyworks.g3log"
+	author="Steve Hurley"
+	license="public domain"
+	summary="Kjell Hedström's g3log"
+	url="https://github.com/Hurleyworks/G3LogBlock"
+	git="https://github.com/Hurleyworks/G3LogBlock.git"
+	>
+	<supports os="macosx" />
+	<supports os="msw" />
+
+	<copyExclude>samples</copyExclude>
+	<header>logger/g3logger.h</header>
+	<source>logger/g3Logger.cpp</source>
+</block>
+</cinder>

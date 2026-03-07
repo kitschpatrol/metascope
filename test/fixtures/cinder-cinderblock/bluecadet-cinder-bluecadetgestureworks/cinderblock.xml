@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="BluecadetGestureWorks"
+	id="com.bluecadet.cinder.gestureworks"
+	git="git@github.com:bluecadet/Cinder-BluecadetGestureWorks.git"
+	author="Bluecadet"
+	summary="Gesture Works plugin for Cinder-BluecadetViews"
+	license=""
+	>
+	
+	<supports os="msw"></supports>
+	
+	<requires>com.bluecadet.cinder.views</requires>
+	
+	<headerPattern>include/ideum/gestureworks/*.h</headerPattern>
+	
+	<headerPattern>src/bluecadet/gestureworks/*.h</headerPattern>
+	<sourcePattern>src/bluecadet/gestureworks/*.cpp</sourcePattern>
+	
+	<headerPattern>src/bluecadet/gestureworks/handlers/*.h</headerPattern>
+	<sourcePattern>src/bluecadet/gestureworks/handlers/*.cpp</sourcePattern>
+	
+	<includePath>lib</includePath>
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	
+	<asset>assets/bluecadet_gestures.gml</asset>
+	
+	<!-- <libraryPath>lib/$(PlatformTarget)</libraryPath> -->
+	<!-- <buildCopy>lib/$(PlatformTarget)/GestureworksCore.dll</buildCopy> -->
+	
+	<!-- Need to hard code to x64 unfortunately until TinderBox supports templated platform targets -->
+	<buildCopy>lib/x64/GestureWorks64.dll</buildCopy>
+	<buildCopy>lib/x64/GestureWorks64d.dll</buildCopy>
+	<staticLibrary>lib/x64/GestureWorks64.lib</staticLibrary>
+	<staticLibrary>lib/x64/GestureWorks64d.lib</staticLibrary>
+
+</block>
+</cinder>

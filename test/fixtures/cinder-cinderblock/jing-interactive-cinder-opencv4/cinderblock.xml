@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="OpenCV4"
+	id="org.jing.opencv"
+	author="Cinder Project"
+	license="BSD"
+	summary="OpenCV (v4) computer vision libraries"
+	git="git://github.com/jing-interactive/Cinder-OpenCV4.git"
+	version="4.0.0"
+	libraryUrl="http://vinjn.com/"
+	>
+	<header>include/CinderOpenCV.h</header>
+	<includePath>include</includePath>
+	<platform compiler="vc2015">
+		<platform config="Debug">
+			<staticLibrary>lib/msw/opencv_world400d.lib</staticLibrary>
+		</platform>
+		<platform config="release">
+			<staticLibrary>lib/msw/opencv_world400.lib</staticLibrary>
+		</platform>
+	</platform>
+	<platform os="macosx">
+			<staticLibrary>lib/macosx/libopencv_world.a</staticLibrary>
+			<staticLibrary absolute="true">-lz</staticLibrary>
+			<framework sdk="true">OpenCL.framework</framework>		
+	</platform>
+	<platform os="ios" sdk="simulator">
+			<staticLibrary>lib/ios-sim/libopencv.a</staticLibrary>
+	</platform>
+	<platform os="ios" sdk="device">
+			<staticLibrary>lib/ios/libopencv.a</staticLibrary>
+	</platform>
+</block>
+<template>templates/Basic OpenCV/template.xml</template>
+</cinder>

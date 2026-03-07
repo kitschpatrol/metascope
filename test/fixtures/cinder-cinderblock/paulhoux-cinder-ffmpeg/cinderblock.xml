@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="FFmpeg"
+	id="nl.cowlumbus.ffmpeg"
+	author="Paul Houx"
+	license="MIT"
+	summary="Digital video decoder for Cinder, based on FFmpeg's libavcodec library."
+	url="https://github.com/paulhoux/Cinder-FFmpeg"
+	git="git://github.com/paulhoux/Cinder-FFmpeg.git"
+	>
+	<supports os="msw" />
+	<includePath>include</includePath>
+	<header>include/CinderFFmpeg.h</header>
+	<sourcePattern>include/common/*.h</sourcePattern>
+	<sourcePattern>include/audiorenderer/*.h</sourcePattern>
+	<sourcePattern>include/movierenderer/*.h</sourcePattern>
+	<sourcePattern>src/CinderFFmpeg.cpp</sourcePattern>
+	<sourcePattern>src/common/*.cpp</sourcePattern>
+	<sourcePattern>src/audiorenderer/*.cpp</sourcePattern>
+	<sourcePattern>src/movierenderer/*.cpp</sourcePattern>
+	<platform os="msw">
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/avcodec.lib</staticLibrary>
+		<!--staticLibrary>build/lib/msw/$(PlatformTarget)/avdevice.lib</staticLibrary-->
+		<!--staticLibrary>build/lib/msw/$(PlatformTarget)/avfilter.lib</staticLibrary-->
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/avformat.lib</staticLibrary>
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/avutil.lib</staticLibrary>
+		<!--staticLibrary>build/lib/msw/$(PlatformTarget)/postproc.lib</staticLibrary-->
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/swresample.lib</staticLibrary>
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/swscale.lib</staticLibrary>
+		<staticLibrary>build/lib/msw/$(PlatformTarget)/openal32.lib</staticLibrary>
+		
+		<buildCopy>build/bin/msw/$(PlatformTarget)/avcodec-58.dll</buildCopy>
+		<!--buildCopy>build/bin/msw/$(PlatformTarget)/avdevice-58.dll</buildCopy-->
+		<!--buildCopy>build/bin/msw/$(PlatformTarget)/avfilter-7.dll</buildCopy-->
+		<buildCopy>build/bin/msw/$(PlatformTarget)/avformat-58.dll</buildCopy>
+		<buildCopy>build/bin/msw/$(PlatformTarget)/avutil-56.dll</buildCopy>
+		<!--buildCopy>build/bin/msw/$(PlatformTarget)/postproc-55.dll</buildCopy-->
+		<buildCopy>build/bin/msw/$(PlatformTarget)/swresample-3.dll</buildCopy>
+		<buildCopy>build/bin/msw/$(PlatformTarget)/swscale-5.dll</buildCopy>
+		<!--buildCopy>build/bin/msw/$(PlatformTarget)/openal32.dll</buildCopy-->
+	</platform>
+</block>
+<template>templates/Basic FFmpeg/template.xml</template>
+</cinder>

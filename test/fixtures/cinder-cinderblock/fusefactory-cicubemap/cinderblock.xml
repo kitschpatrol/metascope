@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+  <block
+    name="ciCMS"
+    id="it.fusefactory.cubemap"
+    git="git@github.com:fusefactory/ciCubeMap.git"
+    author="Mark van de Korput at Fuse Factory"
+    summary="High level API for creating and using cubemaps"
+    license="MIT"
+    version="1.0"
+    url="http://github.com/fusefactory/ciCubeMap">
+
+    <supports os="macosx" />
+    <supports os="msw" />
+
+    <includePath>include/ciCubeMap/</includePath>
+    <headerPattern>include/ciCubeMap/*.h</headerPattern>
+    <sourcePattern>src/ciCubeMap/*.cpp</sourcePattern>
+  </block>
+</cinder>

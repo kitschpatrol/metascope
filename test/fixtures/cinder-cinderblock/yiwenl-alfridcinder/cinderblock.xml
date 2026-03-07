@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Alfrid"
+	id="co.wensday.alfrid"
+	author="Yi-Wen LIN"
+	summary="Helpers for debugging"
+	version="1.0"
+	>
+		<headerPattern>include/*.h</headerPattern>
+		<sourcePattern>src/*.cpp</sourcePattern>
+    
+    <includePath>include</includePath>
+	<includePath>src</includePath>
+</block>
+<template>templates/alfrid/template.xml</template>
+<template>templates/alfridParticles/template.xml</template>
+</cinder>

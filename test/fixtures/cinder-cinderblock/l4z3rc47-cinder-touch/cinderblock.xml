@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Touch"
+	id="com.bluecadet.touch"
+	author="Bluecadet"
+	summary="Cinder Touches"
+	version="0.0.1"
+	url="https://github.com/bluecadet/Cinder-Touch"
+	>
+
+	<requires>org.libcinder.tuio</requires>
+
+	<sourcePattern>src/core/*.cpp</sourcePattern>
+	<headerPattern>src/core/*.h</headerPattern>
+	<sourcePattern>src/modules/TouchObjects/*.cpp</sourcePattern>
+	<headerPattern>src/modules/TouchObjects/*.h</headerPattern>
+	<sourcePattern>src/modules/TouchDrivers/*.cpp</sourcePattern>
+	<headerPattern>src/modules/TouchDrivers/*.h</headerPattern>
+	
+	<includePath system="false">src/core</includePath>
+	<includePath system="false">src/modules</includePath>
+</block>
+
+</cinder>

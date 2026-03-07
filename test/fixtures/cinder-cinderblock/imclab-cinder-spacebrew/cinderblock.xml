@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-Spacebrew"
+	id="com.sharkbox.spacebrew"
+	author="Charlie Whitney"
+	license="MIT"
+	summary="Spacebrew is an open, dynamically re-routable software toolkit for choreographing interactive spaces."
+	version="0.1"
+	library="https://github.com/spacebrew"
+	url="https://github.com/cwhitney"
+	>
+	<supports os="macosx" />
+	<supports os="msw" />
+	
+	<requires>com.bantherewind.websocketpp</requires>
+	
+	<source>src/ciSpacebrew.cpp</source>
+	<header>src/ciSpacebrew.h</header>
+	
+	<includePath>src</includePath>
+	<platform os="macosx">
+
+	</platform>
+	<platform os="msw">
+	
+	</platform>
+</block>
+</cinder>

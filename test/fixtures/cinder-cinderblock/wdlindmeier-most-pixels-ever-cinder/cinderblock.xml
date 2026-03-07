@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+  <block
+  	name="Most-Pixels-Ever"
+  	id="com.wdlindmeier.mpe"
+  	author="William Lindmeier"
+    git="git://github.com/wdlindmeier/Most-Pixels-Ever-Cinder.git"
+  	summary="Most Pixels Ever client for Cinder. MPE synchronizes the rendering of an application across multiple screens."
+    version="1.0"
+  	>
+  	<supports os="msw" />
+  	<supports os="macosx" />
+    <supports os="ios" />
+    <includePath>include</includePath>
+    <header>include/MPEApp.hpp</header>
+    <header>include/MPEClient.h</header>
+    <header>include/MPEMessageHandler.hpp</header>
+    <header>include/MPEProtocol.hpp</header>
+    <header>include/TCPAsyncClient.h</header>
+    <header>include/TCPClient.h</header>
+    <source>src/MPEClient.cpp</source>
+    <source>src/TCPAsyncClient.cpp</source>
+    <source>src/TCPClient.cpp</source>
+    <asset>assets/settings.xml</asset>
+  </block>
+  <template>templates/MPEBasic/template.xml</template>
+</cinder>

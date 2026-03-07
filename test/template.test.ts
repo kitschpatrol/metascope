@@ -4,6 +4,7 @@ import { defineTemplate } from '../src/lib/metadata-types'
 
 const mockContext: MetadataContext = {
 	arduinoLibraryProperties: {},
+	cinderCinderblock: {},
 	codemeta: {
 		author: [
 			{

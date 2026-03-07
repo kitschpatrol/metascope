@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="MinimalUI"
+	id="com.nathanselikoff.minimalui"
+	author="Nathan Selikoff - Bruce Lane"
+	license="MIT"
+	summary="Minimal UI block for Cinder"
+	url="https://github.com/nselikoff/Cinder-MinimalUI"
+	git="git://github.com/nselikoff/Cinder-MinimalUI.git"
+	>
+	<includePath>include</includePath>
+	<source>src/Button.cpp</source>
+	<header>include/Button.h</header>
+	<source>src/Label.cpp</source>
+	<header>include/Label.h</header>
+	<source>src/Slider.cpp</source>
+	<header>include/Slider.h</header>
+	<source>src/Graph.cpp</source>
+	<header>include/Graph.h</header>
+	<source>src/Image.cpp</source>
+	<header>include/Image.h</header>
+	<source>src/UIController.cpp</source>
+	<header>include/UIController.h</header>
+	<source>src/UIElement.cpp</source>
+	<header>include/UIElement.h</header>
+
+
+</block>
+<template>templates/template.xml</template>
+</cinder>

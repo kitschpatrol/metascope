@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-range-v3"
+	id=""
+	author=""
+	summary=""
+	license=""
+	url=""
+	git=""
+	version=""
+	library=""
+	>
+	
+	<includePath system="true">include</includePath>
+	<headerPattern>meta/*.hpp</headerPattern>
+	<headerPattern>rangemeta/*.hpp</headerPattern>
+	<headerPattern>range/v3meta/*.hpp</headerPattern>
+	<headerPattern>range/v3/actionmeta/*.hpp</headerPattern>
+	<headerPattern>range/v3/algorithmmeta/*.hpp</headerPattern>
+	<headerPattern>range/v3/algorithm/aux_meta/*.hpp</headerPattern>
+	<headerPattern>range/v3/detailmeta/*.hpp</headerPattern>
+	<headerPattern>range/v3/numericmeta/*.hpp</headerPattern>
+	<headerPattern>range/v3/utilitymeta/*.hpp</headerPattern>
+	<headerPattern>range/v3/viewmeta/*.hpp</headerPattern>
+	
+</block>
+</cinder>

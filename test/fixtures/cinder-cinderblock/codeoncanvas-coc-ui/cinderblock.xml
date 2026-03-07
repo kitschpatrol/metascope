@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="CoC-UI"
+	id="cc.codeoncanvas.ui"
+	author=""
+	summary=""
+	license=""
+	url="https://github.com/codeoncanvas/coc-ui"
+	git="git@github.com:codeoncanvas/coc-ui.git"
+	version=""
+	library=""
+	>
+	<supports os="macosx" />
+    <supports os="msw" />
+	
+	<headerPattern>src/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<headerPattern>src/image/*.h</headerPattern>
+	<sourcePattern>src/image/*.cpp</sourcePattern>
+	<headerPattern>src/button/*.h</headerPattern>
+	<sourcePattern>src/button/*.cpp</sourcePattern>
+	<headerPattern>src/scrollbar/*.h</headerPattern>
+	<sourcePattern>src/scrollbar/*.cpp</sourcePattern>
+	<headerPattern>src/scrollview/*.h</headerPattern>
+	<sourcePattern>src/scrollview/*.cpp</sourcePattern>
+	
+	<platform os="msw">
+		<includePath system="false">src</includePath>
+		<includePath system="false">src/image</includePath>
+		<includePath system="false">src/button</includePath>
+		<includePath system="false">src/scrollbar</includePath>
+		<includePath system="false">src/scrollview</includePath>
+	</platform>
+
+</block>
+</cinder>
+

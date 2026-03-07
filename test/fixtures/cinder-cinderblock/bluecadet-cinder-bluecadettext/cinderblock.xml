@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="BluecadetText"
+	id="com.bluecadet.cinder.text"
+	git="git@github.com:bluecadet/Cinder-BluecadetText.git"
+	author="Bluecadet"
+	license="MIT"
+	summary="General utils for production apps to facilitate handling threads and assets among other things."
+	license="MIT"
+	version="1.1.2"
+	url="https://github.com/bluecadet/Cinder-BluecadetText"
+	>
+
+	<sourcePattern>src/bluecadet/text/*.cpp</sourcePattern>
+	<headerPattern>src/bluecadet/text/*.h</headerPattern>
+	<includePath>src</includePath>
+</block>
+</cinder>

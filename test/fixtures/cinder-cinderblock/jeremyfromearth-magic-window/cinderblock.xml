@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+    <block
+      author="@jeremyfromearth"
+      id="com.jeremyfromearth.magicwindow"
+      git = "git@github.com:jeremyfromearth/magic-window.git"
+      license="MIT"
+      name="MagicWindow"
+      summary="Boilerplate for multi-display Cinder applications"
+      url="https://github.com/jeremyfromearth/magic-window"
+	    git="https://github.com/jeremyfromearth/magic-window.git">
+      <headerPattern>src/*.h</headerPattern>
+      <sourcePattern>src/*.cpp</sourcePattern>
+      <copyExclude>samples</copyExclude>
+    </block>
+  <template>templates/MagicWindowTemplate/template.xml</template>
+</cinder>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="CoC-SQLite"
+	id=""
+	author=""
+	summary=""
+	license=""
+	url="https://github.com/codeoncanvas/coc-sqlite"
+	git="git@github.com:codeoncanvas/coc-sqlite.git"
+	version=""
+	library=""
+	>
+	
+	<headerPattern>src/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<headerPattern>libs/SQLiteCpp/include/SQLiteCpp/*.h</headerPattern>
+	<headerPattern>libs/SQLiteCpp/sqlite3/*.h</headerPattern>
+	<sourcePattern>libs/SQLiteCpp/sqlite3/*.c</sourcePattern>
+	<sourcePattern>libs/SQLiteCpp/src/*.cpp</sourcePattern>
+	<includePath system="true">libs/SQLiteCpp/include</includePath>
+	<includePath system="true">libs/SQLiteCpp/sqlite3</includePath>
+
+</block>
+</cinder>

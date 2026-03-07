@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+  name="tsss"
+  id="info.izumin.cinder.tss"
+  author="izumin5210"
+  license="MIT"
+  summary="Thread-safety and singleton signal implementation."
+  >
+  <includePath>include</includePath>
+</block>
+</cinder>

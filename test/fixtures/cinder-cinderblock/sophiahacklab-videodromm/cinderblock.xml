@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-NDI"
+	id="org.libcinder.ndi"
+	author="Petros Kataras"
+	license="Simplified BSD"
+	summary="Video streaming over ip"
+	url="https://github.com/PetrosKataras/Cinder-NDI"
+	git="git@github.com:PetrosKataras/Cinder-NDI.git"
+	>
+	<supports os="msw"/>
+	<includePath>include</includePath>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<headerPattern>include/*.h</headerPattern>
+
+	<includePath>ndisdk/include</includePath>
+	<staticLibrary>ndisdk/lib/$(PlatformTarget)/Processing.NDI.Lib.x64.lib</staticLibrary>
+	<buildCopy>ndisdk/bin/$(PlatformTarget)/Processing.NDI.Lib.x64.dll</buildCopy>
+</block>
+</cinder>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="AmPM"
+	id="com.bluecadet.cinder.ampm"
+	git="git@github.com:bluecadet/Cinder-AmPM.git"
+	author="Bluecadet"
+	summary="AM/PM client Cinder block based on Stimulant's sample Cinder client."
+	license="MIT"
+	version="1.0.0"
+	url="https://github.com/bluecadet/Cinder-AmPM"
+	>
+	<requires>org.libcinder.osc</requires>
+	<headerPattern>src/ampm/*.h</headerPattern>
+	<sourcePattern>src/ampm/*.cpp</sourcePattern>
+	<includePath>src</includePath>
+</block>
+</cinder>

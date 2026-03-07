@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Videodromm-Fbos"
+	id="com.videodromm.Videodromm-Fbos"
+	author="Bruce Lane"
+	license="GNU AFFERO GENERAL PUBLIC LICENSE"
+    version="1.0"
+	summary="Videodromm fbos block for Cinder 0.9"
+	url="https://github.com/Videodromm/Cinder-Videodromm-Fbos"
+	git="git://github.com/brucelane/Cinder-Videodromm-Fbos.git"
+	>
+	<requires>com.videodromm.Videodromm</requires>
+	<requires>com.videodromm.Videodromm-Textures</requires>
+	<supports os="msw" />
+  	<supports os="macosx" />
+    <supports os="ios" />
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	<headerPattern>include/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<platform os="msw">
+		<libraryPath>lib</libraryPath>
+	</platform>
+</block>
+<template>templates/Videodromm-Fbos/template.xml</template>
+</cinder>

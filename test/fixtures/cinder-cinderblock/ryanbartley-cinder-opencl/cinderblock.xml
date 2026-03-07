@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-OpenCL"
+	id="org.libcinder.opencl"
+	author="Ryan Bartley"
+	version="1.2"
+	>
+	<supports os="ios" />
+	<supports os="macosx" />
+	<supports os="msw" />
+	
+	<headerPattern>include/*.h</headerPattern>
+	<headerPattern>include/*.hpp</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<includePath>src/</includePath>
+	<includePath>include/</includePath>
+	<platform os="macosx">
+		<framework sdk="true">OpenCL.framework</framework>
+	</platform>
+	<platform os="msw">
+		<staticLibrary>lib/msw/OpenCL.lib</staticLibrary>
+	</platform>
+	
+</block>
+</cinder>

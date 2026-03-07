@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+    <block
+      author="@jeremyfromearth"
+      id="com.jeremyfromearth.cinder-sprite"
+      git = ""
+      license="GPL"
+      name="Cinder-Sprite"
+      summary="A display component supports animating position, opacity, scale and masking of images, video and OpenGL graphics"
+      url="https://github.com/jeremyfromearth/cinder-sprite"
+	    git="git@github.com:jeremyfromearth/cinder-sprite.git">
+      <headerPattern>src/*.h</headerPattern>
+      <sourcePattern>src/*.cpp</sourcePattern>
+      <copyExclude>samples</copyExclude>
+    </block>
+</cinder>

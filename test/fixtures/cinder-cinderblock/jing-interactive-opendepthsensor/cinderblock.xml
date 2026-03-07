@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="DepthSensor"
+	id="org.vnm.depthsensor"
+	author="Vinjn Zhang"
+	license="MIT"
+	summary="Supports depth sensor including Kinect v1 and v2, OpenNI-compatible devices and RealSense devices"
+	core="false"
+	>
+	<headerPattern>include/*.h</headerPattern>
+	<includePath>include</includePath>
+
+	<platform os="msw">
+		<libraryPath>lib/msw/$(PlatformTarget)</libraryPath>
+		<platform config="debug">
+			<staticLibrary>lib/msw/$(PlatformTarget)/Cinder-DepthSensor-d.lib</staticLibrary>
+		</platform>
+
+		<platform config="release">
+			<staticLibrary>lib/msw/$(PlatformTarget)/Cinder-DepthSensor.lib</staticLibrary>
+		</platform>
+	</platform>
+
+</block>
+</cinder>

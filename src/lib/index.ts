@@ -7,6 +7,7 @@ export type {
 	ArduinoLibraryPropertiesData,
 	ArduinoLibraryPropertiesDependencyEntry,
 	ArduinoLibraryPropertiesPersonEntry,
+	CinderCinderblockData,
 	CodeMetaData,
 	Credentials,
 	FilesystemData,

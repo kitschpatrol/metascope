@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-VDR"
+	id="com.videodromm.vdr"
+	author="Bruce Lane"
+	license="MIT"
+	summary=" block for Cinder 0.9: utilities for Spout, WebSockets, Shaders"
+	url="https://github.com/videodromm/Cinder-VDR"
+	git="git://github.com/videodromm/Cinder-VDR.git"
+	core="true"
+	>
+	<supports os="msw" />
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	<headerPattern>include/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<sourcePattern>src/*.c</sourcePattern>
+	<requires>com.wk.websocketpp</requires>
+	<requires>nl.cowlumbus.warping</requires>
+	<requires>org.libcinder.OSC</requires>
+	<platform os="msw">
+		<requires>fr.batchass.spout</requires>
+		<requires>mb.cinder.midi2</requires>
+		<requires>org.libcinder.HTTPS</requires>
+		<requires>org.libcinder.wmfvideo</requires>
+	</platform>
+</block>
+<template>templates/VD/template.xml</template>
+</cinder>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="CoC-FlyCapture"
+	id=""
+	author="René Christen"
+	summary="Wraps Point Grey Fly Capture 2 SDK."
+	license=""
+	url="https://github.com/codeoncanvas/coc-flycapture"
+	git="git@github.com:codeoncanvas/coc-flycapture.git"
+	version=""
+	library=""
+	>
+	<supports os="msw" />
+
+	<headerPattern>src/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+
+	<platform os="msw">
+		<includePath>src</includePath>
+		<includePath>libs/win/x64/include</includePath>
+		<libraryPath>libs/win/x64/lib</libraryPath>
+
+		<platform config="debug">
+	    	<buildCopy>libs/win/x64/lib/FlyCapture2d_v110.lib</buildCopy>
+			<staticLibrary>libs/win/x64/lib/FlyCapture2d_v110.lib</staticLibrary>
+			<dynamicLibrary>libs/win/x64/lib/FlyCapture2d_v110.lib</dynamicLibrary>
+	    </platform>
+	    <platform config="release">
+        	<buildCopy>libs/win/x64/lib/FlyCapture2_v110.lib</buildCopy>
+			<staticLibrary>libs/win/x64/lib/FlyCapture2_v110.lib</staticLibrary>
+			<dynamicLibrary>libs/win/x64/lib/FlyCapture2_v110.lib</dynamicLibrary>
+    	</platform>
+	</platform>
+
+
+</block>
+</cinder>

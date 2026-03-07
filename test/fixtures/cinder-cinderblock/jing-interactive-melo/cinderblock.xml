@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="melo"
+	id="jing.melo"
+	author="Jing Interactive"
+	summary="Mesh Loader for Cinder"
+	license="MIT License"
+	git="https://github.com/jing-interactive/melo.git"
+	>	
+	<asset>assets/brdfLUT.png</asset>
+	<asset>assets/CathedralIrradiance.dds</asset>
+	<asset>assets/CathedralRadiance.dds</asset>
+
+	<asset>assets/common.glsl</asset>
+	<asset>assets/pbr.frag</asset>
+	<asset>assets/pbr.vert</asset>
+	<asset>assets/shadow_mapping.frag</asset>
+	<asset>assets/shadow_mapping.vert</asset>
+	<asset>assets/SkyBox.frag</asset>
+	<asset>assets/SkyBox.vert</asset>
+	<asset>assets/unlit.frag</asset>
+	
+	<includePath>include</includePath>
+	<includePath>3rdparty/rapidjson</includePath>
+	
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<sourcePattern>3rdparty/tinygltf/*.cc</sourcePattern>
+	<sourcePattern>3rdparty/tinyobjloader/*.cc</sourcePattern>
+	<headerPattern>include/*.*</headerPattern>
+	<headerPattern>3rdparty/tinygltf/*.h</headerPattern>
+	<headerPattern>3rdparty/tinyobjloader/*.h</headerPattern>
+	
+</block>
+</cinder>

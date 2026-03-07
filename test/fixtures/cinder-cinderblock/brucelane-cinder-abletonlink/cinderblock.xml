@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Ableton Link"
+	id="fr.batchass.abletonlink"
+	author="Bruce Lane"
+	license="MIT"
+	summary="Ableton Link block for Cinder"
+	url="https://github.com/brucelane/Cinder-AbletonLink"
+	git="git://github.com/brucelane/Cinder-AbletonLink.git"
+	>
+	<includePath>include</includePath>
+	<includePath>lib/link/modules/asio-standalone/asio/include</includePath>
+	<includePath>lib/link/modules/catch/include</includePath>
+	<includePath>lib/link/include</includePath>
+	<includePath>lib/link/include/ableton</includePath>
+	<includePath>lib/link/include/ableton/platforms</includePath>
+	<includePath>lib/link/include/ableton/platforms/asio</includePath>
+	<includePath>lib/link/include/ableton/platforms/windows</includePath>
+	<includePath>lib/ASIOSDK2.3/common</includePath>
+	<includePath>lib/ASIOSDK2.3/common/host</includePath>
+	<includePath>lib/ASIOSDK2.3/common/host/pc</includePath>
+	<includePath>lib/ASIOSDK2.3/host</includePath>
+	<includePath>lib/ASIOSDK2.3/host/pc</includePath>
+	<header>lib/link/include/ableton/platforms/Config.hpp</header>
+	<header>lib/link/include/ableton/platforms/asio/AsioTimer.hpp</header>
+	<source>lib/ASIOSDK2.3/common/asio.cpp</source>
+	<source>lib/ASIOSDK2.3/host/asiodrivers.cpp</source>
+	<source>lib/ASIOSDK2.3/host/pc/asiolist.cpp</source>
+
+</block>
+<template>templates/AbletonLink/template.xml</template>
+</cinder>

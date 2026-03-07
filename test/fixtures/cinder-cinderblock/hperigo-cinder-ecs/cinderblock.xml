@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="ECS"
+	id="hperigo.ecs"
+	author="Henrique Périgo"
+	summary="Entity component system for Cinder"
+	license="MIT License"
+	git="none"
+	>	
+		<requires>ocornut.imgui</requires>
+
+		<includePath>src</includePath>
+
+		<header>src/ecs/Component.h</header>
+		<header>src/ecs/Entity.h</header>
+		<header>src/ecs/Manager.h</header>
+		<header>src/ecs/System.h</header>
+
+
+		<header>src/Utils/Transform.h</header>
+		<header>src/Utils/TransformSystem.h</header>
+		<header>src/Utils/UpdateDrawables.h</header>
+		<header>src/Utils/Factory.h</header>
+
+		<header>src/Utils/DrawSystem.h</header>
+
+
+		<source>src/Utils/DrawSystem.cpp</source>
+		<source>src/Utils/UpdateDrawables.cpp</source>
+		<source>src/Utils/Transform.cpp</source>
+		<source>src/ecs/Entity.cpp</source>
+		<source>src/ecs/System.cpp</source>
+	</block>
+</cinder>

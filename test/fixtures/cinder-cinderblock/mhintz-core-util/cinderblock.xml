@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+  name="core-util"
+  id="com.markhz.coreutil"
+  author=""
+  summary=""
+  license=""
+  url=""
+  git=""
+  version=""
+  library=""
+  >
+  
+  <header>CoreMath.h</header>
+  <source>CoreMath.cpp</source>
+  <header>DoubleFbo.h</header>
+  <source>DoubleFbo.cpp</source>
+  <header>FboCubeMapLayered.h</header>
+  <source>FboCubeMapLayered.cpp</source>
+  <header>GeomEater.h</header>
+  <source>GeomEater.cpp</source>
+  <header>Gradient.hpp</header>
+  <header>Item.hpp</header>
+  <header>MeshHelpers.h</header>
+  <source>MeshHelpers.cpp</source>
+  <header>Node.hpp</header>
+  <header>NoiseWalker.hpp</header>
+  <header>Projector.h</header>
+  <source>Projector.cpp</source>
+
+</block>
+<template>templates/template.xml</template>
+</cinder>

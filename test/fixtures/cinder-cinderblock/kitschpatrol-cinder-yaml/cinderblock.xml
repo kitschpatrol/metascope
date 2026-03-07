@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+	name="YAML"
+	id="com.kitschpatrol.yaml"
+	git="https://github.com/kitschpatrol/Cinder-Pango.git"
+	url="https://github.com/kitschpatrol/Cinder-Pango"
+	author="Eric Mika."
+	summary="YAML reading and writing for Cinder, based on the yaml-cpp library. Wraps some Cinder native types for convenience."
+	version="1.0.0"
+	library="https://github.com/jbeder/yaml-cpp"
+	license="MIT + MIT"
+	>
+		<supports os="macosx" />
+		<supports os="msw" />	
+		<headerPattern>src/*.h</headerPattern>
+		<sourcePattern>src/*.cpp</sourcePattern>
+
+		<includePath system="true">include</includePath>
+		
+		<platform os="macosx">
+				<staticLibrary>lib/macosx/libyaml-cpp.a</staticLibrary>
+		</platform>
+		
+		<platform os="msw" config="debug">
+			<includePath>src</includePath>
+			<staticLibrary>lib/msw/$(PlatformTarget)/libyaml-cppmtd.lib</staticLibrary>
+		</platform>
+
+		<platform os="msw" config="release">
+			<includePath>src</includePath>
+			<staticLibrary>lib/msw/$(PlatformTarget)/libyaml-cppmt.lib</staticLibrary>
+		</platform>
+		
+	</block>
+</cinder>

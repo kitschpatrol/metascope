@@ -13,6 +13,7 @@ import type { MetadataSource, SourceContext } from './sources/source'
 import type { TemplateMap, TemplateName } from './templates/index.js'
 import { log } from './log'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
+import { cinderCinderblockSource } from './sources/cinder-cinderblock'
 import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
@@ -37,6 +38,7 @@ const execFileAsync = promisify(execFile)
  */
 const sources: MetadataSource[] = [
 	arduinoLibraryPropertiesSource,
+	cinderCinderblockSource,
 	codemetaSource,
 	filesystemSource,
 	gitSource,
@@ -187,6 +189,7 @@ export async function getMetadata<T>(
 	// Assemble context
 	const context: MetadataContext = {
 		arduinoLibraryProperties: {},
+		cinderCinderblock: {},
 		codemeta: codemetaData,
 		filesystem: {},
 		git: {},

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+	name="Kit"
+	id="com.kitschpatrol.kit"
+	git="https://github.com/kitschpatrol/Cinder-Kit.git"
+	url="https://github.com/kitschpatrol/Cinder-Kit"
+	author="Eric Mika."
+	summary="Odds and ends."
+	version="1.0.0"
+	license="MIT + MIT"
+	>
+		<supports os="macosx" />
+		<supports os="msw" />	
+		<headerPattern>src/*.h</headerPattern>
+		<sourcePattern>src/*.cpp</sourcePattern>
+		<includePath system="false">src</includePath>
+	</block>
+</cinder>

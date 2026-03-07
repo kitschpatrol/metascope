@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-RealSense2"
+	id="com.ooyd.realsense2"
+	author="Seth Gibson (OutofYerheD)"
+	license="Apache-2.0"
+	summary="A wrapper for the RealSense2 SDK"
+	version="0.0.1"
+	library="https://github.com/SethGIB/Cinder-RealSense2"
+	url="https://github.com/SethGIB/Cinder-RealSense2"
+	>
+	<supports os="msw" />
+
+	<includePath>include</includePath>
+	<includePath>include/librealsense2</includePath>
+	<includePath>include/librealsense2-gl</includePath>
+	
+	<headerPattern>include/librealsense2/*.h</headerPattern>
+	<headerPattern>include/librealsense2/*.hpp</headerPattern>
+	<headerPattern>include/librealsense2/h/*.h</headerPattern>
+	<headerPattern>include/librealsense2/hpp/*.hpp</headerPattern>
+	<headerPattern>include/librealsense2-gl/*.h</headerPattern>
+	<headerPattern>include/librealsense2-gl/*.hpp</headerPattern> 	
+
+	<platform os="msw">
+		<libraryPath>lib/msw/$(PlatformTarget)/$(Configuration)/$(PlatformToolset)</libraryPath>
+		<staticLibrary>lib/msw/$(PlatformTarget)/$(Configuration)/$(PlatformToolset)/realsense2-all.lib</staticLibrary>
+	</platform>
+</block>
+</cinder>

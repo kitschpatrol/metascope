@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="BullDog"
+	id="org.libcinder.bulldog"
+	author="MartinBlasko"
+	summary="Minimal autoreload for Cinder."
+	>
+	<supports os="msw" />
+	<supports os="macosx" />
+	<includePath>include</includePath>
+	<header>include/bulldog.h</header>
+</block>
+</cinder>
