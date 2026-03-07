@@ -60,40 +60,24 @@ async function readManifest(path: string): Promise<ObsidianManifest | undefined>
 	}
 }
 
-function getPluginId(context: SourceContext): string | undefined {
-	const keywords = context.codemeta?.keywords
-	if (!keywords) return undefined
-
-	const keywordList: string[] = Array.isArray(keywords)
-		? keywords.filter((k): k is string => typeof k === 'string')
-		: typeof keywords === 'string'
-			? [keywords]
-			: []
-
-	const isObsidianPlugin = keywordList.some(
-		(keyword) =>
-			keyword.toLowerCase().includes('obsidian-plugin') ||
-			keyword.toLowerCase().includes('obsidian plugin'),
-	)
-
-	if (!isObsidianPlugin) return undefined
-
-	const name = context.codemeta?.name
-	if (!name) return undefined
-	if (Array.isArray(name)) {
-		// eslint-disable-next-line ts/no-unsafe-assignment
-		const first = name[0]
-		return typeof first === 'string' ? first : undefined
+async function isObsidianPlugin(path: string): Promise<boolean> {
+	try {
+		const content = await readFile(resolve(path, 'manifest.json'), 'utf8')
+		const json: unknown = JSON.parse(content)
+		return (
+			typeof json === 'object' &&
+			json !== null &&
+			'id' in json &&
+			'minAppVersion' in json
+		)
+	} catch {
+		return false
 	}
-
-	return typeof name === 'string' ? name : undefined
 }
 
 export const obsidianSource: MetadataSource<'obsidian'> = {
 	async extract(context: SourceContext): Promise<ObsidianData> {
 		log.debug('Extracting Obsidian metadata...')
-		const pluginId = getPluginId(context)
-		if (!pluginId) return {}
 
 		const manifest = await readManifest(context.path)
 		const url =
@@ -121,9 +105,8 @@ export const obsidianSource: MetadataSource<'obsidian'> = {
 			return { manifest, url }
 		}
 	},
-	// eslint-disable-next-line ts/require-await
 	async isAvailable(context: SourceContext): Promise<boolean> {
-		return getPluginId(context) !== undefined
+		return isObsidianPlugin(context.path)
 	},
 	key: 'obsidian',
 }
