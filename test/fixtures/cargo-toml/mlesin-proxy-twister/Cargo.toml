@@ -1,0 +1,50 @@
+[package]
+name = "proxy-twister"
+version = "1.1.7"
+edition = "2024"
+authors = ["Mikhail Lesin"]
+description = "A flexible HTTP proxy switcher that routes traffic through different proxies (SOCKS5 or HTTP) based on target host patterns."
+license = "Apache-2.0"
+repository = "https://github.com/mlesin/proxy-twister"
+readme = "README.md"
+homepage = "https://github.com/mlesin/proxy-twister"
+documentation = "https://docs.rs/proxy-twister"
+keywords = ["proxy", "http", "socks5", "switcher", "networking"]
+categories = ["network-programming", "command-line-utilities"]
+# Exclude files not needed in the crate package
+exclude = ["target/*", "example_config.json", "config.json"]
+
+[dependencies]
+base64 = "0.22"
+bytes = "1"
+clap = { version = "4", features = ["derive"] }
+http-body-util = "0.1"
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+hyper-rustls = "0.27"
+json5 = "0.4"
+notify = "8"
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+url = "2"
+
+[dev-dependencies]
+testcontainers = { version = "0.24", features = ["blocking"] }
+reqwest = { version = "0.12", features = ["socks", "rustls-tls", "json"] }
+rcgen = "0.14"
+sha2 = "0.10"
+assert-json-diff = "2.0"
+tokio-test = "0.4"
+futures = "0.3"
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors"] }
+hyper-rustls = "0.27"
+rustls = "0.23"
+rustls-pemfile = "2.1"
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4"] }

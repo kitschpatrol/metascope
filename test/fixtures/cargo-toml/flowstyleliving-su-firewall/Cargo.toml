@@ -1,0 +1,17 @@
+[workspace]
+
+[package]
+name = "chess-analyzer-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+warp = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[[bin]]
+name = "chess-analyzer-service"
+path = "src/main.rs"

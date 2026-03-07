@@ -1,0 +1,21 @@
+[package]
+name = "joshell"
+version = "0.1.0"
+edition = "2021"
+authors = ["John"]
+description = "A collection of utility tools"
+
+[dependencies]
+regex = "1.10.2"
+sha2 = "0.10.8"
+walkdir = "2.4"
+similar = "2.4"
+rayon = "1.8"
+
+[[bin]]
+name = "dedupimg"
+path = "rs/dedupimg.rs"
+
+[[bin]]
+name = "dupcode"
+path = "rs/dupcode.rs"

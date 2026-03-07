@@ -1,0 +1,29 @@
+[package]
+name = "primes"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.14"
+bevy_asset_loader = { version = "0.21.0", default-features = false }
+iyes_perf_ui = { version = "0.3.0" }
+bytemuck = { version = "1.16.3", features = ["extern_crate_std"] }
+
+pico-args = "0.5.0"
+bevy_headless_render = "0.1.2"
+
+[build-dependencies]
+bytemuck = "1.16.3"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release-wasm]
+inherits = "release"
+codegen-units = 1
+lto = "thin"
+opt-level = "s"
+strip = "debuginfo"

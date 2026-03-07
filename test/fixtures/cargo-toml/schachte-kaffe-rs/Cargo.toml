@@ -1,0 +1,26 @@
+[package]
+name = "ssr"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.0"
+actix-files = "0.6"
+serde_json = "1.0"
+deno_core = "0.311.0"
+serde_v8 = "0.220.0"
+serde = "1.0.210"
+base64 = "0.22.1"
+clap = { version = "4.0", features = ["derive"] }
+colored = "2.1.0"
+awc = "3.5.1"
+nom = "7.1.3"
+tempfile = "3.13.0"
+esbuild-rs = "0.13.8"
+anyhow = "1.0.89"
+walkdir = "2.5.0"
+tokio = "1.40.0"
+
+[lib]
+name = "kaffe"
+path = "src/lib.rs"

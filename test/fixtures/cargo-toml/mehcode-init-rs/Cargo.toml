@@ -1,0 +1,6 @@
+[workspace]
+members = ["init", "init_codegen", "example-lib", "example-bin"]
+
+[replace]
+"init:0.2.0" = { path = "init" }
+"init_codegen:0.2.0" = { path = "init_codegen" }

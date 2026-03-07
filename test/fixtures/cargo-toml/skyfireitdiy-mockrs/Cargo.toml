@@ -1,0 +1,33 @@
+[[bin]]
+name = "mockrs_main"
+path = "src/main.rs"
+
+[lib]
+name = "mockrs"
+path = "src/lib.rs"
+
+[package]
+name = "mockrs"
+version = "1.2.6"
+edition = "2021"
+authors = ["skyfire <skyfireitdiy@hotmail.com>"]
+description = "A crate that provides a X8664Mocker to mock function calls and intercept on x86_64 architecture."
+license = "MIT"
+repository = "https://github.com/skyfireitdiy/mockrs"
+readme = "README.md"
+keywords = ["mock", "mockrs"]
+categories = ["development-tools::testing"]
+
+[dependencies]
+lazy_static = "1.5.0"
+nix = { version = "0.29.0", features = ["mman", "signal"] }
+
+[target.'cfg(target_arch = "x86_64")'.dependencies]
+iced-x86 = "1.21.0"
+
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+capstone = "0.13.0"
+keystone = "0.9.0"
+
+[build-dependencies]
+cc = "1.0"

@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+	"kernel",
+	"driver-collect",
+	"sel4_common",
+	"sel4_cspace",
+	"sel4_ipc",
+	"sel4_task",
+	"sel4_vspace",
+	"serial-frame",
+	"serial-impl/pl011",
+	"serial-impl/sbi",
+]
+[profile.release]
+lto = true
+
+[patch.'https://github.com/rel4team/driver-collect.git']
+driver-collect = { path = "driver-collect" }
+[patch.'https://github.com/rel4team/serial-frame.git']
+serial-frame = { path = "serial-frame" }
+[patch.'https://github.com/rel4team/serial-impl-pl011.git']
+serial-impl-pl011 = { path = "serial-impl/pl011" }
+[patch.'https://github.com/rel4team/serial-impl-sbi.git']
+serial-impl-sbi = { path = "serial-impl/sbi" }
+[patch.'https://github.com/rel4team/sel4_common.git']
+sel4_common = { path = "sel4_common" }
+[patch.'https://github.com/rel4team/sel4_cspace.git']
+sel4_cspace = { path = "sel4_cspace" }
+[patch.'https://github.com/rel4team/sel4_ipc.git']
+sel4_ipc = { path = "sel4_ipc" }
+[patch.'https://github.com/rel4team/sel4_task.git']
+sel4_task = { path = "sel4_task" }
+[patch.'https://github.com/rel4team/sel4_vspace.git']
+sel4_vspace = { path = "sel4_vspace" }

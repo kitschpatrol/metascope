@@ -1,0 +1,44 @@
+[workspace]
+resolver = "2"
+members = ["lact", "lact-cli", "lact-gui", "lact-schema", "lact-client", "lact-daemon"]
+
+[workspace.dependencies]
+amdgpu-sysfs = { version = "0.19.2", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_with = { version = "3.5.0", default-features = false, features = ["macros", "alloc"] }
+serde_json = "1.0.111"
+anyhow = "1.0.79"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+futures = { version = "0.3.30", features = ["std", "async-await"], default-features = false }
+tokio = { version = "1.35.1", default-features = false }
+nix = { version = "0.31.1", default-features = false }
+chrono = "0.4.31"
+indexmap = { version = "2.5.0", features = ["serde"] }
+pretty_assertions = "1.4.0"
+divan = "0.1"
+serde_norway = "0.9.42"
+i18n-embed = { version = "0.16.0", features = ["fluent-system", "desktop-requester"] }
+i18n-embed-fl = "0.10.0"
+rust-embed = { version = "8.7.2", features = ["debug-embed"] }
+
+[profile.release]
+strip = "symbols"
+codegen-units = 1
+opt-level = "s"
+lto = true
+
+[profile.release.package.cairo-rs]
+opt-level = 3
+
+[profile.release.package.plotters-cairo]
+opt-level = 3
+
+[profile.release.package.plotters]
+opt-level = 3
+
+[profile.bench]
+strip = false
+debug = 1
+lto = "thin"
+codegen-units = 256

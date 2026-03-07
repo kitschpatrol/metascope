@@ -1,0 +1,31 @@
+[package]
+authors = ["Jeff Muizelaar <jrmuizel@gmail.com>", "Markus Stange <mstange.moz@gmail.com>"]
+categories = ["development-tools::debugging"]
+description = "Symbolicate addresses from PDBs, like addr2line."
+documentation = "https://docs.rs/pdb-addr2line"
+edition = "2018"
+homepage = "https://github.com/mstange/pdb-addr2line"
+keywords = ["PDB", "debug", "addr2line", "symbolicate", "windows"]
+license = "MIT/Apache-2.0"
+name = "pdb-addr2line"
+readme = "Readme.md"
+repository = "https://github.com/mstange/pdb-addr2line"
+version = "0.12.0"
+exclude = ["/.github", "/tests"]
+
+[dependencies]
+bitflags = "2.0"
+maybe-owned = "0.3.4"
+pdb = { package = "pdb2", version = "0.10.1" }
+range-collections = "0.4.5"
+thiserror = "2"
+elsa = "1.9.0"
+
+[dev-dependencies]
+clap = "4.4.6"
+getopts = "0.2.24"
+memmap2 = "0.9.0"
+msvc-demangler = "0.11"
+
+[[example]]
+name = "pdb-addr2line"
