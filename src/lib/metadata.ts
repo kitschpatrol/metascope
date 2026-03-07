@@ -23,6 +23,7 @@ import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
 import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
 import { packageSource } from './sources/package-json.js'
+import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
 import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
 import { updatesSource } from './sources/updates'
@@ -46,6 +47,7 @@ const sources: MetadataSource[] = [
 	obsidianSource,
 	openFrameworksAddonConfigSource,
 	packageSource,
+	processingLibraryPropertiesSource,
 	pypiSource,
 	pyprojectSource,
 	updatesSource,
@@ -195,6 +197,7 @@ export async function getMetadata<T>(
 		obsidian: {},
 		openFrameworksAddonConfig: {},
 		packageJson: {},
+		processingLibraryProperties: {},
 		pypi: {},
 		pyprojectToml: {},
 		updates: {},

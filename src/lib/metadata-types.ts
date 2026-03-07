@@ -14,6 +14,11 @@ export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 export type { PackageData } from './sources/package-json'
+export type {
+	ProcessingLibraryPropertiesAuthorEntry,
+	ProcessingLibraryPropertiesCategory,
+	ProcessingLibraryPropertiesData,
+} from './sources/processing-library-properties'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
@@ -29,6 +34,7 @@ import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 import type { PackageData } from './sources/package-json'
+import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
 import type { UpdatesData } from './sources/updates'
@@ -51,6 +57,7 @@ export type MetadataContext = {
 	obsidian: ObsidianData
 	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
 	packageJson: PackageData
+	processingLibraryProperties: ProcessingLibraryPropertiesData
 	pypi: PypiData
 	pyprojectToml: PyprojectData
 	updates: UpdatesData
