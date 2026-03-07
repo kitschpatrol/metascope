@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>net.encyphered.alfred.show-ip</string>
+	<key>connections</key>
+	<dict>
+		<key>9D13CC33-0D07-448E-B0E8-0E938563F8BD</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>58D120CD-F040-4F2B-B5F0-83BABFB978D3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>encyphered@gmail.com</string>
+	<key>description</key>
+	<string>Show IP Address</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Show IP Address</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>type</key>
+			<string>alfred.workflow.output.largetype</string>
+			<key>uid</key>
+			<string>58D120CD-F040-4F2B-B5F0-83BABFB978D3</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>ipaddr</string>
+				<key>script</key>
+				<string>ifconfig = %x(/sbin/ifconfig)
+intfs = ifconfig.scan(/^[a-z0-9]+:/).map{|intf|intf.sub(/:/,'')}
+intfmap = intfs.each_with_index.map { |intf, index|
+        nintf = intfs[index+1]
+
+        if nintf
+                [intf, (/(^#{intf}:.*)^#{nintf}/m).match(ifconfig)[1]]
+        else
+                [intf, (/(^#{intf}:.*)/m).match(ifconfig)[1]]
+        end
+}.select{|map|/en[0-9]/.match(map[0])}.map{|map|[map[0],(/inet (([0-9]{1,3}\.){3}[0-9]{1,3})/).match(map[1])]}.reject{|map|map[1].nil?}.map{|map|[map[0],map[1][1]]}
+
+intfmap.sort!{|a,b|a[0]&lt;=&gt;b[0]}
+
+puts '&lt;?xml version="1.0"?&gt;'
+puts '&lt;items&gt;'+intfmap.map{|m|"&lt;item uid=\"#{m[0]}\" arg=\"#{m[1]}\"&gt;&lt;title&gt;#{m[1]}&lt;/title&gt;&lt;subtitle&gt;#{m[0]}&lt;/subtitle&gt;&lt;icon&gt;icon.png&lt;/icon&gt;&lt;/item&gt;"}.join+'&lt;/items&gt;'</string>
+				<key>title</key>
+				<string>Show IP Address</string>
+				<key>type</key>
+				<integer>2</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>9D13CC33-0D07-448E-B0E8-0E938563F8BD</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>58D120CD-F040-4F2B-B5F0-83BABFB978D3</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>9D13CC33-0D07-448E-B0E8-0E938563F8BD</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

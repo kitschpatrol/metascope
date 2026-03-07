@@ -1,0 +1,90 @@
+import { readFile } from 'node:fs/promises'
+import { readdir } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { parseInfoPlist } from '../../src/lib/parsers/info-plist-parser'
+
+const fixturesDir = resolve('test/fixtures/info-plist')
+
+describe('parseInfoPlist', () => {
+	it('should parse an Alfred workflow plist', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'alexchantastic-alfred-lipsum-workflow/Info.plist'),
+			'utf8',
+		)
+		const result = parseInfoPlist(content)
+
+		expect(result).toBeDefined()
+		expect(result!.name).toBe('Lorem Ipsum')
+		expect(result!.author).toBe('Alex Chan')
+		expect(result!.description).toBe('Generate dummy lorem ipsum text.')
+		expect(result!.version).toBe('4.0.3')
+		expect(result!.identifier).toBe('com.alexchantastic.loremipsum')
+		expect(result!.url).toBe('https://github.com/alexchantastic/alfred-lipsum-workflow')
+	})
+
+	it('should parse an Apple app bundle with iOS detection', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'brettalcox-logu-swift/Info.plist'),
+			'utf8',
+		)
+		const result = parseInfoPlist(content)
+
+		expect(result).toBeDefined()
+		expect(result!.identifier).toBe('com.iftekhar.IQKeyboardManager')
+		expect(result!.version).toBe('4.0')
+		expect(result!.operatingSystems).toContain('iOS')
+		expect(result!.processorRequirements).toContain('armv7')
+	})
+
+	it('should filter out Xcode build variables', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'brettalcox-logu-swift/Info.plist'),
+			'utf8',
+		)
+		const result = parseInfoPlist(content)
+
+		expect(result).toBeDefined()
+		// CFBundleDisplayName is "${PRODUCT_NAME}" which should be filtered
+		// Name should fall through to CFBundleName, also "${PRODUCT_NAME}", also filtered
+		expect(result!.name).toBeUndefined()
+	})
+
+	it('should parse copyright information', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, '360controller-360controller/Info.plist'),
+			'utf8',
+		)
+		const result = parseInfoPlist(content)
+
+		expect(result).toBeDefined()
+		expect(result!.copyrightYear).toBe('2013')
+		expect(result!.copyrightHolder).toBe('MICE Software')
+	})
+
+	it('should return undefined for invalid plist', () => {
+		expect(parseInfoPlist('not a plist')).toBeUndefined()
+	})
+
+	it('should return undefined for non-dictionary root', () => {
+		const arrayPlist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array><string>item</string></array>
+</plist>`
+		expect(parseInfoPlist(arrayPlist)).toBeUndefined()
+	})
+
+	it('should parse all fixtures without throwing', async () => {
+		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const dirs = entries.filter((entry) => entry.isDirectory())
+
+		expect(dirs.length).toBeGreaterThan(0)
+
+		for (const dir of dirs) {
+			const content = await readFile(resolve(fixturesDir, dir.name, 'Info.plist'), 'utf8')
+			const result = parseInfoPlist(content)
+			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+		}
+	})
+})

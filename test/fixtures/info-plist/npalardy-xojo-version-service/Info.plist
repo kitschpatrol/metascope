@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM
+"file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+<key>NSServices</key>
+    <array>
+        <dict>
+            <key>NSMenuItem</key>
+            <dict>
+                <key>default</key>
+                <string>Show Xojo Version</string>
+            </dict>
+            <key>NSMessage</key>
+            <string>ServiceInvoked</string>
+            <key>NSPortName</key>
+            <string>TestService</string>
+			<key>NSRequiredContext</key>
+			<dict>
+				<key>NSTextContent</key>
+				<array>
+					<string>FilePath</string>
+				</array>
+			</dict>
+            <key>NSSendTypes</key>
+	            <array>
+    	            <string>NSStringPboardType</string>
+    	            <string>public.utf8-plain-text</string>
+    	            <string>NSURLPboardType</string>
+    	            <string>public.url</string>
+    	            <string>public.file-url</string>
+            </array>  
+        </dict>
+    </array>
+</dict>
+</plist>

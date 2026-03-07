@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Basic Bundle Info (PyInstaller might override some) -->
+    <key>CFBundleExecutable</key>
+    <string>StudyLensMonitor</string> <!-- MUST match the --name argument -->
+    <key>CFBundleIconFile</key>
+    <string>icon.icns</string> <!-- Optional: If you have an icon file -->
+    <key>CFBundleIdentifier</key>
+    <string>com.yourdomain.studylensmonitor</string> <!-- *** CHANGE THIS to something unique *** -->
+    <key>CFBundleName</key>
+    <string>StudyLensMonitor</string> <!-- App name shown -->
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string> <!-- Your app version -->
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string> <!-- Example: Set minimum macOS version (adjust if needed) -->
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright ©️ 2024 Your Name. All rights reserved.</string> <!-- Optional -->
+
+    <!-- === IMPORTANT PRIVACY KEY === -->
+    <key>NSCameraUsageDescription</key>
+    <string>StudyLens needs access to your camera to monitor facial landmarks for focus, drowsiness, and emotion analysis during your study session. This data is processed locally and only session summaries are optionally sent.</string> <!-- *** CUSTOMIZE THIS MESSAGE *** -->
+
+    <!-- Optional: Add if you ever need microphone access -->
+    <!--
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Explain why you need the microphone here.</string>
+    -->
+
+</dict>
+</plist>

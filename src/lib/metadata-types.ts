@@ -10,6 +10,7 @@ export type {
 	CargoTomlDependencyEntry,
 } from './sources/cargo-toml'
 export type { CinderCinderblockData } from './sources/cinder-cinderblock'
+export type { InfoPlistData } from './sources/info-plist'
 export type { CodeMetaData } from './sources/codemeta'
 export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
@@ -42,6 +43,7 @@ import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-pro
 import type { CargoTomlData } from './sources/cargo-toml'
 import type { CinderCinderblockData } from './sources/cinder-cinderblock'
 import type { CodeMetaData } from './sources/codemeta'
+import type { InfoPlistData } from './sources/info-plist'
 import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
@@ -71,6 +73,7 @@ export type MetadataContext = {
 	cinderCinderblock: CinderCinderblockData
 	codemeta: CodeMetaData
 	filesystem: FilesystemData
+	infoPlist: InfoPlistData
 	git: GitData
 	github: GitHubData
 	loc: LocData

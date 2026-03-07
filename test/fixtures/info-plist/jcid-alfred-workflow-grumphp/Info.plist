@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.jcid.grumphp</string>
+	<key>category</key>
+	<string>MIT</string>
+	<key>connections</key>
+	<dict>
+		<key>BC864B03-96F7-4631-A222-82DB45EA724C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>5615AFCD-0895-48C1-ADC7-EF29A6F37BF7</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>JCID</string>
+	<key>description</key>
+	<string>GrumPHP documentation search</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>GrumPHP documentation</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>grumphp</string>
+				<key>subtext</key>
+				<string>Param(s): Task</string>
+				<key>text</key>
+				<string>GrumPHP task documentation</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>BC864B03-96F7-4631-A222-82DB45EA724C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string>+</string>
+				<key>url</key>
+				<string>https://github.com/phpro/grumphp/blob/master/doc/tasks/{query}.md</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>5615AFCD-0895-48C1-ADC7-EF29A6F37BF7</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>5615AFCD-0895-48C1-ADC7-EF29A6F37BF7</key>
+		<dict>
+			<key>xpos</key>
+			<integer>170</integer>
+			<key>ypos</key>
+			<integer>20</integer>
+		</dict>
+		<key>BC864B03-96F7-4631-A222-82DB45EA724C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>20</integer>
+			<key>ypos</key>
+			<integer>20</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://www.jcid.nl</string>
+</dict>
+</plist>

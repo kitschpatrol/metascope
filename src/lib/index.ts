@@ -19,6 +19,7 @@ export type {
 	GitConfig,
 	GitData,
 	GitHubData,
+	InfoPlistData,
 	LocData,
 	LocTotals,
 	MetadataContext,

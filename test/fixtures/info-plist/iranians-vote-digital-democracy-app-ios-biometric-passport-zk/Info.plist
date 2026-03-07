@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>ISSUER_URL</key>
+	<string>${ISSUER_URL}</string>
+	<key>MinimumOSVersion</key>
+	<string>16.0</string>
+	<key>PASSPORT_KYC_URL</key>
+	<string>${PASSPORT_KYC_URL}</string>
+	<key>PRIVACY_POLICY_URL</key>
+	<string>${PRIVACY_POLICY_URL}</string>
+	<key>PROOF_VERIFICATION_RELAYER_URL</key>
+	<string>${PROOF_VERIFICATION_RELAYER_URL}</string>
+	<key>PROPOSER_EVM_ADDRESS</key>
+	<string>${PROPOSER_EVM_ADDRESS}</string>
+	<key>RARIMO_CORE_URL</key>
+	<string>${RARIMO_CORE_URL}</string>
+	<key>REGISTRY_ENTRY_TYPE</key>
+	<string>${REGISTRY_ENTRY_TYPE}</string>
+	<key>REGISTRY_EVM_CONTRACT_ADDRESS</key>
+	<string>${REGISTRY_EVM_CONTRACT_ADDRESS}</string>
+	<key>TARGET_CHAIN_RPC_URL</key>
+	<string>${TARGET_CHAIN_RPC_URL}</string>
+	<key>TERMS_OF_USE_URL</key>
+	<string>${TERMS_OF_USE_URL}</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Helvetica-Bold.otf</string>
+		<string>Helvetica-Regular.otf</string>
+		<string>Vazirmatn-Bold.ttf</string>
+		<string>Vazirmatn-Regular.ttf</string>
+	</array>
+	<key>VOTING_CREDENTIAL_TYPE</key>
+	<string>${VOTING_CREDENTIAL_TYPE}</string>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>A0000002471001</string>
+		<string>A0000002472001</string>
+		<string>E80704007F00070302</string>
+		<string>A000000167455349474E</string>
+		<string>A0000002480100</string>
+		<string>A0000002480200</string>
+		<string>A0000002480300</string>
+		<string>A00000045645444C2D3031</string>
+	</array>
+	<key>com.apple.private.tcc.allow</key>
+	<array>
+		<string>kTCCServiceCamera</string>
+	</array>
+</dict>
+</plist>

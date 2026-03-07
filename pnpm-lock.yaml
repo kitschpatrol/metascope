@@ -102,9 +102,6 @@ importers:
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
-      '@types/yaml':
-        specifier: ^1.9.7
-        version: 1.9.7
       bumpp:
         specifier: ^10.4.1
         version: 10.4.1
@@ -1725,10 +1722,6 @@ packages:
 
   '@types/which@3.0.4':
     resolution: {integrity: sha512-liyfuo/106JdlgSchJzXEQCVArk0CvevqPote8F8HgWgJ3dRCcTHgJIsLDuee0kxk/mhbInzIZk3QWSZJ8R+2w==}
-
-  '@types/yaml@1.9.7':
-    resolution: {integrity: sha512-8WMXRDD1D+wCohjfslHDgICd2JtMATZU8CkhH8LVJqcJs6dyYj5TGptzP8wApbmEullGBSsCEzzap73DQ1HJaA==}
-    deprecated: This is a stub types definition. yaml provides its own type definitions, so you do not need this installed.
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -7403,10 +7396,6 @@ snapshots:
   '@types/unist@3.0.3': {}
 
   '@types/which@3.0.4': {}
-
-  '@types/yaml@1.9.7':
-    dependencies:
-      yaml: 2.8.2
 
   '@types/yargs-parser@21.0.3': {}
 

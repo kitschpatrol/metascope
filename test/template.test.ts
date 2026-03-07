@@ -36,6 +36,7 @@ const mockContext: MetadataContext = {
 		issueCountOpen: 5,
 		stargazerCount: 100,
 	},
+	infoPlist: {},
 	loc: {
 		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 }],
 		total: { blanks: 100, code: 500, comments: 50, files: 10, languages: ['TypeScript'], lines: 650 },

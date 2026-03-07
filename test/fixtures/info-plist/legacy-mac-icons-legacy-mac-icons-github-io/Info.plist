@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AddedDate</key>
+	<date>2023-10-20T02:59:35Z</date>
+	<key>AddedBy</key>
+	<string>mlebd</string>
+	<key>Application</key>
+	<dict>
+		<key>AppPkgs</key>
+		<array>
+			<string>Pixelmator Pro.app</string>
+		</array>
+		<key>AppName</key>
+		<string>Pixelmator Pro</string>
+	</dict>
+	<key>Icons</key>
+	<array>
+		<dict>
+			<key>IconPath</key>
+			<string>pixelmator.icns</string>
+			<key>IconType</key>
+			<string>Flat</string>
+		</dict>
+		<dict>
+			<key>IconPath</key>
+			<string>pixelmator2.icns</string>
+			<key>IconType</key>
+			<string>Modern</string>
+		</dict>
+	</array>
+	<key>Sources</key>
+	<array/>
+</dict>
+</plist>

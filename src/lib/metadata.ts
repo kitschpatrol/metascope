@@ -19,6 +19,7 @@ import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
+import { infoPlistSource } from './sources/info-plist'
 import { locSource } from './sources/loc'
 import { metadataFileSource } from './sources/metadata'
 import { metascopeSource } from './sources/metascope'
@@ -48,6 +49,7 @@ const sources: MetadataSource[] = [
 	filesystemSource,
 	gitSource,
 	githubSource,
+	infoPlistSource,
 	locSource,
 	metadataFileSource,
 	metascopeSource,
@@ -201,6 +203,7 @@ export async function getMetadata<T>(
 		cinderCinderblock: {},
 		codemeta: codemetaData,
 		filesystem: {},
+		infoPlist: {},
 		git: {},
 		github: {},
 		loc: {},
