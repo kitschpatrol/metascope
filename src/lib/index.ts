@@ -31,6 +31,7 @@ export type {
 	ObsidianManifest,
 	OpenFrameworksAddonConfigData,
 	OpenFrameworksInstallXmlData,
+	PbxprojData,
 	PomXmlData,
 	PomXmlDependencyEntry,
 	PomXmlLicenseEntry,

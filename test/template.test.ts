@@ -54,6 +54,7 @@ const mockContext: MetadataContext = {
 	obsidian: {},
 	openFrameworksAddonConfig: {},
 	openFrameworksInstallXml: {},
+	pbxproj: {},
 	pomXml: {},
 	processingLibraryProperties: {},
 	packageJson: {

@@ -1,0 +1,416 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		90068DEB154547F200C7E75C /* XASendData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90068DEA154547F200C7E75C /* XASendData.cpp */; };
+		903BD7DE1500867200561ABC /* XAReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD7B31500867200561ABC /* XAReachability.h */; };
+		903BD7DF1500867200561ABC /* XAReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 903BD7B41500867200561ABC /* XAReachability.m */; };
+		903BD7F4150092CE00561ABC /* XAJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = 903BD7F2150092CE00561ABC /* XAJSON.c */; };
+		903BD7F5150092CE00561ABC /* XAJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD7F3150092CE00561ABC /* XAJSON.h */; };
+		903BD84F1500957F00561ABC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD8461500957F00561ABC /* config.h */; };
+		903BD8501500957F00561ABC /* Mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 903BD8471500957F00561ABC /* Mutex.cpp */; };
+		903BD8511500957F00561ABC /* Mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD8481500957F00561ABC /* Mutex.h */; };
+		903BD8521500957F00561ABC /* Semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 903BD8491500957F00561ABC /* Semaphore.cpp */; };
+		903BD8531500957F00561ABC /* Semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD84A1500957F00561ABC /* Semaphore.h */; };
+		903BD8541500957F00561ABC /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 903BD84B1500957F00561ABC /* Thread.cpp */; };
+		903BD8551500957F00561ABC /* Thread.h in Headers */ = {isa = PBXBuildFile; fileRef = 903BD84C1500957F00561ABC /* Thread.h */; };
+		909675C514EE326300356F4E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909675C414EE326300356F4E /* Foundation.framework */; };
+		909675FA14EE32C400356F4E /* curl 2.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D414EE32C400356F4E /* curl 2.h */; };
+		909675FB14EE32C400356F4E /* curl.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D514EE32C400356F4E /* curl.h */; };
+		909675FC14EE32C400356F4E /* curlbuild.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D614EE32C400356F4E /* curlbuild.h */; };
+		909675FD14EE32C400356F4E /* curlrules.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D714EE32C400356F4E /* curlrules.h */; };
+		909675FE14EE32C400356F4E /* curlver.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D814EE32C400356F4E /* curlver.h */; };
+		909675FF14EE32C400356F4E /* easy.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675D914EE32C400356F4E /* easy.h */; };
+		9096760014EE32C400356F4E /* mprintf.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675DA14EE32C400356F4E /* mprintf.h */; };
+		9096760114EE32C400356F4E /* multi.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675DB14EE32C400356F4E /* multi.h */; };
+		9096760214EE32C400356F4E /* stdcheaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675DC14EE32C400356F4E /* stdcheaders.h */; };
+		9096760314EE32C400356F4E /* typecheck-gcc.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675DD14EE32C400356F4E /* typecheck-gcc.h */; };
+		9096760414EE32C400356F4E /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675DE14EE32C400356F4E /* types.h */; };
+		9096761114EE32C400356F4E /* XADataManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 909675EC14EE32C400356F4E /* XADataManager.cpp */; };
+		9096761214EE32C400356F4E /* XADataManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675ED14EE32C400356F4E /* XADataManager.h */; };
+		9096761314EE32C400356F4E /* XADataProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 909675EE14EE32C400356F4E /* XADataProxy.cpp */; };
+		9096761414EE32C400356F4E /* XADataProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675EF14EE32C400356F4E /* XADataProxy.h */; };
+		9096761614EE32C400356F4E /* XASendData.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675F114EE32C400356F4E /* XASendData.h */; };
+		9096761914EE32C400356F4E /* XASystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 909675F414EE32C400356F4E /* XASystemInfo.h */; };
+		9096761A14EE32C400356F4E /* XASystemInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 909675F514EE32C400356F4E /* XASystemInfo.mm */; };
+		9096766914EE358600356F4E /* XA.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9096766814EE358600356F4E /* XA.mm */; };
+		9096767414EE366A00356F4E /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9096767314EE366A00356F4E /* libcurl.a */; };
+		9096767714EE367600356F4E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9096767614EE367600356F4E /* CoreTelephony.framework */; };
+		9096767914EE367E00356F4E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9096767814EE367E00356F4E /* SystemConfiguration.framework */; };
+		9096768814EE37BB00356F4E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9096768714EE37BB00356F4E /* UIKit.framework */; };
+		9096768D14EE3F4D00356F4E /* libzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9096768C14EE3F4D00356F4E /* libzlib.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		90068DEA154547F200C7E75C /* XASendData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XASendData.cpp; sourceTree = "<group>"; };
+		903BD7B31500867200561ABC /* XAReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XAReachability.h; sourceTree = "<group>"; };
+		903BD7B41500867200561ABC /* XAReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XAReachability.m; sourceTree = "<group>"; };
+		903BD7F2150092CE00561ABC /* XAJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XAJSON.c; sourceTree = "<group>"; };
+		903BD7F3150092CE00561ABC /* XAJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XAJSON.h; sourceTree = "<group>"; };
+		903BD8461500957F00561ABC /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		903BD8471500957F00561ABC /* Mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mutex.cpp; sourceTree = "<group>"; };
+		903BD8481500957F00561ABC /* Mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mutex.h; sourceTree = "<group>"; };
+		903BD8491500957F00561ABC /* Semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Semaphore.cpp; sourceTree = "<group>"; };
+		903BD84A1500957F00561ABC /* Semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Semaphore.h; sourceTree = "<group>"; };
+		903BD84B1500957F00561ABC /* Thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thread.cpp; sourceTree = "<group>"; };
+		903BD84C1500957F00561ABC /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
+		909675C114EE326300356F4E /* libXA.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libXA.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		909675C414EE326300356F4E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		909675C814EE326400356F4E /* XA-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XA-Prefix.pch"; sourceTree = "<group>"; };
+		909675C914EE326400356F4E /* XA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XA.h; sourceTree = "<group>"; };
+		909675D414EE32C400356F4E /* curl 2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "curl 2.h"; sourceTree = "<group>"; };
+		909675D514EE32C400356F4E /* curl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curl.h; sourceTree = "<group>"; };
+		909675D614EE32C400356F4E /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curlbuild.h; sourceTree = "<group>"; };
+		909675D714EE32C400356F4E /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curlrules.h; sourceTree = "<group>"; };
+		909675D814EE32C400356F4E /* curlver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curlver.h; sourceTree = "<group>"; };
+		909675D914EE32C400356F4E /* easy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = easy.h; sourceTree = "<group>"; };
+		909675DA14EE32C400356F4E /* mprintf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mprintf.h; sourceTree = "<group>"; };
+		909675DB14EE32C400356F4E /* multi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multi.h; sourceTree = "<group>"; };
+		909675DC14EE32C400356F4E /* stdcheaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdcheaders.h; sourceTree = "<group>"; };
+		909675DD14EE32C400356F4E /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "typecheck-gcc.h"; sourceTree = "<group>"; };
+		909675DE14EE32C400356F4E /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		909675EC14EE32C400356F4E /* XADataManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XADataManager.cpp; sourceTree = "<group>"; };
+		909675ED14EE32C400356F4E /* XADataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XADataManager.h; sourceTree = "<group>"; };
+		909675EE14EE32C400356F4E /* XADataProxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XADataProxy.cpp; sourceTree = "<group>"; };
+		909675EF14EE32C400356F4E /* XADataProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XADataProxy.h; sourceTree = "<group>"; };
+		909675F114EE32C400356F4E /* XASendData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XASendData.h; sourceTree = "<group>"; };
+		909675F414EE32C400356F4E /* XASystemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XASystemInfo.h; sourceTree = "<group>"; };
+		909675F514EE32C400356F4E /* XASystemInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XASystemInfo.mm; sourceTree = "<group>"; };
+		9096766814EE358600356F4E /* XA.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XA.mm; sourceTree = "<group>"; };
+		9096767314EE366A00356F4E /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = XA/libcurl.a; sourceTree = "<group>"; };
+		9096767614EE367600356F4E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		9096767814EE367E00356F4E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		9096768714EE37BB00356F4E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		9096768C14EE3F4D00356F4E /* libzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libzlib.a; path = XA/libzlib.a; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		909675BE14EE326300356F4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9096768D14EE3F4D00356F4E /* libzlib.a in Frameworks */,
+				9096768814EE37BB00356F4E /* UIKit.framework in Frameworks */,
+				9096767914EE367E00356F4E /* SystemConfiguration.framework in Frameworks */,
+				9096767714EE367600356F4E /* CoreTelephony.framework in Frameworks */,
+				9096767414EE366A00356F4E /* libcurl.a in Frameworks */,
+				909675C514EE326300356F4E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		903BD8451500957F00561ABC /* threadpool */ = {
+			isa = PBXGroup;
+			children = (
+				903BD8461500957F00561ABC /* config.h */,
+				903BD8471500957F00561ABC /* Mutex.cpp */,
+				903BD8481500957F00561ABC /* Mutex.h */,
+				903BD8491500957F00561ABC /* Semaphore.cpp */,
+				903BD84A1500957F00561ABC /* Semaphore.h */,
+				903BD84B1500957F00561ABC /* Thread.cpp */,
+				903BD84C1500957F00561ABC /* Thread.h */,
+			);
+			path = threadpool;
+			sourceTree = "<group>";
+		};
+		909675B614EE326300356F4E = {
+			isa = PBXGroup;
+			children = (
+				909675C614EE326400356F4E /* XA */,
+				909675C314EE326300356F4E /* Frameworks */,
+				909675C214EE326300356F4E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		909675C214EE326300356F4E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				909675C114EE326300356F4E /* libXA.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		909675C314EE326300356F4E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9096768C14EE3F4D00356F4E /* libzlib.a */,
+				9096768714EE37BB00356F4E /* UIKit.framework */,
+				9096767814EE367E00356F4E /* SystemConfiguration.framework */,
+				9096767614EE367600356F4E /* CoreTelephony.framework */,
+				9096767314EE366A00356F4E /* libcurl.a */,
+				909675C414EE326300356F4E /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		909675C614EE326400356F4E /* XA */ = {
+			isa = PBXGroup;
+			children = (
+				903BD8451500957F00561ABC /* threadpool */,
+				903BD7F2150092CE00561ABC /* XAJSON.c */,
+				903BD7F3150092CE00561ABC /* XAJSON.h */,
+				903BD7B31500867200561ABC /* XAReachability.h */,
+				903BD7B41500867200561ABC /* XAReachability.m */,
+				9096766814EE358600356F4E /* XA.mm */,
+				909675D314EE32C400356F4E /* curl */,
+				909675EC14EE32C400356F4E /* XADataManager.cpp */,
+				909675ED14EE32C400356F4E /* XADataManager.h */,
+				90068DEA154547F200C7E75C /* XASendData.cpp */,
+				909675EE14EE32C400356F4E /* XADataProxy.cpp */,
+				909675EF14EE32C400356F4E /* XADataProxy.h */,
+				909675F114EE32C400356F4E /* XASendData.h */,
+				909675F414EE32C400356F4E /* XASystemInfo.h */,
+				909675F514EE32C400356F4E /* XASystemInfo.mm */,
+				909675C914EE326400356F4E /* XA.h */,
+				909675C714EE326400356F4E /* Supporting Files */,
+			);
+			path = XA;
+			sourceTree = "<group>";
+		};
+		909675C714EE326400356F4E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				909675C814EE326400356F4E /* XA-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		909675D314EE32C400356F4E /* curl */ = {
+			isa = PBXGroup;
+			children = (
+				909675D414EE32C400356F4E /* curl 2.h */,
+				909675D514EE32C400356F4E /* curl.h */,
+				909675D614EE32C400356F4E /* curlbuild.h */,
+				909675D714EE32C400356F4E /* curlrules.h */,
+				909675D814EE32C400356F4E /* curlver.h */,
+				909675D914EE32C400356F4E /* easy.h */,
+				909675DA14EE32C400356F4E /* mprintf.h */,
+				909675DB14EE32C400356F4E /* multi.h */,
+				909675DC14EE32C400356F4E /* stdcheaders.h */,
+				909675DD14EE32C400356F4E /* typecheck-gcc.h */,
+				909675DE14EE32C400356F4E /* types.h */,
+			);
+			path = curl;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		909675BF14EE326300356F4E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				909675FA14EE32C400356F4E /* curl 2.h in Headers */,
+				909675FB14EE32C400356F4E /* curl.h in Headers */,
+				909675FC14EE32C400356F4E /* curlbuild.h in Headers */,
+				909675FD14EE32C400356F4E /* curlrules.h in Headers */,
+				909675FE14EE32C400356F4E /* curlver.h in Headers */,
+				909675FF14EE32C400356F4E /* easy.h in Headers */,
+				9096760014EE32C400356F4E /* mprintf.h in Headers */,
+				9096760114EE32C400356F4E /* multi.h in Headers */,
+				9096760214EE32C400356F4E /* stdcheaders.h in Headers */,
+				9096760314EE32C400356F4E /* typecheck-gcc.h in Headers */,
+				9096760414EE32C400356F4E /* types.h in Headers */,
+				9096761214EE32C400356F4E /* XADataManager.h in Headers */,
+				9096761414EE32C400356F4E /* XADataProxy.h in Headers */,
+				9096761614EE32C400356F4E /* XASendData.h in Headers */,
+				9096761914EE32C400356F4E /* XASystemInfo.h in Headers */,
+				903BD7DE1500867200561ABC /* XAReachability.h in Headers */,
+				903BD7F5150092CE00561ABC /* XAJSON.h in Headers */,
+				903BD84F1500957F00561ABC /* config.h in Headers */,
+				903BD8511500957F00561ABC /* Mutex.h in Headers */,
+				903BD8531500957F00561ABC /* Semaphore.h in Headers */,
+				903BD8551500957F00561ABC /* Thread.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		909675C014EE326300356F4E /* XA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 909675CE14EE326400356F4E /* Build configuration list for PBXNativeTarget "XA" */;
+			buildPhases = (
+				909675BD14EE326300356F4E /* Sources */,
+				909675BE14EE326300356F4E /* Frameworks */,
+				909675BF14EE326300356F4E /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XA;
+			productName = XA;
+			productReference = 909675C114EE326300356F4E /* libXA.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		909675B814EE326300356F4E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 909675BB14EE326300356F4E /* Build configuration list for PBXProject "XA" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 909675B614EE326300356F4E;
+			productRefGroup = 909675C214EE326300356F4E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				909675C014EE326300356F4E /* XA */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		909675BD14EE326300356F4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9096761114EE32C400356F4E /* XADataManager.cpp in Sources */,
+				9096761314EE32C400356F4E /* XADataProxy.cpp in Sources */,
+				9096761A14EE32C400356F4E /* XASystemInfo.mm in Sources */,
+				9096766914EE358600356F4E /* XA.mm in Sources */,
+				903BD7DF1500867200561ABC /* XAReachability.m in Sources */,
+				903BD7F4150092CE00561ABC /* XAJSON.c in Sources */,
+				903BD8501500957F00561ABC /* Mutex.cpp in Sources */,
+				903BD8521500957F00561ABC /* Semaphore.cpp in Sources */,
+				903BD8541500957F00561ABC /* Thread.cpp in Sources */,
+				90068DEB154547F200C7E75C /* XASendData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		909675CC14EE326400356F4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		909675CD14EE326400356F4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		909675CF14EE326400356F4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				DSTROOT = /tmp/XA.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "XA/XA-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/XA\"",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-lstdc++";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WARNING_CFLAGS = "";
+			};
+			name = Debug;
+		};
+		909675D014EE326400356F4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				DSTROOT = /tmp/XA.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "XA/XA-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/XA\"",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "$(OTHER_CFLAGS)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WARNING_CFLAGS = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		909675BB14EE326300356F4E /* Build configuration list for PBXProject "XA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				909675CC14EE326400356F4E /* Debug */,
+				909675CD14EE326400356F4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		909675CE14EE326400356F4E /* Build configuration list for PBXNativeTarget "XA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				909675CF14EE326400356F4E /* Debug */,
+				909675D014EE326400356F4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 909675B814EE326300356F4E /* Project object */;
+}

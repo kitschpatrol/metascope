@@ -22,6 +22,7 @@ export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
+export type { PbxprojData } from './sources/pbxproj'
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 export type { PackageData } from './sources/package-json'
 export type {
@@ -55,6 +56,7 @@ import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
+import type { PbxprojData } from './sources/pbxproj'
 import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 import type { PackageData } from './sources/package-json'
 import type { PomXmlData } from './sources/pom-xml'
@@ -86,6 +88,7 @@ export type MetadataContext = {
 	obsidian: ObsidianData
 	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
 	openFrameworksInstallXml: OpenFrameworksInstallXmlData
+	pbxproj: PbxprojData
 	packageJson: PackageData
 	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData

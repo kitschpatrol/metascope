@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3C18A6602E6CB271001F1060 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C18A65F2E6CB26B001F1060 /* PhotoViewController.swift */; };
+		CB57503A2929E62C00890962 /* TaskAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5750392929E62C00890962 /* TaskAnnotationView.swift */; };
+		CB602B9929247359006C6727 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB602B9829247359006C6727 /* AppDelegate.swift */; };
+		CB602B9B29247359006C6727 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB602B9A29247359006C6727 /* SceneDelegate.swift */; };
+		CB602B9D29247359006C6727 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB602B9C29247359006C6727 /* TaskListViewController.swift */; };
+		CB602BA029247359006C6727 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB602B9E29247359006C6727 /* Main.storyboard */; };
+		CB602BA22924735C006C6727 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB602BA12924735C006C6727 /* Assets.xcassets */; };
+		CB602BA52924735C006C6727 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB602BA32924735C006C6727 /* LaunchScreen.storyboard */; };
+		CB602BAD292476F4006C6727 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB602BAC292476F4006C6727 /* TaskCell.swift */; };
+		CB9D9ED1292483BC00F8F51B /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9D9ED0292483BC00F8F51B /* Task.swift */; };
+		CB9D9ED4292488B000F8F51B /* TaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9D9ED3292488B000F8F51B /* TaskDetailViewController.swift */; };
+		CB9D9EDA292489E000F8F51B /* TaskComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9D9ED9292489E000F8F51B /* TaskComposeViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3C18A65F2E6CB26B001F1060 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		CB5750392929E62C00890962 /* TaskAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskAnnotationView.swift; sourceTree = "<group>"; };
+		CB602B9529247359006C6727 /* lab-task-squirrel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lab-task-squirrel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB602B9829247359006C6727 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CB602B9A29247359006C6727 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		CB602B9C29247359006C6727 /* TaskListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
+		CB602B9F29247359006C6727 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CB602BA12924735C006C6727 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CB602BA42924735C006C6727 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CB602BA62924735C006C6727 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB602BAC292476F4006C6727 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		CB9D9ED0292483BC00F8F51B /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		CB9D9ED3292488B000F8F51B /* TaskDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailViewController.swift; sourceTree = "<group>"; };
+		CB9D9ED9292489E000F8F51B /* TaskComposeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskComposeViewController.swift; path = ../TaskComposeViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CB602B9229247359006C6727 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CB602B8C29247359006C6727 = {
+			isa = PBXGroup;
+			children = (
+				CB602B9729247359006C6727 /* lab-task-squirrel */,
+				CB602B9629247359006C6727 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CB602B9629247359006C6727 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB602B9529247359006C6727 /* lab-task-squirrel.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB602B9729247359006C6727 /* lab-task-squirrel */ = {
+			isa = PBXGroup;
+			children = (
+				3C18A65F2E6CB26B001F1060 /* PhotoViewController.swift */,
+				CB602B9829247359006C6727 /* AppDelegate.swift */,
+				CB602B9A29247359006C6727 /* SceneDelegate.swift */,
+				CB602BAE29247700006C6727 /* Task List */,
+				CB9D9ED82924896400F8F51B /* Task Compose */,
+				CB9D9ED5292488BC00F8F51B /* Task Detail */,
+				CB9D9ED2292483C400F8F51B /* Models */,
+				CB602B9E29247359006C6727 /* Main.storyboard */,
+				CB602BA32924735C006C6727 /* LaunchScreen.storyboard */,
+				CB602BA12924735C006C6727 /* Assets.xcassets */,
+				CB602BA62924735C006C6727 /* Info.plist */,
+			);
+			path = "lab-task-squirrel";
+			sourceTree = "<group>";
+		};
+		CB602BAE29247700006C6727 /* Task List */ = {
+			isa = PBXGroup;
+			children = (
+				CB602B9C29247359006C6727 /* TaskListViewController.swift */,
+				CB602BAC292476F4006C6727 /* TaskCell.swift */,
+			);
+			path = "Task List";
+			sourceTree = "<group>";
+		};
+		CB9D9ED2292483C400F8F51B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CB9D9ED0292483BC00F8F51B /* Task.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CB9D9ED5292488BC00F8F51B /* Task Detail */ = {
+			isa = PBXGroup;
+			children = (
+				CB9D9ED3292488B000F8F51B /* TaskDetailViewController.swift */,
+				CB5750392929E62C00890962 /* TaskAnnotationView.swift */,
+			);
+			path = "Task Detail";
+			sourceTree = "<group>";
+		};
+		CB9D9ED82924896400F8F51B /* Task Compose */ = {
+			isa = PBXGroup;
+			children = (
+				CB9D9ED9292489E000F8F51B /* TaskComposeViewController.swift */,
+			);
+			path = "Task Compose";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CB602B9429247359006C6727 /* lab-task-squirrel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB602BA92924735C006C6727 /* Build configuration list for PBXNativeTarget "lab-task-squirrel" */;
+			buildPhases = (
+				CB602B9129247359006C6727 /* Sources */,
+				CB602B9229247359006C6727 /* Frameworks */,
+				CB602B9329247359006C6727 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "lab-task-squirrel";
+			productName = "lab-task-squirrel";
+			productReference = CB602B9529247359006C6727 /* lab-task-squirrel.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CB602B8D29247359006C6727 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					CB602B9429247359006C6727 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+				};
+			};
+			buildConfigurationList = CB602B9029247359006C6727 /* Build configuration list for PBXProject "lab-task-squirrel" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CB602B8C29247359006C6727;
+			productRefGroup = CB602B9629247359006C6727 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB602B9429247359006C6727 /* lab-task-squirrel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CB602B9329247359006C6727 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB602BA52924735C006C6727 /* LaunchScreen.storyboard in Resources */,
+				CB602BA22924735C006C6727 /* Assets.xcassets in Resources */,
+				CB602BA029247359006C6727 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CB602B9129247359006C6727 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB9D9ED4292488B000F8F51B /* TaskDetailViewController.swift in Sources */,
+				CB602BAD292476F4006C6727 /* TaskCell.swift in Sources */,
+				CB602B9D29247359006C6727 /* TaskListViewController.swift in Sources */,
+				CB9D9EDA292489E000F8F51B /* TaskComposeViewController.swift in Sources */,
+				CB57503A2929E62C00890962 /* TaskAnnotationView.swift in Sources */,
+				CB602B9929247359006C6727 /* AppDelegate.swift in Sources */,
+				CB602B9B29247359006C6727 /* SceneDelegate.swift in Sources */,
+				CB9D9ED1292483BC00F8F51B /* Task.swift in Sources */,
+				3C18A6602E6CB271001F1060 /* PhotoViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CB602B9E29247359006C6727 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB602B9F29247359006C6727 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		CB602BA32924735C006C6727 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB602BA42924735C006C6727 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CB602BA72924735C006C6727 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CB602BA82924735C006C6727 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CB602BAA2924735C006C6727 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XBCN7TTWX;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "lab-task-squirrel/Info.plist";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo access needed to let you add photos to complete a task";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mc.lab-task-squirrel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB602BAB2924735C006C6727 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XBCN7TTWX;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "lab-task-squirrel/Info.plist";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo access needed to let you add photos to complete a task";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mc.lab-task-squirrel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB602B9029247359006C6727 /* Build configuration list for PBXProject "lab-task-squirrel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB602BA72924735C006C6727 /* Debug */,
+				CB602BA82924735C006C6727 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB602BA92924735C006C6727 /* Build configuration list for PBXNativeTarget "lab-task-squirrel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB602BAA2924735C006C6727 /* Debug */,
+				CB602BAB2924735C006C6727 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CB602B8D29247359006C6727 /* Project object */;
+}

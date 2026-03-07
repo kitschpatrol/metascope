@@ -27,6 +27,7 @@ import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
 import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
+import { pbxprojSource } from './sources/pbxproj'
 import { openFrameworksInstallXmlSource } from './sources/open-frameworks-install-xml'
 import { packageSource } from './sources/package-json.js'
 import { pomXmlSource } from './sources/pom-xml'
@@ -59,6 +60,7 @@ const sources: MetadataSource[] = [
 	obsidianSource,
 	openFrameworksAddonConfigSource,
 	openFrameworksInstallXmlSource,
+	pbxprojSource,
 	packageSource,
 	pomXmlSource,
 	processingLibraryPropertiesSource,
@@ -216,6 +218,7 @@ export async function getMetadata<T>(
 		obsidian: {},
 		openFrameworksAddonConfig: {},
 		openFrameworksInstallXml: {},
+		pbxproj: {},
 		packageJson: {},
 		pomXml: {},
 		processingLibraryProperties: {},
