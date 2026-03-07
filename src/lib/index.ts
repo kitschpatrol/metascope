@@ -18,6 +18,7 @@ export type {
 	NpmData,
 	ObsidianData,
 	ObsidianManifest,
+	OpenFrameworksAddonConfigData,
 	PackageData,
 	PypiData,
 	PyprojectData,

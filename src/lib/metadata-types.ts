@@ -6,6 +6,7 @@ export type { LocData, LocTotals } from './sources/loc'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
+export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 export type { PackageData } from './sources/package-json'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
@@ -19,6 +20,7 @@ import type { LocData } from './sources/loc'
 import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
+import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 import type { PackageData } from './sources/package-json'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
@@ -39,6 +41,7 @@ export type MetadataContext = {
 	metascope: MetascopeData
 	npm: NpmData
 	obsidian: ObsidianData
+	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
 	packageJson: PackageData
 	pypi: PypiData
 	pyprojectToml: PyprojectData

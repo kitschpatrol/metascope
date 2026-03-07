@@ -20,6 +20,7 @@ import { locSource } from './sources/loc'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
+import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
 import { packageSource } from './sources/package-json.js'
 import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
@@ -41,6 +42,7 @@ const sources: MetadataSource[] = [
 	metascopeSource,
 	npmSource,
 	obsidianSource,
+	openFrameworksAddonConfigSource,
 	packageSource,
 	pypiSource,
 	pyprojectSource,
@@ -188,6 +190,7 @@ export async function getMetadata<T>(
 		metascope: {},
 		npm: {},
 		obsidian: {},
+		openFrameworksAddonConfig: {},
 		packageJson: {},
 		pypi: {},
 		pyprojectToml: {},
