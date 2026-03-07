@@ -40,6 +40,7 @@ const mockContext: MetadataContext = {
 		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 }],
 		total: { blanks: 100, code: 500, comments: 50, files: 10, languages: ['TypeScript'], lines: 650 },
 	},
+	metadataFile: {},
 	metascope: {
 		path: '/test/project',
 		scannedAt: '2026-01-01T00:00:00.000Z',

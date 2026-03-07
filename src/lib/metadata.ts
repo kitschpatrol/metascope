@@ -20,6 +20,7 @@ import { filesystemSource } from './sources/filesystem'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
 import { locSource } from './sources/loc'
+import { metadataFileSource } from './sources/metadata'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
@@ -46,6 +47,7 @@ const sources: MetadataSource[] = [
 	gitSource,
 	githubSource,
 	locSource,
+	metadataFileSource,
 	metascopeSource,
 	npmSource,
 	obsidianSource,
@@ -198,6 +200,7 @@ export async function getMetadata<T>(
 		git: {},
 		github: {},
 		loc: {},
+		metadataFile: {},
 		metascope: {},
 		npm: {},
 		obsidian: {},

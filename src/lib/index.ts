@@ -22,6 +22,7 @@ export type {
 	LocData,
 	LocTotals,
 	MetadataContext,
+	MetadataFileData,
 	MetascopeData,
 	NpmData,
 	ObsidianData,

@@ -1,0 +1,5 @@
+{
+	"description": "Testing topics fallback when no keywords or tags",
+	"homepage": "https://topics-fallback-example.com",
+	"topics": ["topic1", "topic2", "topics-fallback"]
+}

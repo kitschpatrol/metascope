@@ -1,0 +1,8 @@
+{
+	"description": "JSON metadata file for testing",
+	"homepage": "https://json-example.com",
+	"keywords": ["json", "metadata", "testing"],
+	"url": "https://fallback-url.com",
+	"tags": ["tag1", "tag2"],
+	"topics": ["topic1", "topic2"]
+}

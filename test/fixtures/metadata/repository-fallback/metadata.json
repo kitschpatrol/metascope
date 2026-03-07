@@ -1,0 +1,5 @@
+{
+	"description": "Testing repository fallback for homepage",
+	"repository": "https://repository-fallback-example.com",
+	"keywords": ["repository-fallback", "testing"]
+}

@@ -1,0 +1,5 @@
+{
+	"description": "Testing URL fallback instead of homepage",
+	"url": "https://url-fallback-example.com",
+	"keywords": ["url-fallback", "testing"]
+}

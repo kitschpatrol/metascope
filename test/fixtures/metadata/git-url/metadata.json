@@ -1,0 +1,5 @@
+{
+	"description": "Testing metadata.json with git URL normalization",
+	"repository": "git+https://github.com/test/metadata-git-url.git",
+	"keywords": ["metadata", "git-url", "testing"]
+}

@@ -1,0 +1,5 @@
+{
+	"description": "Test various keyword fields",
+	"tags": ["tag1", "tag2"],
+	"topics": ["topic1", "topic2"]
+}

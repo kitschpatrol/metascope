@@ -15,6 +15,7 @@ export type { FilesystemData } from './sources/filesystem'
 export type { GitConfig, GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
 export type { LocData, LocTotals } from './sources/loc'
+export type { MetadataFileData } from './sources/metadata'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
@@ -37,6 +38,7 @@ import type { FilesystemData } from './sources/filesystem'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
 import type { LocData } from './sources/loc'
+import type { MetadataFileData } from './sources/metadata'
 import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
@@ -62,6 +64,7 @@ export type MetadataContext = {
 	git: GitData
 	github: GitHubData
 	loc: LocData
+	metadataFile: MetadataFileData
 	metascope: MetascopeData
 	npm: NpmData
 	obsidian: ObsidianData

@@ -1,0 +1,12 @@
+description: 'YAML metadata file for testing'
+homepage: 'https://yaml-example.com'
+keywords:
+  - yaml
+  - metadata
+  - testing
+tags:
+  - yaml-tag1
+  - yaml-tag2
+topics:
+  - yaml-topic1
+  - yaml-topic2
