@@ -23,6 +23,9 @@ importers:
       '@types/node':
         specifier: ~24.1.0
         version: 24.1.0
+      '@types/plist':
+        specifier: ^3.0.5
+        version: 3.0.5
       '@types/yargs':
         specifier: ^17.0.35
         version: 17.0.35
@@ -99,6 +102,9 @@ importers:
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
+      '@types/yaml':
+        specifier: ^1.9.7
+        version: 1.9.7
       bumpp:
         specifier: ^10.4.1
         version: 10.4.1
@@ -1696,6 +1702,9 @@ packages:
     resolution: {integrity: sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==}
     deprecated: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
 
+  '@types/plist@3.0.5':
+    resolution: {integrity: sha512-E6OCaRmAe4WDmWNsL/9RMqdkkzDCY1etutkflWk4c+AcjDU07Pcz1fQwTX0TQz+Pxqn9i4L1TU3UFpjnrcDgxA==}
+
   '@types/semver@7.7.1':
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
@@ -1716,6 +1725,10 @@ packages:
 
   '@types/which@3.0.4':
     resolution: {integrity: sha512-liyfuo/106JdlgSchJzXEQCVArk0CvevqPote8F8HgWgJ3dRCcTHgJIsLDuee0kxk/mhbInzIZk3QWSZJ8R+2w==}
+
+  '@types/yaml@1.9.7':
+    resolution: {integrity: sha512-8WMXRDD1D+wCohjfslHDgICd2JtMATZU8CkhH8LVJqcJs6dyYj5TGptzP8wApbmEullGBSsCEzzap73DQ1HJaA==}
+    deprecated: This is a stub types definition. yaml provides its own type definitions, so you do not need this installed.
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -7372,6 +7385,11 @@ snapshots:
     dependencies:
       parse-path: 7.1.0
 
+  '@types/plist@3.0.5':
+    dependencies:
+      '@types/node': 24.1.0
+      xmlbuilder: 15.1.1
+
   '@types/semver@7.7.1': {}
 
   '@types/supports-color@8.1.3': {}
@@ -7385,6 +7403,10 @@ snapshots:
   '@types/unist@3.0.3': {}
 
   '@types/which@3.0.4': {}
+
+  '@types/yaml@1.9.7':
+    dependencies:
+      yaml: 2.8.2
 
   '@types/yargs-parser@21.0.3': {}
 

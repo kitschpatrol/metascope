@@ -23,6 +23,13 @@ export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-ad
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 export type { PackageData } from './sources/package-json'
 export type {
+	PomXmlData,
+	PomXmlDependencyEntry,
+	PomXmlLicenseEntry,
+	PomXmlOrganization,
+	PomXmlPersonEntry,
+} from './sources/pom-xml'
+export type {
 	ProcessingLibraryPropertiesAuthorEntry,
 	ProcessingLibraryPropertiesCategory,
 	ProcessingLibraryPropertiesData,
@@ -46,6 +53,7 @@ import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 import type { PackageData } from './sources/package-json'
+import type { PomXmlData } from './sources/pom-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
@@ -73,6 +81,7 @@ export type MetadataContext = {
 	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
 	openFrameworksInstallXml: OpenFrameworksInstallXmlData
 	packageJson: PackageData
+	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
 	pypi: PypiData
 	pyprojectToml: PyprojectData
