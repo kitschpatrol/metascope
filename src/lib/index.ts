@@ -28,6 +28,7 @@ export type {
 	ObsidianData,
 	ObsidianManifest,
 	OpenFrameworksAddonConfigData,
+	OpenFrameworksInstallXmlData,
 	PackageData,
 	ProcessingLibraryPropertiesAuthorEntry,
 	ProcessingLibraryPropertiesCategory,

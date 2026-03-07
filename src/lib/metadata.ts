@@ -25,6 +25,7 @@ import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
 import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
+import { openFrameworksInstallXmlSource } from './sources/open-frameworks-install-xml'
 import { packageSource } from './sources/package-json.js'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
 import { pypiSource } from './sources/pypi'
@@ -52,6 +53,7 @@ const sources: MetadataSource[] = [
 	npmSource,
 	obsidianSource,
 	openFrameworksAddonConfigSource,
+	openFrameworksInstallXmlSource,
 	packageSource,
 	processingLibraryPropertiesSource,
 	pypiSource,
@@ -205,6 +207,7 @@ export async function getMetadata<T>(
 		npm: {},
 		obsidian: {},
 		openFrameworksAddonConfig: {},
+		openFrameworksInstallXml: {},
 		packageJson: {},
 		processingLibraryProperties: {},
 		pypi: {},

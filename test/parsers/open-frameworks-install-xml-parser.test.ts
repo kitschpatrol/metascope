@@ -1,0 +1,84 @@
+import { readFile } from 'node:fs/promises'
+import { readdir } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { parseOpenFrameworksInstallXml } from '../../src/lib/parsers/open-frameworks-install-xml-parser'
+
+const fixturesDir = resolve('test/fixtures/open-frameworks-install-xml')
+
+describe('parseOpenFrameworksInstallXml', () => {
+	it('should parse a basic install.xml with name, version, and author', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'elliotwoods-ofxgraycode/install.xml'),
+			'utf8',
+		)
+		const result = parseOpenFrameworksInstallXml(content)
+
+		expect(result).toBeDefined()
+		expect(result!.name).toBe('ofxGraycode')
+		expect(result!.version).toBe('0.01')
+		expect(result!.author).toBe('Elliot Woods')
+		expect(result!.url).toBe('http://github.com/elliotwoods/ofxGraycode')
+	})
+
+	it('should parse code_url, site_url, download_url, and description', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'armadillu-ofxscenemanager/install.xml'),
+			'utf8',
+		)
+		const result = parseOpenFrameworksInstallXml(content)
+
+		expect(result).toBeDefined()
+		expect(result!.name).toBe('ofxSceneManager')
+		expect(result!.codeUrl).toBe('https://github.com/armadillu/ofxSceneManager')
+		expect(result!.siteUrl).toBe('http://www.uri.cat')
+		expect(result!.description).toContain('ofxSceneManager helps handle different scenes')
+	})
+
+	it('should extract operating systems from lib os attributes', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'nuigroup-ccv-tbeta/install.xml'),
+			'utf8',
+		)
+		const result = parseOpenFrameworksInstallXml(content)
+
+		expect(result).toBeDefined()
+		expect(result!.operatingSystems).toContain('Windows')
+		expect(result!.operatingSystems).toContain('macOS')
+		expect(result!.operatingSystems).toContain('Linux')
+	})
+
+	it('should handle malformed CDATA', async () => {
+		const content = await readFile(
+			resolve(fixturesDir, 'armadillu-ofxscenemanager/install.xml'),
+			'utf8',
+		)
+		// This fixture uses <[CDATA[...]]> instead of <![CDATA[...]]>
+		expect(content).toContain('<[CDATA[')
+		const result = parseOpenFrameworksInstallXml(content)
+		expect(result).toBeDefined()
+		expect(result!.author).toBeDefined()
+	})
+
+	it('should return undefined for non-openFrameworks XML', () => {
+		const content = '<root><item>no addons here</item></root>'
+		expect(parseOpenFrameworksInstallXml(content)).toBeUndefined()
+	})
+
+	it('should return undefined for invalid XML', () => {
+		expect(parseOpenFrameworksInstallXml('not xml <{')).toBeUndefined()
+	})
+
+	it('should parse all fixtures without throwing', async () => {
+		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const dirs = entries.filter((entry) => entry.isDirectory())
+
+		expect(dirs.length).toBeGreaterThan(0)
+
+		for (const dir of dirs) {
+			const content = await readFile(resolve(fixturesDir, dir.name, 'install.xml'), 'utf8')
+			const result = parseOpenFrameworksInstallXml(content)
+			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+		}
+	})
+})

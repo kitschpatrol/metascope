@@ -1,0 +1,183 @@
+/**
+ * Parser for legacy openFrameworks addon `install.xml` files.
+ *
+ * This is a legacy format predating `addon_config.mk`. The root element is
+ * `<install>`, with flat metadata elements (`<name>`, `<version>`, `<author>`,
+ * etc.) followed by build configuration in an `<add>` block.
+ *
+ * Since `install.xml` is a generic filename, the parser validates that the
+ * content is actually an openFrameworks addon by checking for the `<install>`
+ * root element and the presence of "addons" in the file content.
+ *
+ * Uses `fast-xml-parser` with attribute parsing enabled to read `<lib os="...">`
+ * attributes for operating system inference.
+ */
+
+import { XMLParser } from 'fast-xml-parser'
+
+// ─── Types ──────────────────────────────────────────────────────────
+
+/** Parsed result from a legacy openFrameworks `install.xml` file. */
+export type OpenFrameworksInstallXml = {
+	/** Addon author name. */
+	author?: string
+	/** Source code repository URL. */
+	codeUrl?: string
+	/** Description of the addon. */
+	description?: string
+	/** Download URL. */
+	downloadUrl?: string
+	/** Addon display name. */
+	name?: string
+	/** Supported operating systems from `<lib os="...">` attributes. */
+	operatingSystems: string[]
+	/** Software dependencies from `<requires>` elements. */
+	requirements: string[]
+	/** Website URL. */
+	siteUrl?: string
+	/** Generic URL (used when no code_url / site_url provided). */
+	url?: string
+	/** Version string. */
+	version?: string
+}
+
+/**
+ * Map `<lib os="...">` attribute values to human-readable OS names.
+ */
+const LIB_OS_MAP: Record<string, string> = {
+	linux: 'Linux',
+	mac: 'macOS',
+	win32: 'Windows',
+}
+
+// ─── Core parser ────────────────────────────────────────────────────
+
+/**
+ * Parse a legacy openFrameworks `install.xml` content string into a structured object.
+ * Returns undefined if the XML is malformed, missing the `<install>` root element,
+ * or does not appear to be an openFrameworks addon.
+ */
+export function parseOpenFrameworksInstallXml(
+	content: string,
+): OpenFrameworksInstallXml | undefined {
+	// Validate: must contain "addons" (appears in oF addon file paths)
+	if (!content.toLowerCase().includes('addons')) {
+		return undefined
+	}
+
+	// Fix malformed CDATA: some files use <[CDATA[...]]> instead of <![CDATA[...]]>
+	const fixedContent = content.replaceAll('<[CDATA[', '<![CDATA[')
+
+	const parser = new XMLParser({
+		attributeNamePrefix: '@_',
+		ignoreAttributes: false,
+		parseTagValue: false,
+	})
+
+	let data: Record<string, unknown>
+	try {
+		data = parser.parse(fixedContent) as Record<string, unknown>
+	} catch {
+		return undefined
+	}
+
+	// Validate: must have <install> root element
+	const install = data.install as Record<string, unknown> | undefined
+	if (!install) return undefined
+
+	return {
+		author: getString(install.author),
+		codeUrl: getString(install.code_url),
+		description: getString(install.description),
+		downloadUrl: getString(install.download_url),
+		name: getString(install.name),
+		operatingSystems: parseOperatingSystems(install),
+		requirements: parseRequirements(install),
+		siteUrl: getString(install.site_url),
+		url: getString(install.url),
+		version: getString(install.version),
+	}
+}
+
+// ─── Helpers ────────────────────────────────────────────────────────
+
+/**
+ * Ensure a value is an array (XML parser may return single objects or arrays).
+ */
+function ensureArray<T>(value: T | T[] | undefined): T[] {
+	if (value === undefined || value === null) return []
+	return Array.isArray(value) ? value : [value]
+}
+
+/**
+ * Get a trimmed non-empty string from a parsed XML value.
+ * Returns undefined for empty strings, non-strings, or whitespace-only values.
+ */
+function getString(value: unknown): string | undefined {
+	if (typeof value !== 'string') return undefined
+	const trimmed = value.trim()
+	return trimmed.length > 0 ? trimmed : undefined
+}
+
+/**
+ * Extract software requirements from `<requires>`.
+ * Handles three variants:
+ * 1. Empty — skip
+ * 2. Free text — emit as-is
+ * 3. Structured `<addon>` children — emit each separately
+ */
+function parseRequirements(install: Record<string, unknown>): string[] {
+	const { requires } = install
+	if (requires === undefined || requires === null) return []
+
+	// Free text: <requires>some text</requires>
+	if (typeof requires === 'string') {
+		const trimmed = requires.trim()
+		return trimmed.length > 0 ? [trimmed] : []
+	}
+
+	// Structured: <requires><addon>name</addon>...</requires>
+	if (typeof requires === 'object') {
+		const container = requires as Record<string, unknown>
+		const results: string[] = []
+		for (const addon of ensureArray(container.addon)) {
+			const name = getString(addon as string)
+			if (name) {
+				results.push(name)
+			}
+		}
+
+		return results
+	}
+
+	return []
+}
+
+/**
+ * Extract operating system information from `<lib os="...">` attributes
+ * found within `<add><link>` sections.
+ */
+function parseOperatingSystems(install: Record<string, unknown>): string[] {
+	const add = install.add as Record<string, unknown> | undefined
+	if (!add) return []
+
+	const link = add.link as Record<string, unknown> | undefined
+	if (!link) return []
+
+	const results: string[] = []
+	const seen = new Set<string>()
+
+	for (const lib of ensureArray(link.lib as Record<string, unknown> | undefined)) {
+		if (typeof lib !== 'object' || lib === null) continue
+		const os = getString((lib as Record<string, unknown>)['@_os'] as string)
+		if (os) {
+			const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os
+			if (!seen.has(mapped)) {
+				seen.add(mapped)
+				results.push(mapped)
+			}
+		}
+	}
+
+	return results
+}

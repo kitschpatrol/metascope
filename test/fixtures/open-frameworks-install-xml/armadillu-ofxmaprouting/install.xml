@@ -1,0 +1,30 @@
+<install>
+	<name>ofxMapRouting</name>
+    <version>1.0</version>
+    <author><[CDATA[Oriol Ferrer <oriol@uri.cat> ]]></author>
+   
+    <code_url>https://github.com/armadillu/ofxMapRouting</code_url>
+    <site_url>http://www.uri.cat</site_url>
+    <download_url>https://github.com/armadillu/ofxMapRouting</download_url>
+   
+    <description><![CDATA[
+          OF Addon to handle map routing, through a moded a*. wip! trying to keep it fast and low-memo at expenses of path optimallity Requires ofxSimpleGuiToo, ofxXmlSettings, ofxMSAInteractiveObject and ofxTimeMeasurements to run the example    ]]></description>
+    
+	<add>
+		
+		<!-- 	=====================================================================	-->
+		<!--	========================== add per project using this addon =========	-->
+		<!-- 	=====================================================================	-->
+	
+		<src>
+			<folder name="addons/ofxMapRouting/src">
+				<file>../../../addons/ofxMapRouting/src/ofxMapRouting.cpp</file>
+				<file>../../../addons/ofxMapRouting/src/ofxMapRouting.h</file>
+				<file>../../../addons/ofxMapRouting/src/ofxTileMap.cpp</file>
+				<file>../../../addons/ofxMapRouting/src/ofxTileMap.h</file>
+			</folder>
+		</src>
+		
+	</add>    
+    
+</install>

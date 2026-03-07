@@ -51,6 +51,7 @@ const mockContext: MetadataContext = {
 	},
 	obsidian: {},
 	openFrameworksAddonConfig: {},
+	openFrameworksInstallXml: {},
 	processingLibraryProperties: {},
 	packageJson: {
 		// eslint-disable-next-line ts/naming-convention

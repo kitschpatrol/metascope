@@ -20,6 +20,7 @@ export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
 export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
+export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 export type { PackageData } from './sources/package-json'
 export type {
 	ProcessingLibraryPropertiesAuthorEntry,
@@ -43,6 +44,7 @@ import type { MetascopeData } from './sources/metascope'
 import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
+import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 import type { PackageData } from './sources/package-json'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 import type { PypiData } from './sources/pypi'
@@ -69,6 +71,7 @@ export type MetadataContext = {
 	npm: NpmData
 	obsidian: ObsidianData
 	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
+	openFrameworksInstallXml: OpenFrameworksInstallXmlData
 	packageJson: PackageData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
 	pypi: PypiData
