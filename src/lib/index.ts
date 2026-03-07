@@ -1,6 +1,7 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
 export { defineTemplate } from './metadata-types'
+export type { LanguageInfo } from '@kitschpatrol/tokei'
 export type {
 	CodeMetaData,
 	Credentials,
@@ -11,8 +12,7 @@ export type {
 	GitData,
 	GitHubData,
 	LocData,
-	LocLanguageEntry,
-	LocLanguageStats,
+	LocTotals,
 	MetadataContext,
 	MetascopeData,
 	NpmData,

@@ -34,8 +34,8 @@ const mockContext: MetadataContext = {
 		stargazerCount: 100,
 	},
 	loc: {
-		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript' }],
-		total: { blanks: 100, code: 500, comments: 50, files: 10 },
+		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 }],
+		total: { blanks: 100, code: 500, comments: 50, files: 10, languages: ['TypeScript'], lines: 650 },
 	},
 	metascope: {
 		path: '/test/project',

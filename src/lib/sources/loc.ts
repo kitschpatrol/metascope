@@ -1,52 +1,34 @@
+import type { Language, LanguageInfo } from '@kitschpatrol/tokei'
 import { tokei } from '@kitschpatrol/tokei'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
-export type LocLanguageStats = {
-	/** Number of blank lines. */
-	blanks: number
-	/** Number of lines of code. */
-	code: number
-	/** Number of comment lines. */
-	comments: number
-	/** Number of files. */
-	files: number
-}
-
-export type LocLanguageEntry = LocLanguageStats & {
-	/** Programming language name. */
-	language: string
+export type LocTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
+	languages: Language[]
 }
 
 export type LocData = {
-	/** Per-language line count breakdown. */
-	breakdown?: LocLanguageEntry[]
+	/** Per-language line count breakdown, sorted by lines of code descending. */
+	breakdown?: LanguageInfo[]
 	/** Aggregate line counts across all languages. */
-	total?: LocLanguageStats
+	total?: LocTotals
 }
 
 export const locSource: MetadataSource<'loc'> = {
-	// eslint-disable-next-line ts/require-await -- synchronous native binding wrapped in async interface
 	async extract(context: SourceContext): Promise<LocData> {
 		log.debug('Extracting lines of code via tokei...')
 
-		const results = tokei({ exclude: ['node_modules'], include: [context.path] })
+		const results = await tokei({ exclude: ['node_modules'], include: [context.path] })
 
-		const breakdown: LocLanguageEntry[] = results
-			.map((entry) => ({
-				blanks: entry.blanks,
-				code: entry.code,
-				comments: entry.comments,
-				files: entry.files,
-				language: entry.lang,
-			}))
-			.toSorted((a, b) => b.code - a.code)
+		const breakdown = results.toSorted((a, b) => b.code - a.code)
 
-		const total: LocLanguageStats = {
+		const total: LocTotals = {
 			blanks: breakdown.reduce((sum, entry) => sum + entry.blanks, 0),
 			code: breakdown.reduce((sum, entry) => sum + entry.code, 0),
 			comments: breakdown.reduce((sum, entry) => sum + entry.comments, 0),
 			files: breakdown.reduce((sum, entry) => sum + entry.files, 0),
+			languages: breakdown.map((entry) => entry.language),
+			lines: breakdown.reduce((sum, entry) => sum + entry.lines, 0),
 		}
 
 		return { breakdown, total }
