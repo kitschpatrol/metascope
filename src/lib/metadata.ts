@@ -36,6 +36,7 @@ import { processingLibraryPropertiesSource } from './sources/processing-library-
 import { publiccodeSource } from './sources/publiccode'
 import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
+import { pythonSetupPySource } from './sources/python-setup-py'
 import { readmeSource } from './sources/readme'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
@@ -72,6 +73,7 @@ const sources: MetadataSource[] = [
 	readmeSource,
 	pypiSource,
 	pyprojectSource,
+	pythonSetupPySource,
 	updatesSource,
 ]
 
@@ -232,6 +234,7 @@ export async function getMetadata<T>(
 		publiccode: {},
 		pypi: {},
 		pyprojectToml: {},
+		pythonSetupPy: {},
 		readme: {},
 		updates: {},
 	}

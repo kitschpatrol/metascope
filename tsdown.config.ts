@@ -41,10 +41,14 @@ function treeSitterWasmPlugin(): Rolldown.Plugin {
 				wasmFiles.map(async (f) => copyFile(join(codemetaGrammars, f), join(grammarsDirectory, f))),
 			)
 
-			// Copy tree-sitter-ruby.wasm directly from its package (metascope's own parser)
+			// Copy grammar WASMs directly from their packages (metascope's own parsers)
 			await copyFile(
 				join('node_modules', 'tree-sitter-ruby', 'tree-sitter-ruby.wasm'),
 				join(grammarsDirectory, 'tree-sitter-ruby.wasm'),
+			)
+			await copyFile(
+				join('node_modules', 'tree-sitter-python', 'tree-sitter-python.wasm'),
+				join(grammarsDirectory, 'tree-sitter-python.wasm'),
 			)
 
 			// Patch the bundle: change '../grammars/' to './grammars/' so the paths

@@ -49,6 +49,7 @@ export type {
 	PubliccodeDescription,
 	PypiData,
 	PyprojectData,
+	PythonSetupPyData,
 	ReadmeData,
 	SourceName,
 	Template,
