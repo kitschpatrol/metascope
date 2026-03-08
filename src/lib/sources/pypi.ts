@@ -1,6 +1,6 @@
 /* eslint-disable ts/naming-convention */
 
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
@@ -63,22 +63,32 @@ const pypistatsOverallSchema = z.object({
 	),
 })
 
-function getPackageName(context: SourceContext): string | undefined {
-	const name = context.codemeta?.name
-	if (!name) return undefined
-	if (Array.isArray(name)) {
-		// eslint-disable-next-line ts/no-unsafe-assignment
-		const first = name[0]
-		return typeof first === 'string' ? first : undefined
+async function getPackageName(context: SourceContext): Promise<string | undefined> {
+	// Try pyproject.toml [project].name
+	try {
+		const content = await readFile(resolve(context.path, 'pyproject.toml'), 'utf8')
+		const nameMatch = /^\s*name\s*=\s*"([^"]+)"/m.exec(content)
+		if (nameMatch?.[1]) return nameMatch[1]
+	} catch {
+		// No pyproject.toml
 	}
 
-	return typeof name === 'string' ? name : undefined
+	// Try setup.cfg [metadata].name
+	try {
+		const content = await readFile(resolve(context.path, 'setup.cfg'), 'utf8')
+		const nameMatch = /^\s*name\s*=\s*(.+)$/m.exec(content)
+		if (nameMatch?.[1]?.trim()) return nameMatch[1].trim()
+	} catch {
+		// No setup.cfg
+	}
+
+	return undefined
 }
 
 export const pypiSource: MetadataSource<'pypi'> = {
 	async extract(context: SourceContext): Promise<PypiData> {
 		log.debug('Extracting PyPI metadata...')
-		const name = getPackageName(context)
+		const name = await getPackageName(context)
 		if (!name) return {}
 
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
@@ -146,7 +156,7 @@ export const pypiSource: MetadataSource<'pypi'> = {
 			return false
 		}
 
-		const name = getPackageName(context)
+		const name = await getPackageName(context)
 		if (!name) return false
 
 		try {

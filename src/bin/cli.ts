@@ -7,7 +7,6 @@ import { createLogger, getChildLogger } from 'lognow'
 import { getMetadata, setLogger, templates } from '../lib'
 import type { Template, TemplateData } from '../lib'
 import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
-import { setLogger as setLoggerCodeMeta } from '@kitschpatrol/codemeta'
 
 const cliCommandName = Object.keys(bin).at(0)!
 const builtInTemplateNames = Object.keys(templates)
@@ -55,17 +54,6 @@ await yargsInstance
 			})
 			setLogger(log)
 			setLoggerReadPyproject(getChildLogger(log, 'read-pyproject'))
-			setLoggerCodeMeta(
-				getChildLogger(log, 'codemeta').withFreshPlugins([
-					{
-						// Only log from codemeta if parent is verbose
-						transformLogLevel: ({ logLevel }) =>
-							logLevel === 'error' || logLevel === 'warn' ? 'debug' : logLevel,
-						shouldSendToLogger: ({ logLevel }, loglayer) => loglayer.isLevelEnabled(logLevel),
-					},
-				]),
-			)
-
 			log.debug('Starting metadata extraction...')
 
 			// Resolve template: try built-in template first, then load as file

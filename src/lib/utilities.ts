@@ -1,4 +1,4 @@
-import type { BasicPersonOrOrg, CodeMetaBasic } from '@kitschpatrol/codemeta'
+import type { CodeMetaJsonData, CodeMetaPersonOrOrg } from './parsers/codemeta-json-parser'
 import is from '@sindresorhus/is'
 import { replaceCore } from 'case-police'
 import abbreviates from 'case-police/dict/abbreviates.json'
@@ -214,7 +214,7 @@ export function toBasicLicenses(
 /**
  * TODO
  */
-export function usesSharedConfig(codemeta: CodeMetaBasic): boolean {
+export function usesSharedConfig(codemeta: CodeMetaJsonData): boolean {
 	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta)
 }
 
@@ -228,16 +228,16 @@ export function usesPnpm(packageJson: PackageData): boolean {
 	)
 }
 
-function hasDependencyWithId(id: string, codemeta: CodeMetaBasic): boolean {
+function hasDependencyWithId(id: string, codemeta: CodeMetaJsonData): boolean {
 	return [...(codemeta.softwareSuggestions ?? []), ...(codemeta.softwareRequirements ?? [])].some(
 		({ identifier }) => identifier === id,
 	)
 }
 
 /**
- * Takes a `BasicPersonOrOrg` and returns a compound string if possible
+ * Takes a `CodeMetaPersonOrOrg` and returns a compound string if possible
  */
-function basicName(basicPersonOrOrg: BasicPersonOrOrg | undefined): string | undefined {
+function basicName(basicPersonOrOrg: CodeMetaPersonOrOrg | undefined): string | undefined {
 	if (basicPersonOrOrg === undefined) {
 		return undefined
 	}
@@ -250,9 +250,9 @@ function basicName(basicPersonOrOrg: BasicPersonOrOrg | undefined): string | und
 }
 
 /**
- * Takes a `BasicPersonOrOrg[]` and returns an array of compound strings
+ * Takes a `CodeMetaPersonOrOrg[]` and returns an array of compound strings
  */
-export function basicNames(source: BasicPersonOrOrg[] | undefined): string[] | undefined {
+export function basicNames(source: CodeMetaPersonOrOrg[] | undefined): string[] | undefined {
 	if (source === undefined) {
 		return undefined
 	}
@@ -266,7 +266,7 @@ export function basicNames(source: BasicPersonOrOrg[] | undefined): string[] | u
  * True if project was authored by specific person(s)
  */
 export function isAuthoredBy(
-	codemeta?: CodeMetaBasic,
+	codemeta?: CodeMetaJsonData,
 	authorName?: string | string[],
 ): boolean | undefined {
 	if (codemeta === undefined || authorName === undefined || codemeta.author === undefined) {
@@ -285,7 +285,7 @@ export function isAuthoredBy(
  * True if project is on a specific github account(s)
  */
 export function isOnGithubAccountOf(
-	codemeta?: CodeMetaBasic,
+	codemeta?: CodeMetaJsonData,
 	githubUserName?: string | string[],
 ): boolean | undefined {
 	if (
@@ -311,7 +311,7 @@ export function isOnGithubAccountOf(
  * Legacy status heuristic from AllWork project
  */
 export function getStatus(
-	codemeta?: CodeMetaBasic,
+	codemeta?: CodeMetaJsonData,
 	authorName?: string | string[],
 	githubUserName?: string | string[],
 ):

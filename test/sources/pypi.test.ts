@@ -3,23 +3,23 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { pypiSource } from '../../src/lib/sources/pypi'
 
-const context: SourceContext = {
-	codemeta: { name: 'requests' },
-	credentials: {},
-	path: resolve('.'),
-}
+const fixturesDirectory = resolve('test/fixtures/pyproject')
 
 describe('pypi source', () => {
 	it('should not be available without pyproject.toml', async () => {
-		const noTomlContext: SourceContext = {
-			codemeta: { name: 'requests' },
+		const context: SourceContext = {
 			credentials: {},
 			path: '/tmp',
 		}
-		expect(await pypiSource.isAvailable(noTomlContext)).toBe(false)
+		expect(await pypiSource.isAvailable(context)).toBe(false)
 	})
 
 	it('should extract data for a known package', async () => {
+		// Use a fixture with a pyproject.toml containing a known PyPI package
+		const context: SourceContext = {
+			credentials: {},
+			path: resolve(fixturesDirectory, 'proycon-codemetapy'),
+		}
 		const result = await pypiSource.extract(context)
 
 		expect(result.versionLatest).toBeDefined()
@@ -42,21 +42,28 @@ describe('pypi source', () => {
 	})
 
 	it('should return empty object for nonexistent package', async () => {
-		const badContext: SourceContext = {
-			codemeta: { name: 'this-package-definitely-does-not-exist-on-pypi-12345' },
+		// Create a temp directory with a fake pyproject.toml
+		const { mkdtempSync, writeFileSync } = await import('node:fs')
+		const { join } = await import('node:path')
+		const tmpDir = mkdtempSync(join('/tmp', 'pypi-test-'))
+		writeFileSync(
+			join(tmpDir, 'pyproject.toml'),
+			'[project]\nname = "this-package-definitely-does-not-exist-on-pypi-12345"',
+		)
+		const context: SourceContext = {
 			credentials: {},
-			path: resolve('.'),
+			path: tmpDir,
 		}
-		const result = await pypiSource.extract(badContext)
+		const result = await pypiSource.extract(context)
 		expect(result).toEqual({})
 	})
 
-	it('should return empty object when no codemeta name', async () => {
-		const noNameContext: SourceContext = {
+	it('should return empty object when no package name found', async () => {
+		const context: SourceContext = {
 			credentials: {},
 			path: resolve('.'),
 		}
-		const result = await pypiSource.extract(noNameContext)
+		const result = await pypiSource.extract(context)
 		expect(result).toEqual({})
 	})
 })

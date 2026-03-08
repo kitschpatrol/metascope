@@ -26,22 +26,14 @@ function treeSitterWasmPlugin(): Rolldown.Plugin {
 			const grammarsDirectory = join(outDirectory, 'grammars')
 			await mkdir(grammarsDirectory, { recursive: true })
 
-			// Find web-tree-sitter.wasm (transitive dep via @kitschpatrol/codemeta)
+			// Find and copy web-tree-sitter.wasm
 			const webTsDirectory = await findPackageDirectory('web-tree-sitter')
 			await copyFile(
 				join(webTsDirectory, 'web-tree-sitter.wasm'),
 				join(outDirectory, 'web-tree-sitter.wasm'),
 			)
 
-			// Copy grammar WASMs from codemeta's vendored grammars
-			const codemetaGrammars = join('node_modules', '@kitschpatrol', 'codemeta', 'dist', 'grammars')
-			// eslint-disable-next-line unicorn/no-await-expression-member
-			const wasmFiles = (await readdir(codemetaGrammars)).filter((f) => f.endsWith('.wasm'))
-			await Promise.all(
-				wasmFiles.map(async (f) => copyFile(join(codemetaGrammars, f), join(grammarsDirectory, f))),
-			)
-
-			// Copy grammar WASMs directly from their packages (metascope's own parsers)
+			// Copy grammar WASMs from their packages
 			await copyFile(
 				join('node_modules', 'tree-sitter-ruby', 'tree-sitter-ruby.wasm'),
 				join(grammarsDirectory, 'tree-sitter-ruby.wasm'),

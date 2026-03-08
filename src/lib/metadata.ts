@@ -163,25 +163,12 @@ export async function getMetadata<T>(
 	const template = await resolveTemplate(options.template as string | Template<unknown> | undefined)
 
 	const credentials = await resolveCredentials(options.credentials)
+	const sourceContext: SourceContext = { credentials, path: absolutePath }
 
-	// Phase 1: Always extract codemeta first (provides discovery hints)
-	log.debug('Phase 1: Extracting codemeta for discovery hints...')
-	const codemetaContext: SourceContext = { credentials, path: absolutePath }
-	// Fallback empty codemeta if source fails
-	let codemetaData: MetadataContext['codemeta'] = {}
-	try {
-		codemetaData = await codemetaSource.extract(codemetaContext)
-	} catch (error) {
-		log.warn(`Codemeta source failed: ${error instanceof Error ? error.message : String(error)}`)
-	}
-
-	// Phase 2: Check availability and extract remaining sources in parallel
-	const remainingSources = sources.filter((source) => source.key !== 'codemeta')
-	const sourceContext: SourceContext = { codemeta: codemetaData, credentials, path: absolutePath }
-
-	log.debug('Phase 2: Checking source availability...')
+	// Check availability of all sources in parallel
+	log.debug('Checking source availability...')
 	const availabilityResults = await Promise.all(
-		remainingSources.map(async (source) => {
+		sources.map(async (source) => {
 			try {
 				const available = await source.isAvailable(sourceContext)
 				log.debug(`Source "${source.key}": ${available ? 'available' : 'not available'}`)
@@ -199,8 +186,8 @@ export async function getMetadata<T>(
 		.filter((result) => result.available)
 		.map((result) => result.source)
 
-	// Phase 3: Extract data from available sources in parallel
-	log.debug(`Phase 3: Extracting from ${availableSources.length} available sources...`)
+	// Extract data from available sources in parallel
+	log.debug(`Extracting from ${availableSources.length} available sources...`)
 	const extractResults = await Promise.all(
 		availableSources.map(async (source) => {
 			try {
@@ -223,7 +210,7 @@ export async function getMetadata<T>(
 		arduinoLibraryProperties: {},
 		cargoToml: {},
 		cinderCinderblock: {},
-		codemeta: codemetaData,
+		codemeta: {},
 		codemetaJson: {},
 		filesystem: {},
 		gemspec: {},

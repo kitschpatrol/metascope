@@ -1,4 +1,4 @@
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
@@ -34,16 +34,14 @@ const npmDownloadsSchema = z.object({
 	downloads: z.number(),
 })
 
-function getPackageName(context: SourceContext): string | undefined {
-	const name = context.codemeta?.name
-	if (!name) return undefined
-	if (Array.isArray(name)) {
-		// eslint-disable-next-line ts/no-unsafe-assignment
-		const first = name[0]
-		return typeof first === 'string' ? first : undefined
+async function getPackageName(context: SourceContext): Promise<string | undefined> {
+	try {
+		const content = await readFile(resolve(context.path, 'package.json'), 'utf8')
+		const pkg = JSON.parse(content) as Record<string, unknown>
+		return typeof pkg.name === 'string' ? pkg.name : undefined
+	} catch {
+		return undefined
 	}
-
-	return typeof name === 'string' ? name : undefined
 }
 
 async function fetchDownloads(packageName: string, period: string): Promise<number | undefined> {
@@ -62,7 +60,7 @@ async function fetchDownloads(packageName: string, period: string): Promise<numb
 export const npmSource: MetadataSource<'npm'> = {
 	async extract(context: SourceContext): Promise<NpmData> {
 		log.debug('Extracting npm metadata...')
-		const name = getPackageName(context)
+		const name = await getPackageName(context)
 		if (!name) return {}
 
 		const [metadata, downloadsWeekly, downloadsMonthly, downloadsYearly, downloadsTotal] =
@@ -111,7 +109,7 @@ export const npmSource: MetadataSource<'npm'> = {
 			return false
 		}
 
-		const name = getPackageName(context)
+		const name = await getPackageName(context)
 		if (!name) return false
 
 		try {
