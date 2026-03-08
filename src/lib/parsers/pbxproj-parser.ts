@@ -14,7 +14,7 @@
 
 import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
 import { z } from 'zod'
-import { nonEmptyString, stringArray } from './schema-primitives'
+import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

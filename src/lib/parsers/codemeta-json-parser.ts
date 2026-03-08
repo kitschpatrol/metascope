@@ -14,7 +14,7 @@
  */
 
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl } from './schema-primitives'
+import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 
 // ─── Preprocess primitives ───────────────────────────────────────────
 

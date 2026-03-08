@@ -36,4 +36,3 @@ export const gemspecSource: MetadataSource<'gemspec'> = {
 	},
 	key: 'gemspec',
 }
-

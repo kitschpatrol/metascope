@@ -14,7 +14,7 @@
 
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
+import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

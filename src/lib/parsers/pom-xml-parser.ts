@@ -11,7 +11,7 @@
 
 import { XMLParser } from 'fast-xml-parser'
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl } from './schema-primitives'
+import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

@@ -7,7 +7,7 @@
 import type { Node } from 'web-tree-sitter'
 import { z } from 'zod'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
-import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
+import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

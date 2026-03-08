@@ -7,7 +7,7 @@
  */
 
 import { z } from 'zod'
-import { stringArray } from './schema-primitives'
+import { stringArray } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -19,5 +19,9 @@ const licenseFilesSchema = z.object({
 export type LicenseFiles = z.infer<typeof licenseFilesSchema>
 
 // Re-export identification utilities for convenience
-export { identifyLicense, isLicenseFilename, spdxIdToUrl } from '../utilities/license-identification'
+export {
+	identifyLicense,
+	isLicenseFilename,
+	spdxIdToUrl,
+} from '../utilities/license-identification'
 export type { LicenseMatch } from '../utilities/license-identification'

@@ -12,7 +12,7 @@
  */
 
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
+import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
