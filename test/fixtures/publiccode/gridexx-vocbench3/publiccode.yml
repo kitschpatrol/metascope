@@ -1,0 +1,49 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: VocBench 3
+releaseDate: '2017-09-28'
+url: 'https://bitbucket.org/art-uniroma2/vocbench3.git'
+developmentStatus: stable
+softwareType: standalone/web
+softwareVersion: 6.0.1
+landingURL: 'http://vocbench.uniroma2.it/'
+platforms:
+  - web
+dependsOn:
+  open:
+    - name: Semantic Turkey
+categories:
+  - knowledge-management
+maintenance:
+  type: contract
+  contractors:
+    - name: infeurope
+      until: '2020-07-31'
+legal:
+  license: BSD-3-Clause
+  mainCopyrightOwner: University of Rome Tor Vergata
+  repoOwner: University of Rome Tor Vergata
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
+description:
+  it:
+    longDescription: "VocBench\_is a web-based, multilingual, collaborative development platform for managing [OWL](https://www.w3.org/TR/owl2-overview/) ontologies, [SKOS](https://www.w3.org/TR/skos-reference/)(/[XL](https://www.w3.org/TR/skos-reference/skos-xl.html)) thesauri, [Ontolex-lemon](https://www.w3.org/2016/05/ontolex/) lexicons and generic RDF datasets.\n\nDesigned to meet the needs of semantic web and linked data environments,\_VocBench\_development has also been driven by the feedback gathered from a [community of users](http://vocbench.uniroma2.it/support/community.jsf) made of public organizations, companies and independent users looking for open source solutions for maintaining their ontologies, thesauri, code lists and authority resources.\n\nVocBench business and data access layers are realized by [Semantic Turkey](http://semanticturkey.uniroma2.it/), an open-source platform for Knowledge Acquisition and Management realized by the [University of Rome Tor Vergata](http://www.uniroma2.it/).\n"
+    shortDescription: >-
+      VocBench is a web-based, multilingual, collaborative development platform
+      for managing OWL ontologies, SKOS(/XL) thesauri, Ontolex-lemon lexicons
+      and 
+    genericName: Collaborative RDF Editor
+    localisedName: VocBench 3
+    documentation: 'http://vocbench.uniroma2.it/doc/'
+    apiDocumentation: 'http://semanticturkey.uniroma2.it/doc/user/'
+    features:
+      - RDF Collaborative Editing
+it:
+  countryExtensionVersion: '0.2'
+  riuso:
+    codiceIPA: uni_rm2

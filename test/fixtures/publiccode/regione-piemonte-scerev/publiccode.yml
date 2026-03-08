@@ -1,0 +1,126 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Regione Piemonte Sistema Informativo Lavoro
+categories:
+  - erp
+dependsOn:
+  proprietary:
+    - name: Apache httpd
+      optional: false
+      version: 2.4.53
+      versionMax: ''
+      versionMin: ''
+    - name: PostgreSQL
+      optional: false
+      version: '9.2.7 '
+      versionMax: ''
+      versionMin: ''
+    - name: RedHat JBoss EAP
+      optional: false
+      version: 6.4.5
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - PNRR
+      - PNRR/Beneficiari/ASL
+      - PNRR/Beneficiari/Enti Regionali
+      - PNRR/Misura/1.4.1
+      - |-
+        Le API REST permettono al cittadino di scegliere o revocare il medico
+        MMG o il pediatra.
+      - |-
+        La webApp permette all'operatore sanitario di analizzare le richieste di
+
+        scelta medico e pediatra.
+    genericName: Scelta e revoca del medico
+    localisedName: SCEREV
+    longDescription: |
+      Le API REST (fruite tramite SANSOL / APISANSCEREV) permettono al cittadino
+      di scegliere o revocare il Medico di Medicina Generale e il Pediatra senza
+      recarsi alla ASL. È possibile scegliere il nuovo medico all'interno di un
+      determinato ambito territoriale in base al proprio domicilio.
+
+      La webApp permette all'operatore di back office di analizzare le richieste
+      di scelta medico e pediatra relative a domande di assistenza temporanea e
+      illimitata relative a particolari situazioni di domicilio in Piemonte, di
+      soggiorno in Italia e di deroga per le quali è necessaria la valutazione
+      dei dati e degli eventuali allegati inseriti dagli assistiti.
+
+      Gli assistiti che presentano domanda possono essere cittadini italiani o
+      stranieri (comunitari o non comunitari).
+
+      Nei casi di richiesta del pediatra la domanda viene presentata dal
+      genitore/tutore del minore.
+
+      L'operatore di back office ha la possibilità di ricercare, utilizzando
+      specifici filtri, e di consultare nel dettaglio le domande compilate dagli
+      assistiti via web. In base ai contenuti inseriti, l'operatore ha la
+      possibilità di accettare la domanda, di richiedere eventuali rettifiche
+      e/o integrazioni relative agli allegati forniti ed eventualmente di
+      respingere la domanda qualora i dati inseriti non siano compatibili o
+      congruenti con la richiesta effettuata.
+
+      Il servizio propone l'impostazione di alcuni parametri che possono essere
+      confermati o modificati dall'operatore di sportello.
+
+      Il servizio aggiorna in automatico tutti i dati dell'assistito e dei
+      medici (precedente e attuale) presenti nell'Archivio Unico Regionale degli
+      Assistiti (AURA).
+    screenshots:
+      - |-
+        https://raw.githubusercontent.com/regione-piemonte/scerev/master/SCEREV.png
+    shortDescription: |-
+      API REST per la scelta e la revoca del medico da parte del cittadino e
+
+      webApp di backoffice per gli operatori sanitari della Regione Piemonte.
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: r_piemon
+landingURL: 'https://github.com/regione-piemonte/scerev.git'
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+logo: 'https://raw.githubusercontent.com/regione-piemonte/scerev/master/SCEREV.png'
+maintenance:
+  contacts:
+    - email: andrea.borrelli@csi.it
+      name: Andrea Borrelli
+      phone: '+393346447568'
+  contractors:
+    - name: CSI Piemonte
+      until: '2023-04-22'
+  type: contract
+name: SCEREV
+platforms:
+  - web
+releaseDate: '2022-04-22'
+softwareType: standalone/web
+softwareVersion: 2.0.1
+url: 'https://github.com/regione-piemonte/scerev'
+usedBy:
+  - Regione PIemonte
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - healthcare

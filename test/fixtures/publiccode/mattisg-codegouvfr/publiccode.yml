@@ -1,0 +1,41 @@
+publiccodeYmlVersion: "0.2"
+
+name: codegouvfr
+url: "https://github.com/etalab/codegouvfr.git"
+releaseDate: "2019-06-28"
+platforms:
+  - web
+
+categories:
+  - utilities
+
+developmentStatus: development
+
+softwareType: "standalone/web"
+
+description:
+  en:
+    genericName: Choices
+    shortDescription: >
+      Frontend to display public sector source code repositories
+
+    longDescription: >
+      Frontend to display public sector source code repositories
+
+    features:
+       - display a list of public sector source code repositories
+
+legal:
+  license: EPL-2.0
+
+maintenance:
+  type: "individual"
+
+  contacts:
+    - name: Bastien Guerry
+
+localisation:
+  localisationReady: no
+  availableLanguages:
+    - en
+    - fr

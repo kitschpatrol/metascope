@@ -1,0 +1,108 @@
+publiccodeYmlVersion: "0.2"
+name: Aircentral
+applicationSuite: SRRQA - Rilevamento della Qualità dell'Aria
+url: "https://github.com/regione-piemonte/aircentral"
+softwareVersion: "3.3.4"
+releaseDate: "2022-06-14"
+
+inputTypes:
+  - text/plain
+outputTypes:
+  - text/plain
+  - multipart/form-data
+
+platforms:
+  - linux
+
+categories:
+  - data-collection
+  - data-visualization
+
+usedBy:
+  - ARPA Piemonte
+
+
+developmentStatus: stable
+
+softwareType: "standalone/desktop"
+
+intendedAudience:
+  scope:
+    - environment
+  countries:
+    - it
+    
+
+description:
+  it:
+    localisedName: Aircentral
+    genericName: Aircentral
+    shortDescription: >
+          Prodotto destinato all'acquisizione dei dati e degli allarmi
+          delle stazioni di misura della Rete Regionale di Rilevamento 
+          della Qualità dell'Aria.
+
+    longDescription: >
+          Il Centro Operativo Provinciale è un concentratore di dati 
+          provenienti delle stazioni di misura della Rete Regionale 
+          di Rilevamento della Qualità dell'Aria, dislocate sul 
+          territorio della Regione Piemonte; acquisisce i dati e 
+          le informazioni di stato provenienti dalle stazioni di misura.
+          L'applicazione permette un controllo dello stato della rete in 
+          tempo reale, la consultazione dei dati e lo scarico dei dati 
+          su un database prestabilito. Permette anche di collegarsi 
+          all'interfaccia grafica della stazione (prodotto airstation).
+          Gli utenti dell'applicazione sono i tecnici di ARPA o 
+          delle ditte di manutenzione incaricate da ARPA che si occupano 
+          della rete di monitoraggio.
+
+    features:
+       - polling delle stazioni di rilevamento
+       - monitoraggio stato della rete in tempo reale
+       - configurazione/consultazione stazioni, parametri interni
+       - consultazione dati, visualizzazione grafici
+    screenshots:
+       - screenshots/01_login_centrale.png
+       - screenshots/02_mappa.png
+       - screenshots/03_grafico.png
+       - screenshots/03_visualizzazione_dati.png
+       - screenshots/03_visualizzazione_periodo.png
+       - screenshots/04_stato_strumentazione_stazione.png
+       - screenshots/05_stato_stazione.png
+       - screenshots/06_stato_allarmi_stazione.png
+       - screenshots/07_configurazione_stazione.png
+       - screenshots/08_configurazione_comune.png
+
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+  repoOwner: Regione Piemonte
+  authorsFile: Copyrights.txt
+
+maintenance:
+  type: "internal"
+
+  contacts:
+    - name: Flavio Bianchi
+      email: "flavio.bianchi@csi.it"
+      affiliation: CSI Piemonte
+      phone: ""
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - it
+
+it:
+  countryExtensionVersion: "0.2"
+
+  piattaforme:
+    spid: false
+    cie: false
+    anpr: false
+    pagopa: false
+
+  riuso:
+    codiceIPA: r_piemon

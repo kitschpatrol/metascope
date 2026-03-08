@@ -1,0 +1,106 @@
+publiccodeYmlVersion: "0.2" 
+
+name: SIPEE 
+applicationSuite: SIPEE
+url: 'https://github.com/regione-piemonte/sicee.git'
+landingURL: 'https://github.com/regione-piemonte/sicee'
+softwareVersion: "11.1.0"
+releaseDate: "2020-10-20"
+
+platforms:
+  - web
+  - linux
+  - windows
+  - mac
+
+categories:
+  - business-process-management
+  - document-management
+  - office
+
+usedBy:
+  - Regione Piemonte
+
+
+developmentStatus: stable
+
+softwareType: "standalone/web"
+
+intendedAudience:
+  scope:
+    - energy
+  countries:
+    - it
+
+description: 
+  it: 
+    localisedName: SIPEE
+    genericName: SIPEE
+    shortDescription: > 
+          Sistema Informativo per la Prestazione Energetica degli Edifici (SIPEE)
+
+    longDescription: > 
+          Il SIPEE gestisce l'elenco regionale dei soggetti abilitati al rilascio dell'Attestato di Prestazione Energetica (APE), i dati inseriti negli APE e la raccolta degli attestati trasmessi dai professionisti.
+          Le principali funzionalità sono: 
+          - **Funzionalità per i certificatori**: iscrizione all'elenco regionale dei certificatori; pagamento dell'onere annuale per l'iscrizione; prenotazione e acquisto codici APE; compilazione online e trasmissione APE;
+          - **Funzionalità per i notai e i cittadini**: ricerche sull'elenco dei certificatori regionali; ricerche di Attestati trasmessi al SIPEE;
+          - **Funzionalità per enti e soggetti formativi**: gestione informazioni enti e soggetti formativi; gestione corsi e partecipanti;
+
+    features: 
+       - Inviare APE
+       - Consultare APE
+       - Protocollare APE
+       - Inviare gli APE al SIAPE (ENEA)
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+  repoOwner: Regione Piemonte
+  authorsFile: AUTHORS.txt
+
+maintenance:
+  type: "internal"
+
+  contacts:
+    - name: Giuseppe Todaro
+      email: "giuseppe.todaro@csi.it"
+
+localisation: 
+  localisationReady: false
+  availableLanguages:
+    - it
+
+dependsOn:
+  open:
+    - name: APACHE 2
+      optional: true
+      version: "2.4.41"
+      versionMax: ""
+      versionMin: "2"
+    - name: JBOSS
+      optional: true
+      version: EAP 6.4.0.GA
+      versionMax: ""
+      versionMin: EAP 6
+  proprietary:
+    - name: Oracle
+      versionMin: "10.2"
+    - name: Oracle Corporation
+
+it: 
+  countryExtensionVersion: "0.2"
+
+  conforme:
+    lineeGuidaDesign: yes
+    modelloInteroperabilita: yes
+    misureMinimeSicurezza: yes
+    gdpr: yes
+
+  piattaforme:
+    spid: yes
+    cie: yes
+    anpr: no
+    pagopa: yes
+
+  riuso: 
+    codiceIPA: r_piemon

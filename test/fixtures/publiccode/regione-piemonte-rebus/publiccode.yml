@@ -1,0 +1,127 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.4.0'
+applicationSuite: Regione Piemonte Sistema Informativo Trasporti
+categories:
+  - erp
+dependsOn:
+  open:
+    - name: Apache Web Server
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: 2.0.0
+    - name: JBoss
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '6.4'
+    - name: Postgresql
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '9.4'
+description:
+  it:
+    documentation: |-
+      https://servizi.regione.piemonte.it/catalogo/parco-autobus-tpl-piemonte-sistema-per-gestione-unificata-delle-informazioni-sugli-autobus-trasporto
+    features:
+      - Gestione Parco Bus TPL regionale
+      - Gestione Contratti TPL regionale
+      - Gestione Soggetti (Enti/Aziende) TPL regionale
+    genericName: Gestionale Bus e Contratti TPL
+    longDescription: |
+      ### _** REBUS : Parco BUS TPL - Settore Mobilità e Trasporti Regione Piemonte **_
+
+
+      Il prodotto **REBUS** è costituito da due moduli applicativi (web application) per la gestione unificata e l’aggiornamento delle informazioni relative:
+
+
+      - ai veicoli adibiti al trasporto pubblico locale (TPL) - Parco autobus TPL Piemonte;
+       
+      - ai contratti di servizio del TPL e ai soggetti coinvolti negli stessi contratti - Contratti e soggetti giuridici TPL.
+
+
+       Il sistema è utilizzato da personale dalle aziende di trasporto pubblico (TPL) che operano in Piemonte, dell’Agenzia per la Mobilità Piemontese (AMP) e della Regione Piemonte. 
+       
+
+      **Parco autobus TPL Piemonte:**
+
+
+      Tale modulo consente il censimento delle informazioni sugli autobus adibiti al trasporto pubblico locale.
+
+
+      L’attività di aggiornamento dei dati della propria flotta è di esclusiva competenza e responsabilità dell’azienda proprietaria, anche ai fini di specifici adempimenti previsti in Regione Piemonte (Debito Informativo Trasporti - DIT, ai sensi della Determinazione Dirigenziale n. 4292 del 18.12.2017).
+
+
+      L’azienda, tramite il sistema, può inserire nuove schede veicolo, ricercarle, consultarle e modificarle. In particolare, l’inserimento di nuovi veicoli in anagrafica può avvenire tramite interfaccia (un veicolo alla volta), oppure tramite il caricamento di un file Excel (consigliato nel caso si vogliano inserire più veicoli contemporaneamente).
+
+
+      La ricerca e la consultazione sono facilitate dalla presenza di numerosi filtri e dalla possibilità di esportare in file MS  Excel i risultati della ricerca.
+
+
+      L’azienda può gestire e consultare solo i dati relativi alla propria flotta, AMP e Regione Piemonte possono ricercare e consultare i dati di tutti i veicoli inseriti in anagrafica dalle aziende.
+
+
+      Il sistema include funzionalità a supporto del rilascio dei nulla osta da parte dell’Ente committente (al momento solo AMP), necessari alle aziende per procedere con le richieste di prima immatricolazione, re-immatricolazione, alienazione e sostituzione presso la Motorizzazione civile. 
+
+       
+
+      **Contratti e soggetti giuridici TPL**:
+
+
+      Il modulo consente il censimento e l'aggiornamento continuo e unificato delle anagrafiche dei contratti inerenti ai servizi  di TPL e dei relativi soggetti giuridici coinvolti (aziende ed enti  pubblici), garantendo la corrispondenza con i dati dell’Osservatorio  nazionale sulle politiche del TPL tramite corrispondenza univoca dei codici identificativi.
+
+
+      I dati relativi ai contratti sono gestiti da Regione Piemonte e AMP, e consultabili da tutte le aziende. Regione Piemonte e  AMP gestiscono anche l’inserimento in anagrafica dei soggetti di alcune informazioni identificative. 
+      
+      
+      L’aggiornamento di altre informazioni è invece a cura del singolo soggetto (rappresentante legale, indirizzo  sede legale, etc.).
+      
+    shortDescription: |-
+      Prodotto per la gestione delle anagrafiche degli autobus, dei contratti e
+
+      dei soggetti del Trasporto Pubblico Locale (TPL) 
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - transportation
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: r_piemon
+legal:
+  authorsFile: |-
+    https://raw.githubusercontent.com/regione-piemonte/rebus/master/Copyrights.txt
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+logo: REBUS.png
+maintenance:
+  contacts:
+    - affiliation: CSI Piemonte
+      email: elisa.fiorio@csi.it
+      name: Elisa Fiorio
+  type: internal
+name: REBUS
+platforms:
+  - web
+releaseDate: '2022-07-18'
+softwareType: standalone/web
+softwareVersion: 2.7.0
+url: 'https://github.com/regione-piemonte/rebus'

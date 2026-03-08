@@ -1,0 +1,130 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - content-management
+  - communications
+  - digital-citizenship
+dependsOn:
+  open:
+    - name: PHP
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '7.2'
+    - name: PostgreSQL
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '9.6'
+    - name: Solr
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: 4.10.1
+    - name: Varnish
+      optional: true
+      version: ''
+      versionMax: ''
+      versionMin: '4.0'
+    - name: Traefik
+      optional: true
+      version: ''
+      versionMax: 2.3.0
+      versionMin: 1.7.0
+    - name: Docker
+      optional: true
+      version: ''
+      versionMax: '19.03'
+      versionMin: '18.09'
+description:
+  it:
+    features:
+      - >-
+        Conformità al modello di design previsto dalle Linee Guida di Design di
+        siti e servizi della PA
+      - >-
+        Conformità agli standard dell'informazione previsti dalle Linee Guida di
+        Design di siti della PA
+      - Supporto multilingue
+      - >-
+        Predisposizione per il cloud (configurazioni disponibili per hosting
+        servizi AWS qualificati AgID)
+      - Supporto configurazione cluster
+      - Motore di ricerca basato su filtri e faccette
+      - >-
+        Generazione automatica di dataset (metadati DCAT-AP_IT) aggiornati in
+        tempo reale (REST API)
+      - Integrazione con CKAN
+    genericName: Servizi pubblici Comune di Trento
+    longDescription: >
+      Il sito è un'istanza di
+      [OpenCity](https://www.opencontent.it/Per-la-PA/OpenCity), il modello di
+      portale web avanzato, adatto a promuovere i contenuti di un ente pubblico
+      in modalità multi-canale (pc, tablet, smartphone, totem). Conforme alle
+      Linee Guida di design per i servizi web della PA e sviluppato utilizzando
+      i KIT di Designers Italia, il sistema guida i redattori a creare e
+      pubblicare contenuti strutturati, che vengono inseriti una sola volta nel
+      sistema e possono essere rappresentati automaticamente in gallerie
+      fotografiche, calendari, mappe, grafici interattivi, aree riservate. In
+      base ai permessi, il contenuto diventa disponibile agli utenti anche
+      attraverso un motore di ricerca unico, dotato di filtri progressivi e di
+      suggerimenti automatici. Strumento ideale per le redazioni distribuite:
+      ciascun redattore detiene permessi e ruoli in base alla competenza.
+    shortDescription: >-
+      Sito Istituzionale del catalogo dei servizi pubblici del Comune di Trento,
+      conforme alle linee guida di Design Italia.
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - local-authorities
+    - culture
+    - tourism
+    - government
+isBasedOn:
+  - 'https://gitlab.com/opencontent/opencity'
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: c_l378
+legal:
+  license: GPL-2.0-only
+  mainCopyrightOwner: Comune di Trento
+  repoOwner: Comune di Trento
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+maintenance:
+  contacts:
+    - email: giacomo_fioroni@comune.trento.it
+      name: Giacomo Fioroni
+      phone: '+390461889611'
+  contractors:
+    - name: Opencontent SCARL
+      until: '2020-10-31'
+      website: 'https://opencontent.it'
+  type: contract
+name: Catalogo dei Servizi
+platforms:
+  - web
+releaseDate: '2020-03-15'
+softwareType: standalone/web
+softwareVersion: 1.0.0
+url: 'https://github.com/ComuneTrento/Catalogo-dei-servizi'
+usedBy:
+  - Comune di Trento

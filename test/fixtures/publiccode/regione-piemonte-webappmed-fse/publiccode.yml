@@ -1,0 +1,56 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - crm
+description:
+  it:
+    features:
+      - web form
+    genericName: webappmed-fse
+    longDescription: |
+      Il prodotto è un'applicazione web ad uso dei professionisti sanitari della Regione Piemonte, le cui funzionalità permettono:
+      - la consultazione dei documenti prodotti da strutture sanitarie piemontesi e non, presenti nel Fascicolo Sanitario Elettronico (FSE) di tutti gli assisti del Servizio Sanitario Nazionale
+      - la consultazione dei documenti autocontrubuti dagli assistiti
+      - la visualizzazione e lo scarico dei pacchetti immagine allegati ai referti radiologici
+      - la consultazione del Profilo Sanitario Sintetico
+      - la visualizzazione degli esiti degli esami di Screening oncologici regionali
+      - la visualizzazione delle esenzioni di patologia in possesso del cittadino
+      - la registrazione dell'avvenuta mediazione (spiegazione) dei documenti inviati come oscurati all'assitito     
+    shortDescription: |-
+      Il servizio consente ai professionisti sanitari di consultare i documenti del Fascicolo Sanitario Elettronico
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: r_piemon
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: marco.giraudo@csi.it
+      name:  Marco Giraudo
+  type: internal
+name: 'Webapp operatori sanitari'
+platforms:
+  - web
+releaseDate: '2022-11-29'
+softwareType: standalone/web
+softwareVersion: 2.0.0
+url: 'https://github.com/regione-piemonte/webappmed-fse'

@@ -1,0 +1,48 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Verzoeken-api"
+url: "https://github.com/VNG-Realisatie/gemma-zaken"
+releaseDate: "2022-04-05"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+  - application/xml
+
+outputTypes:
+  - application/json
+  - application/ld+json
+  - application/hal+json
+  - application/vnd.api+json
+  - application/health+json
+  - application/xml
+  - application/x-yaml
+  - text/csv
+  - text/html
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API voor het registreren, bewerken en opvragen van verzoeken."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/verzoeken-api/master/src/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/verzoeken-api/master/src/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/verzoeken_publiccode/main/data/verzoeken.json'
+  en:
+    shortDescription: "An API to register, edit and read requests"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/verzoeken-api/master/src/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/verzoeken-api/master/src/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/verzoeken_publiccode/main/data/verzoeken.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

@@ -1,0 +1,51 @@
+categories:
+- it-development
+description:
+  en:
+    apiDocumentation: ''
+    awards: []
+    documentation: ''
+    features: []
+    genericName: This repository holds the code for creating a github product page
+      based on an repository
+    localisedName: ''
+    longDescription: ''
+    screenshots: []
+    shortDescription: ''
+    videos: []
+developmentStatus: stable
+landingURL: ''
+legal:
+  authorsFile: ''
+  license: other
+  mainCopyrightOwner: ''
+  repoOwner: ''
+localisation:
+  availableLanguages:
+  - en
+  localisationReady: false
+maintenance:
+  contacts: []
+  contractors: []
+  type: none
+name: productpage-action
+nl:
+  vng:
+    commonground:
+      layerType: process
+    gemma: []
+organisation:
+  description: "E\xE9n centrale plek voor hergebruik van informatietechnologie binnen\
+    \ de overheid"
+  logo: https://avatars.githubusercontent.com/u/106239067?v=4
+  name: OpenCatalogi
+  url: OpenCatalogi
+platforms:
+- web
+publiccodeYmlVersion: '0.2'
+releaseDate: '2023-10-16'
+roadmap: ''
+softwareType: standalone/web
+softwareVersion: ''
+url: https://github.com/OpenCatalogi/productpage-action
+usedBy: []

@@ -1,0 +1,76 @@
+publiccodeYmlVersion: '0.2'
+categories:
+  - fleet-management
+dependsOn:
+  open:
+    - name: Apache httpd
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '2.2'
+    - name: PHP
+      optional: false
+      version: '7'
+      versionMax: ''
+      versionMin: '7.4'
+    - name: CakePHP
+      optional: false
+      version: '4'
+      versionMax: ''
+      versionMin: '4.0'
+description:
+  en:
+    features:
+      - Mobility Management Platform
+    genericName: EMMA
+    localisedName: EMMA
+    longDescription: |
+      EMMA - Electronic Mobility Management Application. 
+      EMMA is a Electronic Mobility Management Application, developed by 5T, the Transport Authority of Turin, Italy.
+      It helps the Mobility Managers to develop and manage the Sustainable Mobility Plans of the companies and the schools.
+      It is a web application, composed by a backend (this repository - written in PHP using the CakePHP frameworkd) and a frontend (EMMA-Vue, written in Vue.js 2.0).
+      The backend is a REST API, which provides all the necessary functions to run the application.
+      The frontend is a Single Page Application, which consumes the REST API.
+    shortDescription: |-
+      EMMA - Electronic Mobility Management Application. 
+      Manages the flow from the company survey, employees survey, mobility plan generation, impact calculation
+  it:
+    features:
+      -Piattaforma Mobility Manager
+    longDescription: |
+      Gestisce tutto il flusso di redazione di un PSCL dal questionario azienda, al questionario dipendenti alla redazione del piano e calcolo degli impatti.
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: 5t_piem
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: mobilita.sostenibile@5t.torino.it
+      name: Lucia Mercaldi
+    - email: moma@mobilitysquare.eu
+      name: Massimo Infunti
+  type: internal
+name: EMMA
+platforms:
+  - web
+releaseDate: '2023-09-01'
+softwareType: standalone/web
+softwareVersion: 1.23.0901
+url: 'https://bitbucket.org/mobilitymanagerplatform/emma-api'

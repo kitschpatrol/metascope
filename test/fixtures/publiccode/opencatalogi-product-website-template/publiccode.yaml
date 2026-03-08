@@ -1,0 +1,89 @@
+publiccodeYmlVersion: "0.3"
+name: OpenCatalogi product-website-template
+applicationSuite: "product-website-template"
+url: https://github.com/OpenCatalogi/product-website-template
+landingURL: https://github.com/OpenCatalogi/product-website-template
+isBasedOn: null
+softwareVersion: null
+logo: https://raw.githubusercontent.com/OpenCatalogi/web-app/development/pwa/src/assets/images/logo_OpenCatalogi.png
+monochromeLogo: null
+platforms:
+  - web
+releaseDate: 2023-11-10
+categories:
+  - collaboration
+  - it-development
+developmentStatus: stable
+softwareType: softwareAddon
+description:
+  en:
+    localisedName: "Product Website"
+    genericName: Template to easily set up a product page
+    shortDescription: "Template to easily set up a product page"
+    longDescription: "This template makes it easy to set up a complete product page with documentation set from your repository."
+    documentation: https://opencatalogi.github.io/product-website-template/
+    apiDocumentation: null
+    features:
+      - Just one feature
+    screenshots: []
+    videos: []
+    awards: []
+  nl:
+    localisedName: "Product Website"
+    shortDescription: "Template om eenvoudig een productpagina op te zetten"
+    longDescription: "Met dit template kunt u eenvoudig een volledige productpagina opzetten met documentatie uit uw repository."
+    documentation: https://opencatalogi.github.io/product-website-template/
+    apiDocumentation: null
+    features:
+      - Just one feature
+    screenshots: []
+    videos: []
+    awards: []
+intendedAudience:
+  countries:
+    - nl
+  unsupportedCountries: []
+  scope: []
+legal:
+  license: EUPL-1.2-or-later
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: OpenCatalogi
+  authorsFile: null
+maintenance:
+  type: internal
+  contractors:
+    - name: Conduction
+      until: 2035-01-01
+      email: info@conduction.nl
+      website: https://www.conduction.nl
+  contacts:
+    - name: Ruben van der Linde
+      email: info@conduction.nl
+      phone: 085 303 6840
+      affiliation: Conduction
+    - name: Remko Huisman
+      email: remko@conduction.nl
+      affiliation: Conduction
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - nl
+nl:
+  countryExtensionVersion: null
+  commonground:
+    intendedOrganisations: []
+    installationType: self
+    layerType: interface
+  gemma:
+    bedrijfsfuncties: []
+    bedrijfsservices: []
+    applicatiefunctie: null
+    model: null
+  upl: []
+roadmap: null
+dependsOn: null
+inputTypes: null
+outputTypes: null
+downloadUrls:
+  - https://github.com/OpenCatalogi/product-website-template/archive/refs/heads/main.zip

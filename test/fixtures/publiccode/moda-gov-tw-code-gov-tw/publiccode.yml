@@ -1,0 +1,52 @@
+publiccodeYmlVersion: 0.3.0
+name: code-gov-tw
+url: "https://github.com/moda-gov-tw/code-gov-tw"
+landingURL: "https://code.gov.tw"
+releaseDate: "2024-04-29"
+platforms:
+  - web
+categories:
+  - data-collection
+  - digital-citizenship
+developmentStatus: development
+softwareType: standalone/web
+description:
+  zh-Hant:
+    localisedName: 公共程式平臺
+    shortDescription: >
+      公共程式平臺鼓勵跨機關、產業和公眾都可共同使用、 檢視、修正政府數位服務或系統的程式碼，將可促進機關數位交流，共同提升政府公共服務品質、提升政府公開透明。
+    features:
+      - 資料一覽 / 檢索
+legal:
+  license: MIT
+  mainCopyrightOwner: 數位發展部 民主網絡司
+  repoOwner: 數位發展部 民主網絡司
+maintenance:
+  type: internal
+  contacts:
+    - name: 劉澄真
+      email: "rosalind.liu@moda.gov.tw"
+      phone: "02-23800325"
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - zh-Hant
+dependsOn:
+  open:
+    - name: Node.js
+      version: "18"
+usedBy:
+  - "[公共程式平臺](https://code.gov.tw) (無障礙檢測結果：AAA)"
+tw:
+  countryExtensionVersion: "1.0.0"
+  techStacks:
+    - name: "Qwik"
+    - name: "Tailwind CSS"
+  vulnerabilityScanners:
+    - "GitHub CodeQL"
+    - "GitHub Dependabot Alerts"
+    - "OWASP ZAP"
+    - "SonarQube"
+  accessibilityConformance: "AAA"
+  # GitHub API 有資訊可以取得, 暫時手動填寫
+  createdDate: "2024-02-01"

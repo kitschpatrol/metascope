@@ -1,0 +1,19 @@
+publiccodeYmlVersion: "0.1"
+name: "ZGWToVrijBRPBundle"
+url: "https://github.com/CommonGateway/ZGWToVrijBRPBundle"
+releaseDate: "2022-10-01"
+softwareType: addon
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+description:
+  nl:
+    shortDescription: "ZGWToVrijBRPBundle"
+  en:
+    shortDescription: "ZGWToVrijBRPBundle"

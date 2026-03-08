@@ -1,0 +1,86 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+
+name: GISA Campania - Prevenzione e Sicurezza Lavoro
+applicationSuite: GISA Campania
+url: 'https://github.com/regione-campania/Gisa_Prevenzione_e_Sicurezza_Lavoro'
+landingURL: 'https://gisasicurezzalavoro.regione.campania.it'
+releaseDate: '2022-06-01'
+softwareVersion: '1.1'
+platforms:
+  - web
+  - ios
+  - android
+
+categories:
+  - document-management
+  - data-collection
+  - data-visualization
+  
+developmentStatus: stable 
+  
+softwareType: standalone/web
+  
+description:
+  it:
+    genericName: Gestionale
+    shortDescription: Ecosistema Software regionale per la Sicurezza sui luoghi di lavoro
+    longDescription: |
+      GISA Sicurezza Lavoro è composto dai seguenti tre  moduli funzionali:
+
+
+      1. Gestione Notifiche Preliminari ai sensi dell’Art. 99 Capo I del D. Lgs. 81/08 utilizzabile da parte di:
+          - Committente o dal Responsabile dei lavori del   Cantiere che può compilare on line la notifica preliminare dell’apertura del Cantiere;
+          - ASL, Ispettorato del Lavoro e Enti Bilaterali (Comitati Paritetici e Casse Edili) per ricevere le Notifiche Preliminari di apertura dei Cantieri;
+          - dalla Regione per reportistica.
+      2. Gestione del Ciclo Ispettivo relativo alla sicurezza sui luoghi di
+      lavoro in accordo alla normativa vigente e con integrazione con PagoPA. 
+
+      3. Registro delle Macchine difformi.
+
+    features:
+      - Gestione Notifiche Preliminari
+      - Gestione Ciclo Ispettivo Sicurezza luoghi di lavoro
+      - Registro Macchine difformi
+      
+legal:
+  license: AGPL-3.0-only
+      
+maintenance:
+  type: contract
+  contractors:
+    - name: 'DXC Technology'
+      until: '2026-08-03'
+  contacts:
+    - affiliation: Regione Campania
+      email: cinzia.matonti@regione.campania.it
+      name: Cinzia Matonti
+      
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it
+
+it:
+  riuso:
+    codiceIPA: r_campan
+  piattaforme:
+    pagopa: true
+    cie: true
+    spid: true
+
+usedBy:
+  - Regione Campania
+  - ASL NA1 Centro
+  - ASL NA2 Nord
+  - ASL NA3 Sud
+  - ASL AV
+  - ASL BN
+  - ASL CE
+  - ASL SA
+  - Regione Basilicata
+
+logo: 'https://raw.githubusercontent.com/regione-campania/Gisa_Prevenzione_e_Sicurezza_Lavoro/master/logo.png'

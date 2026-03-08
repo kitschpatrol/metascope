@@ -1,0 +1,86 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.3'
+categories:
+  - data-collection
+  - data-visualization
+  - financial-reporting
+  - help-desk
+dependsOn:
+  open:
+    - name: PHP
+      optional: false
+      version: '5.6'
+      versionMax: ''
+      versionMin: ''
+    - name: MySQL
+      optional: false
+      version: '5.6'
+      versionMax: ''
+      versionMin: ''
+    - name: Apache Web Server
+      optional: false
+      version: '2.4'
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - Inserimento delle richieste di contributi del canone di locazione
+      - Inserimento delle domande presentate dai cittadini residenti sottoposti a sfratto
+      - Inserimento delle domande per ottenere contributi finalizzati a favorire la mobilità abitativa
+      - Inserimento delle proposte d’intervento
+   # genericName: Epico
+    longDescription: >
+      Modulo per la richiesta di contributi finalizzati a favorire la mobilità
+      abitativa dei cittadini residenti nei Comuni ad alta tensione abitativa e
+      nei Comuni con più di 15.000 abitanti attraverso nuovi contratti di
+      locazione a canone concordato. Modulo per la richiesta di contributi
+      destinati ai cittadini residenti nei Comuni ad alta tensione abitativa
+      sottoposti a sfratto per morosità non volontaria. Modulo per la richiesta
+      di contributi finalizzati a ristorare la spesa del canone di locazione
+      corrisposto dai cittadini, conduttori di alloggi di edilizia privata.
+    screenshots:
+      - screenshots/epico.png
+    shortDescription: Gestione domande relative all'edilizia sociale.
+developmentStatus: stable
+it:
+  countryExtensionVersion: "0.2"
+  riuso:
+    codiceIPA: r_piemon
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: true
+    spid: false
+landingURL: 'https://github.com/regione-piemonte/epico.git'
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+  repoOwner: Regione Piemonte
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: protocollo@cert.csi.it
+      name: CSI Piemonte
+  type: internal
+name: Epico
+platforms:
+  - web
+releaseDate: '2017-06-02'
+softwareType: standalone/web
+softwareVersion: '1.0'
+url: 'https://github.com/regione-piemonte/epico'
+usedBy:
+  - Regione Piemonte
+  - Città Metropolitana di Torino

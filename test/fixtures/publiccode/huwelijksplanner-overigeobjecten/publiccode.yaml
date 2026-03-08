@@ -1,0 +1,40 @@
+publiccodeYmlVersion: "0.1"
+
+name: "OverigeObjecten"
+url: "https://github.com/Huwelijksplanner/OverigeObjecten"
+releaseDate: "2022-06-04"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+  - application/xml
+
+outputTypes:
+  - application/json
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "OverigeObjecten"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/OAS.yaml'
+    # testDataLocation: 'https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/data/data.json'
+  en:
+    shortDescription: "OverigeObjecten"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/OAS.yaml'
+    # testDataLocation: 'https://raw.githubusercontent.com/Huwelijksplanner/OverigeObjecten/main/data/data.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

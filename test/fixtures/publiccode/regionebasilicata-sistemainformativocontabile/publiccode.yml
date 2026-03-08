@@ -1,0 +1,263 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.4.0'
+categories:
+  - accounting
+  - billing-and-invoicing
+  - budgeting
+  - erp
+  - financial-reporting
+  - inventory-management
+  - office
+  - warehouse-management
+description:
+  it:
+    features:
+      - Gestione Bilancio di Previsione/Assestamento e Rendiconto
+      - Gestione Ragioneria e Modulo Fiscale
+      - Gestione Tesoreria
+      - Gestione Patrimonio Mobiliare e Immobiliare
+      - Gestione Autoparco
+      - Gestione Sanitaria Accentrata
+      - Gestione Fatturazione Attiva e Passiva
+      - Servizi web di integrazione con Sistemi esterni (Provvedimenti Amministrativi, HR, ecc.)
+    genericName: Gestione Amministrativo Contabile
+    longDescription: >
+      ## **Introduzione**
+
+      L'attività di progettazione e sviluppo dell'applicazione è stata avviata, dalla Regione Basilicata,
+      nel 2003 a seguito della necessità di dotarsi di un nuovo sistema integrato per la gestione della contabilità,
+      che comprendesse anche una gestione economica ed analitica delle risorse.
+      Il Sistema negli anni è stato evoluto in base alle esigenze normative e/o organizzative.
+      Dal 2012 la Regione Basilicata è uno degli Enti sperimentatori per l’Armonizzazione contabile degli Enti Territoriali,
+      cardine irrinunciabile della riforma della contabilità pubblica (legge n. 196/2009) e della riforma
+      federale prevista dalla legge n. 42/2009,
+      secondo i dettami del **Decreto Legislativo 118 del 2011**.
+      A conferma degli eccellenti risultati raggiunti nell’introduzione delle nuove regole contabili,
+      alla Regione Basilicata è stato assegnato l’Oscar di bilancio della Pubblica amministrazione del 2013.
+      Il Sistema Contabile è stato premiato per organicità, trasparenza e comunicazione.
+      Dal 2013 il SIC viene utilizzato anche dagli Enti Strumentali della Regione Basilicata e dal Consiglio Regionale.
+      Il Sistema è assimilabile ad un vero e proprio Enterprise Resource Planning (ERP) in quanto non gestisce
+      solamente tutti gli aspetti contabili dell’Ente ma anche i processsi riguardanti Gestione Contratti,
+      Gestione Patrimonio, ecc.
+
+      ## **Architettura Funzionale**
+
+      L’applicativo SIC è organizzato per moduli funzionali/organizzativi, tale segmentazione è utile anche per la corretta
+      profilazione degli utenti. Tutte le interfacce
+      dei vari moduli prevedono, in testa, una sezione denominata “Modalità operative” con le indicazioni da seguire per
+      utilizzare al meglio l’interfaccia stessa.
+      Di seguito il dettaglio dei principali moduli operativi:
+       1. **Modulo Contabilità**
+       2. **Modulo Provveditorato e Patrimonio**
+       3. **Modulo Contratti**
+       4. **Modulo Performance**
+       5. **Modulo Reportistica**
+
+      Tutti i moduli sono, chiaramente, interconnessi e operano sulla stessa base dati in maniera trasparente all’utente.
+      Tutte le informazioni (sulla base dei workflow operativi previsti) vengono inserite una sola volta e
+      utilizzate/modificate negli step successivi sulla base delle autorizzazioni che ciascun utente/agente
+      automatico possiede.
+
+        1. **Modulo Contabilità**
+
+        **Contabilità Finanziaria**
+        Tutta la contabilità finanziaria viene gestita attraverso il Modulo Contabilità che si articola in tre sotto
+        moduli principali:
+         a. **Modulo Bilancio**
+         b. **Modulo Ragioneria**
+         c. **Modulo Organizzazione**
+
+        **Modulo Bilancio**
+        Il sotto modulo Bilancio permette di gestire tutte le fasi del Bilancio (Previsione, Assestamento e Rendiconto).
+        Sia la composizione del Bilancio di Previsione (triennale) che il suo Assestamento
+        (comprese le Variazioni in corso di gestione) sono gestite attraverso veri e propri documenti contabili
+        (es. “Variazione di Competenza Positiva”, “Assestamento di Cassa Negativo”, ecc.)
+        che permettono la ricostruzione puntuale e dettagliata delle varie poste di Bilancio.
+        Principali funzionalità:
+         - Gestione richieste da Centri di Responsabilità
+         - Gestione documenti di bilancio
+         - Gestione riaccertamento ordinario residui
+         - Gestione Rendiconto
+         - Estrazioni per BDAP
+         - Pareggio di Bilancio
+         - Interrogazione Bilancio online
+
+        **Modulo Ragioneria**
+        Il sotto modulo Ragioneria consente di gestire il Bilancio in esercizio, di seguito le principali funzionalità:
+         - Gestione documenti contabili
+         - Gestione Tesoreria
+         - Gestione Trasparenza
+         - Modulo Fiscale
+         - Gestione Anagrafica
+         - Monitoraggio cassa
+         - Gestione pignoramenti
+
+        **Modulo Organizzazione**
+        Il sotto modulo Organizzazione sovra intende tutti i processi del Sistema che impattano con la struttura
+        organizzativa dell’Ente.
+
+        **Contabilità Economico Patrimoniale**
+        Il Modulo di gestione della Contabilità Economico Patrimoniale permette di:
+         - Elaborare automaticamente le scritture da Contabilità Finanziaria (attraverso la Matrice di Correlazione
+           pre impostata) ad una certa data
+         - Inserire/modificare/eliminare le scritture di rettifica/integrazione di fine anno
+         - Elaborare automaticamente le scritture relative agli ammortamenti di beni mobili e immobili
+         - Gestire Ratei e Risconti
+         - Apertura e chiusura automatica dei conti e dell’esercizio contabile
+         - Verificare i mastrini dei vari conti con una verifica immediata anche sulle scritture generate dalla
+           Contabilità Finanziaria
+         - Visualizzare i conti e le scritture per tutti gli anni presenti a sistema
+         - Stampa e/o estrazione in formato elaborabile di: Libro Giornale, Mastrini, Conto Economico, Stato Patrimoniale
+
+       2. **Modulo Provveditorato e Patrimonio**
+
+        **Gestione Magazzino**
+        Il Modulo consente all’utente “generico” di effettuare ordini di beni di consumo e agli utenti amministratori del
+        Modulo di gestire le richieste e tutte le altre funzioni necessarie all’approvvigionamento.
+        Principali funzionalità:
+         - ***Anagrafica Magazzini***
+         - ***Anagrafica Articoli***
+         - ***Richieste beni di consumo***
+         - ***Gestione richieste***
+         - ***Gestione bolle***
+
+        **Gestione Beni Mobili e Immobili**
+        Il modulo oltre al sotto modulo Magazzino illustrato nel paragrafo precedente, prevede anche i sotto moduli
+        Beni Mobili, Beni Immobili, Autoparco e Ammortamento. Di seguito si descrivono i due restanti sotto moduli.
+        Questi sono auto consistenti ma è possibile sfruttare le informazioni dell’uno per completare quelle
+        dell’altro (es. gestione stanze per la localizzazione dei beni mobili).
+
+        ***Modulo Beni Mobili***
+        Così come nel caso dei beni di consumo anche per i beni Mobili è prevista la creazione e inventariazione
+        automatica dei beni a partire dai dati delle Bolle di consegna.
+        Di seguito si elencano le principali funzionalità del modulo:
+         - ***Gestione Anagrafica Beni***
+         - ***Scheda dettaglio bene***
+         - ***Gestione Stanze***
+         - ***Gestione Assegnazioni***
+         - ***Gestione Beni Informatici***
+
+        ***Modulo Autoparco***
+        Consente la gestione del parco auto dell’Ente; il modulo è costituito da diverse sezioni:
+         - ***Anagrafica autoparchi***
+         - ***Prenotazione Viaggi***
+         - ***Gestione Viaggio***
+         - ***Analisi autoparco***
+         - ***Piano di lavoro giornaliero***
+
+        ***Modulo Beni Immobili***
+        Il modulo consente la gestione del Patrimonio Immobiliare dell’Ente attraverso le funzioni di seguito elencate:
+         - ***Registro cespiti***
+         - ***Gestione macrocespiti***
+         - ***Scheda bene***
+         - ***Scheda catastale***
+         - ***Manutenzioni***
+         - ***Scheda Ammortamenti***
+
+        ***Modulo Ammortamenti***
+        Il modulo permette la generazione automatica degli ammortamenti sulla base delle percentuali impostati a livello di
+        categoria/sottocategoria del bene.
+
+        3. **Modulo Contratti**
+
+        Il modulo consente di creare e gestire il fascicolo dei contratti, in particolare collezionando sia i dati
+        amministrativi che quelli relativi alle fatture pervenute e pagate e i
+        relativi provvedimenti di impegno e liquidazione. Il modulo è interfacciato, attraverso web service, con il
+        Sistema di ricezione e smistamento delle fatture elettroniche dell’Ente.
+        Le principali funzioni del modulo riguardano:
+
+         - ***Anagrafica Contratto***
+         - ***Elenco Fatture***
+         - ***Gestione Fatturazione Attiva***
+         - ***Gestione Bozza Provvedimento***
+         - ***Aggiornamenti PCC***
+         - ***Casse Economali***
+
+        4. **Modulo Performance**
+
+        Il Modulo consente la Gestione del Piano della Performance dell'Ente, sia nella fase di progettazione del
+        Piano che nelle fasi di Monitoraggio del raggiungimento degli obiettivi (stragecici e operativi).
+
+        5. **Modulo Reportistica**
+
+        Il Modulo Reportistica raccoglie tutti i report previsti nel Sistema e può essere richiamato da tutti i moduli sopra descritti. Il modulo prevede due diverse categorie di report:
+
+        **Report Istituzionali**
+        Tutta la reportistica ufficiale impostata e aggiornata secondo quando previsto dalla normativa vigente esportabile in formato non modificale PDF.
+
+        **Report Interattivi**
+        Questa categoria di report è completamente personalizzabile dall’utente finale che, del tutto similmente a quanto farebbe con un file Excel, può:
+         - Scegliere le colonne da visualizzare
+         - Filtrare le righe sulla base di criteri personalizzati
+         - Aggregare i dati per effettuare somme, calcolare medie, ecc.
+         - Creare formule personalizzate
+         - Creare un grafico
+         - Creare visualizzazioni condizionali
+         - Salvare i report di volta in volta nella propria area personale
+         - Inviare il report creato via email
+         - Scaricare il report in formato Excel e/o PDF
+    shortDescription: >-
+      Sistema integrato per la gestione dei processi amministrativi
+      contabili realizzato dalla Cooperativa EDP La Traccia per la Regione
+      Basilicata.
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - government
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: r_basili
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Basilicata
+  repoOwner: Regione Basilicata
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: sic@latraccia.it
+      name: 'Francesco Ferrante, Angelo Lobefaro'
+      phone: '+390835336836'
+  contractors:
+    - name: Cooperativa EDP La Traccia
+      until: '2027-10-10'
+  type: contract
+name: Sistema Informativo Contabile
+platforms:
+  - web
+  - windows
+  - mac
+  - linux
+releaseDate: '2017-01-01'
+softwareType: standalone/web
+softwareVersion: '3.0'
+url: 'https://github.com/RegioneBasilicata/SistemaInformativoContabile'
+usedBy:
+  - Regione Basilicata
+  - Parco Gallipoli Cognato e delle Piccole Dolomiti Lucane
+  - Parco delle Chiese Rupestri Materane
+  - Parco Naturale Regionale del Vulture
+  - Agenzia Lucana di Sviluppo e di Innovazione in Agricoltura
+  - Consiglio Regionale della Basilicata
+  - Agenzia di Promozione del Turismo
+  - Agenzia Regionale per l’Ambiente Basilicata
+  - Agenzia Regionale per il Diritto allo Studio Universitario della Basilicata
+  - Agenzia Regionale per il lavoro e le transizioni nella vita attiva (LAB)
+  - Consiglio regionale della Calabria
+logo: 'logo_sic.svg'

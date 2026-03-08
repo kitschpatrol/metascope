@@ -1,0 +1,83 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - digital-asset-management
+  - data-visualization
+  - identity-management
+description:
+  it:
+    documentation: 'https://interfacerproject.dyne.org/'
+    features:
+      - 'Digital product passport '
+      - Collaboration
+      - Identity (W3C-DID)
+      - End-to-end cryptography
+      - Tokenization
+    genericName: ' Interfacer'
+    longDescription: |2
+       A digital and federated infrastructure upon which an economy of fab cities and regions will unfold covering the value chain from design over production to sales. Hosted by local fab city administrations, designs from the global commons may enter the local sphere where they can be converted into physical artefacts by fab labs and SMEs for users and customers of the products. 
+
+
+
+      Landing page: https://interfacerproject.dyne.org/
+
+
+      Deployment: https://interfacer.dyne.org/
+
+
+      Repo: https://github.com/interfacerproject
+
+
+      Selected by Digital Goods Alliance:
+      https://app.digitalpublicgoods.net/a/10192 
+    screenshots:
+      - |-
+        https://raw.githubusercontent.com/interfacerproject/interfacer-docs/master/docs/_media/user-manual/screenshot_ru.cy.ts/ru_.png
+      - |-
+        https://raw.githubusercontent.com/interfacerproject/interfacer-docs/master/docs/_media/user-manual/DPP_Interactive.png
+    shortDescription: |-
+      Digital product passport and collaboration for open-source hardware
+      projects
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+landingURL: 'https://github.com/interfacerproject/'
+legal:
+  license: AGPL-3.0-only
+  mainCopyrightOwner: Dyne.org Foundation
+  repoOwner: Dyne.org Foundation
+localisation:
+  availableLanguages:
+    - en
+    - fr
+    - de
+    - it
+  localisationReady: true
+logo: |-
+  https://raw.githubusercontent.com/interfacerproject/interfacer-docs/master/docs/_media/general/interfacer-logo.png
+maintenance:
+  contacts:
+    - affiliation: Dyne.org Foundation
+      email: info@dyne.org
+      name: Dyne.org Foundation
+  type: internal
+name: Interfacer
+platforms:
+  - web
+releaseDate: '2023-04-30'
+softwareType: standalone/web
+softwareVersion: '1.1'
+url: 'https://github.com/interfacerproject/interfacer-docs'

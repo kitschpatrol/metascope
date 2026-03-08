@@ -1,0 +1,111 @@
+publiccodeYmlVersion: 0.4.0
+name: Mark-a-Spot
+url: https://github.com/markaspot/mark-a-spot
+landingURL: https://mark-a-spot.com
+softwareVersion: "11.7.6"
+releaseDate: 2025-12-07
+logo: docs/assets/logo.svg
+platforms:
+  - web
+  - linux
+categories:
+  - digital-citizenship
+  - feedback-and-reviews-management
+  - workflow-management
+  - collaboration
+  - geographic-information-systems
+  - data-collection
+  - data-visualization
+  - crm
+  - survey
+intendedAudience:
+  scope:
+    - local-authorities
+    - emergency-services
+    - environment
+    - infrastructures
+    - society
+    - government
+usedBy:
+  - City of Munich - LHM München
+  - City of Cologne - Stadt Köln
+  - City of Bonn - Bundesstadt Bonn
+  - City of Krefeld – Municipal Services (KBK)
+  - City of Duisburg – Public Utilities (Wirtschaftsbetriebe)
+developmentStatus: stable
+softwareType: standalone/web
+description:
+  de:
+    localisedName: Mark-a-Spot
+    shortDescription: Mängelmelder- und Fallmanagementsystem für Kommunen.
+    longDescription: >-
+      Mark-a-Spot ist eine modulare Plattform für digitale Bürgerbeteiligung und
+      das kommunale Anliegen- und Beschwerdemanagement (Mängelmelder). Bürger können problemlos Probleme wie
+      Infrastrukturschäden, Abfall oder Umweltprobleme über Smartphones melden,
+      angereichert mit Fotos und Geodaten. Die Plattform bietet Verwaltungen
+      ein leistungsstarkes Backoffice, offene APIs (Open311), mehrsprachige Unterstützung
+      und Barrierefreiheitsfunktionen. Optionale KI-Module ermöglichen eine automatisierte
+      Kategorisierung, Priorisierung und Datenschutzprüfungen.
+    features:
+      - Mängelmelder
+      - Geodatenvisualisierung
+      - Open311-konforme API
+      - mobil-optimierte PWA
+      - barrierefrei
+      - mehrsprachige Benutzeroberfläche
+      - Open Data Export
+      - Bürgerfeedback
+      - Workflow-Automatisierung (ECA)
+      - Wiedervorlage / Nachverfolgung
+      - Fallarchivierung & -aufbewahrung
+    screenshots:
+      - docs/assets/sshot-1.png
+      - docs/assets/sshot-2.png
+      - docs/assets/sshot-3.png
+  en:
+    localisedName: Mark-a-Spot
+    shortDescription: Citizen issue reporting and case management system for municipalities.
+    longDescription: >-
+      Mark-a-Spot is a modular platform for digital citizen engagement and
+      municipal case management. Citizens can easily report issues such as
+      infrastructure damage, waste, or environmental concerns via smartphone,
+      enriched with photos and geodata. The platform provides administrations
+      with a powerful back office, open APIs (Open311), multilingual support,
+      and accessibility features. Optional AI modules enable automated
+      categorization, prioritization, and privacy checks.
+    features:
+      - citizen-reporting
+      - geospatial-mapping
+      - Open311-compliant API
+      - mobile-optimized PWA
+      - accessibility-ready
+      - multilingual-interface
+      - open-data export
+      - citizen-feedback
+      - workflow-automation (ECA)
+      - case-resubmission / follow-up
+      - case-archiving & retention
+    screenshots:
+      - docs/assets/sshot-1.png
+      - docs/assets/sshot-2.png
+      - docs/assets/sshot-3.png
+
+legal:
+  license: GPL-2.0-or-later
+maintenance:
+  type: community
+  contacts:
+    - name: Mark-a-Spot
+      email: info@markaspot.org
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - de
+    - en
+    - fr
+    - tr
+    - es
+    - pl
+    - da
+    - nl
+    - pt

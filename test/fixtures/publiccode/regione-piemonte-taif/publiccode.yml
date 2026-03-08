@@ -1,0 +1,128 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: TAIF
+categories:
+  - business-process-management
+  - document-management
+dependsOn:
+  open:
+    - name: PostgreSQL
+      optional: true
+      version: 9.6.10
+      versionMax: ''
+      versionMin: '9'
+    - name: APACHE 2
+      optional: true
+      version: 2.2.31
+      versionMax: ''
+      versionMin: '2'
+    - name: JBOSS
+      optional: true
+      version: EAP 6.4.5.GA
+      versionMax: ''
+      versionMin: EAP 6
+description:
+  it:
+    features:
+      - Inviare richiesta iscrizione e conferme all'ALBO delle Imprese Forestali
+      - Protocollare e archiviare richieste di iscrizione e conferme
+      - Inserire Operatori Forestali
+      - Consultare ALBO Imprese Forestali
+      - Consultare Operatori forestali
+    genericName: TAIF
+    localisedName: TAIF
+    longDescription: |
+      Il sistema **Albo delle Imprese e degli Operatori Professionali
+
+
+      Forestali** consente la gestione delle richieste di iscrizione e conferma
+
+
+      annuale delle imprese operanti in ambito forestale ad uno o più Albi
+
+
+      forestali regionali. Permette inoltre la gestione dell'Elenco degli
+
+
+      operatori professionali forestali regionali e del loro percorso formativo.
+
+
+
+
+      Consiste in: 
+
+
+
+
+      - Un servizio ad accesso libero, che permette di consultare i dati delle
+
+
+      aziende iscritte all’Albo ed i dati pubblici dell’elenco degli operatori
+
+
+      forestali, 
+
+
+
+      - Un servizio ad accesso riservato che permette (direttamente o per il
+
+
+      tramite di sportelli forestali o professionisti/consulenti) di effettuare
+
+
+      la richiesta di iscrizione all’Albo e la conferma annuale
+
+
+
+      - fornisce inoltre funzionalità di back office ai referenti regionali e
+
+
+      territorialmente competenti che consentono le attività di verifica e
+
+
+      gestione delle informazioni archiviate
+    shortDescription: Albo delle Imprese e degli Operatori Professionali Forestali
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: r_piemon
+landingURL: 'https://github.com/regione-piemonte/taif'
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+  repoOwner: Regione Piemonte
+localisation:
+  availableLanguages:
+    - it
+    - fr
+  localisationReady: true
+logo: TAIF.png
+maintenance:
+  contacts:
+    - email: marisa.matta@csi.it
+      name: MARISA MATTA
+  type: internal
+name: TAIF
+platforms:
+  - web
+  - linux
+  - windows
+  - mac
+releaseDate: '2021-11-19'
+softwareType: standalone/web
+softwareVersion: 2.0.2
+url: 'https://github.com/regione-piemonte/taif.git'

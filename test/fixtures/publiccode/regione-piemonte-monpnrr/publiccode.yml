@@ -1,0 +1,81 @@
+publiccodeYmlVersion: '0.4.0'
+name: MONPNRR
+url: https://github.com/regione-piemonte/monpnrr.git
+landingURL: https://github.com/regione-piemonte/monpnrr
+softwareVersion: 1.1.0
+platforms:
+- web
+categories:
+- erp
+usedBy:
+- Regione Piemonte
+developmentStatus: stable
+softwareType: standalone/web
+description:
+  it-IT:
+    shortDescription: Strumento per il monitoraggio dei progetti PNRR
+    longDescription: 'Nell’ambito del programma di finanziamento dell’Unione Europea
+      denominato PNRR (Piano Nazionale di Ripresa e Resilienza), con riferimento in
+      particolare ai progetti legati al comparto della Sanità, Regione Piemonte (RP)
+      ha incaricato il CSI di studiare la realizzazione di un applicativo software
+      ad uso delle Aziende Sanitarie (AS) e degli operatori regionali, che abbia un
+      duplice obiettivo:
+
+
+      1. Offrire una piattaforma per la compilazione di un elenco di domande/requisiti
+      specifici per ogni progetto in carico ad un’AS, nel seguito indicato come “Checklist”.
+
+      2. Offrire agli utenti regionali un cruscotto per il monitoraggio e la validazione
+      delle Checklist compilate al punto precedente.
+
+
+      I progetti legati al PNRR in carico alle AS vengono censiti sulla piattaforma
+      ministeriale ReGiS tramite la codifica univoca CUP (Codice Unico di Progetto)
+      e per ognuno è prevista una specifica Checklist da compilare, con la quale verificare
+      che il responsabile RUP (Responsabile Unico di Progetto) abbia svolto tutti
+      i passaggi previsti nell’iter di svolgimento del progetto stesso, secondo la
+      normativa di legge prevista. Tuttavia, il sistema ReGiS non ha informatizzato
+      la fase di compilazione delle Checklist.
+
+
+      L’applicativo è un sistema che aiuta i RUP a tenere sotto controllo la Checklist
+      di ogni progetto che hanno in carico, attraverso la sua compilazione progressiva
+      nel corso del tempo. Inoltre, consentirà a RP di monitorare in parallelo l’avanzamento
+      delle attività svolte indicate in ogni Checklist, e validare ogni singolo elemento
+      presente nell’elenco.
+
+
+      In questo modo RP potrà effettuare un controllo incrociato tra le operazioni
+      svolte dai RUP su ReGiS e quanto da essi dichiarato in seguito nella compilazione
+      delle Checklist.'
+    features:
+    - 'gestione del monitoraggio di I livello: compilazione checklist di progetto
+      in carico al RUP dell''azienda sanitaria'
+    - 'gestione del monitoraggio di II livello: validazione checklist compilate dal
+      RUP da parte dei funzionari regionali all’interno del I livello di monitoraggio'
+    - 'gestione del monitoraggio di III livello: validazione checklist compilate dal
+      RUP da parte dei funzionari regionali in relazione alla presenza della documentazione
+      cartacea'
+    - funzione di visualizzazione da parte del RUA dell'azienda sanitaria di tutti
+      i CUP per i quali ricopre il ruolo di RUA
+    - funzione di visualizzazione da parte dei funzionari di Regione Piemonte di tutti
+      i CUP in carico alla regione stessa
+legal:
+  license: EUPL-1.2
+maintenance:
+  type: internal
+  contacts:
+  - name: Paola Ronco
+    email: paola.ronco@csi.it
+    affiliation: CSI-Piemonte
+  - name: Simona Massa
+    email: simona.massa@csi.it
+    affiliation: CSI-Piemonte
+localisation:
+  localisationReady: false
+  availableLanguages:
+  - it-IT
+it:
+  countryExtensionVersion: '1.0'
+  riuso:
+    codiceIPA: r_piemon

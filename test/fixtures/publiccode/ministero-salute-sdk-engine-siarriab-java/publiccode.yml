@@ -1,0 +1,48 @@
+publiccodeYmlVersion: "0.4"
+name: SDK Flusso Assistenza Riabilitativa Territoriale - Engine Attività Riabilitazione
+applicationSuite: SDK
+url: https://github.com/ministero-salute/sdk-engine-siarriab-java
+landingURL: https://github.com/ministero-salute/sdk-engine-siarriab-java
+softwareVersion: 1.0.0-SNAPSHOT
+releaseDate: 2025-03-09
+platforms:
+  - windows
+  - mac
+  - linux
+categories:
+  - workflow-management
+usedBy:
+  - Regioni
+developmentStatus: stable
+softwareType: standalone/backend
+description:
+  it:
+    localisedName: SDK Flusso Assistenza Riabilitativa Territoriale - Engine Attività Riabilitazione
+    shortDescription: SDK - Sistema Informativo Assistenza Riabilitativa Attività
+      Riabilitazione
+    longDescription: L'SDK ha come scopo  l'acquisizione dei dati inviati
+      dalle Regioni in merito ai trattamenti riabilitativi erogati, nell'ambito
+      dell'assistenza semiresidenziale e residenziale, a carattere intensivo,
+      estensivo e di mantenimento di cui all'articolo 34 del decreto del Presidente
+      del Consiglio dei ministri del 12 gennaio 2017.
+    documentation: https://github.com/ministero-salute/sdk-engine-siarriab-java
+    features:
+      - Verifica Dati
+      - Invio Dati
+it:
+  countryExtensionVersion: "1.0"
+  riuso:
+    codiceIPA: m_sa
+legal:
+  license: BSD-3-Clause
+maintenance:
+  type: contract
+  contractors:
+    - name: Accenture SpA
+      until: 2026-01-01
+      email: accenture.technology.solutions@legalmail.it
+      website: https://www.accenture.com/it-it
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it

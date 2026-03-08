@@ -1,0 +1,95 @@
+publiccodeYmlVersion: "0"
+name: Servizio per la gestione di eventi e relative anagrafiche utenti
+applicationSuite: Open 2.0
+url: https://github.com/RegioneLombardia/Eventi
+releaseDate: "2024-11-23"
+platforms:
+  - web
+  - ios
+  - android
+  - windows
+  - mac
+  - linux
+categories:
+  - collaboration
+  - content-management
+  - contact-management
+  - communications
+  - email-management
+  - email-marketing
+  - event-management
+  - video-conferencing
+  - web-collaboration
+  - web-conferencing
+usedBy:
+  - Regione Lombardia
+  - Aria S.p.A.
+developmentStatus: stable
+it:
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+softwareType: standalone/web
+description:
+  it-IT:
+    localisedName: Eventi Regione Lombardia
+    shortDescription: Servizio per la gestione di eventi e relative anagrafiche utenti
+    longDescription: >-
+      Principali funzionalità per le creazione e gestione di eventi
+      informativi, pubblici, privati e di formazione, oltre a eventi nel
+      metaverso in location pubbliche, private o esposizioni virtuali:
+
+      - landing page configurabili dinamicamente con differenti contenuti:
+      gallery, videogallery, protagonisti, social wall, podcast, notizie,
+      documenti, mappa, info aggiuntive evento, streaming, rating;integrazione
+      con piattaforme di streaming (Webex, YouTube, Facebook live);
+
+      - gestore degli inviti via email: ricerca utenti per tag o lista evento,
+      logiche di ricerca sociodemografica, pianificazione invio, templating con
+      RTE e contenuti dinamici, differenti tipologie e casi d'uso email (invio
+      di prova, save the date, invito alla registrazione);
+
+      - gestore dei partecipanti: invio biglietti, check-in, liste partecipanti;
+
+      - touchpoint web e APP;
+
+      - community evento: discussioni, documenti, news, sondaggi;piattaforma di
+      formazione a distanza integrata per gli operatori;
+
+      - permessi e workflow operatori che rispecchia l'organizzazione dell'ente;
+
+      - configurazione utente e evento in multilingua.
+    apiDocumentation: https://www.open2.0.regione.lombardia.it
+    features:
+      - Gestione eventi
+      - Anagrafica utenti
+      - Evento pubblico
+      - Evento privato
+      - Metaverso
+      - Evento di formazione
+      - Webex
+      - Community eventi
+      - Gestore Landing Page
+      - Gestore inviti email
+      - Gestore partecipanti
+      - APP
+      - Marketing automation
+      - FAD operatori
+legal:
+  license: LGPL-3.0-only
+maintenance:
+  type: internal
+  contacts:
+    - name: Corrado Schiavoni
+      email: corrado.schiavoni@ariaspa.it
+      phone: ""
+      affiliation: Aria S.p.A.
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it-IT
+organisation:
+    uri: urn:x-italian-pa:r_lombar

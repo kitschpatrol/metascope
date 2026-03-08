@@ -1,0 +1,49 @@
+publiccodeYmlVersion: "0.3"
+name: "End-to-end encryptie chatapp via MQTT"
+url: https://github.com/MWest2020/Applied_Cryptography_Chatapp
+platforms:
+  - web
+releaseDate: 2023-09-19
+categories:
+  - it-development
+developmentStatus: development
+softwareType: "standalone/desktop"
+description:
+  en:
+    localisedName: HvA Chatapp Applied Cryptography
+    shortDescription: "HvA Chat applicatie for Applied Crypto"
+    longDescription: "Second year assignment HvA Cyber Security."
+    documentation: https://github.com/MWest2020/Applied_Cryptography_Chatappp/tree/main
+    features:
+      - Asymmetric encryption
+      - Symmetric encryption
+      - Replay attack protection
+  nl:
+    localisedName: HvA Chatapp Applied Cryptography
+    shortDescription: "HvA Chat applicatie voor Applied Crypto"
+    longDescription: "Tweedejaarsopdracht van de HvA opleiding deeltijd voor Cyber Security."
+    documentation: https://github.com/MWest2020/Applied_Cryptography_Chatappp/tree/main
+    features:
+      - Asymmetric encryptie
+      - Symmetric encryptie
+      - Replay attack protectie
+intendedAudience:
+  countries:
+    - nl
+  scope:
+    - government
+    - local-authorities
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: MWest2020
+maintenance:
+  type: internal
+  localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - nl
+nl:
+  commonground:
+    layerType: interface

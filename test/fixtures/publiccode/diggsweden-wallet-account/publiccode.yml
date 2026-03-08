@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2025 Digg - Agency for Digital Government
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: "0.4"
+categories:
+  - identity-management
+  - security
+description:
+  en:
+    features:
+      - Digital Identity Wallet Account Backend
+      - Secure API Endpoints
+      - Wallet Architecture Compliance
+      - Encrypted Credential Management
+    longDescription: |
+      A service responsible for managing Wallet Unit Attestation (WUA)
+      for a wallet using sufficient encryption to maintain end-user integrity.
+
+      The contents of the unit attestations will be end-to-end encrypted
+      and not readable by this service.
+    shortDescription: "Waller Account service for European Digital Identity Wallet ecosystem"
+developmentStatus: development
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - en
+  localisationReady: false
+maintenance:
+  contacts:
+    - name: ospo@digg.se
+  type: internal
+name: Wallet Account
+platforms:
+  - web
+  - linux
+  - windows
+  - mac
+releaseDate: "2025-08-22"
+softwareType: standalone/backend
+softwareVersion: "0.1.0"
+url: "https://github.com/diggsweden/wallet-account.git"

@@ -1,0 +1,28 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Document Registratie Component (DRC)"
+url: "https://github.com/VNG-Realisatie/gemma-zaken"
+releaseDate: "2020-09-01"
+
+softwareType: standalone/backend
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API om een Documenten API (DRC) te benaderen."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/drc/1.1.x/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/drc/1.1.x/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/drc_publiccode/main/data/drc.json'
+  en:
+    shortDescription: "An API to connect to documents"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/drc/1.1.x/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/drc/1.1.x/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/drc_publiccode/main/data/drc.json'

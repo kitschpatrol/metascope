@@ -24,6 +24,13 @@ export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 export type { PbxprojData } from './sources/pbxproj'
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
+export type {
+	PubliccodeContactEntry,
+	PubliccodeContractorEntry,
+	PubliccodeData,
+	PubliccodeDependencyEntry,
+	PubliccodeDescription,
+} from './sources/publiccode'
 export type { PackageData } from './sources/package-json'
 export type {
 	PomXmlData,
@@ -58,6 +65,7 @@ import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 import type { PbxprojData } from './sources/pbxproj'
 import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
+import type { PubliccodeData } from './sources/publiccode'
 import type { PackageData } from './sources/package-json'
 import type { PomXmlData } from './sources/pom-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
@@ -92,6 +100,7 @@ export type MetadataContext = {
 	packageJson: PackageData
 	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
+	publiccode: PubliccodeData
 	pypi: PypiData
 	pyprojectToml: PyprojectData
 	updates: UpdatesData

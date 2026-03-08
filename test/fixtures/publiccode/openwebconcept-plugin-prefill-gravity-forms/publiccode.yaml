@@ -1,0 +1,48 @@
+publiccodeYmlVersion: '0.2'
+
+name: 'plugin-prefill-gravity-forms'
+applicationSuite: 'OpenWebconcept'
+url: 'https://github.com/OpenWebconcept/plugin-prefill-gravity-forms'
+releaseDate: '2021-10-21'
+
+platforms:
+    - 'web'
+
+categories:
+    - 'application-development'
+
+developmentStatus: 'Production'
+
+softwareType: 'softwareAddon'
+
+description:
+    en:
+        genericName: 'Yard | BRP Prefill GravityForms'
+        shortDescription: 'Prefill GravityForms fields, based on the dutch BSN number. Retrieve personal information and place these values in the corrensponding fields'
+        longDescription: 'Prefill GravityForms fields, based on the dutch BSN number. Retrieve personal information and place these values in the corrensponding fields'
+    nl:
+        genericName: 'Yard | BRP Prefill GravityForms'
+        shortDescription: 'Vul GravityForms-velden vooraf in op basis van het Nederlandse BSN-nummer. Haal persoonlijke informatie op en plaats deze waarden in de bijbehorende velden.'
+        longDescription: 'Vul GravityForms-velden vooraf in op basis van het Nederlandse BSN-nummer. Haal persoonlijke informatie op en plaats deze waarden in de bijbehorende velden.'
+
+legal:
+    license: 'EUPL-1.2'
+    repoOwner: 'Yard | Digital Agency'
+
+dependsOn:
+    open:
+        - name: 'WordPress'
+        - versionMin: 6.0.0
+
+intendedAudience:
+    countries:
+        - nl
+    scope:
+        - government
+
+maintenance:
+    contractors:
+        - name: 'Yard | Digital Agency'
+          website: 'https://www.yard.nl'
+          email: 'owc@yard.nl'
+    type: 'contract'

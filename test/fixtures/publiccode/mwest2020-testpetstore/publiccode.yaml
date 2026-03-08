@@ -1,0 +1,40 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Pet Store Test"
+url: "https://github.com/MWest2020/testPetstore/edit/main/publiccode.yaml"
+releaseDate: "2022-06-04"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+  - application/xml
+
+outputTypes:
+  - application/json
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API voor data rondom een dierenwinkel TEST."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/CommonGateway/PetStore/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/CommonGateway/PetStore/main/OAS.yaml'
+    # testDataLocation: 'https://raw.githubusercontent.com/CommonGateway/PetStore/main/data/data.json'
+  en:
+    shortDescription: "An API for data about a pet store."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/CommonGateway/PetStore/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/CommonGateway/PetStore/main/OAS.yaml'
+    # testDataLocation: 'https://raw.githubusercontent.com/CommonGateway/PetStore/main/data/data.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

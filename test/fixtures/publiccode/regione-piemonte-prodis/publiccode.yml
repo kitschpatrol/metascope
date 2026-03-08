@@ -1,0 +1,154 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Regione Piemonte Sistema Informativo Lavoro
+categories:
+  - business-process-management
+dependsOn:
+  open:
+    - name: Apache httpd
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '2'
+    - name: WildFly
+      optional: false
+      version: '17'
+      versionMax: '23'
+      versionMin: ''
+  proprietary:
+    - name: Oracle DBMS
+      optional: false
+      version: '12'
+      versionMax: ''
+      versionMin: '11'
+description:
+  it:
+    features:
+      - |-
+        Consultazione, compilazione/duplicazione ed invio prospetto disabili
+        annuale.
+    genericName: Prospetto Disabili
+    longDescription: |
+      Il prodotto PRODIS è l’applicativo della Regione Piemonte che permette
+      alle aziende e ai loro intermediari di ottemperare agli
+
+      obblighi inerenti alla comunicazione del prospetto informativo disabili 
+      alla Pubblica Amministrazione, indicando la propria situazione
+
+      occupazionale rispetto agli obblighi di assunzione di personale disabile 
+      e/o appartenente alle altre categorie protette come previsto
+
+      dalla  Legge 12 marzo 1999 n. 68.
+
+
+      In coerenza con la vigente normativa l’obbligo di adempimento riguarda i
+      datori di lavoro con più di 15 dipendenti.
+
+
+      L’applicativo permette alle aziende o ai propri delegati l’accesso ai
+      prospetti inviati negli anni precedenti,
+
+      la possibilità di duplicare un prospetto per rendere più agevole la fase
+      di compilazione  ed invio del nuovo 
+
+      nonché la possibilità di caricare da file esterni l’elenco dei lavoratori.
+
+
+      Il prodotto "Prodis" è stato sviluppato negli anni nel  completo rispetto
+      dei Modelli e Regole definiti dal Ministero,
+
+      ed in coerenza con alcuni principi cardine:
+
+
+      - sono soggette all’obbligo di invio del Prospetto Disabili tutte le
+      aziende che hanno subito cambiamenti nella situazione occupazionale tali 
+
+      da modificare l'obbligo o da incidere sul computo della quota di  riserva;
+      quelle che non hanno subito variazioni significative ai fini dell’obbligo
+
+      non sono tenute ad inviare il prospetto informativo.
+
+
+      - le aziende che hanno anche solo una sede fuori dalla Regione  Piemonte,
+      devono trasmettere il Prospetto Disabili presso il sito regionale
+      competente la sede legale.
+
+
+      - il Prospetto Disabili è unico e contiene sia i dati provinciali sia
+      quelli nazionali.
+
+
+      - il prospetto deve essere comunicato entro il 31 gennaio di ogni anno
+      (salvo proroghe della data di scadenza, comunicata dal Ministero),
+
+      con riferimento alla situazione occupazionale al 31 dicembre dell'anno
+      precedente.
+
+
+      - è facoltà dell’azienda inviare il prospetto disabili durante l’anno ad
+      ogni variazione significativa del personale.
+
+
+      Il prodotto è strutturato nelle seguenti componenti specifiche:
+
+
+      - prodisdb: script DDL/DML per la creazione ed il popolamento iniziale del
+      DB (istanza DBMS Oracle), procedure PL/SQL di elaborazione dati;
+
+
+      - prodiswcl: Client Web (Angular8), front-end applicativo;
+
+
+      - prodisweb: Componente SPA con servizi REST per prodiswcl;					;
+
+
+      - prodissrv: Componente di esposizione servizi (REST API) verso altri
+      applicativi del Sistema Informativo Regionale.
+    screenshots:
+      - |-
+        https://raw.githubusercontent.com/regione-piemonte/prodis/master/PRODIS.png
+    shortDescription: 'PRODIS : Prospetto Disabili - Servizi Lavoro Piemonte'
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: r_piemon
+landingURL: 'https://github.com/regione-piemonte/prodis.git'
+legal:
+  authorsFile: |-
+    https://raw.githubusercontent.com/regione-piemonte/prodis/master/Copyrights.txt
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione PIemonte
+  repoOwner: Regione Piemonte
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+logo: 'https://raw.githubusercontent.com/regione-piemonte/prodis/master/PRODIS.png'
+maintenance:
+  contacts:
+    - email: giancarlo.cantoni@csi.it
+      name: Giancarlo Cantoni
+  type: internal
+name: PRODIS
+platforms:
+  - web
+releaseDate: '2022-06-12'
+softwareType: standalone/web
+softwareVersion: 9.0.0
+url: 'https://github.com/regione-piemonte/prodis'
+usedBy:
+  - Regione Piemonte

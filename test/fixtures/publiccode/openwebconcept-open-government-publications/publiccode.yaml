@@ -1,0 +1,40 @@
+name: "open-government-publications"
+
+applicationSuite:
+  name: "OpenWebconcept"
+
+publiccodeYmlVersion: 1.0
+url: "https://github.com/OpenWebconcept/open-government-publications"
+
+platforms:
+  - "web"
+
+categories:
+  - "application-development"
+
+softwareType: "softwareAddon"
+
+description:
+  localisedName: "Plugin Open Government Publications"
+  shortDescription: "Deze WordPress plugin importeert overheidspublicaties van officielebekendmakingen.nl en maakt ze beschikbaar via de REST API."
+  longDescription: "Deze WordPress plugin importeert overheidspublicaties van officielebekendmakingen.nl en maakt ze beschikbaar via de REST API."
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: "Gemeente Súdwest-Fryslân"
+  repoOwner: "Gemeente Súdwest-Fryslân"
+
+maintenance:
+  type: "internal"
+  contacts:
+    - name: "Sander de Kroon"
+      email: "s.dekroon@sudwestfryslan.nl"
+
+nl:
+  commonground:
+    layerType: "service"
+
+dependsOn:
+  open:
+    - name: "WordPress"
+    - versionMin: 6.0.3

@@ -1,0 +1,42 @@
+publiccodeYmlVersion: 0.4.0
+name: jeap-bptest-orchestrator
+applicationSuite: jEAP
+softwareVersion: 4.14.0
+releaseDate: 2026-01-28
+url: "https://github.com/jeap-admin-ch/jeap-bptest-orchestrator.git"
+landingURL: "https://github.com/jeap-admin-ch/jeap"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: library
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jeap-bptest-orchestrator
+    shortDescription: The jEAP BusinessProcessTest Orchestrator is a component for orchestrating business process tests.
+    longDescription: >
+      The jEAP BusinessProcessTest Orchestrator is a component for orchestrating business process tests. In this context,
+      business process tests are defined as tests that validate the behavior of a business process, ensuring that it
+      meets the specified requirements and functions correctly. In such tests, the orchestrator is responsible for
+      coordinating the execution of the test cases, managing the flow of the test scenarios, and ensuring that test 
+      agents provide the necessary data and responses. The orchestrator also provides reporting capabilities,
+      integrating with the Zephyr JIRA plugin for test case management.
+    features:
+      - Execution of business process tests by orchestrating test agents
+      - Validaton of test results
+      - Test report generation with integration of the Zepyhr JIRA plugin for test case management
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

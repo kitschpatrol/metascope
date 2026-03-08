@@ -1,0 +1,28 @@
+publiccodeYmlVersion: "0.1"
+
+name: "VNG logging & verwerking API-write"
+url: "https://github.com/VNG-Realisatie/gemma-verwerkingenlogging"
+releaseDate: "2021-04-14"
+
+softwareType: standalone/backend
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "GEMMA Verwerkingenlogging is een project waarin het gemeentelijk informatiemodel Verwerkingenlogging en bijbehorende API specificaties gestandaardiseerd worden."
+    documentation: 'https://redocly.github.io/redoc/?url=https://https://raw.githubusercontent.com/VNG-Realisatie/gemma-verwerkingenlogging/master/docs/api-write/oas-specification/logging-verwerkingen-api/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-verwerkingenlogging/master/docs/api-write/oas-specification/logging-verwerkingen-api/openapi.yaml'
+    testDataLocation: 'https://github.com/ConductionNL/logging-verwerking_publiccode/blob/main/data/logging-verwerking-write.yml'
+  en:
+    shortDescription: "GEMMA Processing Logging is a project in which the municipal information model Processing Logging and associated API specifications are standardized."
+    documentation: 'https://redocly.github.io/redoc/?url=https://https://raw.githubusercontent.com/VNG-Realisatie/gemma-verwerkingenlogging/master/docs/api-write/oas-specification/logging-verwerkingen-api/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-verwerkingenlogging/master/docs/api-write/oas-specification/logging-verwerkingen-api/openapi.yaml'
+    testDataLocation: 'https://github.com/ConductionNL/logging-verwerking_publiccode/blob/main/data/logging-verwerking-write.yml'

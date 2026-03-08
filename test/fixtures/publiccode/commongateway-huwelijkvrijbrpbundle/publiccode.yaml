@@ -1,0 +1,19 @@
+publiccodeYmlVersion: "0.1"
+name: "HuwelijkVrijBRPBundle"
+url: "https://github.com/CommonGateway/HuwelijkVrijBRPBundle"
+releaseDate: "2023-03-02"
+softwareType: addon
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+description:
+  nl:
+    shortDescription: "HuwelijkVrijBRPBundle"
+  en:
+    shortDescription: "HuwelijkVrijBRPBundle"

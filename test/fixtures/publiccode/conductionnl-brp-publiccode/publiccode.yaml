@@ -1,0 +1,28 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Bevragen Ingeschreven Personen (BRP) API"
+url: "https://github.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen"
+releaseDate: "2020-09-01"
+
+softwareType: standalone/backend
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "API voor het zoeken en raadplegen van actuele personen, partners, ouders en kinderen uit de basisregistratie personen (BRP), inclusief de registratie niet-ingezeten (RNI)."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen/master/specificatie/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen/master/specificatie/genereervariant/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/brp_publiccode/main/data/brp.yml'
+  en:
+    shortDescription: "API for searching and consulting current persons, partners, parents and children from the basic registration of persons (BRP), including the registration non-resident (RNI)."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen/master/specificatie/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen/master/specificatie/genereervariant/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/brp_publiccode/main/data/brp.yml'

@@ -1,0 +1,42 @@
+publiccodeYmlVersion: 0.4.0
+name: jme-cdct-segregated-consumer-example
+applicationSuite: JME
+softwareVersion: 1.0.0
+releaseDate: 2025-12-18
+url: "https://github.com/jme-admin-ch/jme-cdct-segregated-consumer-example.git"
+landingURL: "https://github.com/jme-admin-ch/jme"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: standalone/web
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jme-cdct-segregated-consumer-example
+    shortDescription: jEAP microservice example demonstrating consumer-driven contract testing with Pacts in a consumer (two API of same provider).
+    longDescription: >
+      This project demonstrates consumer-driven contract testing with segregated APIs in a Java-based microservice
+      architecture. The provider service exposes two separate APIs, each configured with its own dedicated Pact provider for
+      independent contract verification.
+      The example includes automated verification tests that retrieve all relevant consumer contracts from a Pact Broker, 
+      validate them against the provider's implementation, and publish the verification results back to the broker. 
+      This ensures the provider fulfills all consumer expectations and maintains contract compliance across both APIs.
+    features:
+      - Runs pact consumer tests
+      - Generates pacts
+      - Publishes pacts to a Pact Broker
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

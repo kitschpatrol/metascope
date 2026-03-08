@@ -32,6 +32,7 @@ import { openFrameworksInstallXmlSource } from './sources/open-frameworks-instal
 import { packageSource } from './sources/package-json.js'
 import { pomXmlSource } from './sources/pom-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
+import { publiccodeSource } from './sources/publiccode'
 import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
 import { updatesSource } from './sources/updates'
@@ -64,6 +65,7 @@ const sources: MetadataSource[] = [
 	packageSource,
 	pomXmlSource,
 	processingLibraryPropertiesSource,
+	publiccodeSource,
 	pypiSource,
 	pyprojectSource,
 	updatesSource,
@@ -222,6 +224,7 @@ export async function getMetadata<T>(
 		packageJson: {},
 		pomXml: {},
 		processingLibraryProperties: {},
+		publiccode: {},
 		pypi: {},
 		pyprojectToml: {},
 		updates: {},

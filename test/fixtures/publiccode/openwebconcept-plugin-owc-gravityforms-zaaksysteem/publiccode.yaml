@@ -1,0 +1,48 @@
+publiccodeYmlVersion: '0.2'
+
+name: "plugin/owc-gravityforms-zaaksysteem"
+applicationSuite: 'OpenWebconcept'
+url: 'https://github.com/OpenWebconcept/plugin-owc-gravityforms-zaaksysteem.git'
+releaseDate: '2022-05-06'
+
+platforms:
+    - 'web'
+
+categories:
+    - 'application-development'
+
+developmentStatus: 'Production'
+
+softwareType: 'softwareAddon'
+
+description:
+    en:
+        genericName: 'OWC GravityForms Zaaksysteem'
+        shortDescription: 'Combines one or multiple "zaaksystemen" with Gravity Forms and WordPress'
+        longDescription: 'Combines one or multiple "zaaksystemen" with Gravity Forms and WordPress'
+    nl:
+        genericName: 'OWC GravityForms Zaaksysteem'
+        shortDescription: 'Combineer één of meer "zaaksystemen" met Gravity Forms en WordPress'
+        longDescription: 'Combineer één of meer "zaaksystemen" met Gravity Forms en WordPress'
+
+legal:
+    license: 'EUPL-1.2'
+    repoOwner: 'Yard | Digital Agency'
+
+dependsOn:
+  open:
+    - name: 'WordPress'
+    - versionMin: 6.7.0
+
+intendedAudience:
+  countries:
+    - nl
+  scope:
+    - government
+
+maintenance:
+  contractors:
+    - name: 'Yard | Digital Agency'
+      website: 'https://www.yard.nl'
+      email: 'owc@yard.nl'
+  type: 'contract'

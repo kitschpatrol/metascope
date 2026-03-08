@@ -1,0 +1,118 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Regione Piemonte Sistema Informativo Lavoro
+categories:
+  - employee-management
+dependsOn:
+  open:
+    - name: Apache httpd
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: RedHat JBOSS
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: PostgreSQL
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - |-
+        E' un sistema software per l'accesso ai servizi online della Sanità
+
+        della Regione Piemonte 
+    genericName: LCCE
+    longDescription: |2
+       Il prodotto _**Configuratore Operatori**_** **realizza un sistema software per l'accesso ai servizi online della Sanità della Regione Piemonte che comprende:
+
+      - un punto unico di accesso (PUA) per consentire agli utenti di enti
+
+      pubblici e privati di accedere ad uno dei servizi online a cui sono
+
+      abilitati dopo essersi autenticati e aver selezionato il _ruolo_ con cui
+
+      vogliono operare e la _collocazione_ presso cui operano
+
+
+      - un database che memorizza tutte le informazioni relative a utenti,
+
+      ruoli, collocazioni e abilitazioni attive
+
+
+      - un meccanismo di accesso per consentire l'integrazione sicura fra il PUA
+
+      e i servizi online a cui l'utente è abilitato.
+
+
+      - un meccanismo di accesso per consentire l'integrazione sicura fra le
+
+      Cartelle Cliniche Elettroniche dei Medici e i servizi online della Sanità
+
+      (questo meccanismo si basa sull'autenticazione dell'utente sul sistema
+
+      esterno Iride).
+
+
+
+      ​
+    screenshots:
+      - |-
+        https://raw.githubusercontent.com/regione-piemonte/lcce/master/CONFIGURATOREOPERATORI.png
+    shortDescription: |-
+      Il prodotto Configuratore Operatori realizza un sistema software per
+
+      l'accesso ai servizi online della Sanità della Regione Piemonte
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: r_piemon
+landingURL: 'https://github.com/regione-piemonte/lcce.git'
+legal:
+  authorsFile: |-
+    https://raw.githubusercontent.com/regione-piemonte/lcce/master/COPYRIGHTS.txt
+  license: EUPL-1.2
+  mainCopyrightOwner: Regione Piemonte
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+logo: |-
+  https://raw.githubusercontent.com/regione-piemonte/lcce/master/CONFIGURATOREOPERATORI.png
+maintenance:
+  contacts:
+    - email: yvonne.carpegna@csi.it
+      name: Yvonne Carpegna
+  type: internal
+name: Configuratore Operatori
+platforms:
+  - web
+releaseDate: '2022-06-10'
+softwareType: standalone/web
+softwareVersion: 1.1.0
+url: 'https://github.com/regione-piemonte/lcce'
+usedBy:
+  - Regione Piemonte
+intendedAudience:
+  scope:
+    - healthcare
+    - government

@@ -1,0 +1,40 @@
+publiccodeYmlVersion: "0.4"
+
+name: nglue
+url: "https://github.com/SUNET/nglue"
+platforms:
+  - linux
+
+categories:
+  - it-service-management
+
+developmentStatus: stable
+
+softwareType: "standalone/desktop"
+
+description:
+  en:
+    shortDescription: >
+      This is a commandline tool to upload data
+      to ticketing system.
+
+    longDescription: >
+      This is a commandline tool for upload data
+      automatically to ticketing system.
+    features:
+      - JSON
+      - HTTP POST request
+
+legal:
+  license: MIT
+
+maintenance:
+  type: "community"
+
+  contacts:
+    - name: Kushal Das <kushal@sunet.se>
+
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

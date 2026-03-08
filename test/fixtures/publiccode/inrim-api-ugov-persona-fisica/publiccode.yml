@@ -1,0 +1,72 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: API Integrazione U-GOV JP - WSACPersonaFisica (SOAP)
+url: 'https://github.com/INRIM/api-ugov-persona-fisica.git'
+releaseDate: '2021-01-18'
+softwareVersion: 1.1.0
+developmentStatus: beta
+platforms:
+  - web
+softwareType: library
+categories:
+  - it-development
+  - application-development
+maintenance:
+  type: internal
+  contacts:
+    - name: Alessio Gerace
+      email: a.gerace@inrim.it
+      affiliation: inrim.it
+legal:
+  license: MIT
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it
+it:
+  conforme:
+    lineeGuidaDesign: false
+    modelloInteroperabilita: true
+    misureMinimeSicurezza: true
+  riuso:
+    codiceIPA: inrm
+description:
+  it:
+    genericName: API Integrazione
+    shortDescription: |-
+      API Integrazione U-GOV JP - WSACPersonaFisica (SOAP) conforme alle Linee
+      guida di design per i servizi web della Pubblica Amministrazione
+    longDescription: |+
+      API REST per l'integrazione con WSACPersonaFisica (SOAP) di U-GOV JP
+
+
+      Questo progetto è un componente del progetto più ampio di un gruppo
+
+      di micro servizi mirati all'integrazione con U-GOV, è possibile attivarli
+
+      singolarmente in modo modulare, e attivarne molteplici in modo scalare in
+      caso di necessità
+
+
+      Il progetto è da intendersi come middleware per semplificare la
+      comunicazione con U-GOV
+
+
+      E' possibile:
+
+
+      - leggere la lista delle persone
+
+      - estrarre i dati base e completi delle persone
+
+      - inserire e modificare record persona esistenti.
+
+    features:
+      - Micro servizio in Docker
+      - Genera openapi.json OSA3
+      - Passaggio dati sensibili di autenticazione con chiave JWT
+      - Documentazione e test delle API integrata Swagger
+      - Documentazione sola lettura delle API in Redoc

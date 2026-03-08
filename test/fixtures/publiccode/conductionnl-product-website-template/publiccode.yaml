@@ -1,0 +1,85 @@
+publiccodeYmlVersion: '0.1'
+name: product-website-template
+applicationSuite: null
+url: https://github.com/ConductionNL/product-website-template
+landingURL: null
+isBasedOn: null
+softwareVersion: null
+logo: https://avatars.githubusercontent.com/u/106860777?v=4
+monochromeLogo: null
+platforms:
+  - web
+releaseDate: '2023-11-10'
+categories: 
+  - collaboration
+  - it-development
+developmentStatus: beta
+softwareType: softwareAddon
+description:
+  en:
+    localisedName: null
+    genericName: Template to easily set up a product page
+    shortDescription: product-website-template
+    longDescription: Template to easily set up a product page
+    documentation: null
+    apiDocumentation: null
+    features: []
+    screenshots: []
+    videos: []
+    awards: []
+  nl:
+    localisedName: null
+    genericName: Template to easily set up a product page
+    shortDescription: product-website-template
+    longDescription: Template to easily set up a product page
+    documentation: null
+    apiDocumentation: null
+    features: []
+    screenshots: []
+    videos: []
+    awards: []
+intendedaudience: 
+  countries: 
+    - nl
+  unsupportedCountries: []
+  scope: []
+legal: 
+  license: EUPL-1.2-or-later
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: ConductionNL
+  authorsFile: null
+maintenance: 
+  type: internal
+  contractors: 
+    - name: Conduction
+      until: 2035-01-01
+      email: info\x64conduction.nl
+      website: https://www.conduction.nl
+  contacts:
+    - name: Ruben van der Linde
+      email: info\x64conduction.nl
+      phone: 085 303 6840
+      affiliation: Conduction
+localisation:
+  localisationReady: true
+  availableLanguages: 
+     - en
+     - nl
+dependsOn: null
+roadmap: null
+inputTypes: null
+outputTypes: null
+nl: 
+  countryExtensionVersion: null
+  commonground: 
+    intendedOrganisations: []
+    installationType: null
+    layerType: interface
+  gemma:
+    bedrijfsfuncties: []
+    bedrijfsservices: []
+    applicatiefunctie: null
+    model: null
+  upl: []
+downloadUrls:
+  - https://github.com/ConductionNL/product-website-template/archive/refs/heads/main.zip

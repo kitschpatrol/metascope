@@ -1,0 +1,29 @@
+name: "plugin-samenwerkende-catalogi"
+
+applicationSuite:
+  name: "OpenWebconcept"
+
+publiccodeYmlVersion: 1.0
+url: "https://github.com/OpenWebconcept/plugin-samenwerkende-catalogi"
+
+platforms:
+  - "web"
+
+categories:
+  - "application-development"
+
+softwareType: "softwareAddon"
+
+description:
+  localisedName: "Samenwerkende Catalogi"
+  shortDescription: "Plugin voor het creëren van een XML-feed voor de Samenwerkende Catalogi"
+  longDescription: "Plugin voor het creëren van een XML-feed voor de Samenwerkende Catalogi"
+
+nl:
+  commonground:
+    layerType: "service"
+
+dependsOn:
+  open:
+    - name: "WordPress"
+    - versionMin: 6.0.3

@@ -1,0 +1,49 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: Semantic Turkey
+releaseDate: '2017-09-28'
+url: 'https://bitbucket.org/art-uniroma2/semantic-turkey.git'
+developmentStatus: stable
+softwareType: standalone/backend
+softwareVersion: 6.0.1
+landingURL: 'http://semanticturkey.uniroma2.it/'
+platforms:
+  - web
+dependsOn:
+  open:
+    - name: Karaf
+categories:
+  - knowledge-management
+maintenance:
+  type: contract
+  contractors:
+    - name: infeurope
+      until: '2020-07-31'
+legal:
+  license: BSD-3-Clause
+  mainCopyrightOwner: University of Rome Tor Vergata
+  repoOwner: University of Rome Tor Vergata
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
+description:
+  it:
+    longDescription: "Semantic Turkey is a RDF service platform for Knowledge Management and Acquisition realized by the\_[ART Research Group](http://art.uniroma2.it/) at the University of Rome, Tor Vergata\n\nBuilt on top of existing core technologies for RDF, such as [RDF4J](http://rdf4j.org/) and [CODA](http://art.uniroma2.it/coda/) and existing frameworks ([OSGi](https://www.osgi.org/) and [Spring](https://spring.io/)) for service development and publication, Semantic Tukey offers a whole set of services for powering up applications oriented at RDF Data Management and Acquisition.\n\nSemantic Turkey is the backend for the collaborative ontology and thesaurus management platform [VocBench](http://vocbench.uniroma2.it/).\n"
+    genericName: RDF Management Service Platform
+    localisedName: Semantic Turkey
+    documentation: 'http://semanticturkey.uniroma2.it/doc/'
+    apiDocumentation: 'http://semanticturkey.uniroma2.it/doc/user/'
+    features:
+      - RDF Management Services
+    shortDescription: >-
+      Semantic Turkey is a RDF service platform for Knowledge Management and
+      Acquisition realized by the ART Research Group at the University of Tor
+      Vergata
+it:
+  countryExtensionVersion: '0.2'
+  riuso:
+    codiceIPA: uni_rm2 

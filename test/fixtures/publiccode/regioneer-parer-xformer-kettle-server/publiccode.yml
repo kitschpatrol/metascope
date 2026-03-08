@@ -1,0 +1,76 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.4'
+categories:
+  - data-analytics
+  - data-collection  
+dependsOn:
+  open:
+    - name: Xformer Kettle Server
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - data integration penthao
+      - data transformation
+    longDescription: |+
+      Xformer Kettle Server è un'applicazione web per servlet container che funge da wrapper 
+      
+      alle librerie di [Data Integration di Penthao Kettle](https://github.com/pentaho/pentaho-kettle). 
+      
+      L'applicazione espone dei webservice SOAP e REST per l'inserimento, l'amministrazione e l'esecuzione di 
+      
+      trasformazioni modellate tramite l'applicativo 
+      
+      [Kettle Spoon](https://www.hitachivantara.com/es-latam/products/pentaho-platform/data-integration-analytics/pentaho-community-edition.html) e utilizzate nell'ambito del processo di preacquisizione dal sistema SACER.
+    shortDescription: |-
+      Xformer Kettle Server è un'applicazione web per servlet container che funge da wrapper alle librerie di Data Integration di Penthao Kettle 
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: r_emiro
+landingURL: 'https://github.com/RegioneER/parer-xformer-kettle-server'
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Regione Emilia-Romagna
+  repoOwner: Regione Emilia-Romagna
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+logo: |-
+  https://raw.githubusercontent.com/RegioneER/parer-xformer-kettle-server/master/src/docs/rer-logo.png
+maintenance:
+  contacts:
+    - email: areasviluppoparer@regione.emilia-romagna.it
+      name: Cristiano Casagni
+  contractors:
+    - name: ' Engineering Ingegneria Informatica S.p.A.'
+      until: '2026-12-23'
+  type: contract
+name: Parer - Xformer Kettle Server
+platforms:
+  - linux
+releaseDate: '2023-11-13'
+softwareType: standalone/backend
+url: 'https://github.com/RegioneER/parer-xformer-kettle-server.git'
+applicationSuite: SACER

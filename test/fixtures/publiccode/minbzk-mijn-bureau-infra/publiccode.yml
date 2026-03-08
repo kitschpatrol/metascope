@@ -1,0 +1,34 @@
+publiccodeYmlVersion: "0.2"
+categories:
+  - it-development
+description:
+  en:
+    features:
+      - Open Source
+      - Government
+      - digital workplace
+      - open-source
+    genericName: MijnBureau Deployment
+    longDescription: |
+      This is the MijnBureau repo that contain Infrastructure as Code in the form of Helmfile
+
+      MijnBureau is a open-source, cloud-native, digital workplace suite.
+
+    shortDescription: MijnBureau deployment
+developmentStatus: concept
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - en
+  localisationReady: false
+maintenance:
+  contacts:
+    - name: Mijn Bureau
+      email: opensource@minbzk.nl
+  type: community
+name: MijnBureau deployment
+platforms:
+  - docs
+softwareType: standalone/web
+url: "https://github.com/MinBZK/mijn-bureau-infra"

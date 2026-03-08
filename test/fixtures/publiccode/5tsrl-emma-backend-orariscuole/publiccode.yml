@@ -1,0 +1,74 @@
+publiccodeYmlVersion: '0.2'
+categories:
+  - fleet-management
+dependsOn:
+  open:
+    - name: Apache httpd
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '2.2'
+    - name: PHP
+      optional: false
+      version: '7'
+      versionMax: ''
+      versionMin: '7.4'
+    - name: CakePHP
+      optional: false
+      version: '4'
+      versionMax: ''
+      versionMin: '4.0'
+description:
+  en:
+    features:
+      - School Mobility Manager Platform
+    genericName: EMMA-OrariScuole
+    localisedName: EMMA-OrariScuole
+    longDescription: |
+      EMMA 
+      MMA is a web-based application designed and developed by 5T on behalf of Regione Piemonte.
+      This application serves as a repository of all the Timetalbes of the schools in the territory of the Transport Authority of Turin,
+      so that planning of public transport can be anchieved with a proper knowledge of the school schedules.
+    shortDescription: |-
+      EMMA . 
+      Schedules of the Schools of the Province of Turin.
+  it:
+    features:
+      - Mobility Management Scolastico - Gestione Orari
+    longDescription: |
+      Gestisce gli orari di ingresso ed uscita delle scuole in modo da fornire a chi pianifica i trasporti dati accurati per la pianificazione.
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: 5t_piem
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: mobilita.sostenibile@5t.torino.it
+      name: Lucia Mercaldi
+    - email: moma@mobilitysquare.eu
+      name: Massimo Infunti
+  type: internal
+name: EMMA
+platforms:
+  - web
+releaseDate: '2023-09-01'
+softwareType: standalone/web
+softwareVersion: 1.25.0701
+url: 'https://github.com/5Tsrl/emma-backend-orariscuole.git'

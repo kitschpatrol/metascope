@@ -1,0 +1,45 @@
+publiccodeYmlVersion: 0.5.0
+name: swiyu Trust Registry Authoring Service
+applicationSuite: swiyu Trust Infrastructure
+url: https://github.com/swiyu-admin-ch/eidch-registry-trust-authoring
+softwareVersion: 1.1.0
+releaseDate: 2025-03-13
+platforms:
+  - Linux
+categories:
+  - digital-citizenship
+  - identity-management
+usedBy:
+  - Federal Office of Justice
+  - Federal Office of Information Technology, Systems and Telecommunication
+  - Fedpol
+  - Astra
+developmentStatus: beta
+softwareType: standalone/backend
+organisation:
+  uri: https://ld.admin.ch/office/III.1.2
+  name: Bundesamt für Justiz
+description:
+  en:
+    localisedName: swiyu Trust Registry Authoring Service
+    shortDescription: Authoring Service for the swiyu Trust Registry
+    longDescription: The Trust Registry provides trust through implementing human-readable measures to support decisions about whether users want to trust actors they interact with or the information they receive. This complements the cryptographic trust provided by the Base Registry. 
+    apiDocumentation: https://swiyu-admin-ch.github.io/technology-stack/
+    features:
+      - See the verification status of issuers and verifiers in user's wallets
+      - Verifiers are able to validate the trust-status of the issuers.
+legal:
+  license: MIT
+maintenance:
+  type: internal
+  contacts:
+    - name: Andre Kunz
+      email: info@swiyu.admin.ch
+      affiliation: Federal Office of Justice
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - de
+    - fr
+    - it

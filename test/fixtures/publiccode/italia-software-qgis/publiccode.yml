@@ -1,0 +1,82 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.4'
+categories:
+  - geographic-information-systems
+description:
+  it:
+    apiDocumentation: 'https://api.qgis.org/api/'
+    documentation: 'https://www.qgis.org/it/docs/index.html'
+    features:
+      - GIS
+    longDescription: |
+      QGIS è un Sistema Informativo Geografico Open Source.
+
+
+      Abbiamo lavorato sodo per creare un software GIS (che normalmente è 
+      software proprietario e molto costoso) disponibile per chiunque possieda 
+      un personal computer. QGIS attualmente funziona sulla maggior parte  delle
+      piattaforme Unix, Windows e OS X. QGIS viene sviluppato usando gli 
+      strumenti software Qt ([https://www.qt.io](https://www.qt.io/)) e il
+      linguaggio C++. Questo significa che QGIS ha un’interfaccia utente (GUI)
+      snella, piacevole e facile da usare.
+
+
+      QGIS vuole essere un GIS di facile utilizzo, che ha funzionalità e  tratta
+      entità di uso generale. L’obiettivo iniziale del progetto era  quello di
+      essere un visualizzatore di dati GIS. QGIS ha raggiunto  l’obiettivo di
+      essere utilizzato per le esigenze quotidiane di  visualizzazione di dati
+      GIS, per l’acquisizione di dati, per le analisi  GIS avanzate e per le
+      presentazioni sotto forma di mappe, atlanti e  report sofisticati. QGIS
+      supporta un’ampia gamma di formati di dati  raster e vettoriali, con un
+      nuovo supporto di formato che può essere  facilmente aggiunto utilizzando
+      l’architettura a plugin.
+
+
+      QGIS è rilasciato sotto la GNU General Public License (GPL). Lo  sviluppo
+      di QGIS con questa licenza significa che puoi ispezionare e  modificare il
+      codice sorgente e garantisce che tu, nostro utente, avrai  sempre accesso
+      a un programma GIS libero e privo di costi che potrai  liberamente
+      modificare. Insieme alla copia di QGIS dovresti aver  ricevuto anche una
+      copia completa del testo della licenza che puoi  trovare anche
+      nell’Appendice di questo manuale [Appendice A: GNU General Public
+      License](https://docs.qgis.org/3.22/it/docs/user_manual/appendices/GNU_GPL.html#gpl-appendix).
+    shortDescription: QGIS è un Sistema Informativo Geografico Open Source
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+landingURL: 'https://www.qgis.org/it/site/'
+legal:
+  license: GPL-2.0-only
+localisation:
+  availableLanguages:
+    - it
+    - en
+  localisationReady: true
+maintenance:
+  contacts:
+    - name: QGIS community
+  type: community
+name: QGIS
+logo: "https://raw.githubusercontent.com/italia-software/QGIS/main/qgis-logo.svg"
+platforms:
+  - windows
+  - mac
+  - linux
+releaseDate: '2022-04-15'
+roadmap: 'https://www.qgis.org/it/site/getinvolved/development/roadmap.html'
+softwareType: standalone/desktop
+softwareVersion: 3.24.2
+url: 'https://github.com/qgis/QGIS'

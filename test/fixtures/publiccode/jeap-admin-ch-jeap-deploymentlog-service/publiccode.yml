@@ -1,0 +1,45 @@
+publiccodeYmlVersion: 0.4.0
+name: jeap-deploymentlog-service
+applicationSuite: jEAP
+softwareVersion: 3.14.0
+releaseDate: 2026-01-28
+url: "https://github.com/jeap-admin-ch/jeap-deploymentlog-service.git"
+landingURL: "https://github.com/jeap-admin-ch/jeap"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: library
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jeap-deploymentlog-service
+    shortDescription: A jEAP service and library for recording and documenting deployments across environments, with Confluence integration
+    longDescription: >
+      The jEAP Deployment Log provides a centralized way to record and track deployments
+      of components across different environments. Delivered as a Spring Boot–based 
+      service library, it offers REST APIs to log deployment events, update their status, and
+      query deployment history. Integrated with Confluence, it automatically generates
+      documentation showing the current state of all environments, deployment histories,
+      and detailed deployment records including version, commit references, and linked
+      Jira issues. It supports direct integration into jEAP CI/CD Pipelines. The Deployment Log
+      enables transparency and traceability while reducing manual documentation effort.
+    features:
+      - Records deployments and environment states via REST API and pipeline integration
+      - Generates Confluence documentation with histories and current environment status
+      - Supports automated links to source code and changelog generation based on Jira issues linked in commit messages
+
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

@@ -1,0 +1,28 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Zaak Type Catalogus (ZRC)"
+url: "https://github.com/VNG-Realisatie/gemma-zaken"
+releaseDate: "2020-09-01"
+
+softwareType: standalone/backend
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API om een Catalogi API (ZTC) te benaderen."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/ztc/1.1.x/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/ztc/1.1.x/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/ztc_publiccode/main/data/ztc.json'
+  en:
+    shortDescription: "An API to perform requests on a case type register (ZTC)"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/ztc/1.1.x/openapi.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/VNG-Realisatie/gemma-zaken/master/api-specificatie/ztc/1.1.x/openapi.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/ztc_publiccode/main/data/ztc.json'

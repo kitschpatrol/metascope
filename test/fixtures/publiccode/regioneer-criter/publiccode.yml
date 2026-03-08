@@ -1,0 +1,69 @@
+publiccodeYmlVersion: "0.4"
+name: CRITER
+applicationSuite: CRITER
+url: https://github.com/RegioneER/criter.git
+landingURL: https://github.com/RegioneER/criter
+releaseDate: 2025-07-11
+logo: https://raw.githubusercontent.com/RegioneER/criter/master/CriterPortal/images/LogoCriter.png
+platforms:
+  - web
+categories:
+  - web-collaboration
+  - workflow-management
+developmentStatus: stable
+softwareType: standalone/web
+intendedAudience:
+  countries:
+    - it
+description:
+  it:
+    shortDescription: Applicazione Web per la gestione degli Impianti Termici
+    longDescription: >
+      CRITER (Catasto Regionale Impianti Termici Emilia Romagna) è la
+      web-application per la gestisce l'intero processo di accreditamento delle
+      imprese di installazione e manutenzione e la redazione dei Libretti di
+      Impianto e Rapporti di Controllo Tecnico
+    features:
+      - Redazione Libretti di Impianti Termici
+      - Gestione processo di accreditamento Imprese di manutenzione ed
+        installazione
+      - Redazione Rapporti di Controllo Tecnico
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Regione Emilia-Romagna
+  repoOwner: Regione Emilia-Romagna
+maintenance:
+  type: contract
+  contractors:
+    - name: " Pomiager S.r.l."
+      until: 2026-12-23
+      email: francesco.terranova@pomiager.com
+      website: https://www.pomiager.com
+  contacts:
+    - name: Francesco Terranova
+      email: francesco.terranova@pomiager.com
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it
+dependsOn:
+  open:
+    - name: Criter
+      versionMin: ""
+      versionMax: ""
+      version: ""
+      optional: false
+it:
+  countryExtensionVersion: "0.2"
+  conforme:
+    lineeGuidaDesign: false
+    modelloInteroperabilita: false
+    misureMinimeSicurezza: true
+    gdpr: false
+  piattaforme:
+    spid: true
+    cie: false
+    anpr: false
+    pagopa: true
+  riuso:
+    codiceIPA: r_emiro

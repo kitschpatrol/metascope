@@ -1,0 +1,39 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Referentielijsten-api"
+url: "https://github.com/VNG-Realisatie/VNG-referentielijsten"
+releaseDate: "2022-04-05"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+
+outputTypes:
+  - application/json
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Referentie en selectielijsten api"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/OAS.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/data/referentielijsten.json'
+  en:
+    shortDescription: "Reference and selection lists api"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/OAS.yaml&nocors'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/OAS.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/referentielijsten_publiccode/main/data/referentielijsten.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

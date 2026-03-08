@@ -1,0 +1,133 @@
+publiccodeYmlVersion: 0.2.1
+name: Klimadashboard Münster
+url: >-
+  https://gitlab.opencode.de/smart-city-muenster/klimadashboard-muenster/klimadashboard-muenster
+landingURL: 'https://klimadashboard.ms/'
+softwareVersion: 1.0.0
+releaseDate: '2023-06-21'
+platforms:
+  - web
+softwareType: standalone/web
+categories:
+  - data-visualization
+developmentStatus: stable
+description:
+  en:
+    genericName: Klimadashboard Münster
+    shortDescription: >
+      The Klimadashboard provides real time information about the climate
+      footprint for the city of Münster. The application displays the data using
+      different charts and a tile-based layout with separate pages for each
+      category. The data is sourced from various providers, including the Open
+      Data Portal of the City of Münster, the German Weather Service (DWD),
+      BrightSky, and other data providers.
+    longDescription: >
+      The climate dashboard is a software solution that provides real-time
+      information about the
+
+      climate balance of the city of Münster. It allows users to visualize the
+      current climate data using various diagrams and a tile-based layout. Each
+      category of the climate footprint is presented on a separate page to
+      provide a clear overview.
+
+      The data presented in this dashboard comes from a variety of providers,
+      including the City of Münster's Open Data Portal, the German Weather
+      Service (DWD), BrightSky, and other data providers. By integrating these
+      different data sources, the climate dashboard provides a comprehensive and
+      up-to-date representation of the climate situation in Münster.
+
+      The climate dashboard serves not only as a source of information, but also
+      as a tool for evaluating and monitoring measures to combat climate change.
+      It supports the city of Münster and its partners in analyzing the impact
+      of climate protection measures and evaluating the effectiveness of their
+      efforts with regard to sustainable urban development.
+
+      The dashboard's interactive user interface allows users to visualize
+      climate data on a map and access detailed information on individual
+      measurement points. In addition, the climate dashboard also provides
+      access to further information and contacts for specific categories of
+      climate assessment.
+
+      The data provided is accessible as Open Data and can be used for other
+      purposes via the Open Data portal of the City of Münster. This promotes
+      transparency and collaboration on climate data and allows different
+      stakeholders to access and use the information for their own projects and
+      analyses.
+
+      Overall, the City of Münster's climate dashboard provides a powerful
+      platform for monitoring, analyzing, and assessing climate performance. It
+      supports the city and its citizens in gaining a better understanding of
+      the current climate situation and in taking effective measures to promote
+      sustainable development.
+    features:
+      - visualization of climate data
+      - visualisation of mobility data
+      - visualisation of energy data
+      - visualisation of building data
+  de:
+    genericName: Klimadashboard Münster
+    shortDescription: >
+      Das Klimadasboard Münster visualisiert Echtzeit-Informationen über die
+      Klimabilanz der Stadt Münster. Das Dashboard zeigt Daten mit verschiedenen 
+      Grafiken in einem kachelbasierten Layout mit einzelnen Seiten für jede der vier
+      Kategorieren. Die Daten stammen von vielen verschiedenen Datenanbieteren,
+      u.a. das Open-Data-Portal der Stadt Münster, der Deutsche Wetterdienst (DWD),
+      BrightSky.
+    longDescription: >
+      Das Klimadashboard ist eine Softwarelösung, die in Echtzeit Informationen
+      über die Klimabilanz der Stadt Münster bereitstellt. Es ermöglicht den
+      Benutzern, die aktuellen Klimadaten mit Hilfe von verschiedenen Diagrammen
+      und einem kachelbasierten Layout zu visualisieren. Jede Kategorie der
+      Klimabilanz wird auf einer separaten Seite dargestellt, um einen
+      übersichtlichen Überblick zu gewährleisten.
+
+      Die Daten, die in diesem Dashboard präsentiert werden, stammen von einer
+      Vielzahl von Anbietern, darunter das Open Data Portal der Stadt Münster,
+      der Deutsche Wetterdienst (DWD), BrightSky und andere Datenanbieter. Durch
+      die Integration dieser unterschiedlichen Datenquellen bietet das
+      Klimadashboard eine umfassende und aktuelle Darstellung der Klimasituation
+      in Münster.
+
+      Das Klimadashboard dient nicht nur als Informationsquelle, sondern auch
+      als Werkzeug zur Bewertung und Überwachung von Maßnahmen zur Bekämpfung
+      des Klimawandels. Es unterstützt die Stadt Münster und ihre Partner dabei,
+      die Auswirkungen von Klimaschutzmaßnahmen zu analysieren und die
+      Wirksamkeit ihrer Bemühungen im Hinblick auf eine nachhaltige
+      Stadtentwicklung zu bewerten.
+
+      Die interaktive Benutzeroberfläche des Dashboards ermöglicht es den
+      Nutzern, die Klimadaten auf einer Karte zu visualisieren und detaillierte
+      Informationen zu den einzelnen Messpunkten abzurufen. Darüber hinaus
+      bietet das Klimadashboard auch einen Zugang zu weiteren Informationen und
+      Ansprechpartnern für spezifische Kategorien der Klimabilanz.
+
+      Die bereitgestellten Daten sind als Open Data zugänglich und können über
+      das Open-Data-Portal der Stadt Münster für andere Zwecke genutzt werden.
+      Dies fördert die Transparenz und Zusammenarbeit in Bezug auf die
+      Klimadaten und ermöglicht es verschiedenen Interessengruppen, auf die
+      Informationen zuzugreifen und diese für ihre eigenen Projekte und Analysen
+      zu verwenden.
+
+      Insgesamt bietet das Klimadashboard der Stadt Münster eine leistungsstarke
+      Plattform zur Überwachung, Analyse und Bewertung der Klimabilanz. Es
+      unterstützt die Stadt und ihre Bürger dabei, ein besseres Verständnis der
+      aktuellen Klimasituation zu erlangen und effektive Maßnahmen zur Förderung
+      einer nachhaltigen Entwicklung zu ergreifen.
+    features:
+      - Darstellung von Klimadaten
+      - Darstellung von Mobilitätsdaten
+      - Darstellung von Energieverbrauchsdaten
+      - Darstellung von Gebäudedaten
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Reedu GmbH & Co. KG
+localisation:
+  availableLanguages:
+    - de
+  localisationReady: 'no'
+maintenance:
+  type: none
+de:
+  countryExtensionVersion: '0.1'
+usedBy:
+  - Stadt Münster

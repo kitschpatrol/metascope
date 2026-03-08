@@ -1,0 +1,53 @@
+publiccodeYmlVersion: '0.2'
+
+name: Omgevingsbeleid Frontend
+url: 'https://omgevingsbeleid.zuid-holland.nl/'
+softwareVersion: 'dev'
+releaseDate: '2019-03-25'
+
+platforms:
+    - web
+
+categories:
+    - document-management
+
+developmentStatus: development
+
+softwareType: 'standalone/web'
+
+description:
+    en:
+        genericName: Omgevingsbeleid
+        shortDescription: >
+            A web application to create, edit and view policies.
+
+        longDescription: >
+            The Province of South-Holland believes that everyone should be able to easily view its policies. By digitalizing them, the province aims to make its policies more transparant, accesible, current, and informative. This way new initiatives can be carried out faster and better and in turn will result in more coherent policies. By storing policies in a database instead of in a document, the province also aims to make the proces of creating new or adjusting policies more efficient and in line with the new Dutch standards (STOP) for publishing governmental plans.
+
+        features:
+            - Enables policy makers to create policies
+            - Enables policy makers to edit policies
+            - Enables policy makers to easily connect policies
+            - Enables citizens to view policies
+            - Enables citizens to get insight into how policies are connected
+            - Enables citizens to get insight into what policies are active on a geographical point
+
+legal:
+    license: EUPL-1.2
+
+maintenance:
+    type: 'contract'
+
+    contacts:
+        - name: Omgevingsbeleid
+          email: omgevingsbeleid@pzh.nl
+
+    contractors:
+        - name: Provincie Zuid-Holland
+          until: '2099-01-01'
+          website: 'https://www.zuid-holland.nl'
+
+localisation:
+    localisationReady: false
+    availableLanguages:
+        - nl

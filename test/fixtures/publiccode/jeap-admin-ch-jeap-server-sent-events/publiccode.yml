@@ -1,0 +1,50 @@
+publiccodeYmlVersion: 0.4.0
+name: jeap-server-sent-events
+applicationSuite: jEAP
+softwareVersion: 6.15.0
+releaseDate: 2026-01-27
+url: "https://github.com/jeap-admin-ch/jeap-server-sent-events.git"
+landingURL: "https://github.com/jeap-admin-ch/jeap"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: library
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jeap-server-sent-events
+    shortDescription: Library for Server-Sent Events in jEAP applications, using SSE and Kafka
+    longDescription: >
+      The jEAP Server-Sent Events (SSE) library enables real-time, server-to-client
+      event streaming over HTTP using the SSE standard. It provides a configurable
+      web endpoint where UI clients can subscribe to receive events such as resource
+      creation, updates, deletions, and periodic heartbeat signals. Multiple backend
+      instances are synchronized via Kafka to ensure all connected clients receive all
+      relevant events, regardless of which instance initiated the change. The library
+      offers flexible authentication options, including insecure, simple role-based,
+      and semantic resource/operation-based access control. It exposes a simple
+      business logic API (`ResourceMutationService`) for publishing events and handles
+      dispatch to all listeners automatically. With configurable heartbeat rates,
+      emitter timeouts, and Kafka topics, it supports scalable, efficient, and secure
+      integration of real-time updates into jEAP-based microservices and UI applications.
+    features:
+      - Providing real-time data change updates to web frontends using Server-Sent Events (SSE)
+      - Synchronizing multiple backend instances via Kafka to ensure consistent event delivery
+      - Configurable authentication options for secure access control
+      - Simple API for publishing resource change events
+      - Flexible configuration for heartbeat rates, emitter timeouts, and Kafka topics
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

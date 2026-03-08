@@ -1,0 +1,50 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: Démarche Numérique
+url: 'https://github.com/demarche-numerique/demarche.numerique.gouv.fr'
+landingURL: 'https://demarche.numerique.gouv.fr'
+roadmap: 'https://github.com/demarche-numerique/demarche.numerique.gouv.fr/wiki/Feuille-de-route'
+releaseDate: 'https://github.com/demarche-numerique/demarche.numerique.gouv.fr/releases/latest'
+developmentStatus: beta
+softwareType: standalone/backend
+categories:
+  - digital-citizenship
+platforms:
+  - web
+logo: |-
+  https://demarche.numerique.gouv.fr/logo-icon.png
+legal:
+  license: GPL-3.0-or-later
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - fr
+    - en
+description:
+  fr:
+    documentation: 'https://doc.demarches-simplifiees.fr/'
+    apiDocumentation: |-
+      https://doc.demarches-simplifiees.fr/api-graphql
+    awards:
+      - Prix spécial du Jury Acteurs du Libre (CNLL)  2021
+    shortDescription: |-
+      outil permettant aux usagers d’effectuer des démarches en ligne, et aux agents administratifs d’instruire ces démarches.
+    longDescription: |
+      Démarche Numérique est un outil permettant aux usagers d’effectuer des démarches en ligne, et aux agents administratifs d’instruire ces démarches.
+
+      Il a pour objectif de :
+      - faciliter la dématériarialisation de démarches,
+      - simplifier le remplissage de dossiers,
+      - améliorer les temps de traitement.
+
+      Il doit être générateur d’efficience, tout en garantissant l’autonomie personnelle des utilisateurs. Le choix des priorités de développement est donc guidé par les retours des ses utilisateurs (usagers et agents administratifs).
+    genericName: Générateur de formulaire
+    features:
+      - réaliser une démarche en ligne
+      - instuire les dossiers
+fundedBy:
+  - name: Direction interministérielle du numérique
+    uri: https://lannuaire.service-public.fr/gouvernement/d1a97841-b4bf-46df-a089-1003e4e266b4

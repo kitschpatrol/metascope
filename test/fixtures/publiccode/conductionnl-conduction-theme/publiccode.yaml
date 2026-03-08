@@ -1,0 +1,84 @@
+publiccodeYmlVersion: '0.1'
+name: conduction-theme
+applicationSuite: null
+url: https://github.com/ConductionNL/conduction-theme
+landingURL: null
+isBasedOn: null
+softwareVersion: null
+logo: https://avatars.githubusercontent.com/u/106860777?v=4
+monochromeLogo: null
+platforms:
+  - web
+releaseDate: '2023-11-10'
+categories: 
+  - it-development
+developmentStatus: beta
+softwareType: softwareAddon
+description:
+  en:
+    localisedName: null
+    genericName: null
+    shortDescription: "Conduction's design tokens theme"
+    longDescription: "Conduction's design tokens theme"
+    documentation: null
+    apiDocumentation: null
+    features: []
+    screenshots: []
+    videos: []
+    awards: []
+  nl:
+    localisedName: null
+    genericName: null
+    shortDescription: "Conduction's design tokens theme"
+    longDescription: "Conduction's design tokens theme"
+    documentation: null
+    apiDocumentation: null
+    features: []
+    screenshots: []
+    videos: []
+    awards: []
+intendedaudience: 
+  countries: 
+    - nl
+  unsupportedCountries: []
+  scope: []
+legal: 
+  license: EUPL-1.2-or-later
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: ConductionNL
+  authorsFile: null
+maintenance: 
+  type: internal
+  contractors: 
+    - name: Conduction
+      until: 2035-01-01
+      email: info\x64conduction.nl
+      website: https://www.conduction.nl
+  contacts:
+    - name: Ruben van der Linde
+      email: info\x64conduction.nl
+      phone: 085 303 6840
+      affiliation: Conduction
+localisation:
+  localisationReady: true
+  availableLanguages: 
+     - en
+     - nl
+dependsOn: null
+roadmap: null
+inputTypes: null
+outputTypes: null
+nl: 
+  countryExtensionVersion: null
+  commonground: 
+    intendedOrganisations: []
+    installationType: null
+    layerType: interface
+  gemma:
+    bedrijfsfuncties: []
+    bedrijfsservices: []
+    applicatiefunctie: null
+    model: null
+  upl: []
+downloadUrls:
+  - https://github.com/ConductionNL/conduction-theme/archive/refs/heads/main.zip

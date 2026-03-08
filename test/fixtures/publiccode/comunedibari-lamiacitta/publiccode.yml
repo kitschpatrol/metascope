@@ -1,0 +1,67 @@
+publiccodeYmlVersion: "0.2"
+name: La Mia Città
+url: "https://github.com/comunedibari/lamiacitta.git"
+softwareVersion: "2021-03-03"    # Optional
+releaseDate: "2021-03-03"
+platforms:
+  - web
+
+categories:
+  - document-management
+
+developmentStatus: stable
+
+softwareType: "standalone/web"
+
+description:
+  it:
+    localisedName: La Mia Città   # Optional
+    genericName: Gestionale servizi socio sanitari
+    shortDescription: >
+          Gestione documenti e processi collegati
+          al concetto di cartella socio sanitaria.
+
+    longDescription: >
+          Gestione documenti e processi collegati
+          al concetto di cartella socio sanitaria.
+          Comprende le seguenti funzionalità:
+          * segretariato sociale e Punto Unico di Accesso
+          * anagrafica assistiti con gestione delle famiglie e reti amicali
+          * cartella socio sanitaria con progetti, interventi, provvedimenti e accessi
+          * app con la quale gli operatori registrano accessi e prestazioni
+          * webapp per la registrazione di accessi e prestazioni avvenuti in ambulatorio
+          * vari altri moduli tra cui bandi e graduatorie, servizi alla persona, reportistica
+
+
+    features:
+       - segretariato sociale e Punto Unico di Accesso
+       - anagrafica assistiti con gestione delle famiglie e reti amicali
+       - cartella socio sanitaria con progetti, interventi, provvedimenti e accessi
+       - app con la quale gli operatori registrano accessi e prestazioni
+       - webapp per la registrazione di accessi e prestazioni avvenuti in ambulatorio
+       - vari altri moduli tra cui bandi e graduatorie, servizi alla persona, reportistica
+
+legal:
+  license: AGPL-3.0-or-later
+
+maintenance:
+  type: "contract"
+
+  contractors:
+    - name: "AI4Health s.r.l.s."
+      email: "daniele.bergonzini@ai4health.ai"
+      website: "https://www.ai4health.ai/servizi/notizie/notizie_homepage.aspx"
+      until: "2021-12-31"
+
+  contacts:
+    - name: Francesco Valle
+      affiliation: Comune di Bari
+
+localisation:
+  localisationReady: no
+  availableLanguages:
+    - it
+it:
+  countryExtensionVersion: "0.2"
+  riuso:
+    codiceIPA: c_a662

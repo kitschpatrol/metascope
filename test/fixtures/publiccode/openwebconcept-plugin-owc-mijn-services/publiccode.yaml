@@ -1,0 +1,48 @@
+publiccodeYmlVersion: '0.2'
+
+name: 'plugin-owc-mijn-services'
+applicationSuite: 'OpenWebconcept'
+url: 'https://github.com/OpenWebconcept/plugin-owc-mijn-services'
+releaseDate: '2025-10-17'
+
+platforms:
+  - 'web'
+
+categories:
+  - 'application-development'
+
+developmentStatus: 'development'
+
+softwareType: 'softwareAddon'
+
+description:
+  en:
+    genericName: 'OWC GravityForms ZGW'
+    shortDescription: 'Retrieve information from ZGW to show in Mijn Services'
+    longDescription: 'Retrieve information from ZGW to show in Mijn Services'
+  nl:
+    genericName: 'OWC GravityForms ZGW'
+    shortDescription: 'Haal informatie op uit ZGW om te tonen in Mijn Services'
+    longDescription: 'Haal informatie op uit ZGW om te tonen in Mijn Services'
+
+legal:
+  license: 'EUPL-1.2'
+  repoOwner: 'Yard | Digital Agency'
+
+dependsOn:
+  open:
+    - name: 'WordPress'
+    - versionMin: 6.7.0
+
+intendedAudience:
+  countries:
+    - nl
+  scope:
+    - government
+
+maintenance:
+  contractors:
+    - name: 'Yard | Digital Agency'
+      website: 'https://www.yard.nl'
+      email: 'owc@yard.nl'
+  type: 'contract'

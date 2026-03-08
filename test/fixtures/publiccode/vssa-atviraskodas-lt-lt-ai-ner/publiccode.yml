@@ -1,0 +1,49 @@
+publiccodeYmlVersion: 0.5.0
+name: LT_AI_NER
+url: https://github.com/VSSA-AtvirasKodas-LT/LT_AI-NER
+platforms:
+  - windows
+  - mac
+  - linux
+categories:
+  - data-analytics
+  - predictive-analysis
+organisation:
+  uri: https://github.com/VSSA-AtvirasKodas-LT/LT_AI-NER
+fundedBy:
+  - name: State Digital Solutions Agency
+    uri: https://vssa.lrv.lt/en/
+developmentStatus: stable
+softwareType: library
+description:
+  en:
+    shortDescription: MLKVM validation using the GLUE NER task on a Lithuanian dataset
+    longDescription: This repository contains scripts for MLKVM validation using the
+      GLUE NER task on a Lithuanian dataset. It provides a complete pipeline for
+      preparing data, fine-tuning, and evaluating the Named Entity Recognition
+      (NER) model in the Lithuanian language, following the GLUE-style
+      evaluation methodology. The repository uses the
+      neurotechnology/BLKT-ModernBert-MLM-Stage3-RC1 model as the base encoder
+      and the Lithuanian subset of the MultiLeg-dataset
+      (https://github.com/tilde-nlp/MultiLeg-dataset/tree/main/data/lt) for
+      training and evaluation. It includes tools for converting the dataset from
+      JSONL to CoNLL format, fine-tuning the model, and computing tokens and
+      entity-level metrics such as precision, recall, and F1 scores (including
+      exact, overlap, and union matches).
+    apiDocumentation: https://github.com/VSSA-AtvirasKodas-LT/LT_AI-NER
+    features:
+      - NER
+      - Named Entity Recognition
+legal:
+  license: Apache-2.0
+maintenance:
+  type: community
+  contacts:
+    - name: Darius Amilevičius
+      email: darius.amilevicius@vssa.lt
+      phone: +370 661 91624
+      affiliation: Advisor
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - lt

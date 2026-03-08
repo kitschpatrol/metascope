@@ -1,0 +1,83 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.5'
+categories:
+  - document-management
+description:
+  it:
+    features:
+      - Gestione Atti Amministrativi
+      - Gestione Determine
+      - Gestione Delibere
+      - Gestione Protocollo Informatico
+    genericName: Sistema per Enti Pubblici
+    shortDescription: Sistema per Enti Pubblici
+    longDescription: |
+      E' la suite applicativa dedicata alle attività di gestione della Pubblica
+      Amministrazione di PARSEC 3.26. SEP permette di implementare la
+      dematerializzazione dei processi della pubblica amministrazione. Grazie ai
+      suoi diversi moduli applicativi, SEP recepisce le raccomandazioni e gli
+      obblighi sulla informatizzazione della Pubblica Amministrazione indicati
+      dalla normativa sulla digitalizzazione della PA nel Codice
+      dell’Amministrazione Digitale (CAD), e permette alle Amministrazioni
+      Pubbliche di trasformare le potenzialità dell’innovazione tecnologica in
+      una maggiore efficienza, efficacia e soddisfazione dei cittadini e delle
+      imprese.Ha una struttura modulare, con numerose funzionalità completamente
+      integrate e aperte all’int roperabilità tramite API.
+    screenshots:
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/Atti2.PNG
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/Atti3.PNG
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/Protocollo2.PNG
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/Protocollo3.PNG
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/ScrivaniaAttiva1.png
+      - https://raw.githubusercontent.com/comunedimesagne/SEP/main/screen/ScrivaniaStorico1.png
+      - screen/Atti2.PNG
+      - screen/Atti3.PNG
+      - screen/Protocollo2.PNG
+      - screen/Protocollo3.PNG
+      - screen/ScrivaniaAttiva1.png
+      - screen/ScrivaniaStorico1.png
+      
+developmentStatus: stable
+usedBy:
+  - Comune di Mesagne
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  riuso:
+    codiceIPA: c_f152
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+legal:
+  license: GPL-2.0-or-later
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: cosimo.fortunato@parsec326.it
+      name: Cosimo Fortunato
+      phone: '+390832228477'
+  contractors:
+    - name: Parsec 3.26 srl
+      until: '2029-12-31'
+  type: contract
+name: SEP
+platforms:
+  - web
+  - windows
+releaseDate: '2025-09-29'
+softwareType: standalone/web
+softwareVersion: '4.0'
+url: 'https://github.com/comunedimesagne/SEP'
+logo: 'https://raw.githubusercontent.com/comunedimesagne/SEP/main/Logo%20Parsec.png'

@@ -1,0 +1,76 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.4'
+name: elementpath
+url: 'https://github.com/sissaschool/elementpath'
+landingURL: 'https://github.com/sissaschool/elementpath'
+releaseDate: '2025-01-20'
+softwareVersion: v5.1.1
+developmentStatus: stable
+platforms:
+  - linux
+  - windows
+  - mac
+softwareType: library
+categories:
+  - data-analytics
+  - data-collection
+maintenance:
+  type: internal
+  contacts:
+    - name: Davide Brunato
+      email: davide.brunato@sissa.it
+      affiliation: 'Scuola Internazionale Superiore di Studi Avanzati'
+legal:
+  license: MIT
+  mainCopyrightOwner: Scuola Internazionale Superiore di Studi Avanzati
+  repoOwner: Scuola Internazionale Superiore di Studi Avanzati
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
+it:
+  countryExtensionVersion: '1.0'
+  riuso:
+    codiceIPA: sissa
+description:
+  en:
+    apiDocumentation: 'https://elementpath.readthedocs.io/en/latest/xpath_api.html'
+    documentation: 'https://elementpath.readthedocs.io/en/latest/'
+    shortDescription: >-
+      Python library that provides XPath 1.0/2.0/3.0/3.1 parsers and selectors 
+      for ElementTree and lxml
+    longDescription: |
+      This is a library for Python 3.10+ that provides XPath 1.0, 2.0, 3.0 and 3.1
+      selectors for Python's ElementTree XML data structures, both for the
+      standard **ElementTree** library and for the **lxml** library. For lxml
+      this package can be useful for providing XPath 2.0+ selectors, because lxml
+      already has it's own implementation of XPath 1.0.
+
+
+      ## Installation and usage
+
+      You can install the package with _pip_ in a Python 3.9+ environment:
+
+      ~~~~  
+
+      pip install elementpath
+
+      ~~~~  
+
+      For using it import the package and apply the selectors on ElementTree
+      nodes:
+
+      ~~~~  
+
+      >>> import elementpath
+      >>> from xml.etree import ElementTree
+      >>> root = ElementTree.XML('<A><B1/><B2><C1/><C2/><C3/></B2></A>')
+      >>> elementpath.select(root, '/A/B2/\*') [<Element 'C1' at ...>, <Element'C2' at ...>, <Element 'C3' at ...>]
+
+      ~~~~  
+
+    features:
+      - XPath 1.0, XPath 2.0, XPath 3.0 and XPath 3.1 implementations

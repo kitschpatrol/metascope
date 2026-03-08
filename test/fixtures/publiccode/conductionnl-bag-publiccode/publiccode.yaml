@@ -1,0 +1,28 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Bevragen Ingeschreven Personen (BAG) API"
+url: "https://github.com/VNG-Realisatie/Haal-Centraal-BRP-bevragen"
+
+
+softwareType: standalone/backend
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: stable
+
+description:
+  nl:
+    shortDescription: "De BAG API's zijn bedoeld om individuele bevragingen te doen op de landelijke voorziening Basisregistratie Adressen en Gebouwen (LV BAG)."
+    documentation: "https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/lvbag/BAG-API/master/Technische%20specificatie/Archief/Yaml%27s/BAG%20API%20Individuele%20Bevragingen/resolved/individuelebevragingen/v2/openapi.yaml"
+    apiDocumentation: "https://raw.githubusercontent.com/ConductionNL/bag_publiccode/main/bag_oas.yml"
+    testDataLocation: "https://raw.githubusercontent.com/ConductionNL/bag_publiccode/main/data/bag.yml"
+  en:
+    shortDescription: "The BAG APIs are intended to conduct individual queries on the national facility Key Register Addresses and Buildings (LV BAG)."
+    documentation: "https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/lvbag/BAG-API/master/Technische%20specificatie/Archief/Yaml%27s/BAG%20API%20Individuele%20Bevragingen/resolved/individuelebevragingen/v2/openapi.yaml"
+    apiDocumentation: "https://raw.githubusercontent.com/ConductionNL/bag_publiccode/main/bag_oas.yml"
+    testDataLocation: "https://raw.githubusercontent.com/ConductionNL/bag_publiccode/main/data/bag.yml"

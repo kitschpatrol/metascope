@@ -1,0 +1,116 @@
+publiccodeYmlVersion: "0.2"
+name: Vitam
+url: https://github.com/ProgrammeVitam/vitam
+landingURL: https://www.programmevitam.fr/pages/presentation/
+latestTestedInstallationDate: 2024-09-18
+creationDate: 2017-01-15
+latestRelease:
+  date: "2024-07-17"
+  version: "7.1.1"
+logo: https://github.com/ProgrammeVitam.png
+usedBy:
+   - AMUE
+   - Agence nationale de sécurité sanitaire de l'alimentation, de l'environnement et du travail (ANSES)
+   - Agence nationale de traitement automatisé des infractions (ANTAI)
+   - Agence nationale pour la gestion des déchets radioactifs (ANDRA)
+   - Agence de Services et de Paiement (ASP)
+   - Akompano
+   - Atos
+   - C6
+   - Caisse nationale de l'Assurance Maladie (CNAM)
+   - Caisse nationale d'assurance vieillesse (CNAV)
+   - Capgemini
+   - CCI Pays de la Loire
+   - Cegedim
+   - Centre de recherche et de restauration des musées de France (C2RMF)
+   - Centre Hospitalier d'Avranches-Granville
+   - Centre Informatique National de l'Enseignement Supérieur (CINES)
+   - Centre national du cinéma et de l'image animée (CNC)
+   - CGI
+   - Coexya
+   - Collectivité territoriale de Guyane
+   - Commissariat à l'énergie atomique et aux énergies alternatives (CEA)
+   - Commission nationale des comptes de campagne et des financements politiques (CNCCFP)
+   - Communauté d'agglomération de Cergy-Pontoise
+   - Communauté d'agglomération de Paris Vallée de la Marne
+   - Communauté d'agglomération Pau Béarn Pyrénées
+   - Conseil départemental du Lot-et-Garonne
+   - Conseil départemental du Gard
+   - Conseil départemental du Tarn et Garonne
+   - Conseil départemental de la Charente-Maritime
+   - Conseil départemental de la Gironde
+   - Conseil départemental de l'Hérault
+   - Conseil départemental de Seine-et-Marne
+   - Conseil départemental des Pyrénées Atlantiques
+   - CooNum
+   - CNRS
+   - Digitech
+   - Direction générale de l'aviation civile (DGAC)
+   - Direction interministérielle du numérique
+   - DRAC Bretagne
+   - DRAC Hauts-de-France
+   - Etablissement Public d'Exploitation du Livre Foncier Informatisé (EPELFI)
+   - Etablissement public des musées d'Orsay et de l'Orangerie (EPMO)
+   - Institut national de la propriété industrielle (INPI)
+   - Islean
+   - Lex Persona
+   - Mairie de Savigny sur Orge
+   - Médiathèque du patrimoine et de la photographie
+   - Métropole Nice Côte d'Azur
+   - Ministère des Armées
+   - Ministère de l'Agriculture et de la souveraineté alimentaire
+   - Ministère de la Culture
+   - Ministère de l'Éducation nationale et de la Jeunesse
+   - Ministère de l'Europe et des Affaires étrangères
+   - Ministère de l'Intérieur et des Outre-mer
+   - Ministère de la Justice
+   - Ministère de la Transition écologique et solidaire
+   - Ministère des Solidarités et de la Santé
+   - Mintika
+   - Montpellier Méditerranée Métropole
+   - MSH Mondes
+   - Mutualité sociale agricole (MSA)
+   - Musée du quai Branly - Jacques-Chirac
+   - Nantes métropole
+   - NeoLedge
+   - Ofpra
+   - Olkoa
+   - Opéris
+   - Préfecture de police de Paris
+   - RATP
+   - SGAMI Sud-Ouest
+   - Smile
+   - Société du Grand Paris
+   - SopraSteria
+   - SRCI Groupe Salvia Developpement
+   - TGIR Huma-Num
+   - Toulon Provence Méditerranée
+   - Université de Lille
+   - Université de Bordeaux
+   - Université Paris 1 Panthéon Sorbonne
+   - Urssaf - Caisse nationale (ex-ACOSS)
+   - Winbantu
+   - XDemat
+   - Xelians
+
+fundedBy:
+  - name: Ministère de la Culture
+    url: https://lannuaire.service-public.fr/gouvernement/da1d6275-6710-485d-a249-282cac69dfe7
+  - name: Ministère de l'Europe et des Affaires étrangères
+    url: https://lannuaire.service-public.fr/gouvernement/ac1a7fdb-50f4-4599-b306-ec06b7250965
+  - name: Ministère des Armées
+    url: https://lannuaire.service-public.fr/gouvernement/d24d1af2-c506-4b10-82e8-ab92b8e959d2
+roadmap: "https://www.programmevitam.fr/public/images/Feuille_route_2024_2028.png"
+softwareType: ""
+description:
+  en:
+    shortDescription: Digital Archives Management System developped by French
+      government/Programme interministériel archives numériques ; core system.
+    documentation: "https://www.programmevitam.fr/vitam-doc/fr/master/index.html"
+legal:
+  license: cecill-2.1
+  authorsFile: ""
+maintenance:
+  type: internal
+  contacts:
+    - email: "contact@programmevitam.fr"

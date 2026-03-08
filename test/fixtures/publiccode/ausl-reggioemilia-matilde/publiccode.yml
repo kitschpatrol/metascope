@@ -1,0 +1,429 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Sistema di Cartella Clinica Informatizzata
+categories:
+  - data-collection
+  - data-visualization
+  - document-management
+  - time-management
+dependsOn:
+  proprietary:
+    - name: Microsoft SQL Server
+      optional: false
+      version: ''
+      versionMax: '2019'
+      versionMin: '2017'
+    - name: DevExpress
+      optional: false
+      version: '18.2'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Infragistics UI '
+      optional: false
+      version: 2018 Volume 2
+      versionMax: ''
+      versionMin: ''
+    - name: UnicodeSrl.Framework
+      optional: false
+      version: 2020.5.20.297
+      versionMax: ''
+      versionMin: ''
+    - name: UnicodeSrl.Framework.UI
+      optional: false
+      version: 2020.6.10.277
+      versionMax: ''
+      versionMin: ''
+    - name: ProgelCryptography
+      optional: false
+      version: 1.0.3.14
+      versionMax: ''
+      versionMin: ''
+    - name: O2SComponentsPDF
+      optional: false
+      version: 5.0.2.0
+      versionMax: ''
+      versionMin: ''
+    - name: Xceed
+      optional: false
+      version: 1.6.0.0
+      versionMax: ''
+      versionMin: ''
+    - name: professionalicons.com
+      optional: false
+      version: 'Vista Applications v3, Medical Vista'
+      versionMax: ''
+      versionMin: ''
+    - name: UnicodeSrl.EavFramework
+      optional: false
+      version: 2021.7.29.1083
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    documentation: 'https://github.com/AUSL-ReggioEmilia/Matilde'
+    features:
+      - Integrated Electronic Medical Record System
+      - Clinical Decision Support Systems (CDSS)
+      - Firma Digitale
+      - Dataset dinamici
+      - Rilevazione Parametri Vitali e Scale di Valutazione
+      - Prescrizioni
+      - Foglio Unico
+      - Evidenza Clinica
+      - Worklist
+      - Pianificazione Attività
+      - Gestione Consensi
+    genericName: Sistema di Cartella Clinica Informa
+    localisedName: Sistema di Cartella Clinica Informatizzata
+    longDescription: |
+      **1. Descrizione Generale**
+
+
+
+
+      Il sistema informativo Matilde, sviluppato da Unicode s.r.l., è un sistema
+
+
+      di Cartella Clinica Informatizzata in grado di gestire in modalità
+
+
+      totalmente paper-less, con completa validità medico-legale, la
+
+
+      documentazione sanitaria a supporto dei processi di cura in ogni regime
+
+
+      (ricovero ordinario, day hospital, day service ambulatoriale,
+
+
+      ambulatoriale, PDTA complessi).
+
+
+
+
+      Il sistema consiste in un a piattaforma completamente configurabile ed
+
+
+      estensibile tramite moduli aggiuntivi.
+
+
+
+
+      La configurazione è gestita autonomamente dall’Azienda Sanitaria, la quale
+
+
+      è pertanto autonoma nella attivazione del sistema e declinazione dello
+
+
+      stesso sulle varie realtà cliniche.
+
+
+
+
+      I moduli aggiuntivi (Clinical Decision Support Systems, CDSS), che
+
+
+      implementano logiche cliniche o organizzative più sofisticate sono
+
+
+      acquisibili dai fornitori del sistema (o potenzialmente da fornitori
+
+
+      terzi) 
+
+
+
+
+      e attivabili su specifiche realtà cliniche (reparti, ambulatori, ecc.). 
+
+
+
+
+      Esempi di moduli aggiuntivi acquisiti sono: 
+
+       - prescrizione antiblastici 
+
+       - gestione di scale di valutazione complesse 
+
+       - gestione numerazione accessi alle strutture ambulatoriali 
+
+       - gestore dei modelli assistenziali di Primary Nursing 
+
+       - ecc.
+
+      ​
+
+
+
+
+      **2. Livello di Integrazione**
+
+
+
+
+      Il sistema Matilde è completamente integrabile con il Sistema Informativo
+
+
+      aziendale, in particolare:
+
+       - Anagrafe: Matilde recepisce di tutti i dati anagrafici aggiornati
+
+       - ADT: Matilde recepisce di tutte le movimentazioni paziente (prenotazioni di ricovero (liste d’attesa), accettazioni, trasferimenti, dimissioni) applicando conseguenti logiche di trasferimento logico e/o creazione delle cartelle 
+
+         cliniche informatizzate dai reparti di provenienza o verso i reparti di destinazione.
+
+       - Repository Aziendale (DWH): Matilde consente agli operatori sanitari un completo accesso a tutti i dati clinici (referti, schede sintetiche, dati di trattamento) prodotti da sistemi informativi ancillari (es. Laboratorio, Radiologia, Sale Operatorie, ecc.), compatibilmente con vincoli legati alla normativa vigente sulla privacy. 
+
+      Il sistema sfrutta inoltre il repository per distribuire in tempo reale
+
+
+      copie della cartella clinica allo scopo di consentire a qualsiasi
+
+
+      potenziale consulente, su scala provinciale, di consultare la cartella
+
+
+      clinica.
+
+       - PACS: Matilde consente l’accesso, contestualmente al referto, agli studi radiologici. L’accesso è diretto e limitato agli studi di pertinenza della cartella clinica, ed è veicolato attraverso il visualizzatore standard del PACS (rispondente alla normativa vigente).
+
+       - Order Entry: Matilde consente di inoltrare ordini verso tutti i sistemi informatizzati di gestione accertamenti diagnostici (es. Laboratorio, Radiologia, Consulenze, ecc.), con trasmissione di tutti i dati accessori richiesti.
+
+       - Sistemi Amministrativi: Matilde riversa i dati di produzione sanitaria (prestazioni erogate) sui sistemi di gestione amministrativa, evitando qualsiasi re-inserimento.
+
+       - Ricetta Dematerializzata: Matilde è direttamente collegata al sistema di generazione di ricette dematerializzate (DEMA). Tale accesso non richiede ulteriori passi di ricerca anagrafica o definizione dei dati amministrativi (es. esenzioni) del paziente.
+
+       
+
+      **3. Funzionalità e Usabilità**
+
+
+
+
+      Il sistema Matilde copre i seguenti ambiti funzionali:
+
+
+
+
+      - Gestione della Documentazione di Cartella (personalizzabile per ogni
+
+
+      realtà operativa)
+
+
+
+
+      - Gestione del Diario Medico e del Diario Infermieristico (integrati)
+
+
+
+
+      - Gestione delle Attività Infermieristiche (pianificazione, erogazione)
+
+
+
+
+      - Gestione del Ciclo del Farmaco (nativamente o mutuando logiche e dati da
+
+
+      sistemi terzi)
+
+
+
+
+      - Gestione della Agende di Prenotazione per risorse interne
+
+
+
+
+      - Gestione della Lettera di Dimissione
+
+
+
+
+      - Gestione delle Consulenze
+
+
+
+
+      - Gestione delle Richieste di Accertamento
+
+
+
+
+      - Gestione dell’accesso all’Evidenza Clinica (referti ed altra
+
+
+      documentazione in arrivo da sistemi terzi)
+
+
+
+
+      - Gestione di Allegati Elettronici (o Cartacei) della cartella clinica
+
+
+
+
+      - Gestione della Refertazione Ambulatoriale
+
+
+
+
+      Il sistema è distribuito sia in versione client (installata) che
+
+
+      virtualizzata (raggiungibile da qualsiasi postazione del sistema
+
+
+      informativo sanitario provinciale).
+
+
+
+
+      Il sistema è nativamente progettato per una fruibilità touch-screen, ed è
+
+
+      disponibile anche in modalità “tablet” per i contesti clinici che lo
+
+
+      richiedano.
+
+
+
+
+      La modalità di distribuzione in mobilità adottata per condizioni standard
+
+
+      dalle aziende sanitarie di Reggio Emilia è l’installazione su portatile su
+
+
+      carrello medicale.
+
+
+
+
+      ​
+
+
+
+
+      **4. Sicurezza e Aspetti Medico Legali**
+
+
+
+
+      Il sistema Matilde è integrato con i sistemi di autenticazione e firma
+
+
+      debole e firma digitale aziendale.
+
+
+
+
+      Ogni acceso al sistema Matilde è subordinato a corretta autenticazione con
+
+
+      credenziali aziendali (conformi alla normativa vigente sulla privacy).
+
+
+
+
+      Ogni accesso al sistema (in lettura o modifica) è:
+
+
+
+
+      - Profilato (è possibile limitare i permessi di accesso a specifiche
+
+
+      sezioni o specifici pazienti/assistiti)
+
+
+
+
+      - Tracciato (è possibile sapere chi ha fatto accesso, su quali sezioni del
+
+
+      sistema, su quali dati e da quale postazione)
+
+
+
+
+      - Documentato (è possibile ricostruire in modo dettagliato ogni modifica
+
+
+      eseguita sui dati; ogni dato è storicizzato in tutte le sue versioni)
+
+
+
+
+      Il sistema Matilde, in quanto sostitutivo del cartaceo, prevede, in
+
+
+      osservanza alla normativa vigente, l’apposizione di “firme deboli” su ogni
+
+
+      inserimento di dati, e “firma qualificata” (Firma Digitale) per la
+
+
+      generazione del documento finale sostitutivo del cartaceo.
+
+
+
+
+      I documenti firmati digitalmente sono inviati per conservazione a norma
+
+
+      con modalità elettroniche sicure..
+    shortDescription: 'Matilde: Sistema di Cartella Clinica Informatizzata'
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - healthcare
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: auslre
+landingURL: 'https://github.com/AUSL-ReggioEmilia/Matilde'
+legal:
+  license: EUPL-1.2
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+logo: |-
+  https://raw.githubusercontent.com/AUSL-ReggioEmilia/Matilde/master/MatildeLogo.png
+maintenance:
+  contacts:
+    - affiliation: AUSL Reggio Emilia
+      email: marco.foracchia@ausl.re.it
+      name: Marco Foracchia
+      phone: '+393346478393'
+  contractors:
+    - name: 'Unicode srl '
+      until: '2023-10-31'
+      website: 'https://www.unicode.it/'
+  type: internal
+name: Matilde
+platforms:
+  - windows
+releaseDate: '2021-07-19'
+roadmap: 'https://github.com/AUSL-ReggioEmilia/Matilde'
+softwareType: standalone/desktop
+softwareVersion: 2021.07.19.160
+url: 'https://github.com/AUSL-ReggioEmilia/Matilde'

@@ -1,0 +1,59 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Valutazione Web
+categories:
+  - survey
+description:
+  it:
+    features:
+      - Valutazione Web
+    genericName: Valutazione Web
+    longDescription: |2
+       Il progetto Valutazione web, mira ad ottimizzare le procedure di gestione dell'attività didattica condotta in aula, puntando ad automatizzare l'attività di valutazione dei discenti. La dematerializzazione dei moduli cartacei riferiti al questionario di gradimento e al test di apprendimento, è uno degli obbiettivi che lo strumento consente di raggiungere attraverso la predisposizione di semplici ed intuitive form di inserimento. Nel caso del test di apprendimento, il discente può immediatamente consultare la correzione delle risposte che ha fornito, prendendo visione del punteggio ottenuto e del conseguente esito.
+      Più nessuna operazione di data entry è quindi necessaria da parte degli
+      operatori della formazione, i quali possono investire il loro tempo ad
+      analizzare la ricca reportistica offerta in merito ai dati acquisiti, in
+      modo da valutare eventuali margini di miglioramento e conseguenti
+      interventi, finalizzati a garantire i più elevati standard qualitativi.
+    shortDescription: |-
+      Il progetto Valutazione web, mira ad ottimizzare le procedure di gestione
+      dell'attività didattica condotta in aula, puntando ad automatizzare il
+      tutto
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: izs_loer
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: izsler
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: info@invisiblefarm.it
+      name: Invisiblefarm S.R.L
+      phone: '+390307776307'
+  type: internal
+name: Valutazione Web
+platforms:
+  - web
+releaseDate: '2024-07-31'
+softwareType: standalone/web
+softwareVersion: '1'
+url: 'https://github.com/IZSLER-SI/valutazione_web'

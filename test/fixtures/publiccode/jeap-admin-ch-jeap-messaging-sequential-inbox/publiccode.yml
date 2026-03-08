@@ -1,0 +1,47 @@
+publiccodeYmlVersion: 0.4.0
+name: jeap-messaging-sequential-inbox
+applicationSuite: jEAP
+softwareVersion: 14.15.0
+releaseDate: 2026-01-27
+url: "https://github.com/jeap-admin-ch/jeap-messaging-sequential-inbox.git"
+landingURL: "https://github.com/jeap-admin-ch/jeap"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: library
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jeap-messaging-sequential-inbox
+    shortDescription: >
+      A jEAP library that ensures Kafka messages are processed in a predefined sequence,
+      regardless of the order in which they are received.
+    longDescription: >
+      The jEAP Sequential Inbox is a library for microservices that require strict
+      ordering of message processing. It consumes messages from Kafka topics and applies
+      a sequence configuration, defined via YAML, to determine the exact order in which
+      messages with the same contextId should be processed. This allows complex workflows,
+      such as order processing, to maintain data consistency and business rules even when
+      events arrive out of order. The library supports fine-grained sequencing by message
+      type and subtype, release conditions based on predecessor events, and multi-cluster
+      Kafka consumption. It requires the microservice to define the sequencing data model
+      and integrates seamlessly into jEAP-based messaging services.
+    features:
+      - Configurable sequencing of Kafka messages by contextId, type, and subtype
+      - Supports release conditions to control when dependent messages are processed
+
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

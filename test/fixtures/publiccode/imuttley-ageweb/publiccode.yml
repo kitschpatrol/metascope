@@ -1,0 +1,50 @@
+publiccodeYmlVersion: "0.4"
+name: enea-table-gest
+applicationSuite: enea-ict-webcomponents
+url: https://github.com/imuttley/ageweb
+landingURL: https://github.com/imuttley/ageweb
+softwareVersion: "1.0"
+releaseDate: 2025-04-28
+platforms:
+  - web
+categories:
+  - data-visualization
+usedBy:
+  - ENEA
+developmentStatus: stable
+softwareType: library
+description:
+  en:
+    localisedName: enea-table-gest
+    shortDescription: webcomponet <enea-table-gest> for data representation of
+      administrative procedure, from an CMS article to a plain HTML
+    longDescription: >+
+      this component can be installed and showed on every HTML pages for
+      represents data catched from public service for a human representation of
+      JSON administrative data. Load library <script defer
+      src="../enea-table-gest.js"></script>
+
+      <body>
+          <enea-table-gest showlogo="true|false" name="allegati|gare|avvisi|esiti" listnum="1|2|3|4" mindate="yyyy-mm-dd" maxdate="yyyy-mm-dd"/>
+      </body>
+
+      </html>
+
+
+    documentation: https://ict.enea.it/documentation/enea-table-gest
+    apiDocumentation: https://ict.enea.it/documentation/enea-table-gest
+    features:
+      - data representation
+legal:
+  license: MIT
+maintenance:
+  type: internal
+  contacts:
+    - name: tommaso nicosia
+      email: tommaso.nicosia@enea.it
+      phone: ""
+      affiliation: ENEA
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it-IT

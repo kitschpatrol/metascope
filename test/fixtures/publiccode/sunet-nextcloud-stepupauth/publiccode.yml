@@ -1,0 +1,72 @@
+publiccodeYmlVersion: "0.4"
+
+name: stepupauth
+url: "https://github.com/SUNET/nextcloud-stepupauth"
+platforms:
+  - web
+
+categories:
+  - web-collaboration
+
+developmentStatus: development
+
+softwareType: "addon"
+
+description:
+  en:
+    shortDescription: >
+      Step up authentication for Nextcloud
+
+    longDescription: >
+      Accounts created in Nextcloud with a
+      SSO provider (saml, ldap, global 
+      site selector) can not currently use
+      native Nextcloud Multi Factor 
+      Authentication (MFA). 
+
+      Nextcloud expects an Identity 
+      Provider (IdP) to do MFA prior to 
+      logging in to Nextcloud. This is 
+      confusing to users who can still see
+      the settings for MFA in their security
+      settings and it is not allways feasable
+      for IdPs to implement MFA. Instead this
+      app allows administrators to enable 
+      users to do step up authentication in 
+      Nextcloud, that is, provide a higher 
+      level of assurance of identity within 
+      Nextcloud, than what is provided by the
+      IdP.
+
+      The only thing that this app does is to
+      provide the same behaviour for SSO 
+      accounts as for local accounts. That 
+      means that you can configure groups in 
+      which users are required to have (or be
+      excluded from having) MFA configured for
+      their account. Users who are required to
+      have MFA enabled, but have not yet configured
+      a provider, will be prompted upon first login
+      after requirement is enabled. The users can
+      also voluntarily enable and disable MFA 
+      providers on their own volition if no external
+      requirements are enforced. The documentation
+      for MFA in Nextcloud is available here:
+
+      https://docs.nextcloud.com/server/latest/admin_manual/configuration_user/two_factor-auth.html
+    features:
+      - MFA Stepup authentication
+
+legal:
+  license: AGPL-3.0-or-later
+
+maintenance:
+  type: "community"
+
+  contacts:
+    - name: Micke Nordin <kano@sunet.se>
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en

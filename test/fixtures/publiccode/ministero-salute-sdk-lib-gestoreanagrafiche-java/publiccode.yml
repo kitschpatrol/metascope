@@ -1,0 +1,39 @@
+publiccodeYmlVersion: "0.4"
+name: sdk-lib-gestoreanagrafiche-java
+applicationSuite: SDK
+url: https://github.com/ministero-salute/sdk-lib-gestoreanagrafiche-java
+landingURL: https://github.com/ministero-salute/sdk-lib-gestoreanagrafiche-java
+softwareVersion: 1.0.0-SNAPSHOT
+releaseDate: 2025-03-09
+platforms:
+  - windows
+  - mac
+  - linux
+categories:
+  - application-development
+usedBy:
+  - Regioni
+developmentStatus: stable
+softwareType: library
+description:
+  it:
+    localisedName: sdk-lib-gestoreanagrafiche-java
+    shortDescription: SDK - Componenti per la comunicazione con Gestore Anagrafi
+    longDescription: La libreria contiene le componenti per verificare e portare in
+      locale le anagrafi presenti su Gestore Anagrafe
+    documentation: https://github.com/ministero-salute/sdk-lib-gestoreanagrafiche-java
+    features:
+      - Libreria
+legal:
+  license: BSD-3-Clause
+maintenance:
+  type: contract
+  contractors:
+    - name: Accenture SpA
+      until: 2026-01-01
+      email: accenture.technology.solutions@legalmail.it
+      website: https://www.accenture.com/it-it
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it

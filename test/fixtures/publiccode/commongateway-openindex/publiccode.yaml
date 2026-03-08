@@ -1,0 +1,19 @@
+publiccodeYmlVersion: "0.1"
+name: "OpenIndex"
+url: "https://github.com/CommonGateway/OpenIndex"
+releaseDate: "2022-10-01"
+softwareType: addon
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+description:
+  nl:
+    shortDescription: "OpenIndex"
+  en:
+    shortDescription: "OpenIndex"

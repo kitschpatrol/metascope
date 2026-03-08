@@ -1,0 +1,19 @@
+publiccodeYmlVersion: "0.1"
+name: "ZgwVrijBRPRequestBundle"
+url: "https://github.com/CommonGateway/ZgwVrijBRPRequestBundle"
+releaseDate: "2022-10-01"
+softwareType: addon
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+description:
+  nl:
+    shortDescription: "ZgwVrijBRPRequestBundle"
+  en:
+    shortDescription: "ZgwVrijBRPRequestBundle"

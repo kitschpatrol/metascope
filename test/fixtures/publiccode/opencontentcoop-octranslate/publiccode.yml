@@ -1,0 +1,100 @@
+publiccodeYmlVersion: 0.5.0
+name: Strumento traduzione automatica per Opencity Italia
+applicationSuite: Opencity Italia
+url: https://github.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web
+softwareVersion: 1.2.1
+releaseDate: 2025-10-15
+logo: https://raw.githubusercontent.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web/main/images/logo-pat.png
+platforms:
+  - web
+categories:
+  - content-management
+  - translation
+organisation:
+  name: Provincia Autonoma di Trento
+  uri: urn:x-italian-pa:p_tn
+usedBy:
+  - Provincia autonoma di Trento
+developmentStatus: stable
+softwareType: standalone/web
+intendedAudience:
+  countries:
+    - IT
+  scope:
+    - local-authorities
+    - government
+description:
+  it:
+    localisedName: Strumento traduzione automatica per Opencity Italia
+    shortDescription: Software per la traduzione automatica dei siti web Opencity
+      Italia - Sito web comunale e Modello di sito web provinciale e regionale
+    longDescription: >
+      La piattaforma offre un sistema di traduzione automatica dei contenuti
+      grazie all'integrazione con le API di DeepL o di altri servizi di
+      traduzione.. Questo consente ai redattori di generare con facilità
+      versioni tradotte dei contenuti pubblicati sul sito, migliorando
+      l’accessibilità e la diffusione delle informazioni in più lingue.
+
+      Gli Enti che desiderano rendere disponibili i propri contenuti in più
+      lingue possono richiedere l’attivazione del servizio di traduzione
+      automatica, applicabile in modo selettivo o globale su tutte le
+      pubblicazioni del sito.
+
+      Una volta attivato, il sistema produce automaticamente una versione
+      tradotta di ogni nuovo contenuto pubblicato, senza necessità di ulteriori
+      interventi da parte del redattore. In ogni caso, è possibile disattivare
+      la traduzione automatica per un singolo contenuto direttamente in fase di
+      creazione o modifica.
+
+      Per i contenuti che non sono stati tradotti automaticamente, il redattore
+      abilitato ha comunque la possibilità di avviare manualmente la traduzione,
+      selezionando la lingua desiderata dal menu dedicato.
+    documentation: https://docs.opencityitalia.it/redattori/moduli-integrativi-della-piattaforma/tradurre-i-contenuti-del-sito/traduzione-automatica-dei-contenuti?UTM_SOURCE=pat-public-code
+    features:
+      - Traduzione automatica dei contenuti per siti web Opencity Italia
+      - Integrazione con strumenti di traduzione esteri DeepL via API
+      - Workflow di traduzione completamente automatico con supporto alla
+        revisione da parte dei redattori
+      - Scelta granulare dei contenuti per cui attivare la traduzione automatica
+    screenshots:
+      - https://raw.githubusercontent.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web/main/images/traduzione-00.png
+      - https://raw.githubusercontent.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web/main/images/traduzione-01.png
+      - https://raw.githubusercontent.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web/main/images/traduzione-02.png
+      - https://raw.githubusercontent.com/ProvinciaAutonomaTrento/Traduzione-automatica-sito-web/main/images/traduzione-03.png
+legal:
+  license: LGPL-2.0-only
+  mainCopyrightOwner: Provincia autonoma di Trento
+maintenance:
+  type: community
+  contacts:
+    - name: Gabriele Francescotto
+      email: gabriele.francescotto@opencitylabs.it
+      phone: "+390461917437"
+      affiliation: Opencity Labs Srl
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it
+    - en
+    - de
+    - fr
+    - pt
+    - es
+dependsOn:
+  open:
+    - name: Modello di sito web provinciale e regionale
+      version: 1.1.0
+IT:
+  countryExtensionVersion: "1.0"
+  conforme:
+    lineeGuidaDesign: true
+    modelloInteroperabilita: true
+    misureMinimeSicurezza: true
+    gdpr: true  
+
+  piattaforme:
+    spid: false
+    cie: false
+    anpr: false
+    pagopa: false
+    io: false

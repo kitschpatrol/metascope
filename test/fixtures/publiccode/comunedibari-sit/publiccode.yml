@@ -1,0 +1,144 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.3'
+applicationSuite: G3W Suite
+categories:
+  - geographic-information-systems
+dependsOn:
+  open:
+    - name: G3W Suite
+      optional: false
+      version: '3.6'
+      versionMax: ''
+      versionMin: ''
+    - name: PostgreSQL
+      optional: true
+      version: 9.6.11
+      versionMax: ''
+      versionMin: '9.3'
+    - name: QGIS
+      optional: false
+      version: 3.28
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    features:
+      - GeoDatabase;
+      - Modulo Map Server(INSPIRE-RNDT compliant);
+      - Portale di accesso;
+      - Modulo client WebGIS;
+      - Modulo di gestione utenti e gruppi;
+      - Modulo di gestione dei progetti cartografici;
+      - Modulo dei widget di ricerca;
+      - Modulo di gestione delle normative;
+      - Modulo per la gestione del censuario catastale;
+      - Modulo gestione Metadati (INSPIRE-RNDT compliant).
+    genericName: Sistema Informativo Territoriale
+    longDescription: |
+      Il SIT Città Metropolitana di Bari è un Sistema Informativo Territoriale
+      (SIT) rappresentato da un insieme di strumenti informatici concepiti per
+      descrivere ed analizzare elementi, eventi e fenomeni inerenti la
+      superficie terrestre. La tecnologia SIT integra in un unico ambiente le
+      più comuni operazioni legate all’uso di database (interrogazioni – query –
+      analisi statistiche, etc.) con i benefici dell’analisi geografica
+      consentita dall’uso di mappe cartografiche. Questa particolarità distingue
+      il SIT dagli altri sistemi di informazione e fa di esso un potente
+      strumento utilizzabile da molteplici operatori privati e pubblici, per
+      panificare gli eventi, predire i risultati e definire strategie. Il SIT
+      consente di creare mappe (tematismi), integrare informazioni, visualizzare
+      scenari e sviluppare effettive soluzioni esprimibili sia in forma
+      cartografica che in forma quali-quantitativa. I servizi evolutivi del SIT
+      sono stati realizzati grazie ai fondi di finanziamento PON METRO 2014-2020
+      – Asse 1 "Agenda Digitale" con i progetti EGOV-2 "Servizi interattivi per
+      la Città Metropolitana di Bari" (CUP: J91J17000110007 cod. locale
+      ba.1.1.1.a) e "Transizione digitale: sistemi informativi territoriali e mappe"
+      (CUP: J91F23001250005 cod. locale ba.1.1.1.l) con l'obiettivo di favorire la piena
+      digitalizzazione dei processi amministrativi ed ampliare l’offerta dei
+      servizi digitali con piattaforme trasversali a supporto dell'area
+      metropolitana. Il SIT per Area Vasta Metropoli Terra di Bari si compone di
+      un modulo di Front Office e di un modulo di Back Office aventi le finalità
+      di seguito riportate: Finalità del modulo di FRONT OFFICE Il modulo di
+      front office è una web application che permette ai cittadini ed agli
+      operatori dei comuni di:
+            •	 consultare gli strati cartografici attraverso la sovrapposizione e l’interrogazione dei diversi layer informativi;
+            •	 aggiornare i dati cartografici ed alfanumerici che compongono gli strati carto-grafici;
+            •	 stampare stralci di mappe con relativa legenda e cartiglio;
+            •	 consultare i dati catastali e le relative normative;
+            •	 generare il Certificato di Destinazione Urbanistica (CDU) pro-forma. 
+            
+      
+      Finalità del modulo di BACK OFFICE
+      
+      Il back office permette la gestione simultanea, di più enti e ne consente una propria personalizzazione. Il modulo di back office è una web application, ad uso esclusivo dell'Ente e permette di gestire:
+            •	 La banca dati cartografica;
+            •	 La pubblicazione dei progetti cartografici;
+            •	 Gestione degli utenti e dei gruppi con i relativi accessi ai progetti ed alle funzionalità;
+            •	 Personalizzazione dei contenuti del sistema di Front-Office;
+            •	 Aggiornamento dei dati catastali e delle normative;
+            •	 Predisposizione dei template per la stampa e produzione del CDU;
+            •	 Gestione del catalogo e dei metadati.
+            •	 Pubblicazione di layer WFS 3.0 su PDND
+            
+            
+    screenshots:
+      - img/Home-comuni.jpg
+      - img/app-verdepubblico.jpg
+      - img/editing.jpg
+      - img/identify.jpg
+      - img/Legenda.jpg
+      - img/streetview.jpg
+      - img/toc.jpg
+    shortDescription: |-
+      Kit di riuso a disposizione delle PA per la gestione e la pubblicazione di mappe cartografiche e strumenti urbanistici.
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - government
+isBasedOn:
+  - G3W Suite
+it:
+  riuso:
+    codiceIPA: c_a662
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+landingURL: 'https://sit.egov.ba.it/it/'
+legal:
+  license: AGPL-3.0-or-later
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: Planetek Italia
+      email: casaburi@planetek.it
+      name: Mauro Casaburi
+  contractors:
+    - name: Area Vasta Metropoli Terra di Bari
+      until: '2024-10-14'
+      website: 'https://egov.ba.it/'
+  type: contract
+name: |-
+  Sistema Informativo Territoriale Città metropolitana di Bari (E-GOV 2 Servizi
+  interattivi)
+platforms:
+  - windows
+  - linux
+releaseDate: '2024-05-31'
+softwareType: standalone/web
+softwareVersion: '3.6'
+url: 'https://github.com/comunedibari/SIT'

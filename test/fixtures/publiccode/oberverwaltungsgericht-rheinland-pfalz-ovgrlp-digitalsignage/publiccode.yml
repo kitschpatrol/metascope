@@ -1,0 +1,77 @@
+publiccodeYmlVersion: "0.2"
+
+name: OVGRLP-digitalsignage
+url: "https://github.com/Oberverwaltungsgericht-Rheinland-Pfalz/OVGRLP-DigitalSignage.git"
+softwareVersion: "prod"
+applicationSuite: OVGRLP
+releaseDate: "2022-11-09"
+platforms:
+  - web
+  - windows
+
+categories:
+  - office
+  - workflow-management
+usedBy:
+  - Justiz Rheinland-Pfalz
+
+developmentStatus: stable
+
+softwareType: "standalone/other"
+
+description:
+  de:
+    shortDescription: >
+          Eine Software zur Anzeige von Terminen für Gerichtsverhandlungen im Gerichtsgebäude
+
+    longDescription: >
+          Mit der Software lassen sich mehrere Anzeigen an verschiedenen Standorten betreiben. Mögliche Orte zur Präsentation sind Wartebereiche, dort wird eine Übersicht aller Verhandlungen am entsprechenden Tag angezeigt. Sowie vor jedem Gerichtssaal, dort wird auch angezeigt ob gerade eine Verhandlung läuft oder schon beendet ist. Dies wird aus dem Gerichtssaal heraus gesteuert.
+          Zur Administration gibt es eine Übersicht über alle Displays von dort können diesebei Bedarf auch neu gestartet werden. Ferner auch Sondermeldungen angezeigt werden, diese werden dann zeitlich und räumlich zugeordnet um die eigentliche Anzeige ganz oder teilweise zu überblenden. Die täglichen Termine werden automatisch aus Eureka-Fach exportiert.
+
+    features:
+       - Zeigt täglich anstehende Gerichtsverhandlungen und deren zustand vor den Gerichtssälen
+    
+  en:
+    shortDescription: >
+          A software to display dates of courts in the building
+
+    longDescription: >
+          A configurable software to display dates of courts in the building
+
+    features:
+       - shows dates and their progress for court rooms
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Oberverwaltungsgericht Rheinland-Pfalz
+  repoOwner: Oberverwaltungsgericht Rheinland-Pfalz
+
+maintenance:
+  contacts:
+    - email: poststelle@ovg.jm.rlp.de
+      name: Oberverwaltungsgericht Rheinland-Pfalz
+      phone: '+026113070'
+  type: internal
+
+localisation:
+  availableLanguages:
+    - de
+  localisationReady: false
+
+dependsOn:
+  open:
+    - name: angular
+    - name: other free software
+  proprietary:
+    - name: MSSQL Server
+    - name: Eureka Fach
+    - name: IIS
+      versionMin: "7,5"
+      optional: true
+    - name: .NET-Framework
+      version: "4.5.1"
+      optional: false
+  hardware:
+    - name: display mointor with computer
+      optional: false
+    - name: network

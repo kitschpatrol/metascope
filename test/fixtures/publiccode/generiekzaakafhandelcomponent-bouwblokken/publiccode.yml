@@ -1,0 +1,45 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - business-process-management
+description:
+  en:
+    features:
+      - Informeren aanvrager
+    genericName: GZAC Component
+
+    shortDescription: This gzac component contains the 'informeren aanvrager' process
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - nl
+  scope:
+    - government
+    - local-authorities
+    - welfare
+landingURL: |-
+  https://docs.valtimo.nl/getting-started/exchange/building-blocks
+legal:
+  license: EUPL-1.2
+  repoOwner: Ritense B.V.
+localisation:
+  availableLanguages:
+    - en
+    - nl
+  localisationReady: false
+maintenance:
+  contacts:
+    - name: Ritense B.V.
+  type: internal
+name: GZAC - Informeren aanvrager
+platforms:
+  - web
+releaseDate: '2023-11-10'
+softwareType: addon
+softwareVersion: 10.7.0.RELEASE
+url: 'https://github.com/generiekzaakafhandelcomponent/Bouwblokken'
+usedBy:
+  - Gemeente Den Haag

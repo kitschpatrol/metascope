@@ -1,0 +1,64 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.3'
+categories:
+  - geographic-information-systems
+description:
+  it:
+    apiDocumentation: 'https://leafletjs.com/reference.html'
+    documentation: 'https://leafletjs.com/examples.html'
+    features:
+      - GIS
+      - Interactive maps
+    longDescription: |
+      Leaflet is the leading open-source JavaScript library for mobile-friendly
+      interactive maps. Weighing just about 39 KB of JS, it has all the mapping
+      [features](https://leafletjs.com/#features) most developers ever need.
+
+
+      Leaflet is designed with _simplicity_, _performance_ and _usability_ in
+      mind. It works efficiently across all major desktop and mobile platforms,
+      can be extended with lots of
+      [plugins](https://leafletjs.com/plugins.html), has a beautiful, easy to
+      use and [well-documented API](https://leafletjs.com/reference.html
+      "Leaflet API reference") and a simple, readable [source
+      code](https://github.com/Leaflet/Leaflet "Leaflet source code repository
+      on GitHub") that is a joy to
+      [contribute](https://github.com/Leaflet/Leaflet/blob/main/CONTRIBUTING.md
+      "A guide to contributing to Leaflet") to.
+    shortDescription: An open-source JavaScript library for mobile-friendly interactive maps
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+landingURL: 'https://leafletjs.com/'
+legal:
+  license: BSD-2-Clause
+  mainCopyrightOwner: Vladimir Agafonkin
+localisation:
+  availableLanguages:
+    - en
+  localisationReady: false
+maintenance:
+  contacts:
+    - name: Vladimir Agafonkin
+  type: community
+name: Leaflet
+logo: https://leafletjs.com/docs/images/logo.png
+platforms:
+  - web
+releaseDate: '2022-04-18'
+softwareType: library
+softwareVersion: v1.8.0
+url: 'https://github.com/Leaflet/Leaflet'

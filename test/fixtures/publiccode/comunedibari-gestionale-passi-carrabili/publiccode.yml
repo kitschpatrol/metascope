@@ -1,0 +1,136 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Città connessa
+categories:
+  - workflow-management
+dependsOn:
+  open:
+    - name: PostgreSQL
+      optional: false
+      version: ''
+      versionMax: '10'
+      versionMin: '9'
+    - name: Node.js
+      optional: false
+      version: '10.7'
+      versionMax: ''
+      versionMin: ''
+    - name: Java
+      optional: false
+      version: '1.8'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Elasticsearch'
+      optional: false
+      version: '7.16.3'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Kibana'
+      optional: false
+      version: '7.16.3'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Angular'
+      optional: false
+      version: '11.2.1'
+      versionMax: ''
+      versionMin: ''
+    - name: 'PrimeNG'
+      optional: false
+      version: '11.4.3'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Leaflet'
+      optional: false
+      version: '1.7.1'
+      versionMax: ''
+      versionMin: ''
+    - name: 'Android'
+      optional: false
+      version: '9'
+      versionMax: ''
+      versionMin: '6'
+description:
+  it:
+    documentation: |-
+      https://github.com/comunedibari/gestionale-passi-carrabili/tree/25519cca9a7a54cfcc353b11c2ea05c023b5b9d3/Documentazione
+    features:
+      - workflow
+    genericName: Gestionale Passi Carrabili
+    localisedName: Gestionale Passi Carrabili
+    longDescription: |
+      In coerenza con la programmazione nazionale/regionale in ambito di "Città
+      e comunità intelligenti" e in linea con gli obiettivi dell'Agenda Digitale
+      dell'amministrazione comunale, l'applicazione "Gestionale Passi Carrabili"
+      è una delle soluzioni prodotte nell'ambito del progetto "Città Connessa:
+      Sistema Informativo per il controllo degli oggetti" (cod. progetto BA
+      1.1.1.d – CUP J91J17000130007) a valere su risorse di finanziamento PON
+      METRO 2014-2020 – Asse 1 "Agenda Digitale".
+
+      L'applicazione "Gestionale Passi Carrabili" è un verticale per la gestione 
+      dei rilasci dei passi carrabili ed i processi secondari al rilascio che 
+      utilizza il civilario comunale, realizzato nell’ambito dello stesso progetto. 
+      Esso presenta una serie di funzionalità in grado di digitalizzare l'intero 
+      processo di concessione con l'aggiunta di servizi di supporto come ad esempio 
+      la ricerca delle istanze con diversi filtri ed un sistema di scadenziario.
+
+      Il gestionale coopera con il servizio di protocollazione dell'Ente e con un'app 
+      mobile (il cui codice sorgente e documentazione sono qui disponibili) che, tra 
+      l'altro, è in grado di leggere sensori IoT (tag RFID passivi) per la verifica 
+      sul territorio dello stato delle concessioni. Inoltre, il gestionale è anche in 
+      grado di comunicare con il portale EGOV (per l'erogazione di servizi al cittadino) 
+      che consente di avviare nuove richieste di concessione nonché registrare pratiche 
+      ad istanza di parte su concessioni già rilasciate.
+
+
+    screenshots:
+      - |- 
+        https://raw.githubusercontent.com/comunedibari/gestionale-passi-carrabili/master/screenshot/home-page.png
+      - |-
+        https://raw.githubusercontent.com/comunedibari/gestionale-passi-carrabili/master/screenshot/map.png
+      - |-
+        https://raw.githubusercontent.com/comunedibari/gestionale-passi-carrabili/master/screenshot/stat.png
+    shortDescription: 'Applicazione web-based per la gestione dei passi carrabili '
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: c_a662
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Comune di Bari
+  repoOwner: Comune di Bari
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - email: settore.innovazionetecnologica@comune.bari.it
+      name: |-
+        Comune di Bari - Settore Innovazione Tecnologica
+      phone: '+390805774702'
+  type: internal
+name: Gestionale Passi Carrabili
+platforms:
+  - web
+  - android
+releaseDate: '2022-12-31'
+softwareType: standalone/web
+softwareVersion: 1.0.0
+url: 'https://github.com/comunedibari/gestionale-passi-carrabili'
+usedBy:
+  - Comune di Bari

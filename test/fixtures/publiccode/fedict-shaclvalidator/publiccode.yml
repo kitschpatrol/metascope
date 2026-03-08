@@ -1,0 +1,56 @@
+publiccodeYmlVersion: "0.4.0"
+name: SHACL Validator
+url: "https://github.com/Fedict/shaclvalidator"
+softwareType: "standalone/desktop"
+releaseDate: "2025-06-13"
+platforms:
+  - windows
+  - linux
+  - macos
+categories:
+  - data-analytics
+  - it-development
+  - knowledge-management
+description:
+  en:
+    shortDescription: Command-line SHACL validator
+    longDescription: >
+      Command-line SHACL validator based on Eclipse RDF4J and PicoCLI.
+      
+      The RDF input can be a local file or an URL, output is a report in Turtle, HTML or Markdown.
+      In addition, the tool can also collect a few statistics on the number of different classes and properties being used in the file, 
+      and even a list of the different values for one or more specific properties.
+      
+      A typical use case is to validate a DCAT-AP metadata file, and produce an overview of the different categories (dcat:theme) and licenses being used.
+    features:
+      - Command line interface, no need to install server components
+      - Validates RDF datasets using one or more local or remote SHACL files
+      - Generates a human-friendly HTML report
+      - Show basic statistics on number of classes and properties, values of chosen properties
+developmentStatus: stable
+softwareVersion: "1.0.2"
+intendedAudience:
+  scope:
+    - government
+  countries:
+    - be
+legal:
+  repoOwner: "FPS BOSA DG Simplification and Digitalisation"
+  license: "BSD-2-Clause"
+maintenance:
+  type: "internal"
+  contacts:
+    - name: "BOSA Open Data"
+      email: "opendata@bosa.fgov.be"
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
+usedBy:
+  - Belgian open data portal data.gov.be
+dependsOn:
+  open:
+    - name: "Java runtime"
+      versionMin: "17"
+  proprietary: []
+  hardware: []

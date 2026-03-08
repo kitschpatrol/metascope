@@ -1,0 +1,35 @@
+name: "ZGW API for PHP and WordPress"
+
+applicationSuite:
+  name: "OpenWebconcept"
+
+publiccodeYmlVersion: 1.0
+url: "https://github.com/OpenWebconcept/owc-zgw-api"
+
+platforms:
+  - "web"
+
+categories:
+  - "application-development"
+
+softwareType: "library"
+
+description:
+  localisedName: "ZGW API for PHP and WordPress"
+  shortDescription: "This PHP packages offers an implementation of the 'Zaakgericht Werken' (ZGW) API's."
+  longDescription: "This PHP packages offers an implementation of the 'Zaakgericht Werken' (ZGW) API's, in accordance with the [Gemma standards](https://vng-realisatie.github.io/gemma-zaken/standaard/). The library enables developers to easily integrate and access the ZGW API's of various registries."
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: "Sander de Kroon"
+  repoOwner: "Sander de Kroon"
+
+maintenance:
+  type: "internal"
+  contacts:
+    - name: "Sander de Kroon"
+      email: "sander@dekroon.net"
+
+nl:
+  commonground:
+    layerType: "service"

@@ -1,0 +1,84 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: "0.2"
+categories:
+  - application-development
+  - content-management
+logo: docs/rer-logo.png
+dependsOn:
+  open:
+    - name: Plone
+      optional: false
+      version: ""
+      versionMax: ""
+      versionMin: "5.1"
+description:
+  it:
+    features:
+      - Notizia
+    genericName: Plone addon
+    longDescription: >
+      Plugin per Plone che aggiunge un nuovo tipo di contenuto "ExternalNews". 
+
+
+      Questo contenuto si comporta come un Collegamento, con in più un campo
+      aggiuntivo "Fonte" per indicare la provenienza del link. 
+
+
+      Viene usato per linkare notizie pubblicate in altri siti "partner" (per
+      es. portali tematici) e visualizzare il contenuto come se fosse una
+      notizia del proprio sito, ma quando l'utente clicca sul link viene
+      rediretto all'url selezionato. Il campo "Fonte" può essere usato per
+      indicare all'utente dove verrà rediretto.
+
+    shortDescription: Tipo di contenuto notizia esterna aggiuntivo
+    screenshots: 
+      - docs/ExternalNews_vista_news_esterne.JPG
+      - docs/ExternalNews_vista_archivio_news.JPG
+      - docs/ExternalNews_dettaglio_backend.JPG
+      - docs/ExternalNews_vista_news_con_foto.JPG
+developmentStatus: stable
+it:
+  riuso:
+    codiceIPA: r_emiro
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: "0.2"
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+legal:
+  license: GPL-2.0-only
+  mainCopyrightOwner: Regione Emilia-Romagna
+  repoOwner: Regione Emilia-Romagna
+localisation:
+  availableLanguages:
+    - it
+    - en
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: Regione Emilia-Romagna
+      email: webmaster@regione.emilia-romagna.it
+      name: Sara Turra
+  contractors:
+    - name: RedTurtle
+      until: "2020-08-31"
+      website: "https://www.redturtle.it/"
+  type: contract
+name: Notizia esterna per CMS Plone
+platforms:
+  - web
+releaseDate: "2018-01-05"
+softwareType: addon
+softwareVersion: 0.1.2
+url: "https://github.com/RegioneER/rer.externalnews"
+usedBy:
+  - Regione Emilia-Romagna

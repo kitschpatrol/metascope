@@ -1,0 +1,48 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Contactmomenten-api"
+url: "https://github.com/VNG-Realisatie/gemma-zaken"
+releaseDate: "2022-04-05"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+  - application/xml
+
+outputTypes:
+  - application/json
+  - application/ld+json
+  - application/hal+json
+  - application/vnd.api+json
+  - application/health+json
+  - application/xml
+  - application/x-yaml
+  - text/csv
+  - text/html
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API om contactmomenten met klanten te registreren."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/OAS.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/OAS.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/data/contactmomenten.json'
+  en:
+    shortDescription: "An API to register contact moments with clients."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/OAS.yaml'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/OAS.yaml'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/contactmomenten_publiccode/main/data/contactmomenten.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

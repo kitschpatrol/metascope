@@ -1,0 +1,48 @@
+publiccodeYmlVersion: "0.1"
+
+name: "Klanten-api"
+url: "https://github.com/VNG-Realisatie/gemma-zaken"
+releaseDate: "2022-04-05"
+
+softwareType: configurationFiles
+
+inputTypes:
+  - application/json
+  - application/xml
+
+outputTypes:
+  - application/json
+  - application/ld+json
+  - application/hal+json
+  - application/vnd.api+json
+  - application/health+json
+  - application/xml
+  - application/x-yaml
+  - text/csv
+  - text/html
+
+platforms:
+  - web
+  
+categories:
+  - collaboration
+  - it-development
+  
+developmentStatus: beta
+
+description:
+  nl:
+    shortDescription: "Een API om klanten te benaderen."
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/OAS.json'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/OAS.json'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/data/klanten.json'
+  en:
+    shortDescription: "An API to connect to customers"
+    documentation: 'https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/OAS.json'
+    apiDocumentation: 'https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/OAS.json'
+    testDataLocation: 'https://raw.githubusercontent.com/ConductionNL/klanten_publiccode/main/data/klanten.json'
+
+dependsOn:
+  open:
+    - name: common-gateway
+      versionMin: 1.0.0

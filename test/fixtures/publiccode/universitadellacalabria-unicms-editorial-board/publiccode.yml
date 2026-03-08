@@ -1,0 +1,105 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - content-management
+  - website-builder
+  - web-collaboration
+dependsOn:
+  open:
+    - name: Python
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: Django
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: VueJS
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    documentation: 'https://github.com/UniversitaDellaCalabria/unicms-editorial-board'
+    features:
+      - >-
+        Reactive administration panel for uniCMS
+    genericName: applicazione web
+    longDescription: >
+      Dashboard for managing the contents of a uniCMS project.
+
+      This is a Django app containing a Vue.js project that uses the
+      editorial-board APIs in an intuitive and responsive CRUD interface.
+
+      The interface is based on the free Bootstrap template
+      "Vue Light Bootstrap Dashboard"
+      (https://www.creative-tim.com/product/vue-light-bootstrap-dashboard)
+      and is natively responsive.
+
+      The integration of the BootstrapVue library
+      (https://bootstrap-vue.org/) provides all the power and versatility
+      of Bootstrap and its components (forms, icons, buttons, grids).
+
+      The entire code is open source and therefore licensed
+      under the Apache 2.0.
+    shortDescription: >-
+      Reactive administration panel for uniCMS
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - culture
+    - education
+    - government
+    - research
+    - society
+    - sport
+    - tourism
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: unical
+landingURL: 'https://github.com/UniversitaDellaCalabria/unicms-editorial-board'
+legal:
+  authorsFile: >-
+    https://github.com/UniversitaDellaCalabria/unicms-editorial-board/blob/main/AUTHORS
+  license: Apache-2.0
+  mainCopyrightOwner: Università della Calabria
+localisation:
+  availableLanguages:
+    - en
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: unical.it
+      email: francesco.filicetti@unical.it
+      name: Francesco Filicetti
+    - email: giuseppe.demarco@unical.it
+      name: Giuseppe De Marco
+  type: internal
+name: uniCMS - Editorial Board
+platforms:
+  - linux
+  - web
+releaseDate: '2021-12-03'
+roadmap: 'https://github.com/UniversitaDellaCalabria/unicms-editorial-board/issues'
+softwareType: standalone/web
+softwareVersion: v0.25.1
+url: 'https://github.com/UniversitaDellaCalabria/unicms-editorial-board'
+usedBy:
+  - Università della Calabria - https://www.unical.it

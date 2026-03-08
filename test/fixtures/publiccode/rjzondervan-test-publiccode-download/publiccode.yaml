@@ -1,0 +1,53 @@
+categories:
+- collaboration
+- it-development
+description:
+  en:
+    apiDocumentation: ''
+    awards: []
+    documentation: ''
+    features: []
+    genericName: Symfony bundle for ZGW standard functionality
+    localisedName: ''
+    longDescription: ''
+    screenshots: []
+    shortDescription: ZGWBundle
+    videos: []
+  nl:
+    shortDescription: ZGWBundle
+developmentStatus: beta
+landingURL: ''
+legal:
+  authorsFile: ''
+  license: ''
+  mainCopyrightOwner: ''
+  repoOwner: ''
+localisation:
+  availableLanguages:
+  - en
+  localisationReady: false
+maintenance:
+  contacts: []
+  contractors: []
+  type: none
+name: ZGWBundle
+nl:
+  vng:
+    commonground: []
+    gemma: []
+organisation:
+  logo: https://avatars.githubusercontent.com/u/106860777?v=4
+  name: CommonGateway
+  url: CommonGateway
+platforms:
+- web
+publiccodeYmlVersion: '0.1'
+releaseDate: '2022-10-01'
+roadmap: ''
+softwareType: addon
+softwareVersion: ''
+url: https://github.com/CommonGateway/ZGWBundle
+usedBy: []
+downloadUrls:
+- http://download.treinenwereld.eu/RZ_30sAutos_1.zip
+- https://github.com/CommonGateway/CoreBundle/archive/refs/heads/master.zip

@@ -1,0 +1,53 @@
+categories:
+- it-development
+name: Voorbeeld Object Type
+description:
+  en:
+    apiDocumentation: ''
+    awards: []
+    documentation: ''
+    features: []
+    genericName: ''
+    localisedName: ''
+    longDescription: ''
+    screenshots: []
+    shortDescription: ''
+    videos: []
+developmentStatus: development
+logo: "https://raw.githubusercontent.com/Dimpact-Samenwerking/Dimpact-Service-Blueprints/feature-oc/logo_dimpact.svg"
+landingURL: ''
+legal:
+  authorsFile: ''
+  license: ''
+  mainCopyrightOwner: ''
+  repoOwner: ''
+localisation:
+  availableLanguages:
+  - en
+  localisationReady: false
+maintenance:
+  contacts: []
+  contractors: []
+  type: none
+nl:
+  vng:
+    commonground:
+      layerType: api
+      installationType: self
+    gemma: []
+organisation:
+  logo: https://avatars.githubusercontent.com/u/55496933?v=4
+  name: Dimpact
+  url: https://www.dimpact.nl/
+platforms:
+- web
+publiccodeYmlVersion: '0.2'
+releaseDate: '2024-02-22'
+roadmap: ''
+applicationSuite: "http://github.com/open-formulieren/open-forms.git"
+softwareType: configurationFiles
+softwareVersion: ''
+url: https://github.com/Dimpact-Samenwerking/Dimpact-OpenFormulieren-Configuraties
+usedBy: ['https://www.dimpact.nl/']
+downloadUrls:
+  - "https://raw.githubusercontent.com/Dimpact-Samenwerking/Dimpact-OpenFormulieren-Configuraties/main/form_testformulier-dimpact-service/form_testformulier-dimpact-service.zip"

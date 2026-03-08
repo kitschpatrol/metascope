@@ -1,0 +1,110 @@
+publiccodeYmlVersion: '0.1'
+name: ZGWBundle
+applicationSuite: null
+url: https://github.com/CommonGateway/ZGWBundle
+landingURL: null
+isBasedOn: https://github.com/CommonGateway/PetstoreBundle
+softwareVersion: null
+logo: https://avatars.githubusercontent.com/u/106860777?v=4
+monochromeLogo: null
+platforms:
+  - web
+releaseDate: '2022-10-01'
+categories: 
+  - collaboration
+  - it-development
+developmentStatus: beta
+softwareType: softwareAddon
+description:
+  en:
+    localisedName: null
+    genericName: null
+    shortDescription: "Every ZGW API-functionality in one solution."
+    longDescription: "Business registers utilize the power of Open Registers to easily and quickly deliver all ZGW APIs defined by VNG. It supports the extend pattern on all underlying objects and allows for data minimization through filtering."
+    documentation: null
+    apiDocumentation: null
+    features:
+      - Common Ground Gateway Plugin
+    screenshots: []
+    videos: []
+    awards: []
+  nl:
+    localisedName: null
+    genericName: null
+    shortDescription: "Alle ZGW (VNG zaken) API's vanuit één oplossing."
+    longDescription: "Zaken registers maakt gebruik van de de kracht van Open Registers om gemakkenlijk en snel alle door vng gedefineerde ZGW API's te leveren. Het ondersteund daaarbij het extend patroon op allé onderligende objecten en laat data minimalisatie aan de hand van filtering toe."
+    documentation: null
+    apiDocumentation: null
+    features:
+      - Common Ground Gateway Plugin
+    screenshots: []
+    videos: []
+    awards: []
+intendedaudience: 
+  countries: 
+    - nl
+  unsupportedCountries: []
+  scope: 
+    - government
+    - local-authorities
+legal: 
+  license: EUPL-1.2-or-later
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: CommonGateway
+  authorsFile: null
+maintenance: 
+  type: internal
+  contractors: 
+    - name: Conduction
+      until: 2035-01-01
+      email: info\x64conduction.nl
+      website: https://www.conduction.nl
+  contacts:
+    - name: Ruben van der Linde
+      email: info\x64conduction.nl
+      phone: 085 303 6840
+      affiliation: Conduction
+localisation:
+  localisationReady: true
+  availableLanguages: 
+     - en
+     - nl
+dependsOn: 
+  open: 
+    - name: CommonGateway
+      versionMin: 1.2
+      versionMax: 1.3
+      version: 1.2.47
+      optional: false
+    - name: CoreBundle
+      versionMin: 1.2
+      versionMax: 1.3
+      version: 1.2.47
+      optional: false
+    - name: ReferentielijstenBundle
+      versionMin: 0.1
+      version: 0.1.0
+      optional: false
+roadmap: null
+inputTypes:
+  - application/json
+outputTypes: 
+  - application/json
+  - application/json+hal
+  - application/json+ld
+  - application/xml
+  - application/x-yaml
+nl: 
+  countryExtensionVersion: null
+  commonground: 
+    intendedOrganisations: []
+    installationType: null
+    layerType: data
+  gemma:
+    bedrijfsfuncties: []
+    bedrijfsservices: []
+    applicatiefunctie: null
+    model: null
+  upl: []
+downloadUrls:
+  - https://github.com/CommonGateway/ZGWBundle/archive/refs/heads/main.zip

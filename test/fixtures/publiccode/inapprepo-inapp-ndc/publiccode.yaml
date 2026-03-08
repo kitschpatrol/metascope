@@ -1,0 +1,52 @@
+publiccodeYmlVersion: "0.2"
+
+name: inapp-ndc
+url: "https://github.com/InappRepo/inapp-ndc"
+softwareVersion: "1.0"
+releaseDate: "2024-09-17"
+platforms:
+  - web
+
+categories:
+  - data-analytics
+  - knowledge-management
+
+developmentStatus: development
+
+softwareType: "configurationFiles"
+
+description:
+  it:
+    localisedName: ndc
+    genericName: Repository INAPP per NDC
+    shortDescription: >
+          Repository INAPP per l'alimentazione
+          del National Data Catalog
+
+    longDescription: >
+          Repository INAPP per l'alimentazione
+          del National Data Catalog contenente
+          vocabolari controllati e schemi.
+
+    features:
+       - Interoperabilità semantica
+       - Interoperabilità tecnica
+       - API semantiche
+       - Modellazione dati
+       - Tassonomie
+
+legal:
+  license: CC BY 4.0
+maintenance:
+  type: internal
+  contacts:
+    email: c.carlucci@inapp.gov.it
+    name: Chiara Carlucci
+it:
+  riuso:
+    codiceIPA: isfol
+
+localisation:
+  localisationReady: yes
+  availableLanguages:
+    - it

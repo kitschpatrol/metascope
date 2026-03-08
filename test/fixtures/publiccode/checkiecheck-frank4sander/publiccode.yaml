@@ -1,0 +1,43 @@
+applicationSuite: FrankFramework
+categories:
+- translation
+- collaboration
+- application-development
+dependsOn:
+  open:
+  - name: frank!framework
+    optional: false
+    version: ''
+    versionMax: '7.9'
+    versionMin: '7.8'
+description: testing mijn zaak notificaties public yaml
+developmentStatus: stable
+en:
+  shortDescription: testing mijnzaak notifications public yaml
+intendedAudience:
+  scope:
+  - government
+legal:
+  license: European Union Public License 1.2
+license: Object
+localisation:
+  availableLanguages:
+  - en
+  - nl
+  localisationReady: false
+maintenance:
+  contacts:
+  - name: Sander
+  type: community
+name: frank4sander
+nl:
+  countryExtensionVersion: '0.2'
+  description: testing MijnZaak notificaties public yaml
+organisation: {}
+platforms:
+- web
+publiccodeYmlVersion: '0.2'
+releaseDate: '2023-11-01'
+softwareType: standalone/other
+softwareVersion: v.1.1.1
+url: "https:\bult.bz"

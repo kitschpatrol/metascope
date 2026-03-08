@@ -1,0 +1,58 @@
+publiccodeYmlVersion: 0.5.0
+name: srppp
+url: https://github.com/agroscope-ch/srppp
+softwareVersion: 2.0.1
+releaseDate: 2026-01-07
+platforms:
+  - windows
+  - mac
+  - linux
+  - ios
+categories:
+  - data-analytics
+usedBy:
+  - Federal Office of Agriculture (FOAG)
+  - Federal Office of the Environment (FOEN)
+  - Agroscope
+developmentStatus: stable
+softwareType: addon
+organisation:
+  uri: https://ld.admin.ch/ou/10003634
+  name: Agroscope
+description:
+  en:
+    localisedName: srppp
+    shortDescription: srppp is an R package designed to read XML dumps of the Swiss
+      Register of Plant Protection Products
+    longDescription: Functions to generate data objects from XML versions of the
+      Swiss Register of Plant Protection Products (SRPPP). An online version of
+      the register can be accessed at https://www.psm.admin.ch/de/produkte.
+      There is no guarantee of correspondence of the data read in using this
+      package with that online version, or with the original registration
+      documents. Also, the Federal Food Safety and Veterinary Office,
+      coordinating the authorisation of plant protection products in
+      Switzerland, does not answer requests regarding this package.
+    documentation: https://agroscope-ch.github.io/srppp/
+    apiDocumentation: https://agroscope-ch.github.io/srppp/reference/
+    features:
+      - Read in the Swiss Register of Plant Protection Products and their uses
+        to make the data accessible in R
+      - Provide tables of products, ingredients, uses and obligations that are
+        linked via foreign keys
+      - Calculate use rates in grams of active substance per hectare
+      - Find alternative products for all products containing certain active
+        substances
+      - Explains the relationship between registered products (W-Numbers) and
+        unique products (P-Numbers)
+legal:
+  license: LGPL-3.0-or-later
+maintenance:
+  type: internal
+  contacts:
+    - name: Johannes Ranke
+      email: johannes.ranke@agroscope.admin.ch
+      affiliation: Agroscope
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

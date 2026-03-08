@@ -1,0 +1,39 @@
+publiccodeYmlVersion: 0.4.0
+name: jeap-message-contract-service
+applicationSuite: jEAP
+softwareVersion: 4.14.0
+releaseDate: 2026-01-28
+url: "https://github.com/jeap-admin-ch/jeap-message-contract-service.git"
+landingURL: "https://github.com/jeap-admin-ch/jeap"
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: stable
+softwareType: library
+organisation:
+  uri: https://ld.admin.ch/office/V.1.7
+  name: Federal Office of Information Technology, Systems and Telecommunication
+description:
+  en:
+    localisedName: jeap-message-contract-service
+    shortDescription: Service to manage messaging contracts used in compatibility checks upon deployment of a service, similar to consumer-driven contract testing.
+    longDescription: >
+      The jEAP message contract service is used to manage messaging contracts between producers and consumers of avro
+      messages. It is used in compatibility checks upon deployment of a service, similar to consumer-driven contract
+      testing, but for messaging.
+    features:
+      - Avro schema compatibility checks between producers and consumers of messages
+      - Management of messaging contracts
+      - Integration with jEAP pipelines for service deployment compatibility checks
+legal:
+  license: Apache-2.0
+maintenance:
+  type: internal
+  contacts:
+    - name: Federal Office of Information Technology, Systems and Telecommunication FOITT
+      email: jeap-community@bit.admin.ch
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

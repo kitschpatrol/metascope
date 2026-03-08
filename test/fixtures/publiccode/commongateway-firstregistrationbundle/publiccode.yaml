@@ -1,0 +1,106 @@
+publiccodeYmlVersion: '0.1'
+name: FirstRegistrationBundle
+applicationSuite: null
+url: https://github.com/CommonGateway/FirstRegistrationBundle
+landingURL: null
+isBasedOn: https://github.com/CommonGateway/PetstoreBundle
+softwareVersion: null
+logo: https://avatars.githubusercontent.com/u/106860777?v=4
+monochromeLogo: null
+platforms:
+  - web
+releaseDate: '2022-10-01'
+categories:
+  - collaboration
+  - it-development
+developmentStatus: beta
+softwareType: softwareAddon
+description:
+  en:
+    localisedName: null
+    genericName: null
+    shortDescription: "This plugin provides `Eerste Inschrijving` functionality for the VrijBRP application."
+    longDescription: "This plugin provides `Eerste Inschrijving` functionality for the VrijBRP application. For More information on VrijBRP, please visit https://github.com/vrijBRP/vrijBRP. This is a Symfony PHP flex plugin to make the Common Gateway (https://github.com/CommonGateway/CoreBundle) adaptable to your specific needs. In essence, a plugin is like an optional app or feature you can add to the system, enhancing its capabilities in specific areas. For more information about plugin, please visit the documentation (https://docs.conductor-gateway.app/en/latest/plugins/)"
+    documentation: null
+    apiDocumentation: null
+    features:
+      - Common Ground Gateway Plugin
+    screenshots: []
+    videos: []
+    awards: []
+  nl:
+    localisedName: null
+    genericName: null
+    shortDescription: "Deze plugin biedt `Eerste Inschrijving` functionaliteit voor de VrijBRP applicatie."
+    longDescription: "Deze plugin biedt `Eerste Inschrijving` functionaliteit voor de VrijBRP applicatie. Voor meer informatie over VrijBRP kunt u terecht op https://github.com/vrijBRP/vrijBRP. Dit is een Symfony PHP flex-plug-in om de Common Gateway (https://github.com/CommonGateway/CoreBundle) aanpasbaar te maken aan uw specifieke behoeften. In wezen is een plug-in een optionele app of functie die u aan het systeem kunt toevoegen, waardoor de mogelijkheden op specifieke gebieden worden vergroot. Voor meer informatie over plug-ins kunt u de documentatie raadplegen (https://docs.conductor-gateway.app/en/latest/plugins/)"
+    documentation: null
+    apiDocumentation: null
+    features:
+      - Common Ground Gateway Plugin
+    screenshots: []
+    videos: []
+    awards: []
+intendedaudience:
+  countries:
+    - nl
+  unsupportedCountries: []
+  scope:
+    - government
+    - local-authorities
+legal:
+  license: EUPL-1.2-or-later
+  mainCopyrightOwner: legal/authorsFile
+  repoOwner: CommonGateway
+  authorsFile: null
+maintenance:
+  type: internal
+  contractors:
+    - name: Conduction
+      until: 2035-01-01
+      email: info\x64conduction.nl
+      website: https://www.conduction.nl
+  contacts:
+    - name: Ruben van der Linde
+      email: info\x64conduction.nl
+      phone: 085 303 6840
+      affiliation: Conduction
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - nl
+dependsOn:
+  open:
+    - name: CommonGateway
+      versionMin: 1.2
+      versionMax: 1.3
+      version: 1.2.47
+      optional: false
+    - name: CoreBundle
+      versionMin: 1.2
+      versionMax: 1.3
+      version: 1.2.47
+      optional: false
+roadmap: null
+inputTypes:
+  - application/json
+outputTypes:
+  - application/json
+  - application/json+hal
+  - application/json+ld
+  - application/xml
+  - application/x-yaml
+nl:
+  countryExtensionVersion: null
+  commonground:
+    intendedOrganisations: []
+    installationType: null
+    layerType: integration
+  gemma:
+    bedrijfsfuncties: []
+    bedrijfsservices: []
+    applicatiefunctie: null
+    model: null
+  upl: []
+downloadUrls:
+  - https://github.com/CommonGateway/FirstRegistrationBundle/archive/refs/heads/main.zip

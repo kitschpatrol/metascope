@@ -1,0 +1,47 @@
+categories:
+- it-development
+description:
+  en:
+    apiDocumentation: ''
+    awards: []
+    documentation: ''
+    features: []
+    genericName: TODO
+    localisedName: ''
+    longDescription: ''
+    screenshots: []
+    shortDescription: Een publicatie repository voor Zaak Typen
+    videos: []
+developmentStatus: development
+landingURL: ''
+legal:
+  authorsFile: ''
+  license: ''
+  mainCopyrightOwner: ''
+  repoOwner: ''
+localisation:
+  availableLanguages:
+  - en
+  localisationReady: false
+maintenance:
+  contacts: []
+  contractors: []
+  type: none
+name: Dimpact-OpenZaak-ZaakTypen
+nl:
+  vng:
+    commonground: []
+    gemma: []
+organisation:
+  logo: https://avatars.githubusercontent.com/u/55496933?v=4
+  name: Dimpact-Samenwerking
+  url: Dimpact-Samenwerking
+platforms:
+- web
+publiccodeYmlVersion: '0.2'
+releaseDate: '2024-04-08'
+roadmap: ''
+softwareType: standalone/web
+softwareVersion: ''
+url: https://github.com/Dimpact-Samenwerking/Dimpact-OpenZaak-ZaakTypen
+usedBy: []

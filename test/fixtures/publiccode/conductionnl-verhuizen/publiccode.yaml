@@ -1,0 +1,51 @@
+publiccodeYmlVersion: "0.2"
+name: verhuizen
+url: "https://github.com/ConductionNL/verhuizen"
+softwareVersion: "1"
+releaseDate: "2021-05-06"
+platforms:
+  - web
+categories:
+  - it-development
+usedBy:
+  - "gemeente 's-hertogenbosch"
+developmentStatus: development
+softwareType: standalone/web
+description:
+  nl:
+    localisedName: Verhuizen
+    genericName: Verhuizen
+    shortDescription: >-
+      Oplossing voor het digitaal doorgeven van verhuizingen
+    longDescription: >-
+      Oplossing voor het digitaal doorgeven van verhuizingen
+    documentation: "https://github.com/ConductionNL/verhuizen"
+    features:
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Conduction
+  repoOwner: Conduction
+maintenance:
+  type: community
+  contacts:
+    - name: Ruben van der Linde
+      email: ruben@conduction.nl
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - nl
+    - en
+dependsOn:
+  open:
+    - name: adresservice/adresservice
+    - name: proto-application-nldesign/pan
+    - name: brpservice/brpservice
+    - name: landelijketabellencatalogus/landelijketabellencatalogus
+    - name: digispoof-interface/digispoof-interface
+    - name: verzoekregistratiecomponent/verzoekregistratiecomponent
+    - name: verzoektypecatalogus/verzoektypecatalogus
+    - name: procestypecatalogus/procestypecatalogus
+    - name: webresourcecatalogus/webresourcecatalogus
+    - name: contact-catalogus/contactcatalogus
+    - name: user-component/user-component
+    - name: berichtservice/berichtservice
