@@ -80,10 +80,13 @@ describe('parseInfoPlist', () => {
 
 		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of directories) {
-			const content = await readFile(resolve(fixturesDirectory, dir.name, 'Info.plist'), 'utf8')
+		for (const directory of directories) {
+			const content = await readFile(
+				resolve(fixturesDirectory, directory.name, 'Info.plist'),
+				'utf8',
+			)
 			const result = parseInfoPlist(content)
-			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 		}
 	})
 })

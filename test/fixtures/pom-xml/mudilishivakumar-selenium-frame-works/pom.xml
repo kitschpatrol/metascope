@@ -40,8 +40,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
+            <groupId>org.testing</groupId>
+            <artifactId>testing</artifactId>
             <version>7.4.0</version>
             <scope>test</scope>
         </dependency>
@@ -101,7 +101,7 @@
                         </dependenciesToScan>
                         <argLine>-Xmx4096m</argLine>
                         <suiteXmlFiles>
-                            <suiteXmlFile>testng.xml</suiteXmlFile>
+                            <suiteXmlFile>testing.xml</suiteXmlFile>
                         </suiteXmlFiles>
                     </configuration>
                 </plugin>

@@ -49,7 +49,7 @@ describe('metadataFile source', () => {
 		}
 		const result = await metadataFileSource.extract(context)
 
-		// basic/ has all three formats; JSON should be preferred
+		// The basic/ directory has all three formats; JSON should be preferred
 		expect(result.description).toBe('JSON metadata file for testing')
 	})
 })

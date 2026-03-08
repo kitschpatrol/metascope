@@ -1,22 +1,18 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { LicenseFiles } from '../parsers/license-file-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-import {
-	identifyLicense,
-	isLicenseFilename,
-	spdxIdToUrl,
-} from '../parsers/license-file-parser'
+import { identifyLicense, isLicenseFilename, spdxIdToUrl } from '../parsers/license-file-parser'
 
 export type LicenseFilesData = Partial<LicenseFiles>
 
 /**
  * Find all license-like filenames in a directory.
  */
-async function findLicenseFiles(dirPath: string): Promise<string[]> {
+async function findLicenseFiles(directoryPath: string): Promise<string[]> {
 	try {
-		const entries = await readdir(dirPath, { withFileTypes: true })
+		const entries = await readdir(directoryPath, { withFileTypes: true })
 		return entries
 			.filter((entry) => entry.isFile() && isLicenseFilename(entry.name))
 			.map((entry) => entry.name)
@@ -54,7 +50,7 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 		if (spdxUrls.size === 0) return {}
 
 		return {
-			spdxUrls: [...spdxUrls].sort(),
+			spdxUrls: [...spdxUrls].toSorted(),
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

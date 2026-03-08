@@ -1,29 +1,17 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type {
-	Publiccode,
-	PubliccodeContactEntry,
-	PubliccodeContractorEntry,
-	PubliccodeDependencyEntry,
-	PubliccodeDescription,
-} from '../parsers/publiccode-parser'
+import type { Publiccode } from '../parsers/publiccode-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parsePubliccode } from '../parsers/publiccode-parser'
 
-export type {
-	PubliccodeContactEntry,
-	PubliccodeContractorEntry,
-	PubliccodeDependencyEntry,
-	PubliccodeDescription,
-}
 export type PubliccodeData = Partial<Publiccode>
 
 /** Try to read publiccode.yml or publiccode.yaml from a directory. */
-async function readPubliccodeFile(dirPath: string): Promise<string | undefined> {
+async function readPubliccodeFile(directoryPath: string): Promise<string | undefined> {
 	for (const filename of ['publiccode.yml', 'publiccode.yaml']) {
 		try {
-			return await readFile(resolve(dirPath, filename), 'utf8')
+			return await readFile(resolve(directoryPath, filename), 'utf8')
 		} catch {
 			// Try next filename
 		}
@@ -46,3 +34,10 @@ export const publiccodeSource: MetadataSource<'publiccode'> = {
 	},
 	key: 'publiccode',
 }
+
+export {
+	type PubliccodeContactEntry,
+	type PubliccodeContractorEntry,
+	type PubliccodeDependencyEntry,
+	type PubliccodeDescription,
+} from '../parsers/publiccode-parser'

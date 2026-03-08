@@ -1,3 +1,6 @@
+/* eslint-disable max-depth */
+/* eslint-disable complexity */
+
 /**
  * Parser for `publiccode.yml` / `publiccode.yaml` files.
  *
@@ -111,7 +114,7 @@ export type Publiccode = {
 	outputTypes: string[]
 	/** Supported platforms (e.g. "web", "linux", "mac"). */
 	platforms: string[]
-	/** publiccode.yml schema version. */
+	/** The publiccode.yml schema version. */
 	publiccodeYmlVersion?: string
 	/** Release date (YYYY-MM-DD). */
 	releaseDate?: string
@@ -146,7 +149,9 @@ function isNonEmptyString(value: unknown): value is string {
 
 /** Check if a value is a plain object (not null, not array). */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-	return typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof Date)
+	return (
+		typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof Date)
+	)
 }
 
 /** Extract string array from a YAML value, filtering non-strings. */
@@ -175,12 +180,12 @@ function parseDescription(data: Record<string, unknown>): PubliccodeDescription 
 		...(isNonEmptyString(data.documentation) ? { documentation: data.documentation } : {}),
 		features,
 		...(isNonEmptyString(data.genericName) ? { genericName: data.genericName } : {}),
-		...(isNonEmptyString(data.localisedName) ? { localisedName: data.localisedName as string } : {}),
+		...(isNonEmptyString(data.localisedName) ? { localisedName: data.localisedName } : {}),
 		...(isNonEmptyString(data.longDescription)
-			? { longDescription: (data.longDescription as string).trim() }
+			? { longDescription: data.longDescription.trim() }
 			: {}),
 		...(isNonEmptyString(data.shortDescription)
-			? { shortDescription: (data.shortDescription as string).trim() }
+			? { shortDescription: data.shortDescription.trim() }
 			: {}),
 	}
 }
@@ -210,8 +215,8 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	let description: PubliccodeDescription | undefined
 
 	if (isPlainObject(data.description)) {
-		const descObj = data.description as Record<string, unknown>
-		for (const [lang, langData] of Object.entries(descObj)) {
+		const descObject = data.description
+		for (const [lang, langData] of Object.entries(descObject)) {
 			if (isPlainObject(langData)) {
 				descriptions[lang] = parseDescription(langData)
 			}
@@ -227,7 +232,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	// ─── Contacts ──────────────────────────────────────────────
 	const contacts: PubliccodeContactEntry[] = []
 	if (isPlainObject(data.maintenance)) {
-		const maintenance = data.maintenance as Record<string, unknown>
+		const { maintenance } = data
 		if (Array.isArray(maintenance.contacts)) {
 			for (const contact of maintenance.contacts) {
 				if (isPlainObject(contact) && isNonEmptyString(contact.name)) {
@@ -244,7 +249,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	// ─── Contractors ───────────────────────────────────────────
 	const contractors: PubliccodeContractorEntry[] = []
 	if (isPlainObject(data.maintenance)) {
-		const maintenance = data.maintenance as Record<string, unknown>
+		const { maintenance } = data
 		if (Array.isArray(maintenance.contractors)) {
 			for (const contractor of maintenance.contractors) {
 				if (isPlainObject(contractor) && isNonEmptyString(contractor.name)) {
@@ -261,7 +266,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	// ─── Dependencies ──────────────────────────────────────────
 	const dependencies: PubliccodeDependencyEntry[] = []
 	if (isPlainObject(data.dependsOn)) {
-		const dependsOn = data.dependsOn as Record<string, unknown>
+		const { dependsOn } = data
 		for (const category of ['open', 'proprietary', 'hardware'] as const) {
 			if (Array.isArray(dependsOn[category])) {
 				for (const dep of dependsOn[category] as unknown[]) {
@@ -293,7 +298,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	let availableLanguages: string[] = []
 	let localisationReady: boolean | undefined
 	if (isPlainObject(data.localisation)) {
-		const loc = data.localisation as Record<string, unknown>
+		const loc = data.localisation
 		availableLanguages = toStringArray(loc.availableLanguages)
 		if (typeof loc.localisationReady === 'boolean') {
 			localisationReady = loc.localisationReady
@@ -305,7 +310,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	let mainCopyrightOwner: string | undefined
 	let repoOwner: string | undefined
 	if (isPlainObject(data.legal)) {
-		const legal = data.legal as Record<string, unknown>
+		const { legal } = data
 		if (isNonEmptyString(legal.license)) license = legal.license
 		if (isNonEmptyString(legal.mainCopyrightOwner)) mainCopyrightOwner = legal.mainCopyrightOwner
 		if (isNonEmptyString(legal.repoOwner)) repoOwner = legal.repoOwner
@@ -324,16 +329,18 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 		dependencies,
 		...(description ? { description } : {}),
 		descriptions,
-		...(isNonEmptyString(data.developmentStatus) ? { developmentStatus: data.developmentStatus } : {}),
+		...(isNonEmptyString(data.developmentStatus)
+			? { developmentStatus: data.developmentStatus }
+			: {}),
 		inputTypes: toStringArray(data.inputTypes),
 		...(isNonEmptyString(data.isBasedOn) ? { isBasedOn: data.isBasedOn } : {}),
 		...(isNonEmptyString(data.landingURL) ? { landingUrl: data.landingURL } : {}),
 		...(license ? { license } : {}),
-		...(localisationReady !== undefined ? { localisationReady } : {}),
+		...(localisationReady === undefined ? {} : { localisationReady }),
 		...(isNonEmptyString(data.logo) ? { logo: data.logo } : {}),
 		...(mainCopyrightOwner ? { mainCopyrightOwner } : {}),
-		...(isPlainObject(data.maintenance) && isNonEmptyString((data.maintenance as Record<string, unknown>).type)
-			? { maintenanceType: (data.maintenance as Record<string, unknown>).type as string }
+		...(isPlainObject(data.maintenance) && isNonEmptyString(data.maintenance.type)
+			? { maintenanceType: data.maintenance.type }
 			: {}),
 		...(isNonEmptyString(data.monochromeLogo) ? { monochromeLogo: data.monochromeLogo } : {}),
 		...(isNonEmptyString(data.name) ? { name: data.name } : {}),

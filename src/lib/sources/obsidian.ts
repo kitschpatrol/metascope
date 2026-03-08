@@ -64,12 +64,7 @@ async function isObsidianPlugin(path: string): Promise<boolean> {
 	try {
 		const content = await readFile(resolve(path, 'manifest.json'), 'utf8')
 		const json: unknown = JSON.parse(content)
-		return (
-			typeof json === 'object' &&
-			json !== null &&
-			'id' in json &&
-			'minAppVersion' in json
-		)
+		return typeof json === 'object' && json !== null && 'id' in json && 'minAppVersion' in json
 	} catch {
 		return false
 	}

@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseOpenFrameworksAddonConfig } from '../../src/lib/parsers/open-frameworks-addon-config-parser'
@@ -52,12 +52,15 @@ describe('parseOpenFrameworksAddonConfig', () => {
 
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+		const directories = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDirectory, dir, 'addon_config.mk'), 'utf8')
+		for (const directory of directories) {
+			const content = await readFile(
+				resolve(fixturesDirectory, directory, 'addon_config.mk'),
+				'utf8',
+			)
 			expect(() => parseOpenFrameworksAddonConfig(content)).not.toThrow()
 		}
 	})

@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises'
-import { readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
@@ -90,22 +89,22 @@ describe('spdxIdToUrl', () => {
 describe('fixture coverage', () => {
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory() && entry.name !== 'multi')
+		const directories = entries.filter((entry) => entry.isDirectory() && entry.name !== 'multi')
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
 		let identified = 0
-		for (const dir of dirs) {
-			const dirPath = resolve(fixturesDirectory, dir.name)
-			const files = await readdir(dirPath)
+		for (const directory of directories) {
+			const directoryPath = resolve(fixturesDirectory, directory.name)
+			const files = await readdir(directoryPath)
 			const licenseFile = files[0]
-			const content = await readFile(resolve(dirPath, licenseFile), 'utf8')
+			const content = await readFile(resolve(directoryPath, licenseFile), 'utf8')
 			// Should not throw; some fixtures may be custom/proprietary and not match
 			const result = identifyLicense(content)
 			if (result) identified++
 		}
 
 		// Most fixtures should be identifiable
-		expect(identified).toBeGreaterThan(dirs.length / 2)
+		expect(identified).toBeGreaterThan(directories.length / 2)
 	})
 })

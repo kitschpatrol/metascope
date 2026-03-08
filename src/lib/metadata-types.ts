@@ -47,6 +47,7 @@ export type {
 } from './sources/publiccode'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
+export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
@@ -74,6 +75,7 @@ import type { ProcessingLibraryPropertiesData } from './sources/processing-libra
 import type { PubliccodeData } from './sources/publiccode'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
+import type { PythonSetupPyData } from './sources/python-setup-py'
 import type { ReadmeData } from './sources/readme'
 import type { UpdatesData } from './sources/updates'
 
@@ -108,6 +110,7 @@ export type MetadataContext = {
 	publiccode: PubliccodeData
 	pypi: PypiData
 	pyprojectToml: PyprojectData
+	pythonSetupPy: PythonSetupPyData
 	readme: ReadmeData
 	updates: UpdatesData
 }

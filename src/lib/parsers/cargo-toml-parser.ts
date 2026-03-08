@@ -89,9 +89,7 @@ export function parseCargoToml(content: string): CargoToml | undefined {
 		categories: toStringArray(pkg.categories),
 		dependencies: parseDependencies((data.dependencies ?? {}) as Record<string, unknown>),
 		description: nonEmpty(pkg.description),
-		devDependencies: parseDependencies(
-			(data['dev-dependencies'] ?? {}) as Record<string, unknown>,
-		),
+		devDependencies: parseDependencies((data['dev-dependencies'] ?? {}) as Record<string, unknown>),
 		documentation: nonEmpty(pkg.documentation),
 		edition: nonEmpty(pkg.edition),
 		homepage: nonEmpty(pkg.homepage),
@@ -165,8 +163,8 @@ function parseDependencies(table: Record<string, unknown>): CargoTomlDependencyE
 		if (typeof value === 'string') {
 			results.push({ name, version: value })
 		} else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-			const obj = value as Record<string, unknown>
-			results.push({ name, version: nonEmpty(obj.version) })
+			const object = value as Record<string, unknown>
+			results.push({ name, version: nonEmpty(object.version) })
 		} else {
 			results.push({ name, version: undefined })
 		}

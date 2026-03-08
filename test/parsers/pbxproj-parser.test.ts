@@ -45,18 +45,23 @@ describe('parsePbxproj', () => {
 
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const xcodeDir = await readdir(resolve(fixturesDirectory, dir.name))
-			const xcodeprojDir = xcodeDir.find((name) => name.endsWith('.xcodeproj'))
-			if (!xcodeprojDir) continue
+		for (const directory of directories) {
+			const xcodeDirectory = await readdir(resolve(fixturesDirectory, directory.name))
+			const xcodeprojDirectory = xcodeDirectory.find((name) => name.endsWith('.xcodeproj'))
+			if (!xcodeprojDirectory) continue
 
-			const filePath = resolve(fixturesDirectory, dir.name, xcodeprojDir, 'project.pbxproj')
+			const filePath = resolve(
+				fixturesDirectory,
+				directory.name,
+				xcodeprojDirectory,
+				'project.pbxproj',
+			)
 			const result = parsePbxproj(filePath)
-			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 		}
 	})
 })

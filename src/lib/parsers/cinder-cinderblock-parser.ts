@@ -22,10 +22,10 @@ export type CinderCinderblock = {
 	git?: string
 	/** Block identifier (e.g. "info.v002.syphon"). */
 	id?: string
-	/** License identifier. */
-	license?: string
 	/** Library or libraryUrl reference link. */
 	library?: string
+	/** License identifier. */
+	license?: string
 	/** Block display name. */
 	name?: string
 	/** Software dependencies from `<requires>` elements. */
@@ -80,8 +80,8 @@ export function parseCinderCinderblock(content: string): CinderCinderblock | und
 		author: getAttribute(block, 'author'),
 		git: getAttribute(block, 'git'),
 		id: getAttribute(block, 'id'),
-		license: getAttribute(block, 'license'),
 		library: getAttribute(block, 'library') ?? getAttribute(block, 'libraryUrl'),
+		license: getAttribute(block, 'license'),
 		name: getAttribute(block, 'name'),
 		requires: parseDependencies(block),
 		summary: getAttribute(block, 'summary'),

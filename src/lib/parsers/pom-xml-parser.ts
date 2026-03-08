@@ -167,7 +167,7 @@ function getString(value: unknown): string | undefined {
  */
 function getCleanString(value: unknown): string | undefined {
 	const s = getString(value)
-	if (s && s.includes('$')) return undefined
+	if (s?.includes('$')) return undefined
 	return s
 }
 
@@ -184,11 +184,11 @@ function resolveName(
 
 	let resolved = name
 	if (groupId) {
-		resolved = resolved.replace('${project.groupId}', groupId)
+		resolved = resolved.replace(project.groupId, groupId)
 	}
 
 	if (artifactId) {
-		resolved = resolved.replace('${project.artifactId}', artifactId)
+		resolved = resolved.replace(project.artifactId, artifactId)
 	}
 
 	return resolved
@@ -206,18 +206,18 @@ function getNestedUrl(container: unknown): string | undefined {
 /**
  * Parse person entries (developers or contributors) from POM XML.
  */
-function parsePersonEntries(
-	container: unknown,
-	childKey: string,
-): PomXmlPersonEntry[] {
+function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonEntry[] {
 	if (typeof container !== 'object' || container === null) return []
 
 	const results: PomXmlPersonEntry[] = []
 	for (const entry of ensureArray(
-		(container as Record<string, unknown>)[childKey] as Record<string, unknown> | Record<string, unknown>[] | undefined,
+		(container as Record<string, unknown>)[childKey] as
+			| Array<Record<string, unknown>>
+			| Record<string, unknown>
+			| undefined,
 	)) {
 		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry as Record<string, unknown>
+		const record = entry
 		const name = getString(record.name)
 		if (!name) continue
 
@@ -241,10 +241,13 @@ function parseLicenses(project: Record<string, unknown>): PomXmlLicenseEntry[] {
 
 	const results: PomXmlLicenseEntry[] = []
 	for (const entry of ensureArray(
-		(container as Record<string, unknown>).license as Record<string, unknown> | Record<string, unknown>[] | undefined,
+		(container as Record<string, unknown>).license as
+			| Array<Record<string, unknown>>
+			| Record<string, unknown>
+			| undefined,
 	)) {
 		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry as Record<string, unknown>
+		const record = entry
 		const name = getString(record.name)
 		const url = getString(record.url)
 		if (name || url) {
@@ -271,10 +274,13 @@ function parseDependencies(project: Record<string, unknown>): {
 	}
 
 	for (const entry of ensureArray(
-		(container as Record<string, unknown>).dependency as Record<string, unknown> | Record<string, unknown>[] | undefined,
+		(container as Record<string, unknown>).dependency as
+			| Array<Record<string, unknown>>
+			| Record<string, unknown>
+			| undefined,
 	)) {
 		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry as Record<string, unknown>
+		const record = entry
 		const groupId = getString(record.groupId)
 		const artifactId = getString(record.artifactId)
 		if (!groupId || !artifactId) continue
@@ -299,7 +305,7 @@ function parseDependencies(project: Record<string, unknown>): {
  * Parse SCM URL, filtering out Maven variable references.
  */
 function parseScmUrl(project: Record<string, unknown>): string | undefined {
-	const scm = project.scm
+	const { scm } = project
 	if (typeof scm !== 'object' || scm === null) return undefined
 	return getCleanString((scm as Record<string, unknown>).url)
 }

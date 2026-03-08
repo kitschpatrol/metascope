@@ -58,7 +58,7 @@ describe('licenseFiles source', () => {
 		const result = await licenseFileSource.extract(context)
 
 		expect(result.spdxUrls).toBeDefined()
-		// multi/ has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have at least 2
+		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have at least 2
 		expect(result.spdxUrls!.length).toBeGreaterThanOrEqual(2)
 		// Should be sorted
 		for (let i = 1; i < result.spdxUrls!.length; i++) {

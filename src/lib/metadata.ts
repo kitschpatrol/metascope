@@ -20,23 +20,23 @@ import { filesystemSource } from './sources/filesystem'
 import { gemspecSource } from './sources/gemspec'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
+import { infoPlistSource } from './sources/info-plist.js'
 import { licenseFileSource } from './sources/license-file'
-import { infoPlistSource } from './sources/info-plist'
 import { locSource } from './sources/loc'
 import { metadataFileSource } from './sources/metadata'
 import { metascopeSource } from './sources/metascope'
 import { npmSource } from './sources/npm'
 import { obsidianSource } from './sources/obsidian'
 import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
-import { pbxprojSource } from './sources/pbxproj'
 import { openFrameworksInstallXmlSource } from './sources/open-frameworks-install-xml'
 import { packageSource } from './sources/package-json.js'
+import { pbxprojSource } from './sources/pbxproj'
 import { pomXmlSource } from './sources/pom-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
 import { publiccodeSource } from './sources/publiccode'
-import { readmeSource } from './sources/readme'
 import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
+import { readmeSource } from './sources/readme'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
 
@@ -214,9 +214,9 @@ export async function getMetadata<T>(
 		codemeta: codemetaData,
 		filesystem: {},
 		gemspec: {},
-		infoPlist: {},
 		git: {},
 		github: {},
+		infoPlist: {},
 		licenseFiles: {},
 		loc: {},
 		metadataFile: {},
@@ -225,14 +225,14 @@ export async function getMetadata<T>(
 		obsidian: {},
 		openFrameworksAddonConfig: {},
 		openFrameworksInstallXml: {},
-		pbxproj: {},
 		packageJson: {},
+		pbxproj: {},
 		pomXml: {},
 		processingLibraryProperties: {},
 		publiccode: {},
-		readme: {},
 		pypi: {},
 		pyprojectToml: {},
+		readme: {},
 		updates: {},
 	}
 

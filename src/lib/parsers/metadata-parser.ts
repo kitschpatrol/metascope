@@ -34,10 +34,7 @@ export type Metadata = {
  * The `format` parameter determines whether to parse as JSON or YAML.
  * Returns undefined if the content is malformed or not an object.
  */
-export function parseMetadata(
-	content: string,
-	format: 'json' | 'yaml',
-): Metadata | undefined {
+export function parseMetadata(content: string, format: 'json' | 'yaml'): Metadata | undefined {
 	let data: unknown
 	try {
 		data = format === 'json' ? JSON.parse(content) : parseYaml(content)
@@ -51,15 +48,10 @@ export function parseMetadata(
 
 	const record = data as Record<string, unknown>
 
-	const repository = isString(record.repository)
-		? normalizeRepoUrl(record.repository)
-		: undefined
+	const repository = isString(record.repository) ? normalizeRepoUrl(record.repository) : undefined
 
 	const homepage =
-		nonEmpty(record.homepage) ??
-		nonEmpty(record.url) ??
-		repository ??
-		nonEmpty(record.website)
+		nonEmpty(record.homepage) ?? nonEmpty(record.url) ?? repository ?? nonEmpty(record.website)
 
 	const keywords =
 		parseKeywords(record.keywords) ??

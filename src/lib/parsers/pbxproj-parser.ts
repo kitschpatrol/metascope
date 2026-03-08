@@ -94,7 +94,7 @@ export function parsePbxproj(filePath: string): Pbxproj | undefined {
 	try {
 		appTarget = root.getMainAppTarget() ?? undefined
 	} catch {
-		// getMainAppTarget throws when no app target exists (e.g. framework-only projects)
+		// The getMainAppTarget throws when no app target exists (e.g. framework-only projects)
 	}
 
 	appTarget ??= target

@@ -1,7 +1,6 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
 export { defineTemplate } from './metadata-types'
-export type { LanguageInfo } from '@kitschpatrol/tokei'
 export type {
 	ArduinoLibraryPropertiesCategory,
 	ArduinoLibraryPropertiesData,
@@ -13,9 +12,9 @@ export type {
 	CinderCinderblockData,
 	CodeMetaData,
 	Credentials,
+	FilesystemData,
 	GemspecData,
 	GemSpecDependency,
-	FilesystemData,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	GitConfig,
@@ -33,13 +32,13 @@ export type {
 	ObsidianManifest,
 	OpenFrameworksAddonConfigData,
 	OpenFrameworksInstallXmlData,
+	PackageData,
 	PbxprojData,
 	PomXmlData,
 	PomXmlDependencyEntry,
 	PomXmlLicenseEntry,
 	PomXmlOrganization,
 	PomXmlPersonEntry,
-	PackageData,
 	ProcessingLibraryPropertiesAuthorEntry,
 	ProcessingLibraryPropertiesCategory,
 	ProcessingLibraryPropertiesData,
@@ -48,9 +47,9 @@ export type {
 	PubliccodeData,
 	PubliccodeDependencyEntry,
 	PubliccodeDescription,
-	ReadmeData,
 	PypiData,
 	PyprojectData,
+	ReadmeData,
 	SourceName,
 	Template,
 	TemplateData,
@@ -59,3 +58,4 @@ export type {
 } from './metadata-types'
 export { templates } from './templates/index'
 export type { TemplateMap, TemplateName } from './templates/index'
+export type { LanguageInfo } from '@kitschpatrol/tokei'

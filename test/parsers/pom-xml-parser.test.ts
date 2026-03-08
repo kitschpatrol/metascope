@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises'
-import { readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parsePomXml } from '../../src/lib/parsers/pom-xml-parser'
@@ -62,7 +61,7 @@ describe('parsePomXml', () => {
 		expect(result!.dependencies.some((d) => d.artifactId === 'guava')).toBe(true)
 		expect(result!.dependencies.some((d) => d.artifactId === 'slf4j-api')).toBe(true)
 		// Test deps
-		expect(result!.devDependencies.some((d) => d.artifactId === 'testng')).toBe(true)
+		expect(result!.devDependencies.some((d) => d.artifactId === 'testing')).toBe(true)
 		expect(result!.devDependencies.some((d) => d.artifactId === 'hamcrest-all')).toBe(true)
 	})
 
@@ -106,14 +105,14 @@ describe('parsePomXml', () => {
 
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDirectory, dir.name, 'pom.xml'), 'utf8')
+		for (const directory of directories) {
+			const content = await readFile(resolve(fixturesDirectory, directory.name, 'pom.xml'), 'utf8')
 			const result = parsePomXml(content)
-			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 		}
 	})
 })

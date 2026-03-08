@@ -11,18 +11,18 @@ export type PbxprojData = Partial<Pbxproj>
  * Find the first `*.xcodeproj/project.pbxproj` file in a directory.
  * Returns the full path or undefined if not found.
  */
-async function findPbxprojFile(dirPath: string): Promise<string | undefined> {
+async function findPbxprojFile(directoryPath: string): Promise<string | undefined> {
 	try {
-		const entries = await readdir(dirPath, { withFileTypes: true })
+		const entries = await readdir(directoryPath, { withFileTypes: true })
 		for (const entry of entries) {
 			if (entry.isDirectory() && entry.name.endsWith('.xcodeproj')) {
-				const pbxprojPath = resolve(dirPath, entry.name, 'project.pbxproj')
+				const pbxprojPath = resolve(directoryPath, entry.name, 'project.pbxproj')
 				try {
 					const { stat } = await import('node:fs/promises')
 					await stat(pbxprojPath)
 					return pbxprojPath
 				} catch {
-					// project.pbxproj doesn't exist inside this .xcodeproj
+					// Project.pbxproj doesn't exist inside this .xcodeproj
 				}
 			}
 		}

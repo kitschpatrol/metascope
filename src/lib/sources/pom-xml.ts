@@ -1,17 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type {
-	PomXml,
-	PomXmlDependencyEntry,
-	PomXmlLicenseEntry,
-	PomXmlOrganization,
-	PomXmlPersonEntry,
-} from '../parsers/pom-xml-parser'
+import type { PomXml } from '../parsers/pom-xml-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parsePomXml } from '../parsers/pom-xml-parser'
 
-export type { PomXmlDependencyEntry, PomXmlLicenseEntry, PomXmlOrganization, PomXmlPersonEntry }
 export type PomXmlData = Partial<PomXml>
 
 export const pomXmlSource: MetadataSource<'pomXml'> = {
@@ -31,3 +24,10 @@ export const pomXmlSource: MetadataSource<'pomXml'> = {
 	},
 	key: 'pomXml',
 }
+
+export {
+	type PomXmlDependencyEntry,
+	type PomXmlLicenseEntry,
+	type PomXmlOrganization,
+	type PomXmlPersonEntry,
+} from '../parsers/pom-xml-parser'

@@ -17,12 +17,7 @@ export type ArduinoLibraryPropertiesData = Partial<ArduinoLibraryProperties>
  * Arduino-specific fields that distinguish library.properties from
  * Processing's identically-named format.
  */
-const ARDUINO_SPECIFIC_FIELDS = new Set([
-	'architectures',
-	'depends',
-	'dot_a_linkage',
-	'maintainer',
-])
+const ARDUINO_SPECIFIC_FIELDS = new Set(['architectures', 'depends', 'dot_a_linkage', 'maintainer'])
 
 /** Processing-exclusive fields that rule out Arduino. */
 const PROCESSING_EXCLUSIVE_FIELDS = new Set(['authors', 'minrevision', 'prettyversion'])

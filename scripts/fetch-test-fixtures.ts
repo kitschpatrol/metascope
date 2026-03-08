@@ -1,3 +1,4 @@
+/* eslint-disable ts/require-await */
 /* eslint-disable ts/naming-convention */
 /* eslint-disable ts/no-unused-vars */
 
@@ -121,6 +122,7 @@ function isValidXml(filename: string, content: string): boolean {
 	}
 }
 
+// @ts-expect-error - Use is commented out
 function isValidLegacyOpenFrameworksAddonXml(filename: string, content: string): boolean {
 	if (!isValidXml(filename, content)) {
 		return false
@@ -136,6 +138,7 @@ function isValidYaml(_filename: string, content: string): boolean {
 	return doc.errors.length === 0 && doc.contents !== null
 }
 
+// @ts-expect-error - Use is commented out
 function isValidPlist(_filename: string, content: string): boolean {
 	try {
 		plist.parse(content)
@@ -145,6 +148,7 @@ function isValidPlist(_filename: string, content: string): boolean {
 	}
 }
 
+// @ts-expect-error - Use is commented out
 function isValidArduinoLibraryProperties(filename: string, content: string): boolean {
 	// Quick guard clause if your scanner passes the full filename/path
 	if (!filename.endsWith('library.properties')) return false
@@ -169,6 +173,7 @@ function isValidArduinoLibraryProperties(filename: string, content: string): boo
 	return hasBaseFields && (hasArduinoSpecifics || !hasProcessingSpecifics)
 }
 
+// @ts-expect-error - Use is commented out
 function isValidProcessingLibraryProperties(filename: string, content: string): boolean {
 	if (!filename.endsWith('library.properties')) return false
 
@@ -192,6 +197,7 @@ function isValidProcessingLibraryProperties(filename: string, content: string): 
 	return hasBaseFields && (hasProcessingAuthors || hasProcessingSpecifics) && !hasArduinoSpecifics
 }
 
+// @ts-expect-error - Use is commented out
 function isValidPbxproj(_filename: string, content: string): boolean {
 	// Write to temp file
 

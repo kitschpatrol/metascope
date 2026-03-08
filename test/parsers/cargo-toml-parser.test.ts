@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCargoToml } from '../../src/lib/parsers/cargo-toml-parser'
@@ -40,8 +40,8 @@ describe('parseCargoToml', () => {
 		expect(result!.edition).toBe('2024')
 		expect(result!.rustVersion).toBe('1.85')
 		expect(result!.documentation).toBe('https://docs.rs/wreq-util')
-		expect(result!.dependencies!.length).toBeGreaterThan(0)
-		expect(result!.devDependencies!.length).toBeGreaterThan(0)
+		expect(result!.dependencies.length).toBeGreaterThan(0)
+		expect(result!.devDependencies.length).toBeGreaterThan(0)
 	})
 
 	it('should parse a workspace Cargo.toml', async () => {
@@ -54,7 +54,7 @@ describe('parseCargoToml', () => {
 		expect(result).toBeDefined()
 		expect(result!.name).toBeUndefined()
 		expect(result!.workspaceMembers).toContain('dubbo')
-		expect(result!.workspaceMembers!.length).toBeGreaterThan(0)
+		expect(result!.workspaceMembers.length).toBeGreaterThan(0)
 	})
 
 	it('should return undefined for invalid TOML', () => {
@@ -63,12 +63,12 @@ describe('parseCargoToml', () => {
 
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+		const directories = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDirectory, dir, 'Cargo.toml'), 'utf8')
+		for (const directory of directories) {
+			const content = await readFile(resolve(fixturesDirectory, directory, 'Cargo.toml'), 'utf8')
 			expect(() => parseCargoToml(content)).not.toThrow()
 		}
 	})

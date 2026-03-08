@@ -19,11 +19,11 @@ const METADATA_FILES = [
  * Returns the content and format of the first found file, or undefined.
  */
 async function findMetadataFile(
-	dirPath: string,
-): Promise<{ content: string; format: 'json' | 'yaml' } | undefined> {
+	directoryPath: string,
+): Promise<undefined | { content: string; format: 'json' | 'yaml' }> {
 	for (const { format, name } of METADATA_FILES) {
 		try {
-			const content = await readFile(resolve(dirPath, name), 'utf8')
+			const content = await readFile(resolve(directoryPath, name), 'utf8')
 			return { content, format }
 		} catch {
 			// File doesn't exist, try next

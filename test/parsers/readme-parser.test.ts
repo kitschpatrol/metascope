@@ -64,13 +64,13 @@ describe('parseReadme', () => {
 
 	it('should parse fixtures that have H1 headings', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBe(19)
+		expect(directories.length).toBe(19)
 
 		let withH1 = 0
-		for (const dir of dirs) {
-			const content = readFileSync(resolve(fixturesDirectory, dir.name, 'README.md'), 'utf8')
+		for (const directory of directories) {
+			const content = readFileSync(resolve(fixturesDirectory, directory.name, 'README.md'), 'utf8')
 			const result = parseReadme(content)
 			if (result) withH1++
 		}

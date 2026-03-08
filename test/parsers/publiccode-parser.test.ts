@@ -215,22 +215,22 @@ describe('parsePubliccode', () => {
 
 	it('should parse all fixtures without returning undefined', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
 		let parsedCount = 0
-		for (const dir of dirs) {
-			const dirPath = resolve(fixturesDirectory, dir.name)
-			const files = await readdir(dirPath)
+		for (const directory of directories) {
+			const directoryPath = resolve(fixturesDirectory, directory.name)
+			const files = await readdir(directoryPath)
 			const publiccodeFile = files.find(
 				(name) => name === 'publiccode.yml' || name === 'publiccode.yaml',
 			)
 			if (!publiccodeFile) continue
 
-			const content = readFileSync(resolve(dirPath, publiccodeFile), 'utf8')
+			const content = readFileSync(resolve(directoryPath, publiccodeFile), 'utf8')
 			const result = parsePubliccode(content)
-			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 			parsedCount++
 		}
 

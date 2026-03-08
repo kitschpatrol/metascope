@@ -14,11 +14,11 @@ export type ProcessingLibraryPropertiesData = Partial<ProcessingLibraryPropertie
 
 /** Processing-specific fields that distinguish from Arduino. */
 const PROCESSING_SPECIFIC_FIELDS = new Set([
-	'authors',
 	'authorList',
-	'prettyversion',
-	'minrevision',
+	'authors',
 	'dependencies',
+	'minrevision',
+	'prettyversion',
 ])
 
 /** Arduino-exclusive fields that rule out Processing. */

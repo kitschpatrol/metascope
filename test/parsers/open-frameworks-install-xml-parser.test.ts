@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises'
-import { readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseOpenFrameworksInstallXml } from '../../src/lib/parsers/open-frameworks-install-xml-parser'
@@ -71,14 +70,17 @@ describe('parseOpenFrameworksInstallXml', () => {
 
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDirectory, dir.name, 'install.xml'), 'utf8')
+		for (const directory of directories) {
+			const content = await readFile(
+				resolve(fixturesDirectory, directory.name, 'install.xml'),
+				'utf8',
+			)
 			const result = parseOpenFrameworksInstallXml(content)
-			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 		}
 	})
 })

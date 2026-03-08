@@ -90,9 +90,7 @@ function get(raw: Record<string, string>, key: string): string | undefined {
 /**
  * Parse a Processing `library.properties` content string into a structured object.
  */
-export function parseProcessingLibraryProperties(
-	content: string,
-): ProcessingLibraryProperties {
+export function parseProcessingLibraryProperties(content: string): ProcessingLibraryProperties {
 	const raw: Record<string, string> = {}
 
 	for (const rawLine of content.split(/\r?\n/)) {
@@ -250,10 +248,7 @@ function parseAuthors(value: string): ProcessingLibraryPropertiesAuthorEntry[] {
  * Split plain text on ` and `, `,`, `&` to extract author names.
  * Filters out bare "others" entries.
  */
-function addPlainAuthors(
-	text: string,
-	results: ProcessingLibraryPropertiesAuthorEntry[],
-): void {
+function addPlainAuthors(text: string, results: ProcessingLibraryPropertiesAuthorEntry[]): void {
 	const parts = text
 		.split(/\band\b|,|&/)
 		.map((s) => s.trim())

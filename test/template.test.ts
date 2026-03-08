@@ -40,8 +40,17 @@ const mockContext: MetadataContext = {
 	infoPlist: {},
 	licenseFiles: {},
 	loc: {
-		breakdown: [{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 }],
-		total: { blanks: 100, code: 500, comments: 50, files: 10, languages: ['TypeScript'], lines: 650 },
+		breakdown: [
+			{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
+		],
+		total: {
+			blanks: 100,
+			code: 500,
+			comments: 50,
+			files: 10,
+			languages: ['TypeScript'],
+			lines: 650,
+		},
 	},
 	metadataFile: {},
 	metascope: {
@@ -55,11 +64,6 @@ const mockContext: MetadataContext = {
 	obsidian: {},
 	openFrameworksAddonConfig: {},
 	openFrameworksInstallXml: {},
-	pbxproj: {},
-	pomXml: {},
-	processingLibraryProperties: {},
-	publiccode: {},
-	readme: {},
 	packageJson: {
 		// eslint-disable-next-line ts/naming-convention
 		_id: 'test-package@1.2.3',
@@ -67,8 +71,14 @@ const mockContext: MetadataContext = {
 		readme: '',
 		version: '1.2.3',
 	},
+	pbxproj: {},
+	pomXml: {},
+	processingLibraryProperties: {},
+	publiccode: {},
 	pypi: {},
 	pyprojectToml: {},
+	pythonSetupPy: {},
+	readme: {},
 	updates: {},
 }
 

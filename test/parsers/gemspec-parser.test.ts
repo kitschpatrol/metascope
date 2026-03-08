@@ -80,13 +80,13 @@ describe('parseGemspec', () => {
 		expect(directories.length).toBe(196)
 
 		let parsedCount = 0
-		for (const dir of directories) {
-			const dirPath = resolve(fixturesDirectory, dir.name)
-			const files = await readdir(dirPath)
+		for (const directory of directories) {
+			const directoryPath = resolve(fixturesDirectory, directory.name)
+			const files = await readdir(directoryPath)
 			const gemspecFile = files.find((name) => name.endsWith('.gemspec'))
 			if (!gemspecFile) continue
 
-			const content = readFileSync(resolve(dirPath, gemspecFile), 'utf8')
+			const content = readFileSync(resolve(directoryPath, gemspecFile), 'utf8')
 			await expect(parseGemspec(content)).resolves.toBeDefined()
 			parsedCount++
 		}
