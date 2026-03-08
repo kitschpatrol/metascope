@@ -1,15 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type {
-	CodeMetaDependency,
-	CodeMetaJsonData,
-	CodeMetaPersonOrOrg,
-} from '../parsers/codemeta-json-parser'
-import { parseCodemetaJson } from '../parsers/codemeta-json-parser'
+import type { CodeMetaJsonData } from '../parsers/codemeta-json-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-
-export type { CodeMetaDependency, CodeMetaJsonData, CodeMetaPersonOrOrg }
+import { parseCodemetaJson } from '../parsers/codemeta-json-parser'
 
 /** Try to read codemeta.json from a directory. */
 async function readCodemetaJsonFile(directoryPath: string): Promise<string | undefined> {
@@ -33,3 +27,9 @@ export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 	},
 	key: 'codemetaJson',
 }
+
+export {
+	type CodeMetaDependency,
+	type CodeMetaJsonData,
+	type CodeMetaPersonOrOrg,
+} from '../parsers/codemeta-json-parser'

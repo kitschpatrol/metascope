@@ -7,8 +7,6 @@
 import type { PyprojectData } from 'read-pyproject'
 import { parsePyproject } from 'read-pyproject'
 
-export type { PyprojectData }
-
 /**
  * Parse pyproject.toml content and return structured metadata.
  */
@@ -18,3 +16,5 @@ export function parsePyprojectToml(content: string): PyprojectData {
 		unknownKeyPolicy: 'strip',
 	})
 }
+
+export { type PyprojectData } from 'read-pyproject'

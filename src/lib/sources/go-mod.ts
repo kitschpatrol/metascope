@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prevent-abbreviations */
+
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { GoModData } from '../parsers/go-mod-parser'

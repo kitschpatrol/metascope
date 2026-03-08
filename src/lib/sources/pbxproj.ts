@@ -1,4 +1,4 @@
-import { readdir } from 'node:fs/promises'
+import { readdir, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { Pbxproj } from '../parsers/pbxproj-parser'
 import type { MetadataSource, SourceContext } from './source'
@@ -18,7 +18,6 @@ async function findPbxprojFile(directoryPath: string): Promise<string | undefine
 			if (entry.isDirectory() && entry.name.endsWith('.xcodeproj')) {
 				const pbxprojPath = resolve(directoryPath, entry.name, 'project.pbxproj')
 				try {
-					const { stat } = await import('node:fs/promises')
 					await stat(pbxprojPath)
 					return pbxprojPath
 				} catch {

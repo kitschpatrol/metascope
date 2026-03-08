@@ -1,5 +1,3 @@
-/* eslint-disable ts/naming-convention */
-
 import { XcodeProject } from '@bacons/xcode'
 import { XMLParser } from 'fast-xml-parser'
 import { randomUUID } from 'node:crypto'
@@ -70,21 +68,24 @@ async function saveFileSearchResult(
 	const prefix = result.repository.nameWithOwner.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')
 
 	// Create the nested path if a suffix is provided
-	const fullDestDir = folderSuffix
+	const fullDestinationDirectory = folderSuffix
 		? path.resolve(destinationDirectory, prefix, `${prefix}${folderSuffix}`)
 		: path.resolve(destinationDirectory, prefix)
 
-	await fs.mkdir(fullDestDir, { recursive: true })
+	await fs.mkdir(fullDestinationDirectory, { recursive: true })
 
 	// Write the file, overwriting if it exists
-	await fs.writeFile(path.resolve(fullDestDir, basename), content, {
+	await fs.writeFile(path.resolve(fullDestinationDirectory, basename), content, {
 		flag: 'w',
 	})
 
 	// Check if there are multiple files in the destination directory
-	const filesInDir = await fs.readdir(fullDestDir)
-	if (filesInDir.length > 1) {
-		console.warn(`[WARNING] Multiple files detected in ${fullDestDir}:`, filesInDir)
+	const filesInDirectory = await fs.readdir(fullDestinationDirectory)
+	if (filesInDirectory.length > 1) {
+		console.warn(
+			`[WARNING] Multiple files detected in ${fullDestinationDirectory}:`,
+			filesInDirectory,
+		)
 	}
 }
 
@@ -120,7 +121,7 @@ function isValidToml(_filename: string, content: string): boolean {
 	}
 }
 
-function isValidXml(filename: string, content: string): boolean {
+function isValidXml(_filename: string, content: string): boolean {
 	try {
 		new XMLParser().parse(content)
 		return true

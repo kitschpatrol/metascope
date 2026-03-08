@@ -21,11 +21,9 @@
 
 ## Overview
 
-Metascope aggregates metadata from a local code repository into a single JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a unified view of the project's metadata.
+Metascope aggregates metadata from a local code repository into a single monolithic JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a JSON object containing everything it could find.
 
-An (optional) template system lets you define exactly which fields to include and how to shape the output, useful for archival purposes, populating dashboards, or feeding data into other tools.
-
-Metascope is _not_ designed for perfectly normalized and consistent output across different project types (see [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta) for that), instead, it provides a maximalist and possibly duplicative assortment of project metadata from various sources.
+From there, an (optional) template system lets you refine and transform the output to reflect exactly which fields you need, useful for archival purposes, populating dashboards, or feeding data into other tools. The template system also provides a spec-compliant implementation of the [CodeMeta](https://codemeta.github.io/) metadata vocabulary, allowing easy generation of `codemeta.json` files providing a semantically normalized view of a variety of project types.
 
 Highlights:
 
@@ -52,18 +50,12 @@ Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in T
 
 Optional external tools:
 
-- [GitHub CLI](https://cli.github.com)
-  Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`.
-
-To install with [Homebrew](https://brew.sh/):
-
-```sh
-brew install gh
-```
+- [GitHub CLI](https://cli.github.com)  
+  Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`. It's trivially installed from [Homebrew](https://brew.sh/): `brew install gh`.
 
 ### Installation
 
-Invoke directly:
+Invoke directly on the current directory:
 
 ```sh
 npx metascope
@@ -81,7 +73,7 @@ npm install metascope
 npm install --global metascope
 ```
 
-If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their WASM.
+If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their WASM implementations.
 
 In your `pnpm-workspace.yaml`:
 
@@ -295,7 +287,87 @@ const result = await getMetadata({ path: '.', template: 'frontmatter' })
 
 ## Sources
 
-Metascope extracts data from twelve sources. Each source independently checks its own availability — if a source's prerequisites aren't met (missing tool, no git remote, no npm package, etc.), it is skipped gracefully.
+Metascope extracts data from a wide range of data sources.
+
+The green-checked entries below indicate metadata file formats and sources that `@kitschpatrol/codemeta` can discover and in a given directory:
+
+| Status | Ecosystem       | Organization or Registry                                                                                | Metascope Key | Source Specifications                                                                                                                                          | CodeMeta Crosswalk                                                                                                      |
+| ------ | --------------- | ------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| ✅     | Agnostic        | [CodeMeta (v1)](https://codemeta.github.io/)                                                            |               | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld)                                                                     | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V1')                                        |
+| ✅     | Agnostic        | [CodeMeta (v2)](https://codemeta.github.io/)                                                            |               | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld)                                                                     | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V2')                                        |
+| ✅     | Agnostic        | [CodeMeta (v3)](https://codemeta.github.io/)                                                            |               | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)                                                                     | No                                                                                                                      |
+| ✅     | Agnostic        | [CodeMeta (v3.1)](https://codemeta.github.io/)                                                          |               | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.1/codemeta.jsonld)                                                                     | No                                                                                                                      |
+| ✅     | Apple           | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) |               | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list)                                                            | No                                                                                                                      |
+| ✅     | Apple           | [Xcode Project](https://developer.apple.com/xcode/)                                                     |               | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                                                                               | No                                                                                                                      |
+| ✅     | C++             | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           |               | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                                                                             | No                                                                                                                      |
+| ✅     | C++             | [Cinder CinderBlock](https://libcinder.org/docs/guides/cinder-blocks/index.html)                        |               | [`cinderblock.xml`](https://libcinder.org/docs/guides/cinder-blocks/index.html)                                                                                | No                                                                                                                      |
+| ✅     | C++             | [openFrameworks Addon](https://openframeworks.cc/)                                                      |               | [`addon_config.mk`](https://github.com/openframeworks/ofxAddonTemplate)                                                                                        | No                                                                                                                      |
+| ✅     | C++             | [openFrameworks Addon (Legacy)](https://openframeworks.cc/)                                             |               | [`install.xml`](https://openframeworks.cc/) (Legacy format, replaced by `addon_config.mk`)                                                                     | No                                                                                                                      |
+| ✅     | Go              | [Go Modules](https://go.dev/ref/mod)                                                                    |               | [`go.mod`](https://go.dev/doc/modules/gomod-ref)                                                                                                               | No                                                                                                                      |
+| ✅     | Go              | [GoReleaser](https://goreleaser.com/)                                                                   |               | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                                                                              | No                                                                                                                      |
+| ✅     | Java            | [Maven](https://search.maven.org/)                                                                      |               | [`pom.xml`](https://maven.apache.org/pom.html)                                                                                                                 | [Yes](https://codemeta.github.io/crosswalk/java/ 'Java (Maven)')                                                        |
+| ✅     | Java            | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     |               | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)                                                                          | No                                                                                                                      |
+| ✅     | JavaScript      | [NPM](https://www.npmjs.com/)                                                                           |               | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)                                                                                  | [Yes](https://codemeta.github.io/crosswalk/node/ 'NodeJS')                                                              |
+| ✅     | Agnostic        | [Public Code](https://publiccode.net/)                                                                  |               | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)                                                                       | [Yes](https://codemeta.github.io/crosswalk/publiccode/ 'publiccode')                                                    |
+| ✅     | Python          | [PyPi (Distutils)](https://pypi.org/)                                                                   |               | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html) [`setup.cfg`](https://docs.python.org/3/distutils/apiref.html#distutils.config)             | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')                                           |
+| ✅     | Python          | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    |               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                                                                                 | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Python PKG-INFO')                                    |
+| ✅     | Python          | [PyPi (pep-0621)](https://pypi.org/)                                                                    |               | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                                                                                          | No                                                                                                                      |
+| ✅     | Ruby            | [Ruby Gems](https://rubygems.org/)                                                                      |               | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                                                                            | [Yes](https://codemeta.github.io/crosswalk/ruby/ 'Ruby Gem')                                                            |
+| ✅     | Rust            | [Crates](https://crates.io/)                                                                            |               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                                                                                        | [Yes](https://codemeta.github.io/crosswalk/cargo/ 'Rust Package Manager')                                               |
+| ✅     | Agnostic        |                                                                                                         |               | `README.md` (and variants)                                                                                                                                     | No                                                                                                                      |
+| ✅     | Agnostic        | [Documented below](#metadatajson)                                                                       |               | metadata.json`(and`.yaml`/`.yml\` variants)                                                                                                                    | No                                                                                                                      |
+| ✅     | Agnostic        | [SPDX](https://spdx.org/)                                                                               |               | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                                                                                       | No                                                                                                                      |
+| ❌     | .NET            | [NuGet](https://www.nuget.org/)                                                                         |               | [`*.nuspec`](https://learn.microsoft.com/nuget/reference/nuspec)                                                                                               | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'NuGet')                                              |
+| ❌     | Scholarly       | [Citation File Format (v1.2.0)](https://github.com/citation-file-format/citation-file-format)           |               | [`CITATION.cff`](https://github.com/citation-file-format/citation-file-format/blob/main/CITATION.cff)                                                          | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Citation File Format (1.2.0)')                       |
+| ❌     | Scholarly       | [DOAP (Description of a Project)](https://github.com/edumbill/doap)                                     |               | [`doap.rdf`](https://github.com/edumbill/doap/blob/master/doap.rdf)                                                                                            | [Yes](https://codemeta.github.io/crosswalk/doap/ 'DOAP')                                                                |
+| ❌     | Astronomy       | [ASCL](https://ascl.net/)                                                                               |               | [`pom.xml`](https://maven.apache.org/pom.html)                                                                                                                 | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'ASCL')                                               |
+| ❌     | Biomedical      | [SciCrunch Registry](https://scicrunch.org/)                                                            |               | _platform metadata_                                                                                                                                            | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'SciCrunchRegistry')                                  |
+| ❌     | Clojure         | [Leiningen](https://github.com/technomancy/leiningen)                                                   |               | [`project.clj`](https://github.com/technomancy/leiningen/blob/master/doc/PROFILES.md)                                                                          | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Leiningen (Clojure)')                                |
+| ❌     | Dart            | [pub.dev](https://pub.dev/)                                                                             |               | [`pubspec.yaml`](https://dart.dev/tools/pub/pubspec)                                                                                                           | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Pubspec')                                            |
+| ❌     | Data Catalog    | [W3C DCAT-2](https://www.w3.org/TR/vocab-dcat-2/)                                                       |               | [`*.ttl`, `*.rdf`, `*.jsonld`](https://www.w3.org/TR/vocab-dcat-2/)                                                                                            | [Yes](https://codemeta.github.io/crosswalk/dcat-2/ 'DCAT-2')                                                            |
+| ❌     | Data Catalog    | [W3C DCAT-3](https://www.w3.org/TR/vocab-dcat-2/)                                                       |               | [`*.ttl`, `*.rdf`, `*.jsonld`](https://www.w3.org/TR/vocab-dcat-2/)                                                                                            | [Yes](https://codemeta.github.io/crosswalk/dcat-3/ 'DCAT-3')                                                            |
+| ❌     | Debian          | [Debian Package](https://www.debian.org/distrib/packages)                                               |               | [`debian/control`](https://www.debian.org/doc/manuals/debian-policy/ch-controlfields.html)                                                                     | [Yes](https://codemeta.github.io/crosswalk/debian/ 'Debian Package')                                                    |
+| ❌     | Earth Science   | [CSDMS Model Metadata](https://csdms.colorado.edu/)                                                     |               | [`model_metadata.xml`](https://csdms.colorado.edu/wiki/Model_Metadata_Specification)                                                                           | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'csdms')                                              |
+| ❌     | Geoscience      | [OntoSoft Software Repository](https://ontosoft.org/portal/#list)                                       |               | [`*.json`, \*.xml\`](https://ontosoft-earthcube.github.io/ontosoft/ontosoft%20ontology/v1.0.1/doc/)                                                            | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'OntoSoft')                                           |
+| ❌     | Geoscience      | [USGS Model Catalog](https://data.usgs.gov/modelcatalog/)                                               |               | _portal metadata_                                                                                                                                              | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'usgs-modelcatalog')                                  |
+| ❌     | Geospatial      | [ISO 19115-1:2014](https://www.iso.org/standard/53798.html)                                             |               | [`*.xml`](https://standards.iso.org/ittf/PubliclyAvailableStandards/iso_19115-1_2014.html)                                                                     | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'ISO 19115-1:2014 Geographic information - Metadata') |
+| ❌     | Haskell         | [Hackage](https://hackage.haskell.org/)                                                                 |               | [`*.cabal`](https://cabal.readthedocs.io/en/latest/specification.html)                                                                                         | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Cabal (Haskell)')                                    |
+| ❌     | Julia           | [Pkg](https://pkgdocs.julialang.org/v1/)                                                                |               | [`Project.toml`](https://github.com/JuliaRegistries/General/blob/master/Registry/Package.toml)                                                                 | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Julia Project.toml')                                 |
+| ❌     | Knowledge Graph | [Wikidata](https://www.wikidata.org/)                                                                   |               | _Wikidata entity model_                                                                                                                                        | [Yes](https://codemeta.github.io/crosswalk/wikidata/ 'Wikidata')                                                        |
+| ❌     | Library         | [MODS](https://www.loc.gov/standards/mods/)                                                             |               | [`*.xml`](https://www.loc.gov/standards/mods/)                                                                                                                 | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'MODS')                                               |
+| ❌     | Licensing       | [SPDX 2.3](https://spdx.org/specifications)                                                             |               | [`*.spdx`, `*.spdx.json`, `*.spdx.rdf`](https://spdx.org/specifications)                                                                                       | [Yes](https://codemeta.github.io/crosswalk/spdx-2-3/ 'SPDX 2.3')                                                        |
+| ❌     | Life Sciences   | [bio.tools](https://bio.tools/)                                                                         |               | [`biotools.json`](https://bio.tools/schema)                                                                                                                    | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'bio.tools')                                          |
+| ❌     | Mathematics     | [swMATH](https://swmath.org/)                                                                           |               | _portal metadata_                                                                                                                                              | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'swMATH')                                             |
+| ❌     | Octave          | [Octave Package](https://octave.sourceforge.io/)                                                        |               | [`DESCRIPTION`](https://octave.sourceforge.io/pack/pack.html)                                                                                                  | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Octave')                                             |
+| ❌     | Perl            | [CPAN::Meta](https://www.cpan.org/)                                                                     |               | [`META.json`](https://metacpan.org/dist/CPAN-Meta/source/lib/CPAN/Meta/Spec.pm) [`META.yml`](https://metacpan.org/dist/CPAN-Meta/source/lib/CPAN/Meta/Spec.pm) | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Perl Module Description (CPAN::Meta)')               |
+| ❌     | R               | [R Package Description](https://cran.r-project.org/)                                                    |               | [`DESCRIPTION`](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#DESCRIPTION-file)                                                                 | [Yes](https://codemeta.github.io/crosswalk/r/ 'R Package Description')                                                  |
+| ❌     | Scholarly       | [BibTeX](https://www.bibtex.org)                                                                        |               | [`*.bib`](https://www.bibtex.org/Format/)                                                                                                                      | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'BibTeX (@softwareversion)')                          |
+| ❌     | Scholarly       | [DataCite Metadata Schema](https://datacite.org/schema/kernel-4)                                        |               | [`datacite.xml`](https://schema.datacite.org/meta/kernel-4)                                                                                                    | [Yes](https://codemeta.github.io/crosswalk/datacite/ 'DataCite')                                                        |
+| ❌     | Scholarly       | [Dublin Core](https://www.dublincore.org/specifications/dublin-core/)                                   |               | [`*.xml`, `*.rdf`](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/)                                                                          | [Yes](https://codemeta.github.io/crosswalk/dublincore/ 'Dublin Core')                                                   |
+| ❌     | Scholarly       | [Figshare Metadata](https://figshare.com/)                                                              |               | _platform metadata_                                                                                                                                            | [Yes](https://codemeta.github.io/crosswalk/figshare/ 'Figshare')                                                        |
+| ❌     | Scholarly       | [Software Discovery Index](https://discoveryindex.org/)                                                 |               | _no public format spec_                                                                                                                                        | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Software Discovery Index')                           |
+| ❌     | Bioinformatics  | [Software Ontology](https://theswo.sourceforge.net/)                                                    |               | [`*.owl`, `*.rdf`](https://www.ebi.ac.uk/ols/ontologies/swo)                                                                                                   | [Yes](https://codemeta.github.io/crosswalk/swo/ 'Software Ontology')                                                    |
+| ❌     | Scholarly       | [Trove Software Map](https://trove.nla.gov.au/)                                                         |               | _portal metadata_                                                                                                                                              | [Yes](https://codemeta.github.io/crosswalk/trove/ 'Trove Software Map')                                                 |
+| ❌     | Scholarly       | [VIVO](https://vivoweb.org/)                                                                            |               | [`*.rdf`](https://vivoweb.org/ontology)                                                                                                                        | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'VIVO')                                               |
+| ❌     | Scholarly       | [Zenodo Metadata](https://zenodo.org/)                                                                  |               | [`*.zenodo.json`](https://zenodo.org/api/doc)                                                                                                                  | [Yes](https://codemeta.github.io/crosswalk/zenodo/ 'Zenodo')                                                            |
+| ❌     | Space Physics   | [SPASE](https://www.spase-group.org/)                                                                   |               | [`*.xml`](https://www.spase-group.org/data/schema)                                                                                                             | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'SPASE')                                              |
+| ❌     | Agnostic        | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 |               | _GitHub REST metadata_                                                                                                                                         | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                                                            |
+
+### metadata.json
+
+Additionally, a minimalist `metadata.json` (or `.yaml`) file is supported, which can capture the minimal metadata required to populate a GitHub project's repository page's description, homepage, and topics.
+
+| Key           | Key Aliases                  | CodeMeta Property | Notes                                                                         |
+| ------------- | ---------------------------- | ----------------- | ----------------------------------------------------------------------------- |
+| `description` | _None_                       | `description`     | String description of project                                                 |
+| `homepage`    | `url` `repository` `website` | `url`             | For repository values, git+ prefix and .git suffix are automatically stripped |
+| `keywords`    | `tags` `topics`              | `keywords`        | Array of strings, or a single comma-delimited string                          |
+
+If multiple key aliases are present in the object, priority for populating the associated `codemeta.json` goes to the key, then falls through to key aliases in the order shown above. (E.g. homepage takes priority over url.)
+
+This is a non-standard format that exists primarily for use in combination with [github-action-repo-sync](https://github.com/kitschpatrol/github-action-repo-sync).
+
+## Metadata JSON
 
 ### codemeta
 
@@ -627,7 +699,23 @@ Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScrip
 
 ### Built-in templates
 
-Two built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
+Three built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
+
+#### `codemeta`
+
+The [CodeMeta](https://codemeta.github.io/) template provides a standard way to describe software using [JSON-LD](https://json-ld.org/) and [schema.org](https://schema.org/) terms. Most software projects already have rich metadata in manifests and other files (e.g. `package.json`, `Cargo.toml`, `pyproject.toml`, `LICENSE`, etc.), but the name and structure of semantically equivalent metadata is often inconsistent across ecosystems.
+
+It leverages the [crosswalk](https://codemeta.github.io/crosswalk/) data generously compiled by CodeMeta contributors to assist in automating the mapping of various metadata formats to the CodeMeta standard. Where crosswalk data is unavailable or incomplete, heuristics are used instead.
+
+This tool always outputs [CodeMeta v3.1](https://w3id.org/codemeta/3.1) files. When ingesting `codemeta.json` files defined in the older [CodeMeta 1](https://doi.org/10.5063/SCHEMA/CODEMETA-1.0) and [CodeMeta v2](https://doi.org/10.5063/SCHEMA/CODEMETA-2.0) contexts, all simple key re-mappings as defined in the crosswalk table are applied. However, some more nuanced conditional transformations (like the reassignment of copyright holding agents in v1) are not implemented.
+
+More mature Python-based tools like [codemetapy](https://github.com/proycon/codemetapy) and [codemeta-harvester](https://github.com/proycon/codemeta-harvester) perform a similar task, and either of these are recommended if you need `codemeta.json` output and aren't limited to a Node.js runtime.
+
+Note that Metascope and its its author is not affiliated with the CodeMeta project / governing bodies.
+
+```sh
+metascope --template codemeta
+```
 
 #### `frontmatter`
 
@@ -649,8 +737,6 @@ metascope --template project --author-name "Jane Doe" --github-account janedoe
 
 Metascope was built to support automated generation of project dashboards, badges, and documentation where a single source of truth for project metadata is useful. Rather than querying each API individually, metascope handles the discovery, authentication, and aggregation in one pass.
 
-The codemeta source is extracted first to provide discovery hints — the package name resolves NPM lookups, the repository URL resolves GitHub lookups, and keywords trigger niche sources like Obsidian. Remaining sources are checked for availability and extracted concurrently.
-
 Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 
 Some semi-related projects:
@@ -658,6 +744,25 @@ Some semi-related projects:
 - [git-truck](https://github.com/git-truck/git-truck)
 - [codemeta](https://codemeta.github.io/)
 - [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta)
+
+### Related projects
+
+- [codemetapy](https://github.com/proycon/codemetapy)\
+  Translate software metadata into the CodeMeta vocabulary (Python)
+- [codemeta-harvester](https://github.com/proycon/codemeta-harvester)\
+  Aggregate software metadata into the CodeMeta vocabulary from source repositories and service endpoints (Python)
+- [bibliothecary](https://github.com/librariesio/bibliothecary)\
+  Manifest discovery and parsing for [libraries.io](https://libraries.io/) (Ruby)
+- [diggity](https://github.com/carbonetes/diggity)\
+  Generates SBOMs for container images, filesystems, archives, and more (Go)
+- [SOMEF](https://github.com/KnowledgeCaptureAndDiscovery/somef/)\
+  Software Metadata Extraction Framework (Python)
+- [Upstream Ontologist](https://github.com/jelmer/upstream-ontologist)\
+  A common interface for finding metadata about upstream software projects (Rust)
+- [GrimoireLab](https://chaoss.github.io/grimoirelab/)\
+  Platform for software development analytics and insights (Python)
+- [OSS Review Toolkit](https://oss-review-toolkit.org/ort/)\
+  A suite of CLI tools to automate software compliance checks. (Kotlin)
 
 ## Slop factor
 
@@ -668,6 +773,12 @@ The architecture and non-boilerplate parts of the documentation were human-drive
 ## Maintainers
 
 [@kitschpatrol](https://github.com/kitschpatrol)
+
+## Acknowledgments
+
+Thank you to the [CodeMeta Project Management Committee and contributors](https://codemeta.github.io/governance/people/) for their development and stewardship of the standard.
+
+Jacob Peddicord's [askalono](https://github.com/jpeddicord/askalono) project inspired the [Dice-Sørensen](https://en.wikipedia.org/wiki/Dice-S%C3%B8rensen_coefficient) scoring strategy used for classifying arbitrary license text.
 
 <!-- contributing -->
 

@@ -1,4 +1,5 @@
-import { resolve } from 'node:path'
+import { mkdtempSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { pypiSource } from '../../src/lib/sources/pypi'
@@ -43,16 +44,15 @@ describe('pypi source', () => {
 
 	it('should return empty object for nonexistent package', async () => {
 		// Create a temp directory with a fake pyproject.toml
-		const { mkdtempSync, writeFileSync } = await import('node:fs')
-		const { join } = await import('node:path')
-		const tmpDir = mkdtempSync(join('/tmp', 'pypi-test-'))
+
+		const tempDirectory = mkdtempSync(join('/tmp', 'pypi-test-'))
 		writeFileSync(
-			join(tmpDir, 'pyproject.toml'),
+			join(tempDirectory, 'pyproject.toml'),
 			'[project]\nname = "this-package-definitely-does-not-exist-on-pypi-12345"',
 		)
 		const context: SourceContext = {
 			credentials: {},
-			path: tmpDir,
+			path: tempDirectory,
 		}
 		const result = await pypiSource.extract(context)
 		expect(result).toEqual({})

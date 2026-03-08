@@ -32,7 +32,7 @@ brew:
     email: j.neuhart@thecodingmachine.com
   folder: Formulae
   homepage: https://aenthill.github.io/
-  description: "command-line tool that helps bootstraping your Docker projects easily"
+  description: "command-line tool that helps bootstrapping your Docker projects easily"
   test: |
     system "#{bin}/aenthill --version"
 scoop:
@@ -43,5 +43,5 @@ scoop:
     name: gulien
     email: j.neuhart@thecodingmachine.com
   homepage: https://aenthill.github.io/
-  description: "Command-line tool that helps bootstraping your Docker projects easily"
+  description: "Command-line tool that helps bootstrapping your Docker projects easily"
   license: MIT

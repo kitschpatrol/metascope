@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prevent-abbreviations */
+
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'

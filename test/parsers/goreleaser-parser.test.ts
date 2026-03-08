@@ -26,7 +26,7 @@ describe('parseGoreleaser', () => {
 		const result = parseGoreleaser(content)
 
 		expect(result).toBeDefined()
-		expect(result!.description).toContain('bootstraping your Docker projects')
+		expect(result!.description).toContain('bootstrapping your Docker projects')
 		expect(result!.homepage).toBe('https://aenthill.github.io/')
 		expect(result!.license).toBe('MIT')
 	})

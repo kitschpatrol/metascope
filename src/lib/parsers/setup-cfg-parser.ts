@@ -166,17 +166,17 @@ export function parseSetupCfg(source: string): SetupCfgData {
 		}
 	}
 
-	// install_requires — multi-line dependency list in [options]
+	// Install_requires — multi-line dependency list in [options]
 	if (options.install_requires) {
 		data.install_requires = splitMultiline(options.install_requires)
 	}
 
-	// python_requires — version constraint in [options]
+	// Python_requires — version constraint in [options]
 	if (options.python_requires) {
 		data.python_requires = options.python_requires
 	}
 
-	// extras_require — [options.extras_require] section
+	// Extras_require — [options.extras_require] section
 	const extrasSection = sections['options.extras_require']
 	if (extrasSection) {
 		for (const [key, value] of Object.entries(extrasSection)) {
