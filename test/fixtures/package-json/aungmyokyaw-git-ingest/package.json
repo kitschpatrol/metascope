@@ -1,0 +1,83 @@
+{
+	"name": "git-ingest",
+	"version": "2.1.0",
+	"main": "src/cli.js",
+	"type": "module",
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"scripts": {
+		"start": "node src/cli.js",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage",
+		"lint": "eslint src/",
+		"lint:fix": "eslint src/ --fix",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"prepare": "husky install"
+	},
+	"bin": {
+		"git-ingest": "./src/cli.js"
+	},
+	"dependencies": {
+		"chalk": "^5.3.0",
+		"clipboardy": "^4.0.0",
+		"commander": "^14.0.0",
+		"ignore": "^7.0.5",
+		"isbinaryfile": "^5.0.0",
+		"ora": "^8.2.0",
+		"p-limit": "^6.2.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.30.0",
+		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/ui": "^3.2.4",
+		"eslint": "^9.30.0",
+		"eslint-plugin-n": "^17.20.0",
+		"globals": "^16.2.0",
+		"husky": "^9.0.11",
+		"jsdom": "^26.1.0",
+		"prettier": "^3.2.5",
+		"vitest": "^3.2.4"
+	},
+	"author": "Aung Myo Kyaw",
+	"license": "MIT",
+	"description": "Fast, AI-ready CLI tool that converts entire codebases into structured text files. Perfect for feeding projects to LLMs, code reviews, and documentation. Features streaming architecture, smart filtering, and cross-platform clipboard integration.",
+	"keywords": [
+		"ai-tools",
+		"llm-ready",
+		"codebase-analysis",
+		"code-ingestion",
+		"cli",
+		"command-line-tool",
+		"code-review",
+		"documentation",
+		"project-analysis",
+		"gitignore-support",
+		"streaming",
+		"performance",
+		"binary-detection",
+		"nodejs",
+		"developer-tools",
+		"automation",
+		"file-utilities",
+		"cross-platform",
+		"text-generation",
+		"project-tree",
+		"file-processing",
+		"clipboard",
+		"npm",
+		"open-source",
+		"chatgpt-ready"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AungMyoKyaw/git-ingest.git"
+	},
+	"bugs": {
+		"url": "https://github.com/AungMyoKyaw/git-ingest/issues"
+	},
+	"homepage": "https://github.com/AungMyoKyaw/git-ingest#readme"
+}

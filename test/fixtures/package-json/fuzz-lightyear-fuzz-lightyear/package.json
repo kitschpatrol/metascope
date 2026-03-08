@@ -1,0 +1,27 @@
+{
+	"name": "fuzz-lightyear",
+	"version": "2.0.1",
+	"description": "",
+	"main": "index.js",
+	"bin": {
+		"fuzz": "bin/fuzz.js"
+	},
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"chalk": "^2.4.2",
+		"cli-progress": "^3.3.1",
+		"deepmerge": "^4.1.1",
+		"fuzzbuzz": "^2.0.0",
+		"mkdirp": "^0.5.1",
+		"simple-git": "^1.126.0",
+		"tape": "^4.11.0",
+		"yargs": "^14.2.0"
+	}
+}

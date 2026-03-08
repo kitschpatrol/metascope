@@ -1,0 +1,37 @@
+{
+	"name": "@nayotta/metathings-node",
+	"version": "3.3.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"lint": "eslint .",
+		"lint-fix": "eslint --fix .",
+		"generate": "bash generate.sh",
+		"test": "./node_modules/.bin/mocha --file test/**/*_test.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nayotta/metathings-node.git"
+	},
+	"author": "nayotta-fe",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/nayotta/metathings-node/issues"
+	},
+	"homepage": "https://github.com/nayotta/metathings-node#readme",
+	"dependencies": {
+		"google-protobuf": "^3.9.1",
+		"grpc": "^1.24.3",
+		"protobufjs": "^6.10.1"
+	},
+	"devDependencies": {
+		"eslint": "^7.29.0",
+		"eslint-config-standard": "^16.0.3",
+		"eslint-plugin-import": "^2.23.4",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^5.1.0",
+		"mocha": "^9.2.0",
+		"pre-commit": "^1.2.2"
+	},
+	"pre-commit": ["lint", "test"]
+}

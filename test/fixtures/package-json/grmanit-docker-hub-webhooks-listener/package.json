@@ -1,0 +1,8 @@
+{
+	"name": "docker-hub-webhooks-listener",
+	"version": "0.1.1",
+	"main": "app.js",
+	"dependencies": {
+		"express": "~4.9.5"
+	}
+}

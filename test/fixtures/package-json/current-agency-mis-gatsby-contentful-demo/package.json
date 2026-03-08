@@ -1,0 +1,58 @@
+{
+	"name": "mediacurrent-gatsby-demo",
+	"private": true,
+	"description": "A demo",
+	"version": "0.1.0",
+	"author": "Mark Casias <mark.casias@mediacurrent.com>",
+	"dependencies": {
+		"@types/googlemaps": "^3.30.18",
+		"@types/markerclustererplus": "^2.1.33",
+		"breakpoint-sass": "^2.7.1",
+		"classnames": "^2.2.6",
+		"dotenv": "^6.2.0",
+		"gatsby": "^2.3.25",
+		"gatsby-image": "^2.0.31",
+		"gatsby-plugin-manifest": "^2.0.22",
+		"gatsby-plugin-netlify-cache": "^1.2.0",
+		"gatsby-plugin-offline": "^2.0.24",
+		"gatsby-plugin-react-helmet": "^3.0.8",
+		"gatsby-plugin-sass": "^2.0.10",
+		"gatsby-plugin-sharp": "^2.2.1",
+		"gatsby-source-contentful": "^2.1.1",
+		"gatsby-source-drupal": "^3.0.26",
+		"gatsby-source-filesystem": "^2.0.23",
+		"gatsby-transformer-remark": "^2.5.0",
+		"gatsby-transformer-sharp": "^2.1.15",
+		"html-react-parser": "^0.6.2",
+		"jquery": "^3.4.1",
+		"node-sass": "^4.11.0",
+		"prop-types": "^15.7.2",
+		"react": "^16.8.4",
+		"react-dom": "^16.8.4",
+		"react-google-maps": "^9.4.5",
+		"react-headroom": "^2.2.8",
+		"react-helmet": "^5.2.0",
+		"react-parser": "^1.0.0",
+		"react-slick": "^0.23.2",
+		"react-uid": "^2.2.0",
+		"singularitygs": "^1.8.0",
+		"slick-carousel": "^1.8.1",
+		"svg-sprite-loader": "^4.1.3"
+	},
+	"keywords": ["gatsby"],
+	"license": "MIT",
+	"scripts": {
+		"build": "gatsby build",
+		"develop": "gatsby develop",
+		"start": "npm run develop",
+		"serve": "gatsby serve",
+		"test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gatsbyjs/gatsby-starter-default"
+	},
+	"bugs": {
+		"url": "https://github.com/gatsbyjs/gatsby/issues"
+	}
+}

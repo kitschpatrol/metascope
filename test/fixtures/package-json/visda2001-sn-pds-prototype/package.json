@@ -1,0 +1,16 @@
+{
+	"name": "sn-pds-prototype",
+	"version": "1.0.0",
+	"description": "Prototype minimal d'ordonnances sécurisées (SN-PDS)",
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"start": "node server.js",
+		"dev": "node --watch server.js"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.19.2",
+		"nanoid": "^5.0.7"
+	}
+}

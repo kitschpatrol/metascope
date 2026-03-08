@@ -1,0 +1,66 @@
+{
+	"name": "roku-client",
+	"version": "5.2.0",
+	"description": "Send commands to your Roku devices",
+	"keywords": ["roku", "ssdp"],
+	"homepage": "https://github.com/bschlenk/node-roku-client",
+	"bugs": {
+		"url": "https://github.com/bschlenk/node-roku-client/issues"
+	},
+	"license": "Apache-2.0",
+	"author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bschlenk/node-roku-client"
+	},
+	"engines": {
+		"node": ">=10"
+	},
+	"files": ["dist", "!**/__tests__/"],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"type": "commonjs",
+	"exports": {
+		".": {
+			"require": "./dist/index.js",
+			"import": "./index.mjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"test:unit": "jest",
+		"test:watch": "npm run test:unit -- --watch",
+		"lint": "eslint --ext .ts lib",
+		"test": "npm run lint && npm run test:unit",
+		"build": "tsc",
+		"release": "standard-version",
+		"prepare": "husky install",
+		"prepublishOnly": "npm run test && npm run build"
+	},
+	"dependencies": {
+		"debug": "^4.3.1",
+		"fetch-ponyfill": "^7.1.0",
+		"node-ssdp": "^4.0.1",
+		"xml2js": "^0.4.23"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^12.1.4",
+		"@commitlint/config-conventional": "^12.1.4",
+		"@types/debug": "^4.1.5",
+		"@types/jest": "^26.0.23",
+		"@types/node": "^14.17.4",
+		"@types/xml2js": "^0.4.8",
+		"@typescript-eslint/eslint-plugin": "^4.28.1",
+		"@typescript-eslint/parser": "^4.28.1",
+		"eslint": "^7.29.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-import": "^2.23.4",
+		"husky": "^6.0.0",
+		"jest": "^27.0.6",
+		"jest-fetch-mock": "^3.0.3",
+		"prettier": "^2.3.2",
+		"standard-version": "^9.3.0",
+		"ts-jest": "^27.0.3",
+		"typescript": "^4.3.4"
+	}
+}

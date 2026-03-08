@@ -1,0 +1,110 @@
+{
+	"name": "js-string-syntax",
+	"displayName": "JS/TS String Syntax",
+	"description": "Syntax highlighting for HTML, XML/SVG, SQL, and CSS inside JavaScript and TypeScript strings",
+	"version": "0.1.14",
+	"publisher": "ericgomez",
+	"icon": "images/logo.png",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.97.0"
+	},
+	"categories": ["Programming Languages"],
+	"contributes": {
+		"grammars": [
+			{
+				"path": "./syntaxes/javascript/inference.tmLanguage.json",
+				"scopeName": "source.js.inference",
+				"injectTo": ["source.js"]
+			},
+			{
+				"path": "./syntaxes/typescript/inference.tmLanguage.json",
+				"scopeName": "source.ts.inference",
+				"injectTo": ["source.ts"]
+			},
+			{
+				"path": "./syntaxes/javascript/selector.tmLanguage.json",
+				"scopeName": "source.js.selector",
+				"injectTo": ["source.js", "source.jsx", "source.js.jsx"]
+			},
+			{
+				"path": "./syntaxes/typescript/selector.tmLanguage.json",
+				"scopeName": "source.ts.selector",
+				"injectTo": ["source.ts", "source.tsx"]
+			},
+			{
+				"path": "./syntaxes/javascript/xml.tmLanguage.json",
+				"scopeName": "source.js.xml",
+				"injectTo": ["source.js", "source.jsx", "source.js.jsx"]
+			},
+			{
+				"path": "./syntaxes/typescript/xml.tmLanguage.json",
+				"scopeName": "source.ts.xml",
+				"injectTo": ["source.ts", "source.tsx"]
+			},
+			{
+				"path": "./syntaxes/javascript/html.tmLanguage.json",
+				"scopeName": "source.js.html",
+				"injectTo": ["source.js", "source.jsx", "source.js.jsx"]
+			},
+			{
+				"path": "./syntaxes/typescript/html.tmLanguage.json",
+				"scopeName": "source.ts.html",
+				"injectTo": ["source.ts", "source.tsx"]
+			},
+			{
+				"path": "./syntaxes/javascript/sql.tmLanguage.json",
+				"scopeName": "source.js.sql",
+				"injectTo": ["source.js", "source.jsx", "source.js.jsx"]
+			},
+			{
+				"path": "./syntaxes/typescript/sql.tmLanguage.json",
+				"scopeName": "source.ts.sql",
+				"injectTo": ["source.ts", "source.tsx"]
+			},
+			{
+				"path": "./syntaxes/javascript/css.tmLanguage.json",
+				"scopeName": "source.js.css",
+				"injectTo": ["source.js", "source.jsx", "source.js.jsx"]
+			},
+			{
+				"path": "./syntaxes/typescript/css.tmLanguage.json",
+				"scopeName": "source.ts.css",
+				"injectTo": ["source.ts", "source.tsx"]
+			}
+		]
+	},
+	"keywords": [
+		"javascript",
+		"typescript",
+		"html",
+		"sql",
+		"css",
+		"xml",
+		"svg",
+		"highlight",
+		"string",
+		"syntax",
+		"template",
+		"template string",
+		"template literal",
+		"embedded html",
+		"inline html",
+		"xml in js",
+		"xml in ts",
+		"html in js",
+		"html in ts",
+		"sql in js",
+		"sql in ts",
+		"css in js",
+		"css in ts"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ericgomez/vscode-js-string-syntax.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ericgomez/vscode-js-string-syntax/issues",
+		"email": "eric.gomez.sanchez@gmail.com"
+	}
+}

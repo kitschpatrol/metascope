@@ -1,29 +1,31 @@
-// eslint-disable-next-line depend/ban-dependencies
-import type { NormalizedPackageJson } from 'read-pkg'
-import { access } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-// eslint-disable-next-line depend/ban-dependencies
-import { readPackage } from 'read-pkg'
+import type { PackageJsonData } from '../parsers/package-json-parser'
+import { parsePackageJson } from '../parsers/package-json-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
-// Compelling alternative, but prefer strong normalization
-// https://github.com/unjs/pkg-types
+export type PackageData = PackageJsonData
 
-export type PackageData = Partial<NormalizedPackageJson>
+/** Try to read package.json from a directory. */
+async function readPackageJsonFile(directoryPath: string): Promise<string | undefined> {
+	try {
+		return await readFile(resolve(directoryPath, 'package.json'), 'utf8')
+	} catch {
+		return undefined
+	}
+}
 
 export const packageSource: MetadataSource<'packageJson'> = {
 	async extract(context: SourceContext): Promise<PackageData> {
 		log.debug('Extracting package.json metadata...')
-		return readPackage({ cwd: context.path })
+		const content = await readPackageJsonFile(context.path)
+		if (!content) return {}
+		return parsePackageJson(content) ?? {}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await access(resolve(context.path, 'package.json'))
-			return true
-		} catch {
-			return false
-		}
+		const content = await readPackageJsonFile(context.path)
+		return content !== undefined
 	},
 	key: 'packageJson',
 }

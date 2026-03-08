@@ -1,0 +1,21 @@
+{
+	"name": "flash",
+	"version": "0.0.1",
+	"private": true,
+
+	"description": "Flash cards",
+
+	"main": "lib/flash.js",
+
+	"dependencies": {
+		"redis": ""
+	},
+
+	"devDependencies": {
+		"vows": ""
+	},
+
+	"scripts": {
+		"test": "vows test/*.js --spec"
+	}
+}
