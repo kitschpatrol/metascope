@@ -10,6 +10,7 @@
  * Uses `fast-xml-parser` with attribute parsing enabled.
  */
 
+import is from '@sindresorhus/is'
 import { XMLParser } from 'fast-xml-parser'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -68,16 +69,17 @@ export function parseCinderCinderblock(content: string): CinderCinderblock | und
 
 	let data: Record<string, unknown>
 	try {
-		data = parser.parse(content) as Record<string, unknown>
+		const parsed: unknown = parser.parse(content)
+		if (!is.plainObject(parsed)) return undefined
+		data = parsed
 	} catch {
 		return undefined
 	}
 
-	const cinder = data.cinder as Record<string, unknown> | undefined
-	if (!cinder) return undefined
-
-	const block = cinder.block as Record<string, unknown> | undefined
-	if (!block) return undefined
+	if (!is.plainObject(data.cinder)) return undefined
+	const { cinder } = data
+	if (!is.plainObject(cinder.block)) return undefined
+	const { block } = cinder
 
 	return cinderCinderblockSchema.parse({
 		author: getAttribute(block, 'author'),
@@ -122,9 +124,9 @@ function parseOperatingSystems(block: Record<string, unknown>): string[] {
 	const results: string[] = []
 	const seen = new Set<string>()
 
-	for (const support of ensureArray(block.supports as Record<string, unknown> | undefined)) {
-		if (typeof support !== 'object' || support === null) continue
-		const os = getAttribute(support as Record<string, unknown>, 'os')
+	for (const support of ensureArray(block.supports)) {
+		if (!is.plainObject(support)) continue
+		const os = getAttribute(support, 'os')
 		if (os) {
 			const mapped = OS_MAP[os.toLowerCase()] ?? os
 			if (!seen.has(mapped)) {
@@ -143,7 +145,7 @@ function parseOperatingSystems(block: Record<string, unknown>): string[] {
 function parseDependencies(block: Record<string, unknown>): string[] {
 	const results: string[] = []
 
-	for (const dep of ensureArray(block.requires as string | string[] | undefined)) {
+	for (const dep of ensureArray(block.requires)) {
 		if (typeof dep !== 'string') continue
 		const trimmed = dep.trim()
 		if (trimmed.length > 0) {

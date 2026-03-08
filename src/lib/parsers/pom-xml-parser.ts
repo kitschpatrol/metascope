@@ -9,6 +9,7 @@
  * Uses `fast-xml-parser` with namespace prefix removal and attribute ignoring.
  */
 
+import is from '@sindresorhus/is'
 import { XMLParser } from 'fast-xml-parser'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
@@ -99,13 +100,15 @@ export function parsePomXml(content: string): PomXml | undefined {
 
 	let data: Record<string, unknown>
 	try {
-		data = parser.parse(content) as Record<string, unknown>
+		const parsed: unknown = parser.parse(content)
+		if (!is.plainObject(parsed)) return undefined
+		data = parsed
 	} catch {
 		return undefined
 	}
 
-	const project = data.project as Record<string, unknown> | undefined
-	if (!project) return undefined
+	if (!is.plainObject(data.project)) return undefined
+	const { project } = data
 
 	const groupId = getString(project.groupId)
 	const artifactId = getString(project.artifactId)
@@ -177,10 +180,14 @@ function resolveName(
 
 	let resolved = name
 	if (groupId) {
+		// This matches an actual Maven string literal...
+		// eslint-disable-next-line no-template-curly-in-string
 		resolved = resolved.replaceAll('${project.groupId}', groupId)
 	}
 
 	if (artifactId) {
+		// This matches an actual Maven string literal...
+		// eslint-disable-next-line no-template-curly-in-string
 		resolved = resolved.replaceAll('${project.artifactId}', artifactId)
 	}
 
@@ -192,36 +199,28 @@ function resolveName(
  * Filters out Maven variable references.
  */
 function getNestedUrl(container: unknown): string | undefined {
-	if (typeof container !== 'object' || container === null) return undefined
-	return getCleanString((container as Record<string, unknown>).url)
+	if (!is.plainObject(container)) return undefined
+	return getCleanString(container.url)
 }
 
 /**
  * Parse person entries (developers or contributors) from POM XML.
  */
 function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonEntry[] {
-	if (typeof container !== 'object' || container === null) return []
-
+	if (!is.plainObject(container)) return []
+	const children = container[childKey]
 	const results: PomXmlPersonEntry[] = []
-	for (const entry of ensureArray(
-		(container as Record<string, unknown>)[childKey] as
-			| Array<Record<string, unknown>>
-			| Record<string, unknown>
-			| undefined,
-	)) {
-		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry
-		const name = getString(record.name)
+	for (const entry of ensureArray(children)) {
+		if (!is.plainObject(entry)) continue
+		const name = getString(entry.name)
 		if (!name) continue
-
 		results.push({
-			email: getString(record.email),
+			email: getString(entry.email),
 			name,
-			organization: getString(record.organization),
-			url: getString(record.url),
+			organization: getString(entry.organization),
+			url: getString(entry.url),
 		})
 	}
-
 	return results
 }
 
@@ -229,25 +228,16 @@ function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonE
  * Parse license entries from `<licenses><license>...</license></licenses>`.
  */
 function parseLicenses(project: Record<string, unknown>): PomXmlLicenseEntry[] {
-	const container = project.licenses
-	if (typeof container !== 'object' || container === null) return []
-
+	if (!is.plainObject(project.licenses)) return []
 	const results: PomXmlLicenseEntry[] = []
-	for (const entry of ensureArray(
-		(container as Record<string, unknown>).license as
-			| Array<Record<string, unknown>>
-			| Record<string, unknown>
-			| undefined,
-	)) {
-		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry
-		const name = getString(record.name)
-		const url = getString(record.url)
-		if (name || url) {
+	for (const entry of ensureArray(project.licenses.license)) {
+		if (!is.plainObject(entry)) continue
+		const name = getString(entry.name)
+		const url = getString(entry.url)
+		if (name ?? url) {
 			results.push({ name, url })
 		}
 	}
-
 	return results
 }
 
@@ -261,30 +251,20 @@ function parseDependencies(project: Record<string, unknown>): {
 	const dependencies: PomXmlDependencyEntry[] = []
 	const devDependencies: PomXmlDependencyEntry[] = []
 
-	const container = project.dependencies
-	if (typeof container !== 'object' || container === null) {
+	if (!is.plainObject(project.dependencies)) {
 		return { dependencies, devDependencies }
 	}
-
-	for (const entry of ensureArray(
-		(container as Record<string, unknown>).dependency as
-			| Array<Record<string, unknown>>
-			| Record<string, unknown>
-			| undefined,
-	)) {
-		if (typeof entry !== 'object' || entry === null) continue
-		const record = entry
-		const groupId = getString(record.groupId)
-		const artifactId = getString(record.artifactId)
+	for (const entry of ensureArray(project.dependencies.dependency)) {
+		if (!is.plainObject(entry)) continue
+		const groupId = getString(entry.groupId)
+		const artifactId = getString(entry.artifactId)
 		if (!groupId || !artifactId) continue
-
 		const dep: PomXmlDependencyEntry = {
 			artifactId,
 			groupId,
-			version: getCleanString(record.version),
+			version: getCleanString(entry.version),
 		}
-
-		if (getString(record.scope) === 'test') {
+		if (getString(entry.scope) === 'test') {
 			devDependencies.push(dep)
 		} else {
 			dependencies.push(dep)
@@ -298,24 +278,20 @@ function parseDependencies(project: Record<string, unknown>): {
  * Parse SCM URL, filtering out Maven variable references.
  */
 function parseScmUrl(project: Record<string, unknown>): string | undefined {
-	const { scm } = project
-	if (typeof scm !== 'object' || scm === null) return undefined
-	return getCleanString((scm as Record<string, unknown>).url)
+	if (!is.plainObject(project.scm)) return undefined
+	return getCleanString(project.scm.url)
 }
 
 /**
  * Parse organization from `<organization>` element.
  */
 function parseOrganization(project: Record<string, unknown>): PomXmlOrganization | undefined {
-	const org = project.organization
-	if (typeof org !== 'object' || org === null) return undefined
-	const record = org as Record<string, unknown>
-	const name = getString(record.name)
+	if (!is.plainObject(project.organization)) return undefined
+	const name = getString(project.organization.name)
 	if (!name) return undefined
-
 	return {
 		name,
-		url: getString(record.url),
+		url: getString(project.organization.url),
 	}
 }
 
@@ -324,13 +300,10 @@ function parseOrganization(project: Record<string, unknown>): PomXmlOrganization
  * Checks `java.version`, `maven.compiler.source`, and `java.compiler.source`.
  */
 function parseJavaVersion(project: Record<string, unknown>): string | undefined {
-	const { properties } = project
-	if (typeof properties !== 'object' || properties === null) return undefined
-	const record = properties as Record<string, unknown>
-
+	if (!is.plainObject(project.properties)) return undefined
 	return (
-		getCleanString(record['java.version']) ??
-		getCleanString(record['maven.compiler.source']) ??
-		getCleanString(record['java.compiler.source'])
+		getCleanString(project.properties['java.version']) ??
+		getCleanString(project.properties['maven.compiler.source']) ??
+		getCleanString(project.properties['java.compiler.source'])
 	)
 }

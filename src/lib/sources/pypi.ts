@@ -76,7 +76,7 @@ async function getPackageName(context: SourceContext): Promise<string | undefine
 	// Try setup.cfg [metadata].name
 	try {
 		const content = await readFile(resolve(context.path, 'setup.cfg'), 'utf8')
-		const nameMatch = /^\s*name\s*=\s*(.+)$/m.exec(content)
+		const nameMatch = /^\s*name\s*=\s*(\S+)$/m.exec(content)
 		if (nameMatch?.[1]?.trim()) return nameMatch[1].trim()
 	} catch {
 		// No setup.cfg

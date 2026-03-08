@@ -11,6 +11,7 @@ import { stringArray } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
+// eslint-disable-next-line ts/naming-convention, ts/no-unused-vars
 const licenseFilesSchema = z.object({
 	/** SPDX license URLs identified from license file contents. */
 	spdxUrls: stringArray,
@@ -24,4 +25,3 @@ export {
 	isLicenseFilename,
 	spdxIdToUrl,
 } from '../utilities/license-identification'
-export type { LicenseMatch } from '../utilities/license-identification'

@@ -13,6 +13,7 @@
  * attributes for operating system inference.
  */
 
+import is from '@sindresorhus/is'
 import { XMLParser } from 'fast-xml-parser'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -79,14 +80,16 @@ export function parseOpenFrameworksInstallXml(
 
 	let data: Record<string, unknown>
 	try {
-		data = parser.parse(fixedContent) as Record<string, unknown>
+		const parsed: unknown = parser.parse(fixedContent)
+		if (!is.plainObject(parsed)) return undefined
+		data = parsed
 	} catch {
 		return undefined
 	}
 
 	// Validate: must have <install> root element
-	const install = data.install as Record<string, unknown> | undefined
-	if (!install) return undefined
+	if (!is.plainObject(data.install)) return undefined
+	const { install } = data
 
 	return openFrameworksInstallXmlSchema.parse({
 		author: getString(install.author),
@@ -140,11 +143,10 @@ function parseRequirements(install: Record<string, unknown>): string[] {
 	}
 
 	// Structured: <requires><addon>name</addon>...</requires>
-	if (typeof requires === 'object') {
-		const container = requires as Record<string, unknown>
+	if (is.plainObject(requires)) {
 		const results: string[] = []
-		for (const addon of ensureArray(container.addon)) {
-			const name = getString(addon as string)
+		for (const addon of ensureArray(requires.addon)) {
+			const name = getString(addon)
 			if (name) {
 				results.push(name)
 			}
@@ -161,18 +163,17 @@ function parseRequirements(install: Record<string, unknown>): string[] {
  * found within `<add><link>` sections.
  */
 function parseOperatingSystems(install: Record<string, unknown>): string[] {
-	const add = install.add as Record<string, unknown> | undefined
-	if (!add) return []
-
-	const link = add.link as Record<string, unknown> | undefined
-	if (!link) return []
+	if (!is.plainObject(install.add)) return []
+	const { add } = install
+	if (!is.plainObject(add.link)) return []
+	const { link } = add
 
 	const results: string[] = []
 	const seen = new Set<string>()
 
-	for (const lib of ensureArray(link.lib as Record<string, unknown> | undefined)) {
-		if (typeof lib !== 'object' || lib === null) continue
-		const os = getString((lib as Record<string, unknown>)['@_os'] as string)
+	for (const library of ensureArray(link.lib)) {
+		if (!is.plainObject(library)) continue
+		const os = getString(library['@_os'])
 		if (os) {
 			const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os
 			if (!seen.has(mapped)) {

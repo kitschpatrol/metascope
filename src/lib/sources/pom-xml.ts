@@ -24,4 +24,3 @@ export const pomXmlSource: MetadataSource<'pomXml'> = {
 	},
 	key: 'pomXml',
 }
-

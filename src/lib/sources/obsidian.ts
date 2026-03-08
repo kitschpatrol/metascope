@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
+import { parseJsonRecord } from '../utilities/schema-primitives'
 
 export type ObsidianManifest = {
 	/** Plugin author name. */
@@ -63,8 +64,8 @@ async function readManifest(path: string): Promise<ObsidianManifest | undefined>
 async function isObsidianPlugin(path: string): Promise<boolean> {
 	try {
 		const content = await readFile(resolve(path, 'manifest.json'), 'utf8')
-		const json: unknown = JSON.parse(content)
-		return typeof json === 'object' && json !== null && 'id' in json && 'minAppVersion' in json
+		const json = parseJsonRecord(content)
+		return json !== undefined && 'id' in json && 'minAppVersion' in json
 	} catch {
 		return false
 	}

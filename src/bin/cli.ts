@@ -66,10 +66,17 @@ await yargsInstance
 					try {
 						const { createJiti } = await import('jiti')
 						const jiti = createJiti(import.meta.url)
-						const templateModule = (await jiti.import(argv.template)) as {
-							default?: Template<unknown>
+						const templateModule: unknown = await jiti.import(argv.template)
+						if (
+							typeof templateModule === 'object' &&
+							templateModule !== null &&
+							'default' in templateModule &&
+							typeof templateModule.default === 'function'
+						) {
+							// Runtime-validated function from dynamic import; shape guaranteed by defineTemplate()
+							const fn = templateModule.default
+							template = (context, data) => fn(context, data)
 						}
-						template = templateModule.default
 						if (typeof template !== 'function') {
 							log.error(
 								'Template file must export a function as default export. Use defineTemplate().',

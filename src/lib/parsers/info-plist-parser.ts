@@ -11,6 +11,7 @@
  * Uses the `plist` npm package to parse XML plist format.
  */
 
+import is from '@sindresorhus/is'
 import plist from 'plist'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -77,11 +78,11 @@ export function parseInfoPlist(content: string): InfoPlist | undefined {
 	let data: PlistDict
 	try {
 		const parsed = plist.parse(content)
-		if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+		if (!is.plainObject(parsed)) {
 			return undefined
 		}
 
-		data = parsed as PlistDict
+		data = parsed
 	} catch {
 		return undefined
 	}

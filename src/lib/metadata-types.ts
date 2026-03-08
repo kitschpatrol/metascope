@@ -7,8 +7,8 @@ export type { FilesystemData } from './sources/filesystem'
 export type { GemspecData } from './sources/gemspec'
 export type { GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
-export type { GoModSourceData } from './sources/go-mod'
-export type { GoreleaserSourceData } from './sources/goreleaser'
+export type { GoModData } from './sources/go-mod'
+export type { GoreleaserData } from './sources/goreleaser'
 export type { InfoPlistData } from './sources/info-plist'
 export type { LicenseFilesData } from './sources/license-file'
 export type { LocData } from './sources/loc'
@@ -18,9 +18,9 @@ export type { NpmData } from './sources/npm'
 export type { ObsidianData } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
-export type { PackageData } from './sources/package-json'
+export type { PackageJsonData } from './sources/package-json'
 export type { PbxprojData } from './sources/pbxproj'
-export type { PkgInfoSourceData } from './sources/pkg-info'
+export type { PkgInfoData } from './sources/pkg-info'
 export type { PomXmlData } from './sources/pom-xml'
 export type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 export type { PubliccodeData } from './sources/publiccode'
@@ -28,7 +28,7 @@ export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
-export type { SetupCfgSourceData } from './sources/setup-cfg'
+export type { SetupCfgData } from './sources/setup-cfg'
 export type { UpdatesData } from './sources/updates'
 
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
@@ -40,8 +40,8 @@ import type { FilesystemData } from './sources/filesystem'
 import type { GemspecData } from './sources/gemspec'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
-import type { GoModSourceData } from './sources/go-mod'
-import type { GoreleaserSourceData } from './sources/goreleaser'
+import type { GoModData } from './sources/go-mod'
+import type { GoreleaserData } from './sources/goreleaser'
 import type { InfoPlistData } from './sources/info-plist'
 import type { LicenseFilesData } from './sources/license-file'
 import type { LocData } from './sources/loc'
@@ -51,9 +51,9 @@ import type { NpmData } from './sources/npm'
 import type { ObsidianData } from './sources/obsidian'
 import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
-import type { PackageData } from './sources/package-json'
+import type { PackageJsonData } from './sources/package-json'
 import type { PbxprojData } from './sources/pbxproj'
-import type { PkgInfoSourceData } from './sources/pkg-info'
+import type { PkgInfoData } from './sources/pkg-info'
 import type { PomXmlData } from './sources/pom-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 import type { PubliccodeData } from './sources/publiccode'
@@ -61,7 +61,7 @@ import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
 import type { PythonSetupPyData } from './sources/python-setup-py'
 import type { ReadmeData } from './sources/readme'
-import type { SetupCfgSourceData } from './sources/setup-cfg'
+import type { SetupCfgData } from './sources/setup-cfg'
 import type { UpdatesData } from './sources/updates'
 
 // ── Aggregate Context ──────────────────────────────────
@@ -80,8 +80,8 @@ export type MetadataContext = {
 	gemspec: GemspecData
 	git: GitData
 	github: GitHubData
-	goMod: GoModSourceData
-	goreleaser: GoreleaserSourceData
+	goMod: GoModData
+	goreleaser: GoreleaserData
 	infoPlist: InfoPlistData
 	licenseFiles: LicenseFilesData
 	loc: LocData
@@ -91,9 +91,9 @@ export type MetadataContext = {
 	obsidian: ObsidianData
 	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
 	openFrameworksInstallXml: OpenFrameworksInstallXmlData
-	packageJson: PackageData
+	packageJson: PackageJsonData
 	pbxproj: PbxprojData
-	pkgInfo: PkgInfoSourceData
+	pkgInfo: PkgInfoData
 	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
 	publiccode: PubliccodeData
@@ -101,7 +101,7 @@ export type MetadataContext = {
 	pyprojectToml: PyprojectData
 	pythonSetupPy: PythonSetupPyData
 	readme: ReadmeData
-	setupCfg: SetupCfgSourceData
+	setupCfg: SetupCfgData
 	updates: UpdatesData
 }
 

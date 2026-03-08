@@ -1,12 +1,9 @@
 /* eslint-disable ts/naming-convention */
-/* eslint-disable ts/no-unsafe-member-access */
-/* eslint-disable ts/no-explicit-any */
-/* eslint-disable ts/no-unsafe-type-assertion */
 
 import type { Node } from 'web-tree-sitter'
 import { z } from 'zod'
-import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -158,7 +155,7 @@ function extractStringListDict(node: Node): Record<string, string[]> {
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /** Simple string attributes to extract from setup() keyword arguments. */
-const STRING_ATTRS = new Set<keyof SetupPyData>([
+const STRING_ATTRS = new Set<string>([
 	'author',
 	'author_email',
 	'description',
@@ -208,10 +205,10 @@ export async function parseSetupPy(source: string): Promise<SetupPyData> {
 		const argumentName = nameNode.text
 
 		// String attributes
-		if (STRING_ATTRS.has(argumentName as keyof SetupPyData)) {
+		if (STRING_ATTRS.has(argumentName)) {
 			const value = extractString(valueNode)
 			if (value !== undefined) {
-				;(data as any)[argumentName] = value
+				Object.assign(data, { [argumentName]: value })
 			}
 
 			continue

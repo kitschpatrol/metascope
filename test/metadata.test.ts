@@ -29,7 +29,7 @@ describe('getMetadata', () => {
 		// Sources that aren't available should not appear as empty objects
 		for (const [, value] of Object.entries(result)) {
 			if (typeof value === 'object') {
-				expect(Object.keys(value as Record<string, unknown>).length).toBeGreaterThan(0)
+				expect(Object.keys(value).length).toBeGreaterThan(0)
 			}
 		}
 	})

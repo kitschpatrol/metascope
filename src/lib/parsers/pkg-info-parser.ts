@@ -29,7 +29,7 @@ const pkgInfoDataSchema = z.object({
 	version: nonEmptyString,
 })
 
-export type PkgInfoData = z.infer<typeof pkgInfoDataSchema>
+export type PkgInfo = z.infer<typeof pkgInfoDataSchema>
 
 // ─── Header parser ──────────────────────────────────────────────────────────
 
@@ -102,7 +102,7 @@ function splitMulti(value: string | undefined): string[] {
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /** Simple header-to-field mappings. */
-const HEADER_MAP: Record<string, keyof PkgInfoData> = {
+const HEADER_MAP: Record<string, keyof PkgInfo> = {
 	Author: 'author',
 	'Author-email': 'author_email',
 	'Description-Content-Type': 'description_content_type',
@@ -126,10 +126,10 @@ const HEADER_MAP: Record<string, keyof PkgInfoData> = {
  * Requires-Dist, Project-URL, Platform), continuation lines, and
  * the body section as long_description.
  */
-export function parsePkgInfo(source: string): PkgInfoData {
+export function parsePkgInfo(source: string): PkgInfo {
 	const headers = parseHeaders(source)
 
-	const data: PkgInfoData = {
+	const data: PkgInfo = {
 		author: undefined,
 		author_email: undefined,
 		classifiers: [],
@@ -156,7 +156,7 @@ export function parsePkgInfo(source: string): PkgInfoData {
 	for (const [header, field] of Object.entries(HEADER_MAP)) {
 		const value = headers[header]
 		if (value && value !== 'UNKNOWN') {
-			data[field] = value as never
+			Object.assign(data, { [field]: value })
 		}
 	}
 

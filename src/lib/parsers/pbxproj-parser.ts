@@ -13,6 +13,7 @@
  */
 
 import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
+import is from '@sindresorhus/is'
 import { z } from 'zod'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
 
@@ -109,7 +110,8 @@ export function parsePbxproj(filePath: string): Pbxproj | undefined {
 		try {
 			const config = appTarget.getDefaultConfiguration()
 			targetConfig = config
-			targetSettings = config.props.buildSettings as unknown as BuildSettings
+			const bs = config.props.buildSettings
+			targetSettings = is.plainObject(bs) ? bs : undefined
 		} catch {
 			// Target may not have a valid build configuration
 		}
@@ -121,7 +123,8 @@ export function parsePbxproj(filePath: string): Pbxproj | undefined {
 			root.props.buildConfigurationList.props.buildConfigurations.find(
 				(c) => c.props.name === 'Release',
 			) ?? root.props.buildConfigurationList.getDefaultConfiguration()
-		projectSettings = projectConfig.props.buildSettings as unknown as BuildSettings
+		const pbs = projectConfig.props.buildSettings
+		projectSettings = is.plainObject(pbs) ? pbs : undefined
 	} catch {
 		// Project may not have valid build configurations
 	}
@@ -228,7 +231,7 @@ function getResolvedSetting(
 ): string | undefined {
 	if (config) {
 		try {
-			const resolved = config.resolveBuildSetting(key as never)
+			const resolved = config.resolveBuildSetting(key)
 			const cleaned = cleanString(resolved)
 			if (cleaned !== undefined) return cleaned
 		} catch {
@@ -306,9 +309,9 @@ function parseDependencies(
 	const packageReferences = root.props.packageReferences ?? []
 	const results: PbxprojDependency[] = []
 
-	for (const pkg of packageReferences) {
-		if (!XCRemoteSwiftPackageReference.is(pkg)) continue
-		const url = cleanString(pkg.props.repositoryURL)
+	for (const packageReference of packageReferences) {
+		if (!XCRemoteSwiftPackageReference.is(packageReference)) continue
+		const url = cleanString(packageReference.props.repositoryURL)
 		if (url) {
 			results.push({ url })
 		}

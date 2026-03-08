@@ -7,7 +7,7 @@ import products from 'case-police/dict/products.json'
 import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
-import type { PackageData } from './metadata-types'
+import type { PackageJsonData } from './metadata-types'
 import type { CodeMetaJsonData } from './parsers/codemeta-json-parser'
 
 type CodeMetaPersonOrOrg = NonNullable<CodeMetaJsonData['author']>[number]
@@ -223,7 +223,7 @@ export function usesSharedConfig(codemeta: CodeMetaJsonData): boolean {
 /**
  * TODO
  */
-export function usesPnpm(packageJson: PackageData): boolean {
+export function usesPnpm(packageJson: PackageJsonData): boolean {
 	return (
 		packageJson.packageManager?.toLowerCase().startsWith('pnpm') ??
 		Object.hasOwn(packageJson.engines ?? {}, 'pnpm')

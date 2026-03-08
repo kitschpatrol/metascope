@@ -1,11 +1,11 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { GoreleaserData } from '../parsers/goreleaser-parser'
+import type { Goreleaser } from '../parsers/goreleaser-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseGoreleaser } from '../parsers/goreleaser-parser'
 
-export type GoreleaserSourceData = Partial<GoreleaserData>
+export type GoreleaserData = Partial<Goreleaser>
 
 /** Goreleaser config filenames in priority order. */
 const GORELEASER_FILENAMES = ['.goreleaser.yaml', '.goreleaser.yml']
@@ -25,7 +25,7 @@ async function findGoreleaserFile(directoryPath: string): Promise<string | undef
 }
 
 export const goreleaserSource: MetadataSource<'goreleaser'> = {
-	async extract(context: SourceContext): Promise<GoreleaserSourceData> {
+	async extract(context: SourceContext): Promise<GoreleaserData> {
 		log.debug('Extracting goreleaser metadata...')
 
 		const filePath = await findGoreleaserFile(context.path)

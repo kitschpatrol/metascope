@@ -20,7 +20,7 @@ export const pyprojectSource: MetadataSource<'pyprojectToml'> = {
 
 		const content = await readPyprojectFile(context.path)
 		if (!content) return {}
-		return parsePyprojectToml(content) ?? {}
+		return parsePyprojectToml(content)
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const content = await readPyprojectFile(context.path)

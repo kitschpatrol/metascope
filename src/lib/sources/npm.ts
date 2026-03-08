@@ -1,9 +1,11 @@
+import is from '@sindresorhus/is'
 import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
+import { parseJsonRecord } from '../utilities/schema-primitives'
 
 export type NpmData = {
 	/** Deprecation message, if the package is deprecated. */
@@ -37,8 +39,8 @@ const npmDownloadsSchema = z.object({
 async function getPackageName(context: SourceContext): Promise<string | undefined> {
 	try {
 		const content = await readFile(resolve(context.path, 'package.json'), 'utf8')
-		const pkg = JSON.parse(content) as Record<string, unknown>
-		return typeof pkg.name === 'string' ? pkg.name : undefined
+		const packageContent = parseJsonRecord(content)
+		return typeof packageContent?.name === 'string' ? packageContent.name : undefined
 	} catch {
 		return undefined
 	}
@@ -80,11 +82,13 @@ export const npmSource: MetadataSource<'npm'> = {
 
 		// Check for TypeScript types
 		const hasTypes = Boolean(
-			metadata.types ?? metadata.typings ?? (metadata as Record<string, unknown>).exports,
+			metadata.types ??
+			metadata.typings ??
+			(is.plainObject(metadata) ? metadata.exports : undefined),
 		)
 
-		const distribution = metadata.dist as Record<string, unknown> | undefined
-		const time = metadata.time as Record<string, string> | undefined
+		const distribution = is.plainObject(metadata.dist) ? metadata.dist : undefined
+		const time = is.plainObject(metadata.time) ? metadata.time : undefined
 
 		return {
 			deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
@@ -95,7 +99,7 @@ export const npmSource: MetadataSource<'npm'> = {
 			downloadsYearly,
 			fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,
 			hasTypes,
-			publishDateLatest: time?.modified,
+			publishDateLatest: typeof time?.modified === 'string' ? time.modified : undefined,
 			unpackedSizeBytes:
 				typeof distribution?.unpackedSize === 'number' ? distribution.unpackedSize : undefined,
 			url: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,

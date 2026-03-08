@@ -8,6 +8,7 @@
  * @see https://doc.rust-lang.org/cargo/reference/manifest.html
  */
 
+import is from '@sindresorhus/is'
 import { parse as parseToml } from 'smol-toml'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -77,34 +78,38 @@ type CargoTomlDependencyEntry = CargoToml['dependencies'][number]
 export function parseCargoToml(content: string): CargoToml | undefined {
 	let data: Record<string, unknown>
 	try {
-		data = parseToml(content) as Record<string, unknown>
+		const parsed: unknown = parseToml(content)
+		if (!is.plainObject(parsed)) return undefined
+		data = parsed
 	} catch {
 		return undefined
 	}
 
-	const pkg = (data.package ?? {}) as Record<string, unknown>
-	const workspace = data.workspace as Record<string, unknown> | undefined
+	const packageData: Record<string, unknown> = is.plainObject(data.package) ? data.package : {}
+	const workspace = is.plainObject(data.workspace) ? data.workspace : undefined
 
 	return cargoTomlSchema.parse({
-		authors: parseAuthors(pkg.authors),
+		authors: parseAuthors(packageData.authors),
 		buildDependencies: parseDependencies(
-			(data['build-dependencies'] ?? {}) as Record<string, unknown>,
+			is.plainObject(data['build-dependencies']) ? data['build-dependencies'] : {},
 		),
-		categories: toStringArray(pkg.categories),
-		dependencies: parseDependencies((data.dependencies ?? {}) as Record<string, unknown>),
-		description: nonEmpty(pkg.description),
-		devDependencies: parseDependencies((data['dev-dependencies'] ?? {}) as Record<string, unknown>),
-		documentation: nonEmpty(pkg.documentation),
-		edition: nonEmpty(pkg.edition),
-		homepage: nonEmpty(pkg.homepage),
-		keywords: toStringArray(pkg.keywords),
-		license: nonEmpty(pkg.license),
-		licenseFile: nonEmpty(pkg['license-file']),
-		name: nonEmpty(pkg.name),
-		readme: nonEmpty(pkg.readme),
-		repository: nonEmpty(pkg.repository),
-		rustVersion: nonEmpty(pkg['rust-version']),
-		version: nonEmpty(pkg.version),
+		categories: toStringArray(packageData.categories),
+		dependencies: parseDependencies(is.plainObject(data.dependencies) ? data.dependencies : {}),
+		description: nonEmpty(packageData.description),
+		devDependencies: parseDependencies(
+			is.plainObject(data['dev-dependencies']) ? data['dev-dependencies'] : {},
+		),
+		documentation: nonEmpty(packageData.documentation),
+		edition: nonEmpty(packageData.edition),
+		homepage: nonEmpty(packageData.homepage),
+		keywords: toStringArray(packageData.keywords),
+		license: nonEmpty(packageData.license),
+		licenseFile: nonEmpty(packageData['license-file']),
+		name: nonEmpty(packageData.name),
+		readme: nonEmpty(packageData.readme),
+		repository: nonEmpty(packageData.repository),
+		rustVersion: nonEmpty(packageData['rust-version']),
+		version: nonEmpty(packageData.version),
 		workspaceMembers: toStringArray(workspace?.members),
 	})
 }
@@ -166,9 +171,8 @@ function parseDependencies(table: Record<string, unknown>): CargoTomlDependencyE
 	for (const [name, value] of Object.entries(table)) {
 		if (typeof value === 'string') {
 			results.push({ name, version: value })
-		} else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-			const object = value as Record<string, unknown>
-			results.push({ name, version: nonEmpty(object.version) })
+		} else if (is.plainObject(value)) {
+			results.push({ name, version: nonEmpty(value.version) })
 		} else {
 			results.push({ name, version: undefined })
 		}

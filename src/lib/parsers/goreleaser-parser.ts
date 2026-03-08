@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
-/* eslint-disable ts/no-unsafe-member-access */
-/* eslint-disable ts/no-explicit-any */
 
+import is from '@sindresorhus/is'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -21,7 +20,7 @@ const goreleaserDataSchema = z.object({
 })
 
 /** Parsed goreleaser metadata */
-export type GoreleaserData = z.infer<typeof goreleaserDataSchema>
+export type Goreleaser = z.infer<typeof goreleaserDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -59,7 +58,7 @@ function isNonEmptyString(value: unknown): value is string {
 function firstString(sections: unknown[], field: string): string | undefined {
 	for (const section of sections) {
 		if (isPlainObject(section)) {
-			const value = (section as any)[field]
+			const value = section[field]
 			if (isNonEmptyString(value) && !value.includes('{{')) {
 				return value.trim()
 			}
@@ -77,7 +76,7 @@ function collectSections(data: Record<string, unknown>, ...keys: string[]): unkn
 	const result: unknown[] = []
 	for (const key of keys) {
 		const value = data[key]
-		if (Array.isArray(value)) {
+		if (is.array(value)) {
 			result.push(...value)
 		} else if (isPlainObject(value)) {
 			result.push(value)
@@ -96,7 +95,7 @@ function collectSections(data: Record<string, unknown>, ...keys: string[]): unkn
  * scoops, snapcrafts, chocolateys, winget, aurs) with defined priority.
  * Extracts operating systems from builds[].goos.
  */
-export function parseGoreleaser(source: string): GoreleaserData | undefined {
+export function parseGoreleaser(source: string): Goreleaser | undefined {
 	let data: unknown
 	try {
 		data = parseYaml(source)
@@ -106,7 +105,7 @@ export function parseGoreleaser(source: string): GoreleaserData | undefined {
 
 	if (!isPlainObject(data)) return undefined
 
-	const result: GoreleaserData = {
+	const result: Goreleaser = {
 		description: undefined,
 		homepage: undefined,
 		license: undefined,

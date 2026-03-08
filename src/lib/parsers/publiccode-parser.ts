@@ -252,9 +252,15 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	const dependencies: PubliccodeDependencyEntry[] = []
 	if (isPlainObject(data.dependsOn)) {
 		const { dependsOn } = data
-		for (const category of ['open', 'proprietary', 'hardware'] as const) {
-			if (Array.isArray(dependsOn[category])) {
-				for (const dep of dependsOn[category] as unknown[]) {
+		const depCategories: Array<PubliccodeDependencyEntry['category']> = [
+			'open',
+			'proprietary',
+			'hardware',
+		]
+		for (const category of depCategories) {
+			const categoryDeps = dependsOn[category]
+			if (Array.isArray(categoryDeps)) {
+				for (const dep of categoryDeps) {
 					if (isPlainObject(dep) && isNonEmptyString(dep.name)) {
 						const entry: PubliccodeDependencyEntry = {
 							category,

@@ -8,10 +8,10 @@ import { parseMetadata } from '../parsers/metadata-parser'
 export type MetadataFileData = Partial<Metadata>
 
 /** Supported metadata file names in priority order. */
-const METADATA_FILES = [
-	{ format: 'json' as const, name: 'metadata.json' },
-	{ format: 'yaml' as const, name: 'metadata.yaml' },
-	{ format: 'yaml' as const, name: 'metadata.yml' },
+const METADATA_FILES: ReadonlyArray<{ format: 'json' | 'yaml'; name: string }> = [
+	{ format: 'json', name: 'metadata.json' },
+	{ format: 'yaml', name: 'metadata.yaml' },
+	{ format: 'yaml', name: 'metadata.yml' },
 ]
 
 /**

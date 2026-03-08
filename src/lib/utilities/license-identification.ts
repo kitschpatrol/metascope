@@ -16,7 +16,7 @@ import spdxLicenseList from 'spdx-license-list/full.js'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-export type LicenseMatch = {
+type LicenseMatch = {
 	/** Dice coefficient confidence score (0–1). */
 	confidence: number
 	/** SPDX license identifier (e.g. "MIT", "Apache-2.0"). */
@@ -156,8 +156,8 @@ function normalizeInput(text: string): string {
  */
 function computeBigrams(text: string): Map<string, number> {
 	const map = new Map<string, number>()
-	for (let i = 0; i < text.length - 1; i++) {
-		const pair = text.slice(i, i + 2)
+	for (let index = 0; index < text.length - 1; index++) {
+		const pair = text.slice(index, index + 2)
 		map.set(pair, (map.get(pair) ?? 0) + 1)
 	}
 
@@ -194,18 +194,18 @@ function getNormalizedLicenses(): NormalizedLicense[] {
 function diceCoefficientCached(
 	inputBigrams: Map<string, number>,
 	inputTotal: number,
-	refBigrams: Map<string, number>,
-	refTotal: number,
+	referenceBigrams: Map<string, number>,
+	referenceTotal: number,
 ): number {
 	let intersection = 0
 	for (const [pair, countA] of inputBigrams) {
-		const countB = refBigrams.get(pair)
+		const countB = referenceBigrams.get(pair)
 		if (countB !== undefined) {
 			intersection += Math.min(countA, countB)
 		}
 	}
 
-	return (2 * intersection) / (inputTotal + refTotal)
+	return (2 * intersection) / (inputTotal + referenceTotal)
 }
 
 // ─── Header-based matching ──────────────────────────────────────────

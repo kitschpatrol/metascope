@@ -8,15 +8,18 @@ import path from 'node:path'
 import plist from 'plist'
 import { parse as parseToml } from 'smol-toml'
 import { parseDocument as parseYaml } from 'yaml'
+import { z } from 'zod'
 import { execFileAsync } from './utilities'
 
-type GitHubSearchResult = {
-	path: string
-	repository: {
-		nameWithOwner: string
-	}
-	url: string
-}
+const gitHubSearchResultSchema = z.object({
+	path: z.string(),
+	repository: z.object({
+		nameWithOwner: z.string(),
+	}),
+	url: z.string(),
+})
+
+type GitHubSearchResult = z.infer<typeof gitHubSearchResultSchema>
 
 async function getFileSearchResults(
 	name: string,
@@ -33,8 +36,7 @@ async function getFileSearchResults(
 		'url,repository,path',
 	])
 
-	// eslint-disable-next-line ts/no-unsafe-type-assertion
-	let results = JSON.parse(stdout) as GitHubSearchResult[]
+	let results = z.array(gitHubSearchResultSchema).parse(JSON.parse(stdout))
 
 	if (!fuzzySearch) {
 		results = results.filter((result) => path.basename(result.path) === name)

@@ -1,4 +1,6 @@
+/* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
+
 import { z } from 'zod'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
@@ -17,10 +19,8 @@ const goModDataSchema = z.object({
 	tool_dependencies: stringArray,
 })
 
-export type GoModDependency = z.infer<typeof goModDependencySchema>
-
 /** Parsed go.mod metadata */
-export type GoModData = z.infer<typeof goModDataSchema>
+export type GoMod = z.infer<typeof goModDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -118,8 +118,8 @@ function parseToolLine(line: string): string | undefined {
  * Extracts module identity, Go version, direct dependencies (skipping
  * indirect ones), tool dependencies, and applies replace directives.
  */
-export function parseGoMod(source: string): GoModData {
-	const data: GoModData = {
+export function parseGoMod(source: string): GoMod {
+	const data: GoMod = {
 		dependencies: [],
 		go_version: undefined,
 		module: undefined,

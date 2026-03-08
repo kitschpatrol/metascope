@@ -25,7 +25,7 @@ const setupCfgDataSchema = z.object({
 })
 
 /** Parsed setup.cfg metadata */
-export type SetupCfgData = z.infer<typeof setupCfgDataSchema>
+export type SetupCfg = z.infer<typeof setupCfgDataSchema>
 
 // ─── INI parser ──────────────────────────────────────────────────────────────
 
@@ -92,7 +92,7 @@ function splitMultiline(value: string): string[] {
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /** Simple string attributes to extract from [metadata]. */
-const STRING_ATTRS = new Set<keyof SetupCfgData>([
+const STRING_ATTRS = new Set<keyof SetupCfg>([
 	'author',
 	'author_email',
 	'description',
@@ -112,12 +112,12 @@ const STRING_ATTRS = new Set<keyof SetupCfgData>([
  * Extracts fields from the `[metadata]` and `[options]` sections,
  * including multi-line values like classifiers and install_requires.
  */
-export function parseSetupCfg(source: string): SetupCfgData {
-	const sections = parseSetupCfgIni(source)
+export function parseSetupCfg(source: string): SetupCfg {
+	const sections: Partial<Record<string, Record<string, string>>> = parseSetupCfgIni(source)
 	const metadata = sections.metadata ?? {}
 	const options = sections.options ?? {}
 
-	const data: SetupCfgData = {
+	const data: SetupCfg = {
 		author: undefined,
 		author_email: undefined,
 		classifiers: [],
@@ -141,7 +141,7 @@ export function parseSetupCfg(source: string): SetupCfgData {
 	for (const key of STRING_ATTRS) {
 		const value = metadata[key]
 		if (value) {
-			data[key] = value as never
+			Object.assign(data, { [key]: value })
 		}
 	}
 

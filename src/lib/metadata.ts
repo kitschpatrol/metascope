@@ -121,13 +121,13 @@ async function resolveTemplate(
 	if (typeof template === 'function') return template
 
 	const { templates } = await import('./templates/index.js')
-	const builtIn = templates[template]
-	if (!builtIn) {
-		log.warn(`Unknown template: "${template}". Using default (all fields).`)
-		return undefined
+
+	if (template in templates) {
+		return templates[template]
 	}
 
-	return builtIn
+	log.warn(`Unknown template: "${template}". Using default (all fields).`)
+	return undefined
 }
 
 // Overload: built-in template name → mapped return type
@@ -160,7 +160,7 @@ export async function getMetadata<T>(
 	}
 
 	// Resolve template from options (built-in name or function)
-	const template = await resolveTemplate(options.template as string | Template<unknown> | undefined)
+	const template = await resolveTemplate(options.template)
 
 	const credentials = await resolveCredentials(options.credentials)
 	const sourceContext: SourceContext = { credentials, path: absolutePath }

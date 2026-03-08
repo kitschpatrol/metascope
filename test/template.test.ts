@@ -11,7 +11,7 @@ const mockContext: MetadataContext = {
 			{
 				familyName: 'Doe',
 				givenName: 'John',
-				type: 'Person' as const,
+				type: 'Person',
 			},
 		],
 		description: 'A test package',
@@ -110,11 +110,7 @@ describe('defineTemplate', () => {
 
 	it('should support string interpolation', () => {
 		const template = defineTemplate(({ codemeta }) => {
-			const authors = Array.isArray(codemeta.author) ? codemeta.author : []
-			// eslint-disable-next-line ts/no-unsafe-type-assertion -- Test code with known mock data shape
-			const firstAuthor = authors[0] as unknown as
-				| undefined
-				| { familyName?: string; givenName?: string }
+			const firstAuthor = codemeta.author?.[0]
 			return {
 				author: `${firstAuthor?.givenName ?? ''} ${firstAuthor?.familyName ?? ''}`.trim(),
 			}

@@ -13,8 +13,10 @@
  *   - Dependencies normalized (string → `{name: string}`)
  */
 
+import is from '@sindresorhus/is'
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
+import { log } from '../log'
+import { nonEmptyString, optionalUrl, parseJsonRecord } from '../utilities/schema-primitives'
 
 // ─── Preprocess primitives ───────────────────────────────────────────
 
@@ -24,19 +26,13 @@ import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
  */
 const codeMetaString = z.preprocess((value) => {
 	if (typeof value === 'string') return value
-	if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-		const object = value as Record<string, unknown>
-		if (typeof object['@value'] === 'string') return object['@value']
-	}
+	if (is.plainObject(value) && typeof value['@value'] === 'string') return value['@value']
 }, nonEmptyString)
 
 /** Same as codeMetaString but semantically a URL field. */
 const codeMetaUrl = z.preprocess((value) => {
 	if (typeof value === 'string') return value
-	if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-		const object = value as Record<string, unknown>
-		if (typeof object['@value'] === 'string') return object['@value']
-	}
+	if (is.plainObject(value) && typeof value['@value'] === 'string') return value['@value']
 }, optionalUrl)
 
 /**
@@ -61,13 +57,16 @@ const codeMetaStringArray = z
 		if (Array.isArray(value)) {
 			return value
 				.map((item) => {
-					if (typeof item === 'string') return item
-					if (typeof item === 'object' && item !== null) {
-						const object = item as Record<string, unknown>
-						return typeof object.name === 'string' ? object.name : undefined
+					if (typeof item === 'string') {
+						return item.trim()
 					}
+					if (is.plainObject(item)) {
+						return typeof item.name === 'string' ? item.name.trim() : ''
+					}
+					log.warn('Invalid type found in codemeta json parser')
+					return ''
 				})
-				.filter((s): s is string => typeof s === 'string' && s.length > 0)
+				.filter((s) => s.length > 0)
 		}
 	}, z.array(z.string()).optional())
 	.optional()
@@ -111,40 +110,37 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
 		return { name: value }
 	}
 
-	if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+	if (!is.plainObject(value)) {
 		return undefined
 	}
 
-	const object = value as Record<string, unknown>
 	const result: Record<string, unknown> = {}
 
 	// Normalize @type → type
-	if (typeof object['@type'] === 'string') {
-		const rawType = object['@type'].toLowerCase()
+	if (typeof value['@type'] === 'string') {
+		const rawType = value['@type'].toLowerCase()
 		if (rawType === 'person') result.type = 'Person'
 		else if (rawType === 'organization') result.type = 'Organization'
 	}
 
 	// Normalize @id → id
-	if (typeof object['@id'] === 'string') result.id = object['@id']
+	if (typeof value['@id'] === 'string') result.id = value['@id']
 
 	// Pass through standard fields
-	if (typeof object.name === 'string') result.name = object.name
-	if (typeof object.givenName === 'string') result.givenName = object.givenName
-	if (typeof object.familyName === 'string') result.familyName = object.familyName
-	if (typeof object.email === 'string') result.email = object.email
-	if (typeof object.url === 'string') result.url = object.url
+	if (typeof value.name === 'string') result.name = value.name
+	if (typeof value.givenName === 'string') result.givenName = value.givenName
+	if (typeof value.familyName === 'string') result.familyName = value.familyName
+	if (typeof value.email === 'string') result.email = value.email
+	if (typeof value.url === 'string') result.url = value.url
 
 	// Normalize affiliation: string or {name: string}
-	if (typeof object.affiliation === 'string') {
-		result.affiliation = object.affiliation
-	} else if (typeof object.affiliation === 'object' && object.affiliation !== null) {
-		const aff = object.affiliation as Record<string, unknown>
-		if (typeof aff.name === 'string') result.affiliation = aff.name
-	}
+	if (typeof value.affiliation === 'string') {
+		result.affiliation = value.affiliation
+	} else if (is.plainObject(value.affiliation) && typeof value.affiliation.name === 'string')
+		result.affiliation = value.affiliation.name
 
 	// Only return if we have some identifying info
-	if (result.name || result.givenName || result.familyName || result.email) {
+	if (result.name ?? result.givenName ?? result.familyName ?? result.email) {
 		return result
 	}
 
@@ -186,19 +182,18 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 		return { name: value }
 	}
 
-	if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+	if (!is.plainObject(value)) {
 		return undefined
 	}
 
-	const object = value as Record<string, unknown>
 	const dep: Record<string, unknown> = {}
 
-	if (typeof object.name === 'string') dep.name = object.name
-	if (typeof object.identifier === 'string') dep.identifier = object.identifier
-	if (typeof object.version === 'string') dep.version = object.version
-	if (typeof object.runtimePlatform === 'string') dep.runtimePlatform = object.runtimePlatform
+	if (typeof value.name === 'string') dep.name = value.name
+	if (typeof value.identifier === 'string') dep.identifier = value.identifier
+	if (typeof value.version === 'string') dep.version = value.version
+	if (typeof value.runtimePlatform === 'string') dep.runtimePlatform = value.runtimePlatform
 
-	if (dep.name || dep.identifier) {
+	if (dep.name ?? dep.identifier) {
 		return dep
 	}
 
@@ -289,16 +284,8 @@ const v1PropertyMap: Record<string, string> = {
  * Parse a codemeta.json file, normalizing v1/v2/v3 into a consistent shape.
  */
 export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined {
-	let raw: Record<string, unknown>
-	try {
-		raw = JSON.parse(content) as Record<string, unknown>
-	} catch {
-		return undefined
-	}
-
-	if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
-		return undefined
-	}
+	const raw = parseJsonRecord(content)
+	if (!raw) return undefined
 
 	const migrated = migrateV1Properties(raw)
 

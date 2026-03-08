@@ -28,7 +28,7 @@ export const gemspecSource: MetadataSource<'gemspec'> = {
 		if (!filePath) return {}
 
 		const content = await readFile(filePath, 'utf8')
-		return parseGemspec(content) ?? {}
+		return parseGemspec(content)
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findGemspecFile(context.path)

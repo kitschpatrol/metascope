@@ -1,4 +1,3 @@
-import type { ReadableStream as WebReadableStream } from 'node:stream/web'
 import { parse } from '@fast-csv/parse'
 import is from '@sindresorhus/is'
 import { execFile } from 'node:child_process'
@@ -20,9 +19,9 @@ export async function getColumnMapFromCsvUrl(url: string): Promise<Record<string
 		throw new Error(`Failed to fetch: ${response.statusText}`)
 	}
 
-	// 1. Convert Web Stream to Node Readable Stream
-	// eslint-disable-next-line ts/no-unsafe-type-assertion
-	const nodeStream = Readable.fromWeb(response.body as WebReadableStream)
+	// Convert Web ReadableStream to Node Readable Stream
+	// @ts-expect-error -- global ReadableStream is structurally compatible with node:stream/web ReadableStream
+	const nodeStream = Readable.fromWeb(response.body)
 	const columnMap: Record<string, string[]> = {}
 
 	return new Promise((resolve, reject) => {

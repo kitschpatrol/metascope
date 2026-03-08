@@ -49,9 +49,16 @@ const updatesOutputSchema = z.object({
 function resolveUpdatesBinary(): string {
 	const require = createRequire(import.meta.url)
 	const packageJsonPath = require.resolve('updates/package.json')
-	// eslint-disable-next-line ts/no-unsafe-type-assertion -- Known package.json shape
-	const packageJson = require(packageJsonPath) as { bin: string }
-	return join(dirname(packageJsonPath), packageJson.bin)
+	const packageJson: unknown = require(packageJsonPath)
+	const bin =
+		typeof packageJson === 'object' &&
+		packageJson !== null &&
+		'bin' in packageJson &&
+		typeof packageJson.bin === 'string'
+			? packageJson.bin
+			: undefined
+	if (!bin) throw new Error('Could not resolve updates binary path')
+	return join(dirname(packageJsonPath), bin)
 }
 
 /**

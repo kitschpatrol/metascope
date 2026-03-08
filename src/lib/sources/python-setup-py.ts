@@ -28,7 +28,7 @@ export const pythonSetupPySource: MetadataSource<'pythonSetupPy'> = {
 		if (!filePath) return {}
 
 		const content = await readFile(filePath, 'utf8')
-		return parseSetupPy(content) ?? {}
+		return parseSetupPy(content)
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findSetupPyFile(context.path)

@@ -11,9 +11,15 @@
  *   repository (normalized)                            → repository
  */
 
+import is from '@sindresorhus/is'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import {
+	nonEmptyString,
+	optionalUrl,
+	parseJsonRecord,
+	stringArray,
+} from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -38,32 +44,30 @@ export type Metadata = z.infer<typeof metadataSchema>
  * Returns undefined if the content is malformed or not an object.
  */
 export function parseMetadata(content: string, format: 'json' | 'yaml'): Metadata | undefined {
-	let data: unknown
-	try {
-		data = format === 'json' ? JSON.parse(content) : parseYaml(content)
-	} catch {
-		return undefined
+	let data: Record<string, unknown> | undefined
+	if (format === 'json') {
+		data = parseJsonRecord(content)
+	} else {
+		try {
+			const parsed: unknown = parseYaml(content)
+			data = is.plainObject(parsed) ? parsed : undefined
+		} catch {
+			return undefined
+		}
 	}
 
-	if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-		return undefined
-	}
+	if (!data) return undefined
 
-	const record = data as Record<string, unknown>
-
-	const repository = isString(record.repository) ? normalizeRepoUrl(record.repository) : undefined
+	const repository = isString(data.repository) ? normalizeRepoUrl(data.repository) : undefined
 
 	const homepage =
-		nonEmpty(record.homepage) ?? nonEmpty(record.url) ?? repository ?? nonEmpty(record.website)
+		nonEmpty(data.homepage) ?? nonEmpty(data.url) ?? repository ?? nonEmpty(data.website)
 
 	const keywords =
-		parseKeywords(record.keywords) ??
-		parseKeywords(record.tags) ??
-		parseKeywords(record.topics) ??
-		[]
+		parseKeywords(data.keywords) ?? parseKeywords(data.tags) ?? parseKeywords(data.topics) ?? []
 
 	return metadataSchema.parse({
-		description: record.description,
+		description: data.description,
 		homepage,
 		keywords,
 		repository,

@@ -1,13 +1,9 @@
-/* eslint-disable ts/no-unsafe-member-access */
-/* eslint-disable ts/no-explicit-any */
-/* eslint-disable ts/no-unsafe-type-assertion */
-/* eslint-disable unicorn/prefer-set-has */
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
 import { z } from 'zod'
-import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -195,7 +191,7 @@ function tryParseDependency(node: Node): GemSpecDependency | undefined {
 	if (!methodNode) return undefined
 
 	// Method is itself a `call` node like `spec.add_dependency`
-	let methodName: string | undefined = undefined
+	let methodName: string | undefined
 	if (methodNode.type === 'call') {
 		const inner = methodNode.childForFieldName('method')
 		methodName = inner?.text ?? undefined
@@ -235,16 +231,16 @@ function tryParseDependency(node: Node): GemSpecDependency | undefined {
 
 	const depType = DEP_METHODS[methodName]
 
-	const args = node.childForFieldName('arguments')
-	if (!args) return undefined
+	const arguments_ = node.childForFieldName('arguments')
+	if (!arguments_) return undefined
 
-	const argNodes = children(args)
-	if (argNodes.length === 0) return undefined
+	const argumentNodes = children(arguments_)
+	if (argumentNodes.length === 0) return undefined
 
-	const depName = extractString(argNodes[0])
+	const depName = extractString(argumentNodes[0])
 	if (!depName) return undefined
 
-	const requirements = argNodes
+	const requirements = argumentNodes
 		.slice(1)
 		.map((element) => extractString(element))
 		.filter((s): s is string => s !== undefined)
@@ -271,6 +267,14 @@ function extractHash(node: Node): Record<string, string> {
 	return result
 }
 
+function setStringAttribute(spec: GemSpec, key: string, value: string): void {
+	Object.assign(spec, { [key]: value })
+}
+
+function setArrayAttribute(spec: GemSpec, key: string, value: string[]): void {
+	Object.assign(spec, { [key]: value })
+}
+
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /**
@@ -293,33 +297,33 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 	const spec = emptySpec()
 
 	/** Map of simple attribute names → setter logic */
-	const STRING_ATTRS: Array<keyof GemSpec> = [
-		'name',
-		'version',
-		'summary',
+	const STRING_ATTRS = new Set<string>([
+		'bindir',
 		'description',
 		'homepage',
 		'license',
+		'name',
 		'platform',
+		'post_install_message',
 		'required_ruby_version',
 		'required_rubygems_version',
-		'bindir',
 		'signing_key',
-		'post_install_message',
-	]
+		'summary',
+		'version',
+	])
 
-	const ARRAY_ATTRS: Array<keyof GemSpec> = [
+	const ARRAY_ATTRS = new Set<string>([
 		'authors',
-		'licenses',
-		'files',
-		'test_files',
-		'executables',
-		'require_paths',
 		'cert_chain',
-		'extra_rdoc_files',
-		'rdoc_options',
+		'executables',
 		'extensions',
-	]
+		'extra_rdoc_files',
+		'files',
+		'licenses',
+		'rdoc_options',
+		'require_paths',
+		'test_files',
+	])
 
 	function visit(node: Node): void {
 		// ── Assignment: spec.attr = value ──────────────────────────────────
@@ -353,16 +357,16 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 			}
 
 			// String attributes
-			if (STRING_ATTRS.includes(attribute as keyof GemSpec)) {
+			if (STRING_ATTRS.has(attribute)) {
 				const value = extractString(rhs)
-				if (value !== undefined) (spec as any)[attribute] = value
+				if (value !== undefined) setStringAttribute(spec, attribute, value)
 				return
 			}
 
 			// Array attributes
-			if (ARRAY_ATTRS.includes(attribute as keyof GemSpec)) {
+			if (ARRAY_ATTRS.has(attribute)) {
 				const array = extractStringArray(rhs)
-				if (array.length > 0) (spec as any)[attribute] = array
+				if (array.length > 0) setArrayAttribute(spec, attribute, array)
 				return
 			}
 
