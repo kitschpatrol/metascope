@@ -1,0 +1,47 @@
+{
+	"@context": [
+		"https://doi.org/10.5063/schema/codemeta-2.0",
+		"https://w3id.org/software-iodata",
+		"https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+		"https://schema.org",
+		"https://w3id.org/software-types"
+	],
+	"@type": "SoftwareSourceCode",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Anton",
+			"familyName": "Pirogov",
+			"email": "a.pirogov@fz-juelich.de",
+			"@id": "https://orcid.org/0000-0002-5077-7497",
+			"identifier": "https://orcid.org/0000-0002-5077-7497"
+		},
+		{
+			"@type": "Person",
+			"givenName": "Mustafa",
+			"familyName": "Soylu",
+			"email": "m.soylu@fz-juelich.de",
+			"@id": "https://orcid.org/0000-0003-2637-0432",
+			"identifier": "https://orcid.org/0000-0003-2637-0432"
+		}
+	],
+	"name": "fair-python-cookiecutter",
+	"description": "An opinionated cookiecutter template to kickstart a modern best-practice Python project with FAIR metadata.",
+	"version": "1.0.0",
+	"keywords": ["fair", "metadata", "python", "cookiecutter", "template"],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Mustafa",
+			"familyName": "Soylu",
+			"email": "m.soylu@fz-juelich.de",
+			"@id": "https://orcid.org/0000-0003-2637-0432",
+			"identifier": "https://orcid.org/0000-0003-2637-0432"
+		}
+	],
+	"license": ["https://spdx.org/licenses/MIT"],
+	"softwareHelp": "https://materials-data-science-and-informatics.github.io/fair-python-cookiecutter",
+	"codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/fair-python-cookiecutter",
+	"buildInstructions": "https://materials-data-science-and-informatics.github.io/fair-python-cookiecutter",
+	"url": "https://materials-data-science-and-informatics.github.io/fair-python-cookiecutter"
+}

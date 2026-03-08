@@ -1,0 +1,205 @@
+{
+	"@context": [
+		"https://w3id.org/codemeta/3.0",
+		"http://schema.org",
+		"https://w3id.org/software-types",
+		"https://w3id.org/software-iodata"
+	],
+	"@id": "https://github.com/proycon/codemetapy.git",
+	"@type": "SoftwareSourceCode",
+	"applicationCategory": [
+		"Software Development",
+		"https://w3id.org/nwo-research-fields#ComputerScience",
+		"https://vocabs.dariah.eu/tadirah/converting"
+	],
+	"audience": {
+		"@id": "/audience/developers",
+		"@type": "Audience",
+		"audienceType": "Developers"
+	},
+	"author": {
+		"@id": "https://orcid.org/0000-0002-1046-0006",
+		"@type": "Person",
+		"affiliation": {
+			"@id": "https://huc.knaw.nl"
+		},
+		"email": "proycon@anaproy.nl",
+		"familyName": "van Gompel",
+		"givenName": "Maarten",
+		"url": "https://proycon.anaproy.nl"
+	},
+	"codeRepository": "https://github.com/proycon/codemetapy.git",
+	"contIntegration": "https://github.com/proycon/codemetapy/actions/",
+	"contributor": {
+		"@id": "https://orcid.org/0000-0002-1046-0006",
+		"@type": "Person",
+		"affiliation": {
+			"@id": "https://huc.knaw.nl"
+		},
+		"email": "proycon@anaproy.nl",
+		"familyName": "van Gompel",
+		"givenName": "Maarten",
+		"url": "https://proycon.anaproy.nl"
+	},
+	"dateCreated": "2018-04-16T10:54:22Z+0200",
+	"dateModified": "2025-04-24T13:37:47Z+0200",
+	"description": "Codemetapy is a command-line tool and python library to work with the codemeta software metadata standard. Codemeta builds upon schema.org and defines a vocabulary for describing software source code. It maps various existing metadata standards to a unified vocabulary. Codemetapy allows you to generate codemeta from various sources.",
+	"developmentStatus": [
+		"https://www.repostatus.org/#active",
+		"https://w3id.org/research-technology-readiness-levels#Level9Proven"
+	],
+	"funding": [
+		{
+			"@type": "Grant",
+			"name": "CLARIAH-PLUS (NWO grant 184.034.023)",
+			"funder": {
+				"@type": "Organization",
+				"name": "NWO",
+				"url": "https://www.nwo.nl"
+			}
+		}
+	],
+	"identifier": "codemetapy",
+	"issueTracker": "https://github.com/proycon/codemetapy/issues",
+	"keywords": [
+		"metadata",
+		"scientific",
+		"metadata-extractor",
+		"codemeta",
+		"rdf",
+		"software metadata",
+		"schema.org",
+		"linked data"
+	],
+	"license": "https://spdx.org/licenses/GPL-3.0-only",
+	"maintainer": {
+		"@id": "https://orcid.org/0000-0002-1046-0006",
+		"@type": "Person",
+		"affiliation": {
+			"@id": "https://huc.knaw.nl"
+		},
+		"email": "proycon@anaproy.nl",
+		"familyName": "van Gompel",
+		"givenName": "Maarten",
+		"url": "https://proycon.anaproy.nl"
+	},
+	"name": "CodeMetaPy",
+	"operatingSystem": ["Linux", "BSD", "macOS"],
+	"producer": {
+		"@id": "https://huc.knaw.nl",
+		"@type": "Organization",
+		"name": "KNAW Humanities Cluster",
+		"url": "https://huc.knaw.nl",
+		"parentOrganization": {
+			"@id": "https://knaw.nl",
+			"@type": "Organization",
+			"name": "KNAW",
+			"url": "https://knaw.nl",
+			"location": {
+				"@type": "Place",
+				"name": "Amsterdam"
+			}
+		}
+	},
+	"readme": "https://github.com/proycon/codemetapy/blob/README.rst",
+	"runtimePlatform": [
+		"Python 3.6",
+		"Python 3.8",
+		"Python 3.9",
+		"Python 3",
+		"Python 3.7",
+		"Python 3.10",
+		"Python 3.11",
+		"Python 3.12"
+	],
+	"softwareHelp": [
+		{
+			"@type": "WebSite",
+			"name": "README: Installation and usage instructions",
+			"url": "https://github.com/proycon/codemetapy/blob/master/README.md",
+			"description": "Installation and usage instructions"
+		},
+		{
+			"@type": "WebSite",
+			"name": "The CodeMeta Project",
+			"url": "https://codemeta.github.io/",
+			"description": "Describes the underlying software metadata model (not specific to codemetapy)"
+		}
+	],
+	"softwareRequirements": [
+		{
+			"@id": "/dependency/nameparser",
+			"@type": "SoftwareApplication",
+			"identifier": "nameparser",
+			"name": "nameparser",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/pyyaml",
+			"@type": "SoftwareApplication",
+			"identifier": "pyyaml",
+			"name": "pyyaml",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/beautifulsoup4",
+			"@type": "SoftwareApplication",
+			"identifier": "BeautifulSoup4",
+			"name": "BeautifulSoup4",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/importlib-metadata",
+			"@type": "SoftwareApplication",
+			"identifier": "importlib-metadata",
+			"name": "importlib-metadata",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/jinja2",
+			"@type": "SoftwareApplication",
+			"identifier": "Jinja2",
+			"name": "Jinja2",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/requests",
+			"@type": "SoftwareApplication",
+			"identifier": "requests",
+			"name": "requests",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/lxml",
+			"@type": "SoftwareApplication",
+			"identifier": "lxml",
+			"name": "lxml",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/dependency/rdflib-ge-6.1.1",
+			"@type": "SoftwareApplication",
+			"identifier": "rdflib",
+			"name": "rdflib",
+			"runtimePlatform": "Python 3",
+			"version": ">= 6.1.1"
+		}
+	],
+	"isSourceCodeOf": [
+		{
+			"@id": "/commandlineapplication/codemetapy",
+			"@type": "CommandLineApplication",
+			"executableName": "codemetapy",
+			"name": "codemetapy",
+			"runtimePlatform": "Python 3"
+		},
+		{
+			"@id": "/softwarelibrary/codemetapy",
+			"@type": "SoftwareLibrary",
+			"name": "codemeta",
+			"runtimePlatform": "Python 3"
+		}
+	],
+	"url": "https://github.com/proycon/codemetapy.git",
+	"version": "3.0.3"
+}

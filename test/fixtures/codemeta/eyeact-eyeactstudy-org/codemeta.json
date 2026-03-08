@@ -1,0 +1,50 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"license": "https://spdx.org/licenses/MIT",
+	"codeRepository": "https://github.com/EyeACT/eyeactstudy.org",
+	"dateCreated": "2022-11-28",
+	"dateModified": "2022-11-28",
+	"downloadUrl": "https://github.com/EyeACT/eyeactstudy.org",
+	"issueTracker": "https://github.com/EyeACT/eyeactstudy.org/issues",
+	"name": "Eye ACT Website",
+	"version": "0.0.1",
+	"description": "Website for the EyeACT project",
+	"applicationCategory": "Scientific",
+	"developmentStatus": "active",
+	"keywords": ["EyeAct"],
+	"programmingLanguage": ["JavaScript", "CSS"],
+	"relatedLink": ["https://github.com/EyeAct"],
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Sanjay",
+			"familyName": "Soundarajan",
+			"email": "ssoundarajan@calmi2.org",
+			"affiliation": {
+				"@type": "Organization",
+				"name": "FAIR Data Innovations Hub"
+			}
+		},
+		{
+			"@type": "Person",
+			"givenName": "Bhavesh",
+			"familyName": "Patel",
+			"email": "bpatel@calmi2.org",
+			"affiliation": {
+				"@type": "Organization",
+				"name": "FAIR Data Innovations Hub"
+			}
+		},
+		{
+			"@type": "Person",
+			"givenName": "Dorian",
+			"familyName": "Portillo",
+			"email": "wheresdorian@gmail.com",
+			"affiliation": {
+				"@type": "Organization",
+				"name": "FAIR Data Innovations Hub"
+			}
+		}
+	]
+}

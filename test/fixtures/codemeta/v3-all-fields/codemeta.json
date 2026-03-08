@@ -1,0 +1,146 @@
+{
+	"@context": [
+		"https://w3id.org/codemeta/3.0",
+		"https://w3id.org/software-iodata",
+		"https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+		"https://schema.org",
+		"https://w3id.org/software-types"
+	],
+	"@type": "SoftwareSourceCode",
+	"agent": [
+		{
+			"@id": "https://ror.org/03yrm5c26",
+			"@type": "Organization",
+			"Role": {
+				"namespace": "http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+				"roleCode": "copyrightHolder"
+			},
+			"email": "legal@codemeta.org",
+			"isRightsHolder": true,
+			"name": "CodeMeta Project"
+		},
+		{
+			"@id": "http://orcid.org/0000-0002-2192-403X",
+			"@type": "Person",
+			"Role": {
+				"namespace": "http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+				"roleCode": "contributor"
+			},
+			"affiliation": "NCEAS",
+			"email": "slaughter@nceas.ucsb.edu",
+			"isMaintainer": false,
+			"isRightsHolder": false,
+			"mustBeCited": true,
+			"name": "Peter Slaughter"
+		},
+		{
+			"@id": "http://orcid.org/0000-0002-3957-2474",
+			"@type": "Organization",
+			"Role": {
+				"namespace": "http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+				"roleCode": "copyrightHolder"
+			},
+			"email": "info@ucop.edu",
+			"name": "University of California, Santa Barbara"
+		}
+	],
+	"buildInstructions": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/buildInstructions"
+	},
+	"codeRepository": "https://github.com/codemeta/codemeta",
+	"contIntegration": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/minitest"
+	},
+	"controlledTerms": ["metadata", "software"],
+	"dateCreated": "2014-08-06",
+	"dateModified": "2014-08-15",
+	"datePublished": "2014-09-06",
+	"description": "Codemeta is a metadata content standard for software.  It includes schemas in JSON-LD and XML Schema for providing semantics and validation.",
+	"developmentStatus": "https://www.repostatus.org/#active",
+	"downloadUrl": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/releases/codemeta_2.1.0-rc.2.tar.gz"
+	},
+	"embargoDate": {
+		"@type": "xsd:dataTime",
+		"@value": "2014-08-06T10:00:01Z"
+	},
+	"funding": "National Science Foundation grant #012345678",
+	"identifier": "https://doi.org/10.6084/m9.figshare.828487",
+	"isAutomatedBuild": false,
+	"issueTracker": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/issues"
+	},
+	"keywords": ["DOI", "credit for code", "publishing"],
+	"license": "http://spdx.org/licenses/Apache-2.0",
+	"name": "codemeta",
+	"programmingLanguage": {
+		"URL": "https://www.ruby-lang.org/en/",
+		"name": "ruby",
+		"version": "2.3.1"
+	},
+	"publisher": "figshare",
+	"readme": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/README.md"
+	},
+	"relatedLink": "https://github.com/codemeta/codemeta-paper",
+	"relatedPublications": ["DOI:10.1145/2815833.2816955", "DOI:10.1177/0165551504045850"],
+	"relationships": {
+		"relatedIdentifier": "urn:uuid:F1A0A7AF-ECF3-4C7D-B675-7C6949963995",
+		"relatedIdentifierType": "UUID",
+		"relationshipType": "isPartOf"
+	},
+	"requirements": [
+		{
+			"identifier": "http://doi.org/10.xxxx/A324566",
+			"name": "export_fig",
+			"packageSystem": "http://www.mathworks.com",
+			"version": "1.99"
+		},
+		{
+			"identifier": "89766228838383883",
+			"name": "npplus",
+			"operatingSystems": ["Linux", "MacOS"],
+			"packageSystem": "https://pypi.python.org",
+			"version": "0.9.4"
+		},
+		{
+			"identifier": "7777575757757-389349843-90898",
+			"name": "popbio",
+			"operatingSystems": ["OS X Mavericks", "Windows"],
+			"packageSystem": "http://cran.r-project.org",
+			"version": "1.3.4"
+		}
+	],
+	"softwarePaperCitationIdentifiers": "http://doi.org/0000/0000",
+	"suggests": {
+		"name": "tokenizertools",
+		"operatingSystems": ["Linux", "MacOS"],
+		"packageSystem": "https://pypi.python.org",
+		"version": "1.0"
+	},
+	"title": "CodeMeta, a minimal convention for software metadata",
+	"uploadedBy": {
+		"@id": "http://orcid.org/0000-0002-2192-403X",
+		"@type": "Person",
+		"Role": {
+			"namespace": "http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+			"roleCode": "contributor"
+		},
+		"affiliation": "NCEAS",
+		"email": "slaughter@nceas.ucsb.edu",
+		"isMaintainer": false,
+		"isRightsHolder": false,
+		"mustBeCited": true,
+		"name": "Peter Slaughter"
+	},
+	"version": "2.1.0-rc.2",
+	"zippedCode": {
+		"@type": "xsd:anyURI",
+		"@value": "https://github.com/codemeta/codemeta/releases"
+	}
+}

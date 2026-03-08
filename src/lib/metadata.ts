@@ -16,6 +16,7 @@ import { arduinoLibraryPropertiesSource } from './sources/arduino-library-proper
 import { cargoTomlSource } from './sources/cargo-toml'
 import { cinderCinderblockSource } from './sources/cinder-cinderblock'
 import { codemetaSource } from './sources/codemeta'
+import { codemetaJsonSource } from './sources/codemeta-json'
 import { filesystemSource } from './sources/filesystem'
 import { gemspecSource } from './sources/gemspec'
 import { gitSource } from './sources/git'
@@ -56,6 +57,7 @@ const sources: MetadataSource[] = [
 	cargoTomlSource,
 	cinderCinderblockSource,
 	codemetaSource,
+	codemetaJsonSource,
 	filesystemSource,
 	gemspecSource,
 	gitSource,
@@ -222,6 +224,7 @@ export async function getMetadata<T>(
 		cargoToml: {},
 		cinderCinderblock: {},
 		codemeta: codemetaData,
+		codemetaJson: {},
 		filesystem: {},
 		gemspec: {},
 		git: {},

@@ -11,6 +11,11 @@ export type {
 } from './sources/cargo-toml'
 export type { CinderCinderblockData } from './sources/cinder-cinderblock'
 export type { CodeMetaData } from './sources/codemeta'
+export type {
+	CodeMetaDependency,
+	CodeMetaJsonData,
+	CodeMetaPersonOrOrg,
+} from './sources/codemeta-json'
 export type { FilesystemData } from './sources/filesystem'
 export type { GemspecData, GemSpecDependency } from './sources/gemspec'
 export type { GitConfig, GitData } from './sources/git'
@@ -59,6 +64,7 @@ import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-pro
 import type { CargoTomlData } from './sources/cargo-toml'
 import type { CinderCinderblockData } from './sources/cinder-cinderblock'
 import type { CodeMetaData } from './sources/codemeta'
+import type { CodeMetaJsonData } from './sources/codemeta-json'
 import type { FilesystemData } from './sources/filesystem'
 import type { GemspecData } from './sources/gemspec'
 import type { GitData } from './sources/git'
@@ -98,6 +104,7 @@ export type MetadataContext = {
 	cargoToml: CargoTomlData
 	cinderCinderblock: CinderCinderblockData
 	codemeta: CodeMetaData
+	codemetaJson: CodeMetaJsonData
 	filesystem: FilesystemData
 	gemspec: GemspecData
 	git: GitData

@@ -1,0 +1,46 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"type": "software",
+	"author": [
+		{
+			"@id": "https://orcid.org/0009-0008-2183-7041",
+			"@type": "Person",
+			"email": "alex@bigfootds.com",
+			"givenName": "Alex",
+			"familyName": "Stormwood",
+			"affiliation": {
+				"@type": "Organization",
+				"name": "BigfootDS"
+			}
+		}
+	],
+	"codeRepository": "https://github.com/BigfootDS/nodejs-trickplay",
+	"url": "https://github.com/BigfootDS/nodejs-trickplay",
+	"dateCreated": "2025-04-20",
+	"dateModified": "2025-04-21",
+	"datePublished": "2025-04-21",
+	"description": "Generate trickplay images for a given video file, for usage in NodeJS environments.",
+	"abstract": "Generate trickplay images for a given video file, for usage in NodeJS environments.",
+	"downloadUrl": "https://github.com/BigfootDS/nodejs-trickplay",
+	"keywords": [
+		"nodejs",
+		"npm",
+		"npm-package",
+		"video-processing",
+		"video-preview",
+		"trickplay",
+		"video-scrubbing",
+		"vide-preview-thumbnails"
+	],
+	"license": "https://spdx.org/licenses/MIT",
+	"name": "NodeJS Trickplay",
+	"programmingLanguage": "JavaScript",
+	"runtimePlatform": "NodeJS",
+	"version": "1.0.0",
+	"contIntegration": "https://github.com/BigfootDS/nodejs-trickplay/actions",
+	"codemeta:continuousIntegration": {
+		"id": "https://github.com/BigfootDS/nodejs-trickplay/actions"
+	},
+	"developmentStatus": "active",
+	"issueTracker": "https://github.com/BigfootDS/nodejs-trickplay/issues"
+}

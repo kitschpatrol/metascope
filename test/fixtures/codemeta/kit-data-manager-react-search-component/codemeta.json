@@ -1,0 +1,59 @@
+{
+	"@context": [
+		"https://doi.org/10.5063/schema/codemeta-2.0",
+		"https://w3id.org/software-iodata",
+		"https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+		"https://schema.org",
+		"https://w3id.org/software-types"
+	],
+	"@type": "SoftwareSourceCode",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Christopher",
+			"familyName": "Raquet",
+			"email": "christopher.raquet@kit.edu",
+			"@id": "https://orcid.org/0009-0003-2196-9187",
+			"identifier": "https://orcid.org/0009-0003-2196-9187",
+			"affiliation": "Karlsruhe Institute of Technology (KIT)"
+		}
+	],
+	"name": "@kit-data-manager/react-search-component",
+	"description": "All-in-one component for rendering an elastic search UI for searching anything. Built-in support for visualizing related items in a graph and resolving unique identifiers.",
+	"version": "0.4.1",
+	"keywords": [
+		"react",
+		"reactjs",
+		"component",
+		"elastic",
+		"search",
+		"elasticsearch",
+		"kit-data-manager",
+		"typescript",
+		"storybook",
+		"tailwindcss",
+		"fair",
+		"fairdata",
+		"fairdo",
+		"fairdigitalobject",
+		"kit",
+		"data",
+		"manager"
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Christopher",
+			"familyName": "Raquet",
+			"email": "christopher.raquet@kit.edu",
+			"@id": "https://orcid.org/0009-0003-2196-9187",
+			"identifier": "https://orcid.org/0009-0003-2196-9187",
+			"affiliation": "Karlsruhe Institute of Technology (KIT)"
+		}
+	],
+	"license": ["https://spdx.org/licenses/Apache-2.0"],
+	"softwareHelp": "https://kit-data-manager.github.io/react-search-component/",
+	"codeRepository": "https://github.com/kit-data-manager/react-search-component",
+	"buildInstructions": "https://kit-data-manager.github.io/react-search-component/",
+	"url": "https://kit-data-manager.github.io/react-search-component/"
+}

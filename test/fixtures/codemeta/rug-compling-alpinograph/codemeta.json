@@ -1,0 +1,136 @@
+{
+	"@context": [
+		"https://schema.org",
+		"https://doi.org/10.5063/schema/codemeta-2.0",
+		"https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+		{
+			"relation": {
+				"@id": "http://purl.org/dc/terms/relation",
+				"@type": "@id"
+			}
+		}
+	],
+	"@id": "https://www.let.rug.nl/alfa/rdf/alpinograph",
+	"@type": "SoftwareSourceCode",
+	"relation": ["https://www.let.rug.nl/alfa/rdf/paqu", "https://tools.clariah.nl/gretel"],
+	"name": "AlpinoGraph",
+	"description": "AlpinoGraph is een tool om syntactisch geannoteerde corpora te doorzoeken. De tool maakt gebruik van AgensGraph. AgensGraph combineert databasetechnologie (PostgreSQL) en Cypher, de standaard zoektaal voor grafen. De zoek-queries die je in AlpinoGraph kunt gebruiken zijn daarom een mix van SQL en Cypher. Daar voegt AlpinoGraph nog enkele extra uitbreidingen aan toe, zoals een eenvoudig maar handig systeem van macro's, en visualisatie van de resultaten.",
+	"dateCreated": "2020-03-25",
+	"dateModified": "2025-11-18",
+	"version": "1.0.7",
+	"sameAs": "https://tools.clariah.nl/alpinograph",
+	"codeRepository": "https://github.com/rug-compling/alpinograph.git",
+	"issueTracker": "https://github.com/rug-compling/alpinograph/issues",
+	"license": "https://spdx.org/licenses/BSD-2-Clause",
+	"developmentStatus": [
+		"https://www.repostatus.org/#active",
+		"https://w3id.org/research-technology-readiness-levels#Stage4Complete"
+	],
+	"applicationCategory": [
+		"https://w3id.org/nwo-research-fields#SoftwareForHumanities",
+		"https://w3id.org/nwo-research-fields#Linguistics",
+		"https://w3id.org/nwo-research-fields#ComputationalLinguisticsandPhilology",
+		"https://vocabs.dariah.eu/tadirah/structuralAnalysis"
+	],
+	"producer": {
+		"@id": "_:cl",
+		"@type": "Organization",
+		"name": [
+			{
+				"@value": "Computationele Taalkunde, Faculteit der Letteren, Rijksuniversiteit Groningen",
+				"@language": "nl"
+			},
+			{
+				"@value": "Computational Linguistics, Faculty of Arts, Groningen University",
+				"@language": "en"
+			}
+		],
+		"url": "https://www.rug.nl/research/clcg/research/cl/",
+		"parentOrganization": {
+			"@id": "_:rug",
+			"@type": "Organization",
+			"name": [
+				{
+					"@value": "Rijksuniversiteit Groningen",
+					"@language": "nl"
+				},
+				{
+					"@value": "Groningen University",
+					"@language": "en"
+				}
+			],
+			"url": "https://www.rug.nl/",
+			"sameAs": "http://www.wikidata.org/entity/Q850730",
+			"location": {
+				"@id": "_:groningen",
+				"@type": "Place",
+				"name": "Groningen",
+				"address": {
+					"@id": "_:grnNL",
+					"@type": "PostalAddress",
+					"addressLocality": "Groningen",
+					"addressRegion": "Groningen",
+					"addressCountry": "NL"
+				},
+				"sameAs": ["http://www.wikidata.org/entity/Q749", "https://sws.geonames.org/2755251/"]
+			}
+		}
+	},
+	"releaseNotes": "https://github.com/rug-compling/alpinograph/blob/master/Changes.txt",
+	"readme": "https://github.com/rug-compling/alpinograph/blob/master/README.md",
+	"downloadUrl": "https://github.com/rug-compling/alpinograph/archive/refs/heads/master.zip",
+	"keywords": [
+		"Alpino",
+		"Dependency parsing",
+		"SPOD: Syntactic profiler of Dutch",
+		"Cypher",
+		"UD: Universal Dependencies"
+	],
+	"programmingLanguage": "Go",
+	"operatingSystem": ["Linux", "Docker"],
+	"softwareHelp": {
+		"@type": "WebSite",
+		"name": "AlpinoGraph",
+		"url": "https://urd2.let.rug.nl/~kleiweg/alpinograph-docs/"
+	},
+	"author": {
+		"@id": "_:pkleiweg",
+		"@type": "Person",
+		"sameAs": "https://orcid.org/0000-0001-8364-3201",
+		"givenName": "Peter",
+		"familyName": "Kleiweg",
+		"email": "mailto:p.c.j.kleiweg@rug.nl",
+		"affiliation": {
+			"@id": "_:cl"
+		}
+	},
+	"maintainer": {
+		"@id": "_:pkleiweg"
+	},
+	"referencePublication": {
+		"@type": "ScholarlyArticle",
+		"sameAs": [
+			"http://dx.doi.org/10.18653/v1/2020.tlt-1.13",
+			"https://research.rug.nl/en/publications/alpinograph-a-graph-based-search-engine-for-flexible-and-efficien"
+		],
+		"name": "AlpinoGraph: A Graph-based Search Engine for Flexible and Efficient Treebank Search",
+		"author": ["Peter Kleiweg", "Gertjan van Noord"],
+		"pageStart": "151",
+		"pageEnd": "161",
+		"isPartOf": {
+			"@type": "PublicationIssue",
+			"datePublished": "2020",
+			"name": "Proceedings of the 19th International Workshop on Treebanks and Linguistic Theories",
+			"location": "Düsseldorf, Germany"
+		},
+		"url": "https://aclanthology.org/2020.tlt-1.13"
+	},
+	"targetProduct": {
+		"@type": "WebApplication",
+		"name": "AlpinoGraph",
+		"url": "https://urd2.let.rug.nl/~kleiweg/alpinograph/",
+		"provider": {
+			"@id": "_:cl"
+		}
+	}
+}

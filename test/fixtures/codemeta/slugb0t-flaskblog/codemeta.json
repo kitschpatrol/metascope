@@ -1,0 +1,32 @@
+{
+	"name": "hello",
+	"@context": "https://w3id.org/codemeta/3.0",
+	"applicationCategory": "Aviation test",
+	"author": [
+		{
+			"affiliation": {
+				"name": "UCLA",
+				"type": "Organization"
+			},
+			"email": "where@gmail.com",
+			"familyName": "Doe",
+			"id": "https://voidresume.com",
+			"givenName": "JOHN",
+			"type": "Person"
+		}
+	],
+	"dateCreated": "2024-10-31",
+	"datePublished": "2024-10-12",
+	"description": "yes",
+	"keywords": ["test", "key"],
+	"operatingSystem": [],
+	"programmingLanguage": [],
+	"relatedLink": [],
+	"runtimePlatform": [],
+	"softwareRequirements": [],
+	"type": "SoftwareSourceCode",
+	"identifier": "10.5281/zenodo.13942931",
+	"version": "0.1.2",
+	"dateModified": "2024-10-17",
+	"license": "https://spdx.org/licenses/MIT"
+}

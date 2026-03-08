@@ -1,0 +1,45 @@
+{
+	"@context": "https://w3id.org/codemeta/3.0",
+	"type": "SoftwareSourceCode",
+	"codeRepository": "https://github.com/MDCL-UC/L-SERC-Algorithm/blob/main/AUTHORS",
+	"contributor": [
+		{
+			"id": "_:contributor_1",
+			"type": "Person",
+			"affiliation": {
+				"type": "Organization",
+				"name": "Associate professor in the department of Mathematics and Statistics, University of Maine, Maine, USA"
+			},
+			"email": "peter.stechlinski@maine.edu",
+			"familyName": "Stechlinski",
+			"givenName": "Peter"
+		},
+		{
+			"id": "_:contributor_2",
+			"type": "Person",
+			"affiliation": {
+				"type": "Organization",
+				"name": "Assistant professor in the department of Aerospace Engineering and Engineering Mechanics, University of Cincinnati, Ohio, USA"
+			},
+			"email": "eisash@ucmail.uc.edu",
+			"familyName": "Eisa",
+			"givenName": "Sameh "
+		},
+		{
+			"id": "_:contributor_3",
+			"type": "Person",
+			"affiliation": {
+				"type": "Organization",
+				"name": "PhD student in the department of Aerospace Engineering and Engineering Mechanics, University of Cincinnati, Ohio, USA"
+			},
+			"email": "abdelfhm@mail.uc.edu",
+			"familyName": "Abdelfattah",
+			"givenName": "Hesham"
+		}
+	],
+	"dateCreated": "2024-05-16",
+	"datePublished": "2024-05-16",
+	"license": "https://spdx.org/licenses/MIT",
+	"name": "L-SERC-Algorithm",
+	"programmingLanguage": "MATLAB"
+}

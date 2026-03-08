@@ -1,0 +1,28 @@
+{
+	"@context": "https://doi.org/10.5063/SCHEMA/CODEMETA-1.0",
+	"@type": "Code",
+	"author": {
+		"@type": "Person",
+		"name": "Antoine Masson",
+		"@id": "https://orcid.org/0000-0002-7993-5698",
+		"affiliation": "Ecole Polytechnique Fédérale de Lausanne, Library",
+		"email": "antoine.masson@epfl.ch"
+	},
+	"maintainer": {
+		"@type": "Person",
+		"name": "Alain Borel",
+		"@id": "https://orcid.org/0000-0003-3268-3195",
+		"affiliation": "Ecole Polytechnique Fédérale de Lausanne, Library",
+		"email": "alain.borel@epfl.ch"
+	},
+	"name": "Cost Calculator",
+	"softwareVersion": "2.4",
+	"identifier": "10.5281/zenodo.1469035",
+	"datePublished": "2025-YY-XX",
+	"codeRepository": "https://github.com/epfllibrary/costcalc",
+	"URL": "https://costcalc.epfl.ch",
+	"programmingLanguage": "javascript",
+	"keywords": ["research data", "storage", "cost estimate", "planning"],
+	"description": "A dynamic online tool for calculating the cost of research data storage services. It's highly modular and can be adapted for all kind of application. The system is really easy to install as it uses only opensource javascript libraries.",
+	"license": "GPL-3.0-only"
+}

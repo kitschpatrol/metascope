@@ -18,6 +18,7 @@ const mockContext: MetadataContext = {
 		name: 'test-package',
 		version: '1.2.3',
 	},
+	codemetaJson: {},
 	filesystem: {
 		totalDirectoryCount: 20,
 		totalFileCount: 150,
