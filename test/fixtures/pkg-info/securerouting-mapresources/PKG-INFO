@@ -1,0 +1,27 @@
+Metadata-Version: 1.0
+Name: MapResources
+Version: 1.1
+Summary: Whois resource mapping utility
+Home-page: https://securerouting.net
+Author: Suresh Krishnaswamy
+Author-email: suresh@tislabs.com
+License: See LICENSE
+Description: 
+        MapResources - A Whois Resource Discovery Tool.
+        ===============================================
+        
+        This package enables one to discover network resources in ARIN's Whois
+        database that may belong to an organization. A starting point in
+        the form of a known POC handle, organization handle, net handle or ASN
+        number is assumed. The tool thereafter queries ARIN's RESTful API in
+        order to find other resources that the organization may hold.
+        
+        The main driver utility program for this package is
+        map_resources.map_whois.py. The -h option to this script provides more
+        information on the different options that are available to the user.
+        
+        Note that even though most interfaces in the map_resources module are
+        marked as public, they are still in flux and subject to change.
+        
+        
+Platform: any

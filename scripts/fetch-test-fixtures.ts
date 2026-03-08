@@ -363,5 +363,4 @@ async function run() {
 	)
 }
 
-// Execute
 await run()

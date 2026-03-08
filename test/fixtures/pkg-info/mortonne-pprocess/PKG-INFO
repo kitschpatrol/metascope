@@ -1,0 +1,22 @@
+Metadata-Version: 1.1
+Name: pprocess
+Version: 0.5.3
+Author: Paul Boddie
+Author-email: paul at boddie org uk
+Maintainer: Paul Boddie
+Maintainer-email: paul at boddie org uk
+Home-page: http://www.boddie.org.uk/python/pprocess.html
+Download-url: http://www.boddie.org.uk/python/downloads/pprocess-0.5.3.tar.gz
+Summary: Elementary parallel programming for Python
+License: LGPL (version 3 or later)
+Description: The pprocess module provides elementary support for parallel
+        programming in Python using a fork-based process creation model in
+        conjunction with a channel-based communications model implemented
+        using socketpair (or pipes) and poll.
+Keywords: parallel pprocess fork socketpair pipe socket channel map pmap Queue daemon
+Platform: Any
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: Operating System :: POSIX
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Distributed Computing

@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: matlab2cpp
+Version: 0.2
+Summary: A semi-automatic tool for converting Matlab to C++
+Home-page: http://www.github.org/jonathf/matlab2cpp
+Author: Jonathan Feinberg
+Author-email: jonathan@feinberg.no
+License: BSD
+Description: UNKNOWN
+Platform: Mac, Linux and Windows

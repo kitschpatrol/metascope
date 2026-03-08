@@ -31,6 +31,7 @@ import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon
 import { openFrameworksInstallXmlSource } from './sources/open-frameworks-install-xml'
 import { packageSource } from './sources/package-json.js'
 import { pbxprojSource } from './sources/pbxproj'
+import { pkgInfoSource } from './sources/pkg-info'
 import { pomXmlSource } from './sources/pom-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
 import { publiccodeSource } from './sources/publiccode'
@@ -67,6 +68,7 @@ const sources: MetadataSource[] = [
 	openFrameworksAddonConfigSource,
 	openFrameworksInstallXmlSource,
 	pbxprojSource,
+	pkgInfoSource,
 	packageSource,
 	pomXmlSource,
 	processingLibraryPropertiesSource,
@@ -231,6 +233,7 @@ export async function getMetadata<T>(
 		openFrameworksInstallXml: {},
 		packageJson: {},
 		pbxproj: {},
+		pkgInfo: {},
 		pomXml: {},
 		processingLibraryProperties: {},
 		publiccode: {},

@@ -1,0 +1,13 @@
+Metadata-Version: 1.0
+Name: SumoLogic
+Version: 1.0
+Summary: SumoLogic is a utility to help transfer system logs to SumoLogic
+Home-page: https://github.com/josev814/SumoLogic
+Author: Jose' Vargas
+Author-email: josev814@gmail.com
+License: GPL v2
+Description: 
+        SumoLogic is a utility to help transfer system logs to SumoLogic.  Additional log files and endpoints can be set
+        in the /etc/sumologic/conf.d/config file.
+        
+Platform: UNKNOWN

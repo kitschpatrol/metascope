@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: nml
+Version: 0.7.1
+Summary: An OpenTTD NewGRF compiler for the nml language
+Home-page: https://github.com/OpenTTD/nml
+Author: NML Development Team
+Author-email: nml-team@openttdcoop.org
+License: GPL-2.0+
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Compilers
+Requires-Python: >=3.5
+License-File: LICENSE
+
+A tool to compile NewGRFs for OpenTTD from nml filesNML is a meta-language that aims to be a lot simpler to learn and use than nfo used traditionally to write NewGRFs.

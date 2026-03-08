@@ -34,6 +34,7 @@ export type {
 	OpenFrameworksInstallXmlData,
 	PackageData,
 	PbxprojData,
+	PkgInfoSourceData,
 	PomXmlData,
 	PomXmlDependencyEntry,
 	PomXmlLicenseEntry,

@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: example-package
+Version: 1.2.3
+Summary: A short description of the package
+Home-Page: https://example.com/example-package
+Author: Jane Smith
+Author-email: jane@example.com
+Maintainer: Bob Jones
+Maintainer-email: bob@example.com
+License: MIT
+Keywords: example,test,metadata
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.8
+Requires-Dist: requests>=2.25.0
+Requires-Dist: click>=7.0
+Requires-Dist: pyyaml
+Project-URL: Repository, https://github.com/example/example-package
+Project-URL: Bug Tracker, https://github.com/example/example-package/issues
+Project-URL: Documentation, https://example-package.readthedocs.io
+Description-Content-Type: text/markdown
+
+# Example Package
+
+This is a longer description that appears after a blank line.

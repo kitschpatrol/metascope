@@ -72,6 +72,7 @@ const mockContext: MetadataContext = {
 		version: '1.2.3',
 	},
 	pbxproj: {},
+	pkgInfo: {},
 	pomXml: {},
 	processingLibraryProperties: {},
 	publiccode: {},

@@ -47,6 +47,7 @@ export type {
 } from './sources/publiccode'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
+export type { PkgInfoSourceData } from './sources/pkg-info'
 export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
 export type { SetupCfgSourceData } from './sources/setup-cfg'
@@ -76,6 +77,7 @@ import type { ProcessingLibraryPropertiesData } from './sources/processing-libra
 import type { PubliccodeData } from './sources/publiccode'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
+import type { PkgInfoSourceData } from './sources/pkg-info'
 import type { PythonSetupPyData } from './sources/python-setup-py'
 import type { ReadmeData } from './sources/readme'
 import type { SetupCfgSourceData } from './sources/setup-cfg'
@@ -107,6 +109,7 @@ export type MetadataContext = {
 	openFrameworksInstallXml: OpenFrameworksInstallXmlData
 	packageJson: PackageData
 	pbxproj: PbxprojData
+	pkgInfo: PkgInfoSourceData
 	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
 	publiccode: PubliccodeData

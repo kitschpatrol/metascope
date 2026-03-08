@@ -1,0 +1,36 @@
+Metadata-Version: 1.1
+Name: presto
+Version: 0.5.13
+Summary: A bioinformatics toolkit for processing high-throughput lymphocyte receptor sequencing data.
+Home-page: http://presto.readthedocs.io
+Author: Jason Anthony Vander Heiden
+Author-email: immcantation@googlegroups.com
+License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+Download-URL: https://bitbucket.org/kleinstein/presto/downloads
+Description: pRESTO - The REpertoire Sequencing TOolkit
+        ================================================================================
+        
+        pRESTO is a toolkit for processing raw reads from high-throughput sequencing of
+        B cell and T cell repertoires.
+        
+        Dramatic improvements in high-throughput sequencing technologies now enable
+        large-scale characterization of lymphocyte repertoires, defined as the
+        collection of trans-membrane antigen-receptor proteins located on the surface of
+        B cells and T cells. The REpertoire Sequencing TOolkit (pRESTO) is composed of a
+        suite of utilities to handle all stages of sequence processing prior to germline
+        segment assignment. pRESTO is designed to handle either single reads or
+        paired-end reads. It includes features for quality control, primer masking,
+        annotation of reads with sequence embedded barcodes, generation of
+        unique molecular identifier (UMI) consensus sequences, assembly of paired-end 
+        reads and identification of duplicate sequences. Numerous options for sequence 
+        sorting, sampling and conversion operations are also included.
+        
+Keywords: bioinformatics,sequencing,immunology,adaptive immunity,immunoglobulin,AIRR-seq,Rep-Seq,B cell repertoire analysis,adaptive immune receptor repertoires
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
