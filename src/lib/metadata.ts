@@ -17,6 +17,7 @@ import { cargoTomlSource } from './sources/cargo-toml'
 import { cinderCinderblockSource } from './sources/cinder-cinderblock'
 import { codemetaSource } from './sources/codemeta'
 import { filesystemSource } from './sources/filesystem'
+import { gemspecSource } from './sources/gemspec'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
 import { licenseFileSource } from './sources/license-file'
@@ -51,6 +52,7 @@ const sources: MetadataSource[] = [
 	cinderCinderblockSource,
 	codemetaSource,
 	filesystemSource,
+	gemspecSource,
 	gitSource,
 	githubSource,
 	infoPlistSource,
@@ -211,6 +213,7 @@ export async function getMetadata<T>(
 		cinderCinderblock: {},
 		codemeta: codemetaData,
 		filesystem: {},
+		gemspec: {},
 		infoPlist: {},
 		git: {},
 		github: {},

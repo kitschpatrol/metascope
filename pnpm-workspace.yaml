@@ -1,5 +1,7 @@
 onlyBuiltDependencies:
   - esbuild
+  - tree-sitter-python
+  - tree-sitter-ruby
   - unrs-resolver
 
 publicHoistPattern:

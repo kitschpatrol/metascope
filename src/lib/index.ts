@@ -13,6 +13,8 @@ export type {
 	CinderCinderblockData,
 	CodeMetaData,
 	Credentials,
+	GemspecData,
+	GemSpecDependency,
 	FilesystemData,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,

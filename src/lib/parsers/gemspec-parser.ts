@@ -1,0 +1,394 @@
+/* eslint-disable ts/no-unsafe-member-access */
+/* eslint-disable ts/no-explicit-any */
+/* eslint-disable ts/no-unsafe-type-assertion */
+/* eslint-disable unicorn/prefer-set-has */
+/* eslint-disable ts/naming-convention */
+
+import type { Node } from 'web-tree-sitter'
+import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+export type GemSpecDependency = {
+	name: string
+	requirements: string[]
+	type: 'development' | 'runtime'
+}
+
+/** @public */
+export type GemSpec = {
+	authors: string[]
+	bindir: null | string
+	cert_chain: string[]
+	dependencies: GemSpecDependency[]
+	description: null | string
+	email: null | string | string[]
+	executables: string[]
+	extensions: string[]
+	/** Any attributes not explicitly modeled above */
+	extra: Record<string, unknown>
+	extra_rdoc_files: string[]
+	files: string[]
+	homepage: null | string
+	license: null | string
+	licenses: string[]
+	metadata: Record<string, string>
+	name: null | string
+	platform: null | string
+	post_install_message: null | string
+	rdoc_options: string[]
+	require_paths: string[]
+	required_ruby_version: null | string
+	required_rubygems_version: null | string
+	signing_key: null | string
+	summary: null | string
+	test_files: string[]
+	version: null | string
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function emptySpec(): GemSpec {
+	return {
+		authors: [],
+		bindir: null,
+		cert_chain: [],
+		dependencies: [],
+		description: null,
+		email: null,
+		executables: [],
+		extensions: [],
+		extra: {},
+		extra_rdoc_files: [],
+		files: [],
+		homepage: null,
+		license: null,
+		licenses: [],
+		metadata: {},
+		name: null,
+		platform: null,
+		post_install_message: null,
+		rdoc_options: [],
+		require_paths: [],
+		required_ruby_version: null,
+		required_rubygems_version: null,
+		signing_key: null,
+		summary: null,
+		test_files: [],
+		version: null,
+	}
+}
+
+/** Filter nulls from web-tree-sitter's `namedChildren` array. */
+function children(node: Node): Node[] {
+	// eslint-disable-next-line ts/no-unnecessary-condition
+	return node.namedChildren.filter((c): c is Node => c !== null)
+}
+
+/** Methods that return the receiver unchanged — safe to unwrap. */
+const IDENTITY_METHODS = new Set(['-@', 'dup', 'freeze'])
+
+/** Extract the raw string value from a tree-sitter string/symbol node. */
+function extractString(node: Node): null | string {
+	switch (node.type) {
+		case 'call': {
+			// Handle "value".freeze, "value".dup, -"value" (frozen string literal)
+			const method = node.childForFieldName('method')
+			if (method && IDENTITY_METHODS.has(method.text)) {
+				const receiver = node.childForFieldName('receiver')
+				if (receiver) return extractString(receiver)
+			}
+			return null
+		}
+		case 'float':
+		case 'integer': {
+			return node.text
+		}
+		case 'heredoc_body': {
+			return node.text.trim()
+		}
+		case 'simple_symbol': {
+			return node.text.replace(/^:/, '')
+		}
+		case 'string':
+		case 'string_content': {
+			// A string node wraps string_content children; grab all content fragments
+			const parts = children(node).filter((c) => c.type === 'string_content')
+			if (parts.length > 0) return parts.map((p) => p.text).join('')
+			// Simple string with no interpolation
+			return node.text.replaceAll(/^["']|["']$/g, '')
+		}
+		default: {
+			return null
+		}
+	}
+}
+
+/** Extract a string array from an array node like `["a", "b"]`. */
+function extractStringArray(node: Node): string[] {
+	if (node.type === 'array') {
+		return children(node)
+			.map((element) => extractString(element))
+			.filter((s): s is string => s !== null)
+	}
+	// %w[] word arrays appear as string_array
+	if (node.type === 'string_array') {
+		return children(node).map((c) => (c.type === 'bare_string' ? c.text : c.text))
+	}
+	// Single value → wrap in array
+	const single = extractString(node)
+	return single === null ? [] : [single]
+}
+
+/**
+ * Attempt to extract a usable value from an arbitrary RHS node.
+ * Returns string | string[] | null — we intentionally skip expressions
+ * we can't statically evaluate (method calls, constants, etc.).
+ */
+function extractValue(node: Node): null | string | string[] {
+	if (node.type === 'array' || node.type === 'string_array') {
+		return extractStringArray(node)
+	}
+	// Handle [].freeze — unwrap identity methods on arrays
+	if (node.type === 'call') {
+		const method = node.childForFieldName('method')
+		if (method && IDENTITY_METHODS.has(method.text)) {
+			const receiver = node.childForFieldName('receiver')
+			if (receiver) return extractValue(receiver)
+		}
+	}
+	if (node.type === 'true') return 'true'
+	if (node.type === 'false') return 'false'
+	if (node.type === 'nil') return null
+	return extractString(node)
+}
+
+/** Resolve the attribute name from the LHS of `spec.foo = ...` */
+function resolveAttribute(node: Node): null | string {
+	// Node is a `call` like `spec.name`  or a  `method_call`
+	if (node.type === 'call') {
+		const methodNode = node.childForFieldName('method')
+		return methodNode?.text ?? null
+	}
+	return null
+}
+
+// ─── Dependency helpers ──────────────────────────────────────────────────────
+
+const DEP_METHODS: Record<string, GemSpecDependency['type']> = {
+	add_dependency: 'runtime',
+	add_development_dependency: 'development',
+	add_runtime_dependency: 'runtime',
+}
+
+function tryParseDependency(node: Node): GemSpecDependency | null {
+	// We're looking for:  spec.add_dependency "name", "~> 1.0"
+	if (node.type !== 'call' && node.type !== 'method_call') return null
+
+	const methodNode = node.childForFieldName('method')
+	if (!methodNode) return null
+
+	// Method is itself a `call` node like `spec.add_dependency`
+	let methodName: null | string = null
+	if (methodNode.type === 'call') {
+		const inner = methodNode.childForFieldName('method')
+		methodName = inner?.text ?? null
+	} else if (methodNode.type === 'identifier') {
+		methodName = methodNode.text
+	} else {
+		// Sometimes the whole node is the call: `spec.add_dependency("name")`
+		methodName = methodNode.text
+	}
+
+	// Check if this is a plain `call` with the dep method at the top level
+	if (!methodName) {
+		const topMethod = node.childForFieldName('method')
+		if (topMethod?.type === 'identifier') methodName = topMethod.text
+	}
+
+	// For the pattern `s.add_dependency "name", "ver"` tree-sitter-ruby parses as:
+	//   (call receiver: (identifier) method: (identifier) arguments: (argument_list ...))
+	// but with a receiver like `spec`, it becomes:
+	//   (call receiver: (call obj: spec method: add_dependency) arguments: ...)
+	// We need to handle both.
+
+	// Try extracting method name from the node text as fallback
+	// eslint-disable-next-line ts/no-unnecessary-condition
+	if (!methodName || !DEP_METHODS[methodName]) {
+		// Check if the full text contains a dep method
+		for (const m of Object.keys(DEP_METHODS)) {
+			if (node.text.includes(`.${m}`)) {
+				methodName = m
+				break
+			}
+		}
+	}
+
+	// eslint-disable-next-line ts/no-unnecessary-condition
+	if (!methodName || !DEP_METHODS[methodName]) return null
+
+	const depType = DEP_METHODS[methodName]
+
+	const args = node.childForFieldName('arguments')
+	if (!args) return null
+
+	const argNodes = children(args)
+	if (argNodes.length === 0) return null
+
+	const depName = extractString(argNodes[0])
+	if (!depName) return null
+
+	const requirements = argNodes
+		.slice(1)
+		.map((element) => extractString(element))
+		.filter((s): s is string => s !== null)
+
+	return { name: depName, requirements, type: depType }
+}
+
+// ─── Metadata hash extraction ────────────────────────────────────────────────
+
+function extractHash(node: Node): Record<string, string> {
+	const result: Record<string, string> = {}
+	if (node.type !== 'hash') return result
+
+	for (const pair of children(node)) {
+		if (pair.type !== 'pair') continue
+		const key = pair.childForFieldName('key')
+		const value = pair.childForFieldName('value')
+		if (!key || !value) continue
+		const k = extractString(key)
+		const v = extractString(value)
+		if (k && v) result[k] = v
+	}
+
+	return result
+}
+
+// ─── Main parser ─────────────────────────────────────────────────────────────
+
+/**
+ * Parse a `.gemspec` file's contents and return a typed {@link GemSpec} object.
+ *
+ * Uses tree-sitter with the Ruby grammar to walk the AST, so it can handle
+ * most real-world gemspec patterns without executing Ruby.
+ *
+ * Fields that reference Ruby constants (e.g. `Foo::VERSION`) or dynamic
+ * expressions (e.g. `Dir.glob(...)`) will be `null` / empty — the parser
+ * only extracts statically determinable values.
+ */
+export async function parseGemspec(source: string): Promise<GemSpec> {
+	const parser = await initParser()
+	const ruby = await getRubyLanguage()
+	parser.setLanguage(ruby)
+
+	const tree = parser.parse(source)
+	if (!tree) throw new Error('Failed to parse gemspec source')
+	const spec = emptySpec()
+
+	/** Map of simple attribute names → setter logic */
+	const STRING_ATTRS: Array<keyof GemSpec> = [
+		'name',
+		'version',
+		'summary',
+		'description',
+		'homepage',
+		'license',
+		'platform',
+		'required_ruby_version',
+		'required_rubygems_version',
+		'bindir',
+		'signing_key',
+		'post_install_message',
+	]
+
+	const ARRAY_ATTRS: Array<keyof GemSpec> = [
+		'authors',
+		'licenses',
+		'files',
+		'test_files',
+		'executables',
+		'require_paths',
+		'cert_chain',
+		'extra_rdoc_files',
+		'rdoc_options',
+		'extensions',
+	]
+
+	function visit(node: Node): void {
+		// ── Assignment: spec.attr = value ──────────────────────────────────
+		if (node.type === 'assignment') {
+			const lhs = node.childForFieldName('left')
+			const rhs = node.childForFieldName('right')
+			if (!lhs || !rhs) {
+				visitChildren(node)
+				return
+			}
+
+			const attribute = resolveAttribute(lhs)
+			if (!attribute) {
+				visitChildren(node)
+				return
+			}
+
+			// Email can be string or array
+			if (attribute === 'email') {
+				const value = extractValue(rhs)
+				if (value !== null) spec.email = value
+				return
+			}
+
+			// Metadata is a hash
+			if (attribute === 'metadata') {
+				if (rhs.type === 'hash') {
+					spec.metadata = { ...spec.metadata, ...extractHash(rhs) }
+				}
+				return
+			}
+
+			// String attributes
+			if (STRING_ATTRS.includes(attribute as keyof GemSpec)) {
+				const value = extractString(rhs)
+				if (value !== null) (spec as any)[attribute] = value
+				return
+			}
+
+			// Array attributes
+			if (ARRAY_ATTRS.includes(attribute as keyof GemSpec)) {
+				const array = extractStringArray(rhs)
+				if (array.length > 0) (spec as any)[attribute] = array
+				return
+			}
+
+			// Anything else → stash in extra
+			const value = extractValue(rhs)
+			if (value !== null) spec.extra[attribute] = value
+			return
+		}
+
+		// ── Method calls: spec.add_dependency / metadata[]= ───────────────
+		if (node.type === 'call' || node.type === 'method_call') {
+			const dep = tryParseDependency(node)
+			if (dep) {
+				spec.dependencies.push(dep)
+				return
+			}
+		}
+
+		// ── Element assignment: spec.metadata["key"] = "value" ────────────
+		if (node.type === 'element_assignment' || node.type === 'indexing') {
+			// We handle this pattern at the assignment level, so fall through
+		}
+
+		visitChildren(node)
+	}
+
+	function visitChildren(node: Node): void {
+		for (const child of children(node)) {
+			visit(child)
+		}
+	}
+
+	visit(tree.rootNode)
+	return spec
+}

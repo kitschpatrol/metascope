@@ -43,6 +43,7 @@
 		"fix": "ksc fix",
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+		"pretest": "cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm",
 		"test": "vitest"
 	},
 	"dependencies": {
@@ -77,6 +78,7 @@
 		"tree-sitter-ruby": "^0.23.1",
 		"unified": "^11.0.5",
 		"updates": "^17.8.3",
+		"web-tree-sitter": "^0.26.6",
 		"yaml": "^2.8.2",
 		"yargs": "^18.0.0",
 		"zod": "^4.3.6"

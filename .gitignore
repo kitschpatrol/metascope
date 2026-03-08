@@ -21,4 +21,5 @@ vendor/
 
 # Customizations
 /.claude
+src/lib/grammars/*.wasm
 

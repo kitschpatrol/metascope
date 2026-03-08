@@ -264,7 +264,7 @@ async function run() {
 	// 	false,
 	// 	isValidYaml,
 	// )
-	// await saveAllFileSearchResults('.gemspec', './test/fixtures/gemspec', true)
+	// await saveAllFileSearchResults('.gemspec', './test/fixtures/ruby-gemspec', true)
 	// await saveAllFileSearchResults('PKG-INFO', './test/fixtures/pkg-info', false)
 	// await saveAllFileSearchResults('setup.cfg', './test/fixtures/setup-cfg', false)
 	// await saveAllFileSearchResults('setup.py', './test/fixtures/setup-py', false)

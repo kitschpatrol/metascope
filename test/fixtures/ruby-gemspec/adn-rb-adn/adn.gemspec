@@ -1,0 +1,19 @@
+# encoding: UTF-8
+
+require File.expand_path('../lib/adn/version', __FILE__)
+
+Gem::Specification.new do |s|
+  s.name        = 'adn'
+  s.version     = ADN::VERSION
+  s.authors     = ["Kishyr Ramdial", "Dave Goodchild", "Peter Hellberg"]
+  s.email       = ["kishyr@gmail.com", "buddhamagnet@gmail.com", "peter@c7.se"]
+  s.description = "A simple and easy to use library to interact with App.net's API"
+  s.summary     = "A Ruby library for App.net"
+  s.homepage    = "https://github.com/adn-rb/adn"
+  s.files       = `git ls-files`.split($\)
+  s.test_files  = s.files.grep(%r{^(spec)/})
+
+  s.add_runtime_dependency "multipart-post", ["~> 1.2.0"]
+  s.add_runtime_dependency "mime-types", ["~> 2.0"]
+  s.required_ruby_version = '>= 1.9.3'
+end

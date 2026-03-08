@@ -23,6 +23,7 @@ const mockContext: MetadataContext = {
 		totalFileCount: 150,
 		totalSizeBytes: 1_048_576,
 	},
+	gemspec: {},
 	git: {
 		branchCurrent: 'main',
 		commitCount: 42,
