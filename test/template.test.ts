@@ -37,6 +37,7 @@ const mockContext: MetadataContext = {
 		issueCountOpen: 5,
 		stargazerCount: 100,
 	},
+	goMod: {},
 	infoPlist: {},
 	licenseFiles: {},
 	loc: {

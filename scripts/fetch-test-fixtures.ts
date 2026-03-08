@@ -49,6 +49,7 @@ async function saveFileSearchResult(
 	result: GitHubSearchResult,
 	destinationDirectory: string,
 	validate?: (filename: string, content: string) => boolean,
+	folderSuffix = '',
 ): Promise<void> {
 	const rawUrl = result.url
 		.replace('https://github.com/', 'https://raw.githubusercontent.com/')
@@ -68,12 +69,23 @@ async function saveFileSearchResult(
 
 	const prefix = result.repository.nameWithOwner.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')
 
-	const filename = `${prefix}.${basename}`
+	// Create the nested path if a suffix is provided
+	const fullDestDir = folderSuffix
+		? path.resolve(destinationDirectory, prefix, `${prefix}${folderSuffix}`)
+		: path.resolve(destinationDirectory, prefix)
 
-	await fs.mkdir(destinationDirectory, { recursive: true })
-	await fs.writeFile(path.resolve(destinationDirectory, filename), content, {
+	await fs.mkdir(fullDestDir, { recursive: true })
+
+	// Write the file, overwriting if it exists
+	await fs.writeFile(path.resolve(fullDestDir, basename), content, {
 		flag: 'w',
 	})
+
+	// Check if there are multiple files in the destination directory
+	const filesInDir = await fs.readdir(fullDestDir)
+	if (filesInDir.length > 1) {
+		console.warn(`[WARNING] Multiple files detected in ${fullDestDir}:`, filesInDir)
+	}
 }
 
 // @ts-expect-error - Use is commented out
@@ -82,10 +94,11 @@ async function saveAllFileSearchResults(
 	destination: string,
 	fuzzySearch = false,
 	validate?: (filename: string, content: string) => boolean,
+	folderSuffix = '',
 ): Promise<void> {
 	const results = await getFileSearchResults(search, fuzzySearch)
 	const promises = results.map(async (result) =>
-		saveFileSearchResult(result, destination, validate),
+		saveFileSearchResult(result, destination, validate, folderSuffix),
 	)
 	await Promise.all(promises)
 }
@@ -240,10 +253,6 @@ function isValidLicenseFile(filename: string, _content: string): boolean {
 
 async function run() {
 	console.log('Proceeding with fetch...')
-	// Too sloppy to be useful
-	// await saveAllFileSearchResults('AUTHORS', './test/fixtures/authors', true)
-	// await saveAllFileSearchResults('CONTRIBUTORS', './test/fixtures/contributors', true)
-	// await saveAllFileSearchResults('MAINTAINERS', './test/fixtures/maintainers', true)
 
 	await saveAllFileSearchResults('codemeta.json', './test/fixtures/codemeta', false, isValidJson)
 	await saveAllFileSearchResults('package.json', './test/fixtures/package', false, isValidJson)
@@ -330,12 +339,17 @@ async function run() {
 		false,
 		isValidPlist,
 	)
+
+	// This will now properly resolve to:
+	// ./test/fixtures/pbxproj/[prefix]/[prefix].xcodeproj/project.pbxproj
 	await saveAllFileSearchResults(
 		'project.pbxproj',
 		'./test/fixtures/pbxproj',
 		false,
 		isValidPbxproj,
+		'.xcodeproj',
 	)
+
 	await saveAllFileSearchResults(
 		'cinderblock.xml',
 		'./test/fixtures/cinderblock',

@@ -20,6 +20,8 @@ export type {
 	GitConfig,
 	GitData,
 	GitHubData,
+	GoModDependency,
+	GoModSourceData,
 	InfoPlistData,
 	LicenseFilesData,
 	LocData,
