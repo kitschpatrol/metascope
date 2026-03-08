@@ -49,6 +49,7 @@ export default cspellConfig({
 		'codemetapy',
 		'colorlog',
 		'commongateway',
+		'configparser',
 		'corebundle',
 		'cpan',
 		'creatordate',

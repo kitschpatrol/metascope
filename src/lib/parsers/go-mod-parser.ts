@@ -1,27 +1,6 @@
 /* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
 
-import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-
-// ─── Types ───────────────────────────────────────────────────────────────────
-
-const goModDependencySchema = z.object({
-	module: z.string(),
-	version: z.string(),
-})
-
-const goModDataSchema = z.object({
-	dependencies: z.array(goModDependencySchema),
-	go_version: nonEmptyString,
-	module: nonEmptyString,
-	repository_url: optionalUrl,
-	tool_dependencies: stringArray,
-})
-
-/** Parsed go.mod metadata */
-export type GoMod = z.infer<typeof goModDataSchema>
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 type BlockState = 'none' | 'replace' | 'require' | 'skip' | 'tool'
@@ -118,8 +97,14 @@ function parseToolLine(line: string): string | undefined {
  * Extracts module identity, Go version, direct dependencies (skipping
  * indirect ones), tool dependencies, and applies replace directives.
  */
-export function parseGoMod(source: string): GoMod {
-	const data: GoMod = {
+export function parseGoMod(source: string): Record<string, unknown> {
+	const data: {
+		dependencies: Array<{ module: string; version: string }>
+		go_version: string | undefined
+		module: string | undefined
+		repository_url: string | undefined
+		tool_dependencies: string[]
+	} = {
 		dependencies: [],
 		go_version: undefined,
 		module: undefined,
@@ -231,5 +216,5 @@ export function parseGoMod(source: string): GoMod {
 		data.repository_url = moduleToRepoUrl(data.module)
 	}
 
-	return goModDataSchema.parse(data)
+	return data
 }

@@ -1,11 +1,82 @@
+/**
+ * Source and parser for README files.
+ *
+ * Extracts the first H1 heading from a markdown README as the project name.
+ * Uses `unified` + `remark-parse` to build an mdast (Markdown Abstract Syntax
+ * Tree) and walks it to find the first depth-1 heading.
+ */
+
+import type { Nodes, PhrasingContent } from 'mdast'
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { Readme } from '../parsers/readme-file-parser'
+import remarkParse from 'remark-parse'
+import { unified } from 'unified'
+import { z } from 'zod'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-import { parseReadme, readmePattern } from '../parsers/readme-file-parser'
+
+// ─── Schema ─────────────────────────────────────────────────────────
+
+const readmeSchema = z.object({
+	/** Project name extracted from the first H1 heading. */
+	name: z.string(),
+})
+
+export type Readme = z.infer<typeof readmeSchema>
 
 export type ReadmeFileData = Partial<Readme>
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Recursively extract plain text from mdast phrasing content.
+ */
+function extractText(nodes: Nodes[] | PhrasingContent[]): string {
+	return nodes
+		.map((node) => {
+			if ('value' in node) return node.value
+			if ('children' in node) return extractText(node.children)
+			return ''
+		})
+		.join('')
+		.trim()
+}
+
+/**
+ * Extract the text content of the first H1 heading from markdown.
+ */
+function extractFirstH1(markdown: string): string | undefined {
+	const tree = unified().use(remarkParse).parse(markdown)
+
+	for (const node of tree.children) {
+		if (node.type === 'heading' && node.depth === 1) {
+			const text = extractText(node.children)
+			if (text.length > 0) {
+				return text
+			}
+		}
+	}
+
+	return undefined
+}
+
+// ─── Parser ──────────────────────────────────────────────────────────
+
+/** Pattern matching README filenames (case-insensitive, optional extension). */
+export const readmePattern = /^readme(\.\w+)?$/i
+
+/**
+ * Parse a README file's content.
+ * @param content - Raw file content (markdown).
+ * @returns Parsed metadata, or `undefined` if no H1 heading is found.
+ */
+export function parse(content: string): Readme | undefined {
+	const name = extractFirstH1(content)
+	if (!name) return undefined
+	return readmeSchema.parse({ name })
+}
+
+// ─── Source ──────────────────────────────────────────────────────────
 
 /** Find the first README file in a directory. */
 async function findReadmeFile(directoryPath: string): Promise<string | undefined> {
@@ -26,7 +97,7 @@ export const readmeFileSource: MetadataSource<'readmeFile'> = {
 		if (!filePath) return {}
 
 		const content = await readFile(filePath, 'utf8')
-		return parseReadme(content) ?? {}
+		return parse(content) ?? {}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findReadmeFile(context.path)

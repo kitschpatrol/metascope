@@ -2,95 +2,44 @@ import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parsePkgInfo } from '../../src/lib/parsers/python-pkg-info-parser'
+import {
+	extractRfc822Body,
+	parseRfc822Headers,
+	splitMultiValues,
+} from '../../src/lib/parsers/rfc822-header-parser'
 
 const fixturesDirectory = resolve('test/fixtures/python-pkg-info')
 
-describe('parsePkgInfo', () => {
-	it('should parse basic fields', () => {
+describe('parseRfc822Headers', () => {
+	it('should parse header key-value pairs', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
+		const headers = parseRfc822Headers(content)
 
-		expect(result.name).toBe('example-package')
-		expect(result.version).toBe('1.2.3')
-		expect(result.summary).toBe('A short description of the package')
-		expect(result.description).toBe('A short description of the package')
-		expect(result.home_page).toBe('https://example.com/example-package')
-		expect(result.author).toBe('Jane Smith')
-		expect(result.author_email).toBe('jane@example.com')
-		expect(result.maintainer).toBe('Bob Jones')
-		expect(result.maintainer_email).toBe('bob@example.com')
-		expect(result.license).toBe('MIT')
-		expect(result.requires_python).toBe('>=3.8')
-		expect(result.metadata_version).toBe('2.1')
+		expect(headers.Name).toBe('example-package')
+		expect(headers.Version).toBe('1.2.3')
+		expect(headers.Summary).toBe('A short description of the package')
+		expect(headers.Author).toBe('Jane Smith')
+		expect(headers.License).toBe('MIT')
 	})
 
-	it('should parse keywords', () => {
+	it('should collect multi-value headers as newline-separated strings', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
+		const headers = parseRfc822Headers(content)
 
-		expect(result.keywords).toEqual(['example', 'test', 'metadata'])
+		const classifiers = splitMultiValues(headers.Classifier)
+		expect(classifiers).toContain('Development Status :: 5 - Production/Stable')
+		expect(classifiers).toContain('Programming Language :: Python :: 3')
+		expect(classifiers.length).toBe(5)
 	})
 
-	it('should parse multi-value classifiers', () => {
+	it('should collect Requires-Dist as multi-value', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
+		const headers = parseRfc822Headers(content)
 
-		expect(result.classifiers).toContain('Development Status :: 5 - Production/Stable')
-		expect(result.classifiers).toContain('Programming Language :: Python :: 3')
-		expect(result.classifiers.length).toBe(5)
-	})
-
-	it('should parse multi-value Requires-Dist', () => {
-		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
-
-		expect(result.requires_dist).toContain('requests>=2.25.0')
-		expect(result.requires_dist).toContain('click>=7.0')
-		expect(result.requires_dist).toContain('pyyaml')
-	})
-
-	it('should parse Project-URL with "Label, URL" format', () => {
-		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
-
-		expect(result.project_urls.Repository).toBe('https://github.com/example/example-package')
-		expect(result.project_urls['Bug Tracker']).toBe(
-			'https://github.com/example/example-package/issues',
-		)
-		expect(result.project_urls.Documentation).toBe('https://example-package.readthedocs.io')
-	})
-
-	it('should extract long_description from body', () => {
-		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
-
-		expect(result.long_description).toContain('Example Package')
-		expect(result.long_description).toContain('longer description')
-	})
-
-	it('should skip UNKNOWN values', () => {
-		const content = readFileSync(resolve(fixturesDirectory, 'axel-events-axel/PKG-INFO'), 'utf8')
-		const result = parsePkgInfo(content)
-
-		expect(result.name).toBe('axel')
-		expect(result.author).toBe('Adrian Cristea')
-		expect(result.home_page).toBeUndefined()
-	})
-
-	it('should parse a real-world PKG-INFO (bflb-mcu-tool)', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, '9names-bflb-mcu-tool/PKG-INFO'),
-			'utf8',
-		)
-		const result = parsePkgInfo(content)
-
-		expect(result.name).toBe('bflb-mcu-tool')
-		expect(result.version).toBe('1.8.6')
-		expect(result.author).toBe('bouffalolab')
-		expect(result.license).toBe('MIT')
-		expect(result.requires_python).toBe('>=3.6')
-		expect(result.classifiers.length).toBeGreaterThan(3)
+		const requiresDistribution = splitMultiValues(headers['Requires-Dist'])
+		expect(requiresDistribution).toContain('requests>=2.25.0')
+		expect(requiresDistribution).toContain('click>=7.0')
+		expect(requiresDistribution).toContain('pyyaml')
 	})
 
 	it('should parse all fixtures without throwing', async () => {
@@ -107,10 +56,38 @@ describe('parsePkgInfo', () => {
 			if (!pkgInfoFile) continue
 
 			const content = readFileSync(resolve(directoryPath, pkgInfoFile), 'utf8')
-			expect(() => parsePkgInfo(content), `fixture "${directory.name}" should parse`).not.toThrow()
+			expect(
+				() => parseRfc822Headers(content),
+				`fixture "${directory.name}" should parse`,
+			).not.toThrow()
 			parsedCount++
 		}
 
 		expect(parsedCount).toBe(109)
+	})
+})
+
+describe('extractRfc822Body', () => {
+	it('should extract body text after the first blank line', () => {
+		const content = readFileSync(resolve(fixturesDirectory, 'basic/PKG-INFO'), 'utf8')
+		const body = extractRfc822Body(content)
+
+		expect(body).toBeDefined()
+		expect(body).toContain('Example Package')
+	})
+
+	it('should return undefined when there is no body', () => {
+		const headerOnly = 'Name: test\nVersion: 1.0'
+		expect(extractRfc822Body(headerOnly)).toBeUndefined()
+	})
+})
+
+describe('splitMultiValues', () => {
+	it('should split newline-separated values into an array', () => {
+		expect(splitMultiValues('a\nb\nc')).toEqual(['a', 'b', 'c'])
+	})
+
+	it('should return an empty array for undefined', () => {
+		expect(splitMultiValues()).toEqual([])
 	})
 })

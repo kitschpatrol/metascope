@@ -1,9 +1,19 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { LicenseFiles } from '../parsers/license-file-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-import { identifyLicense, isLicenseFilename, spdxIdToUrl } from '../parsers/license-file-parser'
+import {
+	identifyLicense,
+	isLicenseFilename,
+	spdxIdToUrl,
+} from '../utilities/license-identification'
+
+// ─── Types ──────────────────────────────────────────────────────────
+
+export type LicenseFiles = {
+	/** SPDX license URLs identified from license file contents. */
+	spdxUrls: string[]
+}
 
 export type LicenseFilesData = Partial<LicenseFiles>
 

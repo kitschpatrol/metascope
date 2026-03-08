@@ -8,7 +8,7 @@ import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
 import type { NodePackageJsonData } from './metadata-types'
-import type { CodeMetaJsonData } from './parsers/codemeta-json-parser'
+import type { CodeMetaJsonData } from './sources/codemeta-json'
 
 type CodeMetaPersonOrOrg = NonNullable<CodeMetaJsonData['author']>[number]
 

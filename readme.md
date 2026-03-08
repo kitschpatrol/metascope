@@ -15,7 +15,7 @@
 
 <!-- short-description -->
 
-**Easily extract all kinds of metadata from a code repository.**
+**A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.**
 
 <!-- /short-description -->
 
@@ -50,7 +50,7 @@ Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in T
 
 Optional external tools:
 
-- [GitHub CLI](https://cli.github.com)  
+- [GitHub CLI](https://cli.github.com)\
   Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`. It's trivially installed from [Homebrew](https://brew.sh/): `brew install gh`.
 
 ### Installation
@@ -103,15 +103,15 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option               | Description                                                                   | Type      |
-| -------------------- | ----------------------------------------------------------------------------- | --------- |
-| `--template`<br>`-t` | Built-in template name (e.g., "summary") or path to a template file (.ts/.js) | `string`  |
-| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                       | `string`  |
-| `--author-name`      | Optional author name(s) for ownership checks in templates                     | `array`   |
-| `--github-account`   | Optional GitHub account name(s) for ownership checks in templates             | `array`   |
-| `--verbose`          | Run with verbose logging                                                      | `boolean` |
-| `--help`<br>`-h`     | Show help                                                                     | `boolean` |
-| `--version`<br>`-v`  | Show version number                                                           | `boolean` |
+| Option               | Description                                                                                        | Type      |
+| -------------------- | -------------------------------------------------------------------------------------------------- | --------- |
+| `--template`<br>`-t` | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js) | `string`  |
+| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                                            | `string`  |
+| `--author-name`      | Optional author name(s) for ownership checks in templates                                          | `array`   |
+| `--github-account`   | Optional GitHub account name(s) for ownership checks in templates                                  | `array`   |
+| `--verbose`          | Run with verbose logging                                                                           | `boolean` |
+| `--help`<br>`-h`     | Show help                                                                                          | `boolean` |
+| `--version`<br>`-v`  | Show version number                                                                                | `boolean` |
 
 <!-- /cli-help -->
 

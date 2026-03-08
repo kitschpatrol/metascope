@@ -1,5 +1,5 @@
 /**
- * Parser for openFrameworks `addon_config.mk` files.
+ * Parser for Makefile-style configuration files.
  *
  * These files use a GNU Makefile-like syntax with section headers (lines
  * ending in `:`) and variable assignments (`VAR = value` or `VAR += value`).
@@ -10,30 +10,6 @@
  * includes, no conditionals. It mirrors the line-by-line algorithm used
  * by the openFrameworks Project Generator.
  */
-
-import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-
-// ─── Schema ─────────────────────────────────────────────────────────
-
-const openframeworksAddonConfigSchema = z.object({
-	/** `ADDON_AUTHOR` from `meta:` section. */
-	author: nonEmptyString,
-	/** `ADDON_DEPENDENCIES` from `common:` section (space-separated addon names). */
-	dependencies: stringArray,
-	/** `ADDON_DESCRIPTION` from `meta:` section. */
-	description: nonEmptyString,
-	/** `ADDON_NAME` from `meta:` section. */
-	name: nonEmptyString,
-	/** Platform section names that contain at least one variable assignment. */
-	platformSections: stringArray,
-	/** `ADDON_TAGS` from `meta:` section (quote-aware tokenized). */
-	tags: stringArray,
-	/** `ADDON_URL` from `meta:` section. */
-	url: optionalUrl,
-})
-
-export type OpenframeworksAddonConfig = z.infer<typeof openframeworksAddonConfigSchema>
 
 /** Section header pattern: a word (with optional hyphens/slashes) followed by a colon. */
 const SECTION_RE = /^[\w/][\w/-]*:$/
@@ -48,9 +24,9 @@ const ASSIGNMENT_RE = /^(\w+)\s*(\+?=)\s*(.*)/
 const NON_PLATFORM_SECTIONS = new Set(['all', 'common', 'meta'])
 
 /**
- * Parse an `addon_config.mk` file and return structured metadata.
+ * Parse a Makefile-style config file and return structured metadata.
  */
-export function parseOpenframeworksAddonConfig(content: string): OpenframeworksAddonConfig {
+export function parseMakefileConfig(content: string): Record<string, unknown> {
 	const metaVariables = new Map<string, string[]>()
 	const commonDependencies: string[] = []
 	const platformSectionsWithContent = new Set<string>()
@@ -107,7 +83,7 @@ export function parseOpenframeworksAddonConfig(content: string): OpenframeworksA
 		platformSectionsWithContent.add(currentSection)
 	}
 
-	return openframeworksAddonConfigSchema.parse({
+	return {
 		author: singleValue(metaVariables, 'ADDON_AUTHOR'),
 		dependencies: commonDependencies,
 		description: singleValue(metaVariables, 'ADDON_DESCRIPTION'),
@@ -115,7 +91,7 @@ export function parseOpenframeworksAddonConfig(content: string): OpenframeworksA
 		platformSections: [...platformSectionsWithContent],
 		tags: metaVariables.get('ADDON_TAGS') ?? [],
 		url: singleValue(metaVariables, 'ADDON_URL'),
-	})
+	}
 }
 
 /**

@@ -1,34 +1,7 @@
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
-import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
-
-// ─── Types ───────────────────────────────────────────────────────────────────
-
-/** Parsed setup.py metadata */
-const setupPyDataSchema = z.object({
-	author: nonEmptyString,
-	author_email: nonEmptyString,
-	classifiers: stringArray,
-	description: nonEmptyString,
-	download_url: optionalUrl,
-	extras_require: z.record(z.string(), z.array(z.string())),
-	install_requires: stringArray,
-	keywords: z.array(z.string()).optional(),
-	license: nonEmptyString,
-	long_description: nonEmptyString,
-	maintainer: nonEmptyString,
-	maintainer_email: nonEmptyString,
-	name: nonEmptyString,
-	project_urls: z.record(z.string(), z.string()),
-	python_requires: nonEmptyString,
-	url: optionalUrl,
-	version: nonEmptyString,
-})
-
-export type SetupPyData = z.infer<typeof setupPyDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -38,7 +11,7 @@ function children(node: Node): Node[] {
 	return node.namedChildren.filter((c): c is Node => c !== null)
 }
 
-function emptySetupPyData(): SetupPyData {
+function emptySetupPyData(): Record<string, unknown> {
 	return {
 		author: undefined,
 		author_email: undefined,
@@ -178,7 +151,7 @@ const STRING_ATTRS = new Set<string>([
  * (string/list literals) are extracted — variables and dynamic expressions
  * are skipped.
  */
-export async function parseSetupPy(source: string): Promise<SetupPyData> {
+export async function parseSetupPy(source: string): Promise<Record<string, unknown>> {
 	const parser = await initParser()
 	const python = await getPythonLanguage()
 	parser.setLanguage(python)
@@ -249,7 +222,7 @@ export async function parseSetupPy(source: string): Promise<SetupPyData> {
 		}
 	}
 
-	return setupPyDataSchema.parse(data)
+	return data
 }
 
 /**

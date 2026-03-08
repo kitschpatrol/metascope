@@ -1,74 +1,45 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseArduinoLibraryProperties } from '../../src/lib/parsers/arduino-library-properties-parser'
+import { parseLibraryProperties } from '../../src/lib/parsers/library-properties-parser'
 
 const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 
-describe('parseArduinoLibraryProperties', () => {
-	it('should parse a simple library properties file', async () => {
+describe('parseLibraryProperties (Arduino)', () => {
+	it('should return a Record<string, string> with key-value pairs', async () => {
 		const content = await readFile(
 			resolve(fixturesDirectory, '0xpit-esparklines/library.properties'),
 			'utf8',
 		)
-		const result = parseArduinoLibraryProperties(content)
+		const result = parseLibraryProperties(content)
 
+		expect(typeof result).toBe('object')
 		expect(result.name).toBe('ESParklines')
 		expect(result.version).toBe('0.0.1')
-		expect(result.authors).toEqual([{ email: undefined, name: 'Karl Pitrich' }])
-		expect(result.maintainer).toEqual({ email: undefined, name: 'Karl Pitrich' })
-		expect(result.sentence).toBe('Sparklines for ESP8266/ES32 Arduino')
+		expect(result.author).toBe('Karl Pitrich')
 		expect(result.category).toBe('Data Processing')
-		expect(result.url).toBe('https://github.com/0xPIT/ESParklines.git')
-		expect(result.architectures).toEqual(['*'])
-		expect(result.includes).toEqual(['SparkLine.h'])
-		expect(result.depends).toEqual([])
 	})
 
-	it('should parse maintainer with email', async () => {
-		const content = await readFile(
-			resolve(
-				fixturesDirectory,
-				'abelectronicsuk-abelectronics-arduino-libraries/library.properties',
-			),
-			'utf8',
-		)
-		const result = parseArduinoLibraryProperties(content)
-
-		expect(result.name).toBe('ABElectronics_ADCDifferentialPi')
-		expect(result.maintainer).toEqual({
-			email: 'sales@abelectronics.co.uk',
-			name: 'AB Electronics UK',
-		})
-		expect(result.category).toBe('Device Control')
-	})
-
-	it('should parse dependencies', async () => {
-		const content = await readFile(
-			resolve(fixturesDirectory, 'adafruit-adafruit-ccs811/library.properties'),
-			'utf8',
-		)
-		const result = parseArduinoLibraryProperties(content)
-
-		expect(result.name).toBe('Adafruit CCS811 Library')
-		expect(result.depends).toEqual([
-			{ name: 'Adafruit SSD1306', versionConstraint: undefined },
-			{ name: 'Adafruit GFX Library', versionConstraint: undefined },
-			{ name: 'Adafruit BusIO', versionConstraint: undefined },
-		])
-		expect(result.category).toBe('Sensors')
-	})
-
-	it('should include raw key-value pairs', async () => {
+	it('should correctly split on the first = only', async () => {
 		const content = await readFile(
 			resolve(fixturesDirectory, '0xpit-esparklines/library.properties'),
 			'utf8',
 		)
-		const result = parseArduinoLibraryProperties(content)
+		const result = parseLibraryProperties(content)
 
-		expect(result.raw).toBeDefined()
-		expect(result.raw.name).toBe('ESParklines')
-		expect(result.raw.version).toBe('0.0.1')
+		expect(result.url).toBe('https://github.com/0xPIT/ESParklines.git')
+	})
+
+	it('should return all values as strings', async () => {
+		const content = await readFile(
+			resolve(fixturesDirectory, '0xpit-esparklines/library.properties'),
+			'utf8',
+		)
+		const result = parseLibraryProperties(content)
+
+		for (const value of Object.values(result)) {
+			expect(typeof value).toBe('string')
+		}
 	})
 
 	it('should parse all fixtures without throwing', async () => {
@@ -82,7 +53,7 @@ describe('parseArduinoLibraryProperties', () => {
 				resolve(fixturesDirectory, directory, 'library.properties'),
 				'utf8',
 			)
-			expect(() => parseArduinoLibraryProperties(content)).not.toThrow()
+			expect(() => parseLibraryProperties(content)).not.toThrow()
 		}
 	})
 })

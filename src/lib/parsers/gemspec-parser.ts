@@ -1,56 +1,11 @@
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
-import { z } from 'zod'
-import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
-
-// ─── Types ───────────────────────────────────────────────────────────────────
-
-const gemSpecDependencySchema = z.object({
-	name: z.string(),
-	requirements: z.array(z.string()),
-	type: z.enum(['development', 'runtime']),
-})
-
-/** @public */
-const gemSpecSchema = z.object({
-	authors: stringArray,
-	bindir: nonEmptyString,
-	cert_chain: stringArray,
-	dependencies: z.array(gemSpecDependencySchema),
-	description: nonEmptyString,
-	email: z.union([z.string(), z.array(z.string())]).optional(),
-	executables: stringArray,
-	extensions: stringArray,
-	/** Any attributes not explicitly modeled above */
-	extra: z.record(z.string(), z.unknown()),
-	extra_rdoc_files: stringArray,
-	files: stringArray,
-	homepage: optionalUrl,
-	license: nonEmptyString,
-	licenses: stringArray,
-	metadata: z.record(z.string(), z.string()),
-	name: nonEmptyString,
-	platform: nonEmptyString,
-	post_install_message: nonEmptyString,
-	rdoc_options: stringArray,
-	require_paths: stringArray,
-	required_ruby_version: nonEmptyString,
-	required_rubygems_version: nonEmptyString,
-	signing_key: nonEmptyString,
-	summary: nonEmptyString,
-	test_files: stringArray,
-	version: nonEmptyString,
-})
-
-export type GemSpec = z.infer<typeof gemSpecSchema>
-
-type GemSpecDependency = GemSpec['dependencies'][number]
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function emptySpec(): GemSpec {
+function emptySpec(): Record<string, unknown> {
 	return {
 		authors: [],
 		bindir: undefined,
@@ -177,13 +132,15 @@ function resolveAttribute(node: Node): string | undefined {
 
 // ─── Dependency helpers ──────────────────────────────────────────────────────
 
-const DEP_METHODS: Record<string, GemSpecDependency['type']> = {
+const DEP_METHODS: Record<string, 'development' | 'runtime'> = {
 	add_dependency: 'runtime',
 	add_development_dependency: 'development',
 	add_runtime_dependency: 'runtime',
 }
 
-function tryParseDependency(node: Node): GemSpecDependency | undefined {
+function tryParseDependency(
+	node: Node,
+): undefined | { name: string; requirements: string[]; type: 'development' | 'runtime' } {
 	// We're looking for:  spec.add_dependency "name", "~> 1.0"
 	if (node.type !== 'call' && node.type !== 'method_call') return undefined
 
@@ -267,18 +224,19 @@ function extractHash(node: Node): Record<string, string> {
 	return result
 }
 
-function setStringAttribute(spec: GemSpec, key: string, value: string): void {
+function setStringAttribute(spec: Record<string, unknown>, key: string, value: string): void {
 	Object.assign(spec, { [key]: value })
 }
 
-function setArrayAttribute(spec: GemSpec, key: string, value: string[]): void {
+function setArrayAttribute(spec: Record<string, unknown>, key: string, value: string[]): void {
 	Object.assign(spec, { [key]: value })
 }
 
 // ─── Main parser ─────────────────────────────────────────────────────────────
 
 /**
- * Parse a `.gemspec` file's contents and return a typed {@link GemSpec} object.
+ * Parse a `.gemspec` file's contents and return a plain object with the
+ * extracted fields.
  *
  * Uses tree-sitter with the Ruby grammar to walk the AST, so it can handle
  * most real-world gemspec patterns without executing Ruby.
@@ -287,7 +245,7 @@ function setArrayAttribute(spec: GemSpec, key: string, value: string[]): void {
  * expressions (e.g. `Dir.glob(...)`) will be `null` / empty — the parser
  * only extracts statically determinable values.
  */
-export async function parseGemspec(source: string): Promise<GemSpec> {
+export async function parseGemspec(source: string): Promise<Record<string, unknown>> {
 	const parser = await initParser()
 	const ruby = await getRubyLanguage()
 	parser.setLanguage(ruby)
@@ -351,7 +309,7 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 			// Metadata is a hash
 			if (attribute === 'metadata') {
 				if (rhs.type === 'hash') {
-					spec.metadata = { ...spec.metadata, ...extractHash(rhs) }
+					spec.metadata = { ...(spec.metadata as Record<string, string>), ...extractHash(rhs) }
 				}
 				return
 			}
@@ -372,7 +330,7 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 
 			// Anything else → stash in extra
 			const value = extractValue(rhs)
-			if (value !== undefined) spec.extra[attribute] = value
+			if (value !== undefined) (spec.extra as Record<string, unknown>)[attribute] = value
 			return
 		}
 
@@ -380,7 +338,13 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 		if (node.type === 'call' || node.type === 'method_call') {
 			const dep = tryParseDependency(node)
 			if (dep) {
-				spec.dependencies.push(dep)
+				;(
+					spec.dependencies as Array<{
+						name: string
+						requirements: string[]
+						type: 'development' | 'runtime'
+					}>
+				).push(dep)
 				return
 			}
 		}
@@ -400,5 +364,5 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 	}
 
 	visit(tree.rootNode)
-	return gemSpecSchema.parse(spec)
+	return spec
 }
