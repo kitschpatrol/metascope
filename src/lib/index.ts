@@ -22,6 +22,7 @@ export type {
 	GitHubData,
 	GoModDependency,
 	GoModSourceData,
+	GoreleaserSourceData,
 	InfoPlistData,
 	LicenseFilesData,
 	LocData,

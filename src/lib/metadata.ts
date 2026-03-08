@@ -21,6 +21,7 @@ import { gemspecSource } from './sources/gemspec'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
 import { goModSource } from './sources/go-mod'
+import { goreleaserSource } from './sources/goreleaser'
 import { infoPlistSource } from './sources/info-plist.js'
 import { licenseFileSource } from './sources/license-file'
 import { locSource } from './sources/loc'
@@ -60,6 +61,7 @@ const sources: MetadataSource[] = [
 	gitSource,
 	githubSource,
 	goModSource,
+	goreleaserSource,
 	infoPlistSource,
 	licenseFileSource,
 	locSource,
@@ -225,6 +227,7 @@ export async function getMetadata<T>(
 		git: {},
 		github: {},
 		goMod: {},
+		goreleaser: {},
 		infoPlist: {},
 		licenseFiles: {},
 		loc: {},

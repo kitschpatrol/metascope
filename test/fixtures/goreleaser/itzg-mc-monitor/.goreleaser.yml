@@ -1,0 +1,89 @@
+version: 2
+
+project_name: mc-monitor
+before:
+  hooks:
+    - go mod download
+builds:
+- env:
+  - CGO_ENABLED=0
+  goos:
+    - linux
+    - windows
+    - darwin
+  goarch:
+    - amd64
+    - arm
+    - arm64
+  goarm:
+    - "7"
+  ignore:
+    - goos: windows
+      goarch: arm
+dockers:
+  - image_templates:
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-amd64
+    dockerfile: Dockerfile.release
+    use: buildx
+    build_flag_templates:
+      - --platform
+      - linux/amd64
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+  - image_templates:
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm64
+    dockerfile: Dockerfile.release
+    goarch: arm64
+    use: buildx
+    build_flag_templates:
+      - --platform
+      - linux/arm64
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+  - image_templates:
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm32v7
+    dockerfile: Dockerfile.release
+    goarch: arm
+    goarm: "7"
+    use: buildx
+    build_flag_templates:
+      - --platform
+      - linux/arm/v7
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+docker_manifests:
+  - name_template:  itzg/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-amd64
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm64
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm32v7
+  - name_template:  itzg/{{ .ProjectName }}:latest
+    image_templates:
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-amd64
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm64
+      -  itzg/{{ .ProjectName }}:{{ .Version }}-arm32v7
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - '^ci:'
+    - '^misc:'
+scoops:
+  - repository:
+      owner: itzg
+      name: scoop-bucket
+      token: "{{ .Env.SCOOP_TAP_GITHUB_TOKEN }}"
+    directory: bucket
+    license: MIT
+    description: Command/agent to monitor the status of Minecraft servers
+brews:
+  - repository:
+      owner: itzg
+      name: homebrew-tap
+      token: "{{ .Env.SCOOP_TAP_GITHUB_TOKEN }}"
+    license: MIT
+    description: Command/agent to monitor the status of Minecraft servers

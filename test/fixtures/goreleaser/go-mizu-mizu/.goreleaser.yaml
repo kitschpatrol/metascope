@@ -1,0 +1,201 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: mizu
+
+env:
+  # CLI is a separate module under ./cmd, so disable workspace mode for releases.
+  - GOWORK=off
+
+before:
+  hooks:
+    - go mod tidy -C cmd
+    - go mod verify -C cmd
+
+builds:
+  - id: mizu
+    dir: cmd
+    main: ./mizu
+    binary: mizu
+    env:
+      - CGO_ENABLED=0
+      - GOWORK=off
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X 'github.com/go-mizu/mizu/cmd/cli.Version={{.Version}}'
+      - -X 'github.com/go-mizu/mizu/cmd/cli.Commit={{.ShortCommit}}'
+      - -X 'github.com/go-mizu/mizu/cmd/cli.BuildTime={{.Date}}'
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- .Arch }}
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: Performance
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Other
+      order: 999
+
+release:
+  github:
+    owner: go-mizu
+    name: mizu
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## mizu {{ .Tag }}
+
+    ### Install
+
+    Homebrew (later, once tap is enabled):
+    ```bash
+    brew install --cask go-mizu/tap/mizu
+    ```
+
+    Direct download (Linux/macOS):
+    ```bash
+    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    ARCH="$(uname -m)"
+    case "$ARCH" in
+      x86_64) ARCH=amd64 ;;
+      aarch64|arm64) ARCH=arm64 ;;
+    esac
+    curl -sSfL "https://github.com/go-mizu/mizu/releases/download/{{ .Tag }}/mizu_{{ .Version }}_${OS}_${ARCH}.tar.gz" | tar xz
+    sudo mv mizu /usr/local/bin/mizu
+    mizu version
+    ```
+
+    Windows (PowerShell):
+    ```powershell
+    $v = "{{ .Tag }}"
+    $ver = "{{ .Version }}"
+    $url = "https://github.com/go-mizu/mizu/releases/download/$v/mizu_${ver}_windows_amd64.zip"
+    Invoke-WebRequest $url -OutFile mizu.zip
+    Expand-Archive mizu.zip -DestinationPath .
+    .\mizu.exe version
+    ```
+
+  footer: |
+    Full Changelog: https://github.com/go-mizu/mizu/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+# Docker
+dockers:
+  - id: mizu-amd64
+    ids:
+      - mizu
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:{{ .Tag }}-amd64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}-amd64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "ghcr.io/go-mizu/mizu:latest-amd64"
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.description=Project toolkit for the go-mizu framework"
+      - "--label=org.opencontainers.image.url=https://github.com/go-mizu/mizu"
+      - "--label=org.opencontainers.image.source=https://github.com/go-mizu/mizu"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.licenses=MIT"
+
+  - id: mizu-arm64
+    ids:
+      - mizu
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:{{ .Tag }}-arm64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}-arm64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}.{{ .Minor }}-arm64"
+      - "ghcr.io/go-mizu/mizu:latest-arm64"
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.description=Project toolkit for the go-mizu framework"
+      - "--label=org.opencontainers.image.url=https://github.com/go-mizu/mizu"
+      - "--label=org.opencontainers.image.source=https://github.com/go-mizu/mizu"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.licenses=MIT"
+
+# Docker manifests for multi-arch images
+docker_manifests:
+  - name_template: "ghcr.io/go-mizu/mizu:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:{{ .Tag }}-amd64"
+      - "ghcr.io/go-mizu/mizu:{{ .Tag }}-arm64"
+
+  - name_template: "ghcr.io/go-mizu/mizu:v{{ .Major }}"
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}-amd64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}-arm64"
+
+  - name_template: "ghcr.io/go-mizu/mizu:v{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "ghcr.io/go-mizu/mizu:v{{ .Major }}.{{ .Minor }}-arm64"
+
+  - name_template: "ghcr.io/go-mizu/mizu:latest"
+    image_templates:
+      - "ghcr.io/go-mizu/mizu:latest-amd64"
+      - "ghcr.io/go-mizu/mizu:latest-arm64"
+

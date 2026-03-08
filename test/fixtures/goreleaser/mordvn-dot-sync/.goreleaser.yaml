@@ -1,0 +1,33 @@
+version: 2
+
+project_name: gotfiles-sync
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: gotfiles-sync
+    main: ./cmd/dotfiles-sync
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - id: default
+    format: zip
+    # gotfiles-sync_v1.2.3_darwin_amd64.zip, etc
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE*
+      - README*
+checksum:
+  name_template: "checksums.txt"

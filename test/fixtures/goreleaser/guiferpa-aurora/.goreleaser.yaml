@@ -1,0 +1,96 @@
+# GoReleaser: https://goreleaser.com/intro/
+# Release: push a tag (e.g. v0.14.2) and run the workflow or goreleaser release
+
+version: 2
+
+project_name: aurora
+
+builds:
+  - id: aurora
+    main: ./cmd/aurora
+    binary: aurora
+    ldflags:
+      - -s -w -X github.com/guiferpa/aurora/version.VERSION={{.Version}}
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+  - id: aurorals
+    main: ./cmd/aurorals
+    binary: aurorals
+    ldflags:
+      - -s -w -X github.com/guiferpa/aurora/version.VERSION={{.Version}}
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+# One archive per platform containing both binaries.
+archives:
+  - formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    ids:
+      - aurora
+      - aurorals
+
+checksum:
+  name_template: "checksums.txt"
+
+release:
+  github:
+    owner: guiferpa
+    name: aurora
+  draft: false
+
+# Homebrew: install with `brew tap guiferpa/tap && brew install guiferpa/tap/aurora`
+# Requires repo guiferpa/homebrew-tap and secret HOMEBREW_TAP_TOKEN (PAT with repo scope, write to homebrew-tap).
+# If token is missing, upload is skipped and release still succeeds (cask is only in dist/).
+homebrew_casks:
+  - name: aurora
+    skip_upload: "{{ not .Env.HOMEBREW_TAP_TOKEN }}"
+    binaries:
+      - aurora
+      - aurorals
+    url:
+      verified: "github.com/guiferpa/aurora/"
+    homepage: "https://github.com/guiferpa/aurora"
+    description: "Aurora language CLI and LSP"
+    repository:
+      owner: guiferpa
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    # Remove quarantine so unsigned binary runs on macOS (alternative: sign + notarize)
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/aurora", "#{staged_path}/aurorals"]
+          end
+
+# Linux .deb: published to GitHub Release; install with dpkg -i or add an apt repo that points to releases.
+nfpms:
+  - id: aurora-deb
+    package_name: aurora
+    formats:
+      - deb
+    vendor: "Aurora"
+    homepage: "https://github.com/guiferpa/aurora"
+    maintainer: "Aurora <https://github.com/guiferpa/aurora>"
+    description: "Aurora language CLI and LSP server"
+    bindir: /usr/bin
+
+# Optional: sign + notarize macOS binaries to avoid Gatekeeper warning (requires Apple Developer account).
+# See https://goreleaser.com/customization/binary_sign/ and https://goreleaser.com/customization/notarize/

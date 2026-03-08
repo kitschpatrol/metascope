@@ -1,0 +1,76 @@
+---
+project_name: loli
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - make clean
+    - go mod tidy
+    - go generate ./...
+builds:
+  - id: loli
+    binary: loli
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/loli/main.go
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - ppc64le
+    mod_timestamp: "{{.CommitTimestamp}}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X "github.com/ci-monk/loli/internal/version.builtDate={{.CommitDate}}"
+      - -X "github.com/ci-monk/loli/internal/version.builtBy=goreleaser"
+      - -X "github.com/ci-monk/loli/internal/version.cliVersion={{.Env.CLIENT_VERSION}}"
+      - -X "github.com/ci-monk/loli/internal/version.commit={{.Commit}}"
+      - -X "github.com/ci-monk/loli/internal/version.commitShort={{.ShortCommit}}"
+      - -X "github.com/ci-monk/loli/internal/version.commitBranch={{.Env.GIT_BRANCH}}"
+      - -X "github.com/ci-monk/loli/internal/version.goVersion={{.Env.GO_VERSION}}"
+archives:
+  - name_template: "{{.ProjectName}}_v{{.Version}}_{{.Os}}-{{.Arch}}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+snapshot:
+  name_template: "SNAPSHOT-{{ .Commit }}"
+checksum:
+  name_template: "{{ .ProjectName }}_v{{ .Version }}_SHA256SUMS"
+  algorithm: sha256
+changelog:
+  skip: true
+brews:
+  - name: loli
+    tap:
+      owner: ci-monk
+      branch: main
+      name: homebrew-tools
+    folder: formula
+    commit_author:
+      name: ci-monk
+      email: ci-monk@protonmail.com
+    commit_msg_template: "feat: brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    homepage: "https://github.com/ci-monk/loli"
+    description: "Install Loli CLI with brew and find animes passing images"
+    license: "MIT"
+    install: |
+      bin.install "loli"
+release:
+  github:
+    owner: ci-monk
+    name: loli
+  name_template: "v{{.Version}}"

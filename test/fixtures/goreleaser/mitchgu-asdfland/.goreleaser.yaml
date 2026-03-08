@@ -1,0 +1,47 @@
+project_name: asdfland
+builds:
+  - binary: asdfland
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - 386
+      - arm
+archive:
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+  replacements:
+    386: x86_32bit
+    amd64: x86_64bit
+    darwin: macOS
+  files:
+    - LICENSE.txt
+    - README.md
+    - config_sample.yaml
+snapshot:
+  name_template: SNAPSHOT
+fpm:
+  vendor: Gu Enterprises
+  homepage: https://asdf.land
+  maintainer: Mitchell Gu <me@mitchgu.com>
+  description: The only URL shortener you'll ever need.
+  license: MIT
+  formats:
+    - deb
+    - rpm
+snapcraft:
+  name: asdfland
+  summary: The only URL shortener you'll ever need.
+  description: |
+    A URL shortener with support for random, readable, and custom urls, dashboard link management, link analytics, password protection, and much more. Open source and easily self-hostable. Check it out at https://asdf.land
+  grade: devel
+  confinement: strict
+release:
+  github:
+    owner: mitchgu
+    name: asdfland
+  draft: true

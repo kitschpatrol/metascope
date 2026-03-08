@@ -1,0 +1,211 @@
+project_name: trusted-cgi
+before:
+  hooks:
+    - python3 assemble_md.py ./docs --output MANUAL.md --exclude ./docs/vendor ./docs/.bundle ./docs/.jekyll-cache ./docs/_site
+    - pandoc MANUAL.md -s -t man -o trusted-cgi.1
+    - pandoc --metadata title="Trusted-CGI manual" MANUAL.md -s --include-in-header=./docs/assets/github-pandoc.css --toc -o MANUAL.html
+    - gzip -f trusted-cgi.1
+
+builds:
+  - main: ./cmd/trusted-cgi/main.go
+    id: server
+    binary: trusted-cgi
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goos:
+      - linux
+      - windows
+      - darwin
+    flags:
+      - -trimpath
+  - main: ./cmd/cgi-ctl
+    id: client
+    binary: cgi-ctl
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goos:
+      - linux
+      - windows
+      - darwin
+    flags:
+      - -trimpath
+nfpms:
+  - id: debian
+    package_name: "trusted-cgi"
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    homepage: https://github.com/reddec/trusted-cgi
+    maintainer: Baryshnikov Aleksandr <owner@reddec.net>
+    description: Lightweigt runner for lambda functions/apps in CGI like mode
+    license: MIT
+    meta: true
+    dependencies:
+      - "trusted-cgi-server"
+      - "trusted-cgi-client"
+    formats:
+      - deb
+  - id: debian-server
+    package_name: "trusted-cgi-server"
+    file_name_template: "{{ .ProjectName }}-server_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    homepage: https://github.com/reddec/trusted-cgi
+    maintainer: Baryshnikov Aleksandr <owner@reddec.net>
+    description: Lightweigt runner for lambda functions/apps in CGI like mode
+    license: MIT
+    builds:
+      - server
+    formats:
+      - deb
+    recommends:
+      - make
+      - python3
+      - python3-venv
+      - git
+    suggests:
+      - php-cli
+      - nodejs
+      - npm
+    scripts:
+      postinstall: "debian/postinstall.sh"
+      preremove: "debian/preremove.sh"
+
+    contents:
+      - dst: /var/trusted-cgi
+        type: dir
+      - dst: /etc/trusted-cgi
+        type: dir
+      - src: debian/trusted-cgi.service
+        dst: /etc/systemd/system/trusted-cgi.service
+      - src: trusted-cgi.1.gz
+        dst: /usr/local/share/man/man1/trusted-cgi.1.gz
+      - src: debian/trusted-cgi.env
+        dst: /etc/trusted-cgi/trusted-cgi.env
+        type: config
+  - id: debian-client
+    package_name: "trusted-cgi-client"
+    file_name_template: "{{ .ProjectName }}-client_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    homepage: https://github.com/reddec/trusted-cgi
+    maintainer: Baryshnikov Aleksandr <owner@reddec.net>
+    description: Client for lightweigt runner for lambda functions/apps in CGI like mode
+    license: MIT
+    formats:
+      - deb
+    builds:
+      - client
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    files:
+      - LICENSE
+      - README.md
+      - MANUAL.md
+      - MANUAL.html
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+
+dockers:
+  # build full images for ARM and AMD64
+  - image_templates:
+      - "reddec/trusted-cgi:{{ .Tag }}-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "reddec/trusted-cgi:latest-amd64"
+    use: buildx
+    dockerfile: Dockerfile
+    ids:
+      - server
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "reddec/trusted-cgi:{{ .Tag }}-arm64v8"
+      - "reddec/trusted-cgi:v{{ .Major }}-arm64v8"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-arm64v8"
+      - "reddec/trusted-cgi:latest-arm64v8"
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile
+    ids:
+      - server
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+
+  # build light images for ARM and AMD64
+  - image_templates:
+      - "reddec/trusted-cgi:{{ .Tag }}-light-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}-light-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-amd64"
+      - "reddec/trusted-cgi:latest-light-amd64"
+    use: buildx
+    dockerfile: Dockerfile.minimal
+    ids:
+      - server
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "reddec/trusted-cgi:{{ .Tag }}-light-arm64v8"
+      - "reddec/trusted-cgi:v{{ .Major }}-light-arm64v8"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-arm64v8"
+      - "reddec/trusted-cgi:latest-light-arm64v8"
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile.minimal
+    ids:
+      - server
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+docker_manifests:
+  # full versions
+  - name_template: "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-arm64v8"
+  - name_template: "reddec/trusted-cgi:v{{ .Major }}"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-arm64v8"
+  - name_template: "reddec/trusted-cgi:latest"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-arm64v8"
+  # light versions
+  - name_template: "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-arm64v8"
+  - name_template: "reddec/trusted-cgi:v{{ .Major }}-light"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-arm64v8"
+  - name_template: "reddec/trusted-cgi:light"
+    image_templates:
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-amd64"
+      - "reddec/trusted-cgi:v{{ .Major }}.{{ .Minor }}-light-arm64v8"
+publishers:
+  - name: production
+    ids:
+      - debian
+      - debian-server
+      - debian-client
+    checksum: false
+    signature: false
+    cmd: "curl -X POST -u '{{.Env.UPLOAD_PRODUCTION_USERNAME}}:{{.Env.UPLOAD_PRODUCTION_SECRET}}'  -F file=@{{.ArtifactPath}} https://apt.reddec.net/api/files/{{ .ProjectName }}"
+
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^doc:'
+      - '^test:'
+      - '^build:'

@@ -1,0 +1,36 @@
+project_name: lancache-diagnostics
+version: 2
+
+archives:
+  - id: lancache-diagnostics
+    name_template: "{{ .ProjectName }}-v{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    formats: [ 'tar.gz' ]
+    format_overrides:
+      - goos: windows
+        formats: [ "zip" ]
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    gcflags:
+      - -trimpath
+    ldflags:
+      - -s -w
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^build'
+      - '^docs:'
+      - '^test:'
+
+snapshot:
+  version_template: "{{ .ProjectName }}-v{{ incpatch .Version }}"

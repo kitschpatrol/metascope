@@ -1,0 +1,33 @@
+archives:
+  - id: archive
+    name_template: "{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
+before:
+  hooks:
+    - make gen generate_schema
+    - make build
+builds:
+  - binary: pulumi-resource-digitalocean-native
+    main: ./cmd/pulumi-resource-digitalocean-native/
+    dir: provider
+    env:
+      - GO111MODULE=on
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - windows
+      - linux
+    ldflags:
+      # The line below MUST align with the module in current provider/go.mod
+      - -X github.com/cloudy-sky-software/pulumi-digitalocean-native/provider/pkg/version.Version={{.Tag }}
+checksum:
+  name_template: "{{ .ProjectName }}_linux_windows_checksums.txt"
+changelog:
+  disable: true
+release:
+  disable: false
+  prerelease: auto
+  header: |
+    See [CHANGELOG.md](https://github.com/cloudy-sky-software/pulumi-digitalocean-native/blob/main/CHANGELOG.md)
+snapshot:
+  name_template: "{{ .Tag }}-SNAPSHOT"

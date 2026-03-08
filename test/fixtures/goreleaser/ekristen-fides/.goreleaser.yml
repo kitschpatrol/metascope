@@ -1,0 +1,67 @@
+release:
+  github:
+    owner: ekristen
+    name: fides
+  prerelease: auto
+builds:
+  - id: fides
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s
+      - -w
+      - -extldflags=-static
+      - -X '{{ .ModulePath }}/pkg/common.SUMMARY=v{{ .Version }}'
+      - -X '{{ .ModulePath }}/pkg/common.BRANCH={{ .Branch }}'
+      - -X '{{ .ModulePath }}/pkg/common.VERSION={{ .Tag }}'
+      - -X '{{ .ModulePath }}/pkg/common.COMMIT={{ .Commit }}'
+archives:
+  - id: fides
+    builds:
+      - fides
+    name_template: "{{ .ProjectName }}-v{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ .Arm }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+dockers:
+  - id: fides
+    ids:
+      - fides
+    use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - ghcr.io/ekristen/fides:v{{ .Version }}
+      - ghcr.io/ekristen/fides:{{ replace .Branch "/" "-" }}-{{ .ShortCommit }}-{{ .Timestamp }}
+    build_flag_templates:
+      - "--target=goreleaser"
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{replace (replace (replace .GitURL \"git@\" \"https://\") \".git\" \"\") \"github.com:\" \"github.com/\"}}"
+      - "--platform=linux/amd64"
+signs:
+  - cmd: cosign # Sign with Password
+    stdin: "{{ .Env.COSIGN_PASSWORD }}"
+    args: ["sign-blob", "--yes", "--tlog-upload=false", "--key=cosign.key", "--output-signature=${signature}", "${artifact}"]
+    artifacts: all
+docker_signs:
+  - ids: # Sign With Password
+      - fides
+    artifacts: all
+    stdin: "{{ .Env.COSIGN_PASSWORD }}"
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: '{{ trimprefix .Summary "v" }}'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"

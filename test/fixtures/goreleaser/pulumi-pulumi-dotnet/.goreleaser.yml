@@ -1,0 +1,33 @@
+version: 2
+builds:
+
+- binary: pulumi-language-dotnet
+  id: pulumi-language-dotnet
+  dir: ./pulumi-language-dotnet
+  env:
+  - CGO_ENABLED=0
+  - GO111MODULE=on
+  goos:
+    - darwin
+    - windows
+    - linux
+  goarch:
+    - amd64
+    - arm64
+  mod_timestamp: '{{ .CommitTimestamp }}'
+  flags:
+    - -trimpath
+  ldflags:
+    - -w -s -X github.com/pulumi/pulumi-dotnet/pulumi-language-dotnet/version.Version={{.Tag}}
+
+archives:
+- name_template: "{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
+
+snapshot:
+  name_template: "{{ .Tag }}-SNAPSHOT"
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  disable: false

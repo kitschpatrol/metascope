@@ -1,0 +1,115 @@
+version: 2
+
+project_name: supasecure
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: supasecure
+    main: ./cmd
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s -w -X github.com/train360-corp/supasecure/cli/internal.Version={{.Version}}
+
+changelog:
+  use: github
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: "Bug fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: Others
+      order: 999
+
+nfpms:
+  - vendor: Train360, Corp.
+    description: Supasecure CLI {{.Version}}
+    maintainer: Train360, Corp.
+    homepage: https://github.com/train360-corp/supasecure
+    license: MIT
+    file_name_template: >-
+      {{- trimsuffix .ConventionalFileName .ConventionalExtension -}}
+      {{- if and (eq .Arm "6") (eq .ConventionalExtension ".deb") }}6{{ end -}}
+      {{- if not (eq .Amd64 "v1")}}{{ .Amd64 }}{{ end -}}
+      {{- .ConventionalExtension -}}
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+    dependencies:
+      - openssl
+
+archives:
+  - formats: [ tar.gz ]
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        formats: [ zip ]
+
+release:
+  github:
+    owner: train360-corp
+    name: supasecure
+
+  footer: >-
+
+    ---
+
+    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+
+brews:
+  - name: supasecure
+    download_strategy: CurlDownloadStrategy
+    url_template: "https://github.com/train360-corp/supasecure/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    url_headers:
+      - "Accept: application/octet-stream"
+      - 'Authorization: bearer #{ENV["HOMEBREW_GITHUB_API_TOKEN"]}'
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "feat: brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    directory: Formula
+    caveats: "supasecure --help"
+    homepage: "https://github.com/train360-corp/supasecure"
+    description: "CLI for interacting with a Supasecure instance."
+    license: "MIT"
+    test: |
+      system "#{bin}/supasecure --version"
+    repository:
+      owner: train360-corp
+      name: homebrew-taps
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_REPO_SECRET }}"
+    # Packages your package depends on.
+    #    dependencies:
+    #      - name: git
+    #        # Allow to specify the OS in which the dependency is required.
+    #        # Valid options are `mac` and `linux`.
+    #        os: mac
+    #      - name: zsh
+    #        type: optional
+    #      - name: fish
+    #        version: v1.2.3
+    #      # if providing both version and type, only the type will be taken into
+    #      # account.
+    #      - name: elvish
+    #        type: optional
+    #        version: v1.2.3

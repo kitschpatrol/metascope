@@ -1,0 +1,111 @@
+# GoReleaser v2 configuration
+version: 2
+
+project_name: sohot
+
+before:
+  hooks:
+    # Clean up any existing builds
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: sohot
+    main: ./main.go
+    binary: sohot
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    # Skip unsupported combinations
+    ignore:
+      # Windows ARM64 support is limited, focusing on amd64
+      - goos: windows
+        goarch: arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/qwenode/sohot/version.Version={{.Version}}
+      - -X github.com/qwenode/sohot/version.Commit={{.Commit}}
+      - -X github.com/qwenode/sohot/version.Date={{.Date}}
+      - -X github.com/qwenode/sohot/version.BuiltBy=goreleaser
+
+archives:
+  - id: sohot-archive
+    ids: [sohot]
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - README_CN.md
+      - LICENSE
+      - sohot.toml
+    format_overrides:
+      - goos: windows
+        formats: [ 'zip' ]
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+  # Include extra files in checksum
+  extra_files:
+    - glob: './README.md'
+    - glob: './README_CN.md'
+    - glob: './LICENSE'
+
+release:
+  github:
+    owner: "{{ .Env.GITHUB_REPOSITORY_OWNER }}"
+    name: "{{ .Env.GITHUB_REPOSITORY_NAME }}"
+  name_template: "{{ .ProjectName }} {{ .Tag }}"
+  draft: false
+  prerelease: auto
+  mode: replace
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+      - '^style:'
+      - '^refactor:'
+      - 'merge conflict'
+      - 'Merge pull request'
+      - 'Merge remote-tracking branch'
+      - 'Merge branch'
+  groups:
+    - title: '🚀 Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: '🐛 Bug Fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: '📚 Documentation'
+      regexp: '^.*?docs?(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: '🔧 Improvements'
+      regexp: '^.*?(perf|improve)(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: '🧹 Maintenance'
+      regexp: '^.*?(build|deps)(\([[:word:]]+\))??!?:.+$'
+      order: 4
+    - title: '📦 Other Changes'
+      order: 999
+
+# Snapshot builds for testing
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+# Metadata for the release
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+

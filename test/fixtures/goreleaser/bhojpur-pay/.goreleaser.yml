@@ -1,0 +1,61 @@
+before:
+  hooks:
+    - go generate -v ./...
+builds:
+- id: paysvr
+  env:
+  - CGO_ENABLED=0
+  main: server.go
+  binary: paysvr
+  ldflags:
+  - -s -w -X github.com/bhojpur/pay/cmd/server.version={{.Version}}-{{.ShortCommit}}
+- id: payctl
+  env:
+  - CGO_ENABLED=0
+  main: client.go
+  binary: payctl
+  flags:
+    - -tags=payctl
+  ldflags:
+  - -s -w -X github.com/bhojpur/pay/cmd/client.version={{.Version}}-{{.ShortCommit}}
+archives:
+- id: paysvr
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    386: i386
+    amd64: x86_64
+  builds:
+  - paysvr
+- id: payctl
+  files:
+  - "none*"
+  format: binary
+  builds:
+  - payctl
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    386: i386
+    amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+release:
+  prerelease: auto
+dockers:
+  - goos: linux
+    goarch: amd64
+    goarm: ''
+    dockerfile: Dockerfile
+    image_templates:
+    - "ghcr.io/bhojpur/pay:{{ .Tag }}"
+    extra_files:
+    - README.md

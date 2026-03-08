@@ -1,0 +1,24 @@
+# Make sure to check the documentation at http://goreleaser.com
+
+builds:
+  - id: main
+    dir: app
+    binary: main
+    main: main.go
+    goos: [linux]
+    goarch: [amd64]
+    env: ["CGO_ENABLED=0"]
+
+dockers:
+  - image_templates: 
+    - '{{ .Env.REGISTRY }}/{{ .Env.IMAGE_NAME }}:{{ .Tag }}'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

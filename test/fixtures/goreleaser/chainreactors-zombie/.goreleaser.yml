@@ -1,0 +1,79 @@
+project_name: zombie
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate
+
+builds:
+  -
+    main: .
+    binary: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    goos:
+      - windows
+      - linux
+      - darwin
+      - freebsd
+      - solaris
+      - android
+    goarch:
+      - amd64
+      - "386"
+      - arm64
+      - arm
+      - mips
+      - mips64
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: linux
+        goarch: mips64
+      - goos: android
+        goarch: amd64
+      - goos: android
+        goarch: 386
+      - goos: android
+        goarch: arm
+    ldflags: "-s -w -X 'github.com/chainreactors/zombie/cmd.ver=={{ .Tag }}'"
+    flags:
+      - -trimpath
+    tags:
+      - forceposix
+      - noembed
+    asmflags:
+      - all=-trimpath={{.Env.GOPATH}}
+    gcflags:
+      - all=-trimpath={{.Env.GOPATH}}
+    no_unique_dist_dir: true
+
+upx:
+  -
+    enabled: true
+    goos: [linux, windows]
+    goarch:
+      - amd64
+      - "386"
+
+archives:
+  -
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format: binary
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+
+changelog:
+  sort: desc
+  filters:
+    exclude:
+      - '^MERGE'
+      - "{{ .Tag }}"
+      - "^docs"
+
+release:
+  disable: true
+  skip_upload: true
+  github:
+    owner: chainreactors
+    name: gogo
+  draft: true

@@ -1,0 +1,59 @@
+version: 2
+before:
+  hooks:
+    - go mod download
+builds:
+  - main: ./cmd/go-template
+    id: "template-application"
+    binary: "template-application"
+    ldflags:
+      - -s -w
+      - -X 'main.version={{.Version}}'
+      - -X 'main.commit={{.ShortCommit}}'
+      - -X 'main.date={{.Date}}'
+      - -X 'main.builtBy={{.Env.GITHUB_WORKFLOW}}/{{.Env.GITHUB_RUN_ID}}'
+      - -X 'main.binName={{.Binary}}'
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: bin
+    format: binary
+    builds:
+    - template-application
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+  - id: tar
+    format: tar.gz
+    builds:
+    - template-application
+
+checksum:
+  name_template: 'sha256sums.txt'
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-devel"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^hack:'
+      - '^chore:'
+      - '^Merge pull request'
+
+nfpms:
+- maintainer: Marco Siebecke <marco@siebecke.se>
+  description: go template repo package
+  homepage: https://github.com/gentoomaniac/go-template
+  license: MIT
+  formats:
+  - deb

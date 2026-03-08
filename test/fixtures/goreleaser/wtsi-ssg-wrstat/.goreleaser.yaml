@@ -1,0 +1,86 @@
+version: 2
+project_name: wrstat
+
+builds:
+  - id: wrstat
+    main: .
+    binary: wrstat
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "{{ .Env.WRSTAT_LDFLAGS }}"
+    tags:
+      - netgo
+  - id: wrstat-split
+    main: .
+    binary: wrstat-split
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "{{ .Env.WRSTAT_LDFLAGS }}"
+    tags:
+      - walk
+  - id: wrstat-split-walk
+    main: .
+    binary: wrstat-split-walk
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "{{ .Env.WRSTAT_LDFLAGS }}"
+    tags:
+      - walk
+      - stat
+  - id: wrstat-split-stat
+    main: .
+    binary: wrstat-split-stat
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "{{ .Env.WRSTAT_LDFLAGS }}"
+    tags:
+      - netgo
+      - stat
+
+archives:
+  - ids:
+      - wrstat
+      - wrstat-split
+      - wrstat-split-walk
+      - wrstat-split-stat
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    formats: [ 'zip' ]
+    files:
+      - LICENSE
+      - README.md
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  prerelease: false

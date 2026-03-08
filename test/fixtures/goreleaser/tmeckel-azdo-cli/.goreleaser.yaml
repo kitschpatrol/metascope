@@ -1,0 +1,55 @@
+version: 2
+
+builds:
+  - id: macos #build:macos
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/azdo/azdo.go
+    binary: azdo
+    ldflags:
+      - -s -w -X github.com/tmeckel/azdo-cli/internal/build.Version={{.Version}} -X github.com/tmeckel/azdo-cli/internal/build.Commit={{.Commit}} -X github.com/tmeckel/azdo-cli/internal/build.Date={{time "2006-01-02"}}
+
+  - id: linux #build:linux
+    goos:
+      - linux
+    goarch:
+      - arm
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/azdo/azdo.go
+    binary: azdo
+    ldflags:
+      - -s -w -X github.com/tmeckel/azdo-cli/internal/build.Version={{.Version}} -X github.com/tmeckel/azdo-cli/internal/build.Commit={{.Commit}} -X github.com/tmeckel/azdo-cli/internal/build.Date={{time "2006-01-02"}}
+
+  - id: windows #build:windows
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    main: ./cmd/azdo/azdo.go
+    binary: azdo
+    ldflags:
+      - -s -w -X github.com/tmeckel/azdo-cli/internal/build.Version={{.Version}} -X github.com/tmeckel/azdo-cli/internal/build.Commit={{.Commit}} -X github.com/tmeckel/azdo-cli/internal/build.Date={{time "2006-01-02"}}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  version_template: '{{ .Tag }}-next'
+changelog:
+  use: github-native
+  sort: asc

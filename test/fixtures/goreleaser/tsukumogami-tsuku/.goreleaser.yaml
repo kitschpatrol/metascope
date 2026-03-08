@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+before:
+  hooks:
+    - go generate ./internal/containerimages/...
+
+builds:
+  - id: tsuku
+    main: ./cmd/tsuku
+    binary: tsuku-{{ .Os }}-{{ .Arch }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+      - -buildvcs=false
+    ldflags:
+      - -s -w -X github.com/tsukumogami/tsuku/internal/buildinfo.version={{.Version}} -X github.com/tsukumogami/tsuku/internal/buildinfo.commit={{.Commit}} -X github.com/tsukumogami/tsuku/internal/verify.pinnedDltestVersion={{.Version}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    no_unique_dist_dir: true
+
+archives:
+  - format: binary
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: tsukumogami
+    name: tsuku
+  draft: true
+  make_latest: true
+  prerelease: auto
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"

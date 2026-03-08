@@ -1,0 +1,217 @@
+# =============================================================================
+# LazyFocus GoReleaser Configuration
+# =============================================================================
+# Purpose: Automates binary releases and Homebrew formula updates
+#
+# This configuration handles:
+#   - Building macOS binaries for both amd64 and arm64 architectures
+#   - Creating universal binaries (combines amd64+arm64 into single binary)
+#   - Generating release archives with checksums
+#   - Publishing draft GitHub releases for review
+#   - Updating Homebrew tap with new formula version
+#
+# Release Process:
+#   1. Create and push a version tag: git tag v1.0.0 && git push origin v1.0.0
+#   2. GitHub Actions triggers release workflow (.github/workflows/release.yml)
+#   3. GoReleaser builds binaries and creates draft release
+#   4. Review draft release on GitHub, edit notes if needed
+#   5. Publish release - this triggers Homebrew tap update
+#
+# Requirements:
+#   - GITHUB_TOKEN: Automatically provided by GitHub Actions
+#   - HOMEBREW_TAP_TOKEN: GitHub PAT with repo:public_repo scope for tap updates
+#     (Add to repository secrets: Settings → Secrets → Actions → HOMEBREW_TAP_TOKEN)
+#
+# Versioning Strategy:
+#   - Version info injected via ldflags at build time
+#   - Git tag becomes the version (e.g., v1.0.0 → 1.0.0)
+#   - BuildDate and GitCommit also injected for version command
+#
+# Platform Support:
+#   - macOS only (OmniFocus requires macOS)
+#   - Universal binary for M1/M2 (arm64) and Intel (amd64) Macs
+#   - No Linux/Windows builds (osascript/OmniFocus dependencies)
+#
+# =============================================================================
+
+version: 2
+project_name: lazyfocus
+
+# =============================================================================
+# Build Configuration
+# =============================================================================
+# Compiles the Go binary for macOS with both architectures
+# Uses ldflags to inject version information at compile time
+# CGO_ENABLED=0 ensures static linking (no external dependencies)
+# =============================================================================
+builds:
+  - id: lazyfocus
+    main: ./cmd/lazyfocus
+    binary: lazyfocus
+
+    # Static linking for maximum portability
+    env:
+      - CGO_ENABLED=0
+
+    # macOS only - OmniFocus is macOS-exclusive
+    goos:
+      - darwin
+
+    # Support both Intel (amd64) and Apple Silicon (arm64)
+    goarch:
+      - amd64
+      - arm64
+
+    # Inject version information at build time
+    # These variables are defined in internal/cli/version.go
+    ldflags:
+      - -s -w
+      - -X github.com/pwojciechowski/lazyfocus/internal/cli.Version={{.Version}}
+      - -X github.com/pwojciechowski/lazyfocus/internal/cli.BuildDate={{.Date}}
+      - -X github.com/pwojciechowski/lazyfocus/internal/cli.GitCommit={{.ShortCommit}}
+
+# =============================================================================
+# Universal Binary Configuration
+# =============================================================================
+# Combines amd64 and arm64 binaries into a single universal binary
+# Users get one binary that runs natively on both Intel and Apple Silicon
+# replace: false keeps individual binaries in addition to universal binary
+# =============================================================================
+universal_binaries:
+  - id: lazyfocus
+    replace: false
+    name_template: lazyfocus
+
+# =============================================================================
+# Archive Configuration
+# =============================================================================
+# Creates tar.gz archives for distribution
+# Format: lazyfocus_1.0.0_darwin_universal.tar.gz
+# =============================================================================
+archives:
+  - id: default
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+# =============================================================================
+# Checksum Configuration
+# =============================================================================
+# Generates SHA256 checksums for all release artifacts
+# Users can verify download integrity before installation
+# =============================================================================
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+# =============================================================================
+# GitHub Release Configuration
+# =============================================================================
+# Creates draft releases on GitHub for review before publishing
+# Draft allows manual editing of release notes and verification
+# =============================================================================
+release:
+  github:
+    owner: Geekvetica
+    name: lazyfocus
+
+  # Create as draft for manual review and publishing
+  draft: true
+
+  # Replace existing release if re-running (useful for fixing issues)
+  replace: true
+
+  # Release notes configuration
+  header: |
+    ## LazyFocus {{ .Tag }}
+
+    CLI and TUI tool for OmniFocus on macOS
+
+  footer: |
+    ## Installation
+
+    ### Homebrew (recommended)
+    ```bash
+    brew install geekvetica/tap/lazyfocus
+    ```
+
+    ### Manual Installation
+    Download the appropriate binary for your system:
+    - **Universal Binary** (Intel + Apple Silicon): `lazyfocus_{{ .Version }}_darwin_universal.tar.gz`
+    - **Intel Macs**: `lazyfocus_{{ .Version }}_darwin_amd64.tar.gz`
+    - **Apple Silicon Macs**: `lazyfocus_{{ .Version }}_darwin_arm64.tar.gz`
+
+    Extract and move to your PATH:
+    ```bash
+    tar -xzf lazyfocus_*.tar.gz
+    sudo mv lazyfocus /usr/local/bin/
+    ```
+
+# =============================================================================
+# Homebrew Tap Configuration
+# =============================================================================
+# Automatically updates Homebrew formula in geekvetica/homebrew-tap
+# Users can install via: brew install geekvetica/tap/lazyfocus
+#
+# Prerequisites:
+#   1. Create tap repository: github.com/Geekvetica/homebrew-tap
+#   2. Generate GitHub PAT with repo:public_repo scope
+#   3. Add PAT as HOMEBREW_TAP_TOKEN secret in this repository
+#
+# The formula is automatically generated and committed to the tap repo
+# =============================================================================
+brews:
+  - name: lazyfocus
+
+    # Target repository for Homebrew formula
+    repository:
+      owner: Geekvetica
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+      branch: main
+
+    # Formula file location
+    directory: Formula
+
+    # Metadata for Homebrew
+    homepage: "https://github.com/Geekvetica/lazyfocus"
+    description: "CLI and TUI tool for OmniFocus on macOS"
+    license: "MIT"
+
+    # Installation instructions for Homebrew formula
+    install: |
+      bin.install "lazyfocus"
+
+    # Test that verifies successful installation
+    test: |
+      system "#{bin}/lazyfocus", "version"
+
+    # Dependencies (none - static binary)
+    # dependencies: []
+
+# =============================================================================
+# Changelog Configuration
+# =============================================================================
+# Automatically generates changelog from git commits
+# Groups changes by type (feat, fix, docs, etc.)
+# =============================================================================
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+  groups:
+    - title: Features
+      regexp: '^feat:'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^fix:'
+      order: 1
+    - title: Others
+      order: 999

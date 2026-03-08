@@ -1,0 +1,38 @@
+before:
+  hooks:
+    - go mod download
+builds:
+  - # Path to main.go file or main package.
+    main: ./cmd/kubectl-who-can/main.go
+    # Custom environment variables to be set during the builds.
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    # GOOS list to build for.
+    goos:
+      - darwin
+      - linux
+      - windows
+    # GOARCH to build for.
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - # Archive name template
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs'
+      - '^test'
+      - '^release'

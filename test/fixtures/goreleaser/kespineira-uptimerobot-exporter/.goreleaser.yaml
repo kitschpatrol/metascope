@@ -1,0 +1,63 @@
+version: 2
+dist: build
+builds:
+  - main: ./cmd/uptimerobot_exporter
+    binary: uptimerobot_exporter
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
+    ldflags: '-s -w -X main.version={{.Version}}'
+
+archives:
+  - format: tar.gz
+    name_template: '{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}'
+    wrap_in_directory: true
+snapshot:
+  name_template: "{{ .Tag }}-SNAPSHOT-{{ .ShortCommit }}"
+changelog:
+  use: git
+release:
+  github:
+    owner: "kespineira"
+    name: "uptimerobot_exporter"
+  draft: true
+  prerelease: auto
+dockers:
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "docker.io/kespineira/uptimerobot_exporter:{{.Version}}-amd64"
+      - "ghcr.io/kespineira/uptimerobot_exporter:{{.Version}}-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/amd64"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "docker.io/kespineira/uptimerobot_exporter:{{.Version}}-arm64"
+      - "ghcr.io/kespineira/uptimerobot_exporter:{{.Version}}-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
+docker_manifests:
+  - name_template: "docker.io/kespineira/uptimerobot_exporter:{{.Version}}"
+    image_templates:
+      - "docker.io/kespineira/uptimerobot_exporter:{{.Version}}-amd64"
+      - "docker.io/kespineira/uptimerobot_exporter:{{.Version}}-arm64"
+  - name_template: "ghcr.io/kespineira/uptimerobot_exporter:{{.Version}}"
+    image_templates:
+      - "ghcr.io/kespineira/uptimerobot_exporter:{{.Version}}-amd64"
+      - "ghcr.io/kespineira/uptimerobot_exporter:{{.Version}}-arm64"

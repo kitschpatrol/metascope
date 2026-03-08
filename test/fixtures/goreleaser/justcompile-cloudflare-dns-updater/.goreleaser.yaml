@@ -1,0 +1,27 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    binary: "{{ .ProjectName }}"
+dockers:
+  - image_templates:
+      - "ghcr.io/justcompile/cloudflare-dns-updater:{{ .Tag }}"
+      - "ghcr.io/justcompile/cloudflare-dns-updater:v{{ .Major }}"
+      - "ghcr.io/justcompile/cloudflare-dns-updater:v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/justcompile/cloudflare-dns-updater:latest"
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

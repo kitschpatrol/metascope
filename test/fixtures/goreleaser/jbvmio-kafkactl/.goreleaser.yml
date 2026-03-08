@@ -1,0 +1,70 @@
+before:
+  hooks:
+    - go mod download
+builds:
+- env:
+  - GO111MODULE=on
+  ldflags:
+    - -s -w -X {{.Env.LD_FLAGS_STATIC}}
+  goos:
+    - darwin
+    - linux
+    - windows
+  goarch:
+    - amd64
+archives:
+- replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+  files:
+  - nOnE*
+checksum:
+  name_template: 'checksums.txt'
+nfpms:
+- vendor: jbvm.io
+  homepage: https://www.jbvm.io/
+  maintainer: Jimmy Bonds <[jbonds@jbvm.io]>
+  description: CLI for Apache Kafka Management
+  license: Apache 2.0
+  formats:
+    - deb
+    - rpm
+release:
+  disable: false
+snapshot:
+  name_template: "{{ .Tag }}"
+changelog:
+  skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+dockers:
+  - image_templates:
+    - "docker.io/jbvmio/kafkactl:{{ .Tag }}"
+    - "docker.io/jbvmio/kafkactl:latest"
+    goos: linux
+    goarch: amd64
+    dockerfile: kafkactl.1.dockerfile
+    build_flag_templates:
+    - "--label=maintainer=jbonds@jbvm.io"
+brews:
+- github:
+    owner: jbvmio
+    name: homebrew-tap
+  commit_author:
+    name: goreleaserbot
+    email: jbonds@jbvm.io
+  folder: Formula
+  homepage: "http://www.jbvm.io/kafkactl"
+  description: "CLI for Apache Kafka and Zookeeper Management."
+  test: |
+    system "#{bin}/kafkactl version"
+

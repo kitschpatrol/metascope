@@ -1,0 +1,113 @@
+project_name: netlify-dyndns
+builds:
+  - main: ./main.go
+    binary: netlify-dyndns
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm
+      - arm64
+      - "386"
+    goarm:
+      - "6"
+archives:
+  - name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
+dockers:
+  -
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - jonahgoldwastaken/{{.ProjectName}}:latest-arm64
+      - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-arm64
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-arm64
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-arm64
+  -
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - jonahgoldwastaken/{{.ProjectName}}:latest-amd64
+      - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-amd64
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-amd64
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-amd64
+  -
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/arm/v6"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goos: linux
+    goarch: arm
+    goarm: 6
+    image_templates:
+      - jonahgoldwastaken/{{.ProjectName}}:latest-armv6
+      - jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-armv6
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:latest-armv6
+      - ghcr.io/jonahgoldwastaken/{{.ProjectName}}:{{ .Version }}-armv6
+  -
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/386"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goos: linux
+    goarch: "386"
+    image_templates:
+      - jonahgoldwastaken/{{ .ProjectName }}:latest-i386
+      - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-i386
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
+docker_manifests:
+  - name_template: jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-amd64
+      - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-arm64
+      - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-armv6
+      - jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
+  - name_template: jonahgoldwastaken/{{ .ProjectName }}:latest
+    image_templates:
+      - jonahgoldwastaken/{{ .ProjectName }}:latest-amd64
+      - jonahgoldwastaken/{{ .ProjectName }}:latest-arm64
+      - jonahgoldwastaken/{{ .ProjectName }}:latest-armv6
+      - jonahgoldwastaken/{{ .ProjectName }}:latest-i386
+
+  - name_template: ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-arm64
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-armv6
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:{{ .Version }}-i386
+  - name_template: ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest
+    image_templates:
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-amd64
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-arm64
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-armv6
+      - ghcr.io/jonahgoldwastaken/{{ .ProjectName }}:latest-i386
+release:
+  mode: append
+  prerelease: auto

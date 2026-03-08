@@ -1,0 +1,135 @@
+# GoReleaser configuration for go.fork.vn/di library
+version: 2
+project_name: di
+dist: dist
+
+# Metadata
+metadata:
+  mod_timestamp: '{{ .CommitTimestamp }}'
+
+# Environment variables
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+# Git configuration
+git:
+  # Ignore dirty state for library releases
+  ignore_tags:
+    - nightly
+
+# Before hooks
+before:
+  hooks:
+    - go mod tidy
+    - go mod verify
+    - go generate ./...
+    - go test ./...
+
+# Builds - Skip since this is a library, but keep for validation
+builds:
+  - id: "library"
+    skip: true
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+# Changelog configuration
+changelog:
+  use: github-native
+  sort: asc
+  abbrev: 0
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: 'Performance improvements'
+      regexp: "^.*perf[(\\w)]*:+.*$"
+      order: 2
+    - title: 'Refactors'
+      regexp: "^.*refactor[(\\w)]*:+.*$"
+      order: 3
+    - title: 'Tests'
+      regexp: "^.*test[(\\w)]*:+.*$"
+      order: 4
+    - title: 'Documentation'
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 5
+    - title: Others
+      order: 999
+  filters:
+    exclude:
+      - '^chore:'
+      - '^ci:'
+      - '^style:'
+      - '^Merge pull request'
+      - '^Merge branch'
+      - '^Initial commit'
+
+# Release configuration
+release:
+  github:
+    owner: go-fork
+    name: di
+  draft: false
+  prerelease: auto
+  mode: append
+  header: |
+    ## Release {{.Tag}} ({{.Date}})
+    
+    Welcome to this new release of go.fork.vn/di!
+    
+    **Full Changelog**: https://github.com/go-fork/di/compare/{{.PreviousTag}}...{{.Tag}}
+  footer: |
+    ## Thanks!
+    
+    Those were the changes on {{.Tag}}! Come back, help us make go-fork/di better!
+    
+    **Want to help contribute?** Check out our [contributing guide](https://github.com/go-fork/di/blob/main/.github/CONTRIBUTING.md)
+
+# Milestones
+milestones:
+  - close: true
+    fail_on_error: false
+    name_template: "{{ .Tag }}"
+
+# Announcement
+announce:
+  skip: false
+
+# Checksum
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+# Snapshots
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+# Sign
+signs:
+  - artifacts: checksum
+    args:
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"

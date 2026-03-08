@@ -1,0 +1,43 @@
+project_name: terminal-timer
+
+release:
+  github:
+    owner: cameroncuttingedge
+    name: terminal-timer
+
+builds:
+  - binary: terminal-timer
+    main: .
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: github
+
+brews:
+  - name: terminal-timer
+    repository:
+      owner: cameroncuttingedge
+      name: terminal-timer
+    commit_author:
+      name: cameroncuttingedge
+      email: noreply@github.com
+    homepage: "https://github.com/cameroncuttingedge/terminal-timer"
+    description: "A terminal-based timer"
+    test: |
+      system "#{bin}/terminal-timer", "--help"
+

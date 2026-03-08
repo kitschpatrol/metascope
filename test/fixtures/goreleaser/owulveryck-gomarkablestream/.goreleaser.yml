@@ -1,0 +1,76 @@
+version: 2
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  # With Tailscale
+  - env:
+      - CGO_ENABLED=0
+    id: "Remarkable Paper Pro"
+    main: .
+    binary: gomarkablestream-RMPRO
+    goos:
+      - linux
+    goarch:
+      - arm64
+    tags:
+      - tailscale
+
+  - env:
+      - CGO_ENABLED=0
+    id: "Remarkable 2"
+    main: .
+    binary: gomarkablestream-RM2
+    goos:
+      - linux
+    goarch:
+      - arm
+    goarm:
+      - "7"
+    tags:
+      - tailscale
+
+  # Without Tailscale (lighter binary)
+  - env:
+      - CGO_ENABLED=0
+    id: "Remarkable Paper Pro - No Tailscale"
+    main: .
+    binary: gomarkablestream-RMPRO-lite
+    goos:
+      - linux
+    goarch:
+      - arm64
+
+  - env:
+      - CGO_ENABLED=0
+    id: "Remarkable 2 - No Tailscale"
+    main: .
+    binary: gomarkablestream-RM2-lite
+    goos:
+      - linux
+    goarch:
+      - arm
+    goarm:
+      - "7"
+
+archives:
+  - formats:
+      - binary
+    name_template: "{{ .Binary }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  github:
+    owner: owulveryck
+    name: gomarkablestream

@@ -1,0 +1,25 @@
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod download
+    # you may remove this if you don't need go generate
+    # - go generate ./...
+build:
+  binary: bit
+  goos:
+    - darwin
+    - linux
+    - windows
+    #- freebsd
+    - netbsd
+    #- openbsd
+  goarch:
+    - amd64
+    - arm64
+    - 386
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

@@ -1,0 +1,63 @@
+# Copyright 2023 Dimitri Koshkin. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+project_name: kubectl-assistant
+
+changelog:
+  use: github
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+  filters:
+    exclude:
+      - '^docs:'
+      - '^chore:'
+      - '^build:'
+
+release:
+  footer: |
+    ### Summary
+    **Full Changelog**: https://github.com/dkoshkin/kubectl-assistant/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+builds:
+  - id: kubectl-assistant
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X {{.Env.GOMODULENAME}}/pkg/version.version={{.Version}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.major={{.Major}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.minor={{.Minor}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.patch={{.Patch}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.revision={{.FullCommit}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.commitDate={{.CommitDate}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.branch={{.Branch}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.gitTreeState={{.Env.GIT_TREE_STATE}}
+      - -X {{.Env.GOMODULENAME}}/pkg/version.builtBy=goreleaser
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
+archives:
+  - name_template: '{{ .ProjectName }}_v{{trimprefix .Version "v"}}_{{ .Os }}_{{ .Arch }}'
+    format_overrides:
+      - goos: windows
+        format: zip
+    builds:
+      - kubectl-assistant
+    rlcp: true
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incminor .Tag }}-dev"

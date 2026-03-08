@@ -1,0 +1,69 @@
+env:
+  - GO111MODULE=on
+
+builds:
+- env:
+    - CGO_ENABLED=1
+  goos:
+    - linux
+  goarch:
+    - amd64
+  mod_timestamp: '{{ .CommitTimestamp }}'
+  flags:
+    - -trimpath
+  ldflags:
+    - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }} -X main.builtBy=goreleaser
+
+sboms:
+  - artifacts: archive
+
+dockers:
+  # see details at https://goreleaser.com/customization/docker/
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "blogomatic:goreleaser"
+    dockerfile: Dockerfile.goreleaser
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--builder={{ .Env.DOCKER_CONTEXT }}"
+
+kos:
+  - repository: ghcr.io/codepraxis-io/blogomatic
+    tags:
+    - '{{.Version}}'
+    - latest
+    bare: true
+    preserve_import_paths: false
+    platforms:
+    - linux/amd64
+    sbom: spdx
+
+checksum:
+  name_template: 'checksums.txt'
+
+signs:
+- cmd: cosign
+  stdin: '{{ .Env.COSIGN_PASSWORD }}'
+  args: ["sign-blob", "--key=/tmp/cosign.key", "--output-signature=${signature}", "--tlog-upload=false", "${artifact}"]
+  artifacts: checksum
+
+# docker_signs:
+# - artifacts: manifests
+#   stdin: '{{ .Env.COSIGN_PWD }}'
+#   args:
+#   - "sign"
+#   - "--key=/tmp/cosign.key"
+#   - "--upload=true"
+#   - "${artifact}"
+#   - "--yes"
+#   output: true
+
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=jcroql

@@ -1,0 +1,54 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+-
+  id: mackerel-plugin-prometheus-exporter
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - darwin
+    - windows
+  goarch:
+    - "386"
+    - amd64
+    - arm
+    - arm64
+  goarm:
+    - "6"
+    - "7"
+  ldflags:
+    - -s -w -X github.com/k1LoW/mackerel-plugin-prometheus-exporter.version={{.Version}} -X github.com/k1LoW/mackerel-plugin-prometheus-exporter.commit={{.FullCommit}} -X github.com/k1LoW/mackerel-plugin-prometheus-exporter.date={{.Date}} -X github.com/k1LoW/mackerel-plugin-prometheus-exporter/version.Version={{.Version}}
+archives:
+-
+  id: mackerel-plugin-prometheus-exporter-release
+  name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: darwin
+      format: zip
+  files:
+    - LICENSE
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+  rlcp: true
+-
+  id: mackerel-plugin-prometheus-exporter-archive
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: darwin
+      format: zip
+  files:
+    - LICENSE
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+  rlcp: true
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true

@@ -1,0 +1,32 @@
+---
+# https://goreleaser.com/customization/project/
+project_name: terraformer-myrasec
+
+variables:
+  Vendor: terraformer authors
+  VendorHomepage: https://github.com/GoogleCloudPlatform/terraformer
+  License: Apache-2.0
+  Description: |
+    CLI tool to generate Terraform files from existing infrastructure (reverse
+    Terraform). Infrastructure-to-Code.
+
+# https://goreleaser.com/customization/includes/
+includes:
+  - from_file:
+      path: ../_dist.yml
+  - from_file:
+      path: ../_env.yml
+  - from_file:
+      path: ../_builds.yml
+  - from_file:
+      path: ../_nightly.yml
+  - from_file:
+      path: ../_nfpms.yml
+
+# https://goreleaser.com/customization/hooks/
+before:
+  hooks:
+    - cmd: |
+        bash ./download.sh
+      output: true
+      dir: .

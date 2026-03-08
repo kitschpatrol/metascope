@@ -1,0 +1,127 @@
+version: 2
+
+project_name: tergum
+
+before:
+  hooks:
+    - rm -rf dist
+    - go mod tidy
+    - git push
+    - git push --tags
+builds:
+  - env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/sikalabs/tergum/version.Version=v{{.Version}}
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - "386"
+      - arm
+      - arm64
+    goarm:
+      - "6"
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: windows
+        goarch: "arm"
+      - goos: windows
+        goarch: "arm64"
+      - goos: linux
+        goarch: arm
+        goarm: 6
+    binary: tergum
+
+archives:
+  - formats: [ "tar.gz" ]
+    name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+release:
+  prerelease: auto
+  extra_files:
+    - glob: ./dist/tergum_windows_amd64_v1/tergum.exe
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+  algorithm: sha256
+
+brews:
+  -
+    name: tergum
+    repository:
+      owner: sikalabs
+      name: homebrew-tap
+    skip_upload: auto
+    homepage: https://github.com/sikalabs/tergum
+    url_template: "https://github.com/sikalabs/tergum/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    directory: Formula
+    caveats: "How to use this binary: https://github.com/sikalabs/tergum"
+    description: "Tergum Backup Tool"
+    install: |
+      bin.install "tergum"
+    test: |
+      system "#{bin}/tergum version"
+
+dockers:
+    -
+      goos: linux
+      goarch: amd64
+      image_templates:
+        - "sikalabs/tergum:{{ .Tag }}"
+        - "ghcr.io/sikalabs/tergum:{{ .Tag }}"
+      dockerfile: Dockerfile.goreleaser
+      ids:
+        - tergum
+      build_flag_templates:
+        - "--platform=linux/amd64"
+        - "--label=org.opencontainers.image.created={{.Date}}"
+        - "--label=org.opencontainers.image.title={{.ProjectName}}"
+        - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+        - "--label=org.opencontainers.image.version={{.Version}}"
+        - "--label=org.opencontainers.image.source=https://github.com/sikalabs/tergum"
+        - "--label=org.label-schema.schema-version=1.0"
+        - "--label=org.label-schema.version={{.Version}}"
+        - "--label=org.label-schema.name={{.ProjectName}}"
+        - "--label=com.github.actions.name={{.ProjectName}}"
+        - "--label=repository=https://github.com/sikalabs/tergum"
+        - "--label=maintainer=SikaLabs <opensource@sikalabs.com>"
+    - goos: linux
+      goarch: arm64
+      image_templates:
+        - "sikalabs/tergum:{{ .Tag }}-arm64v8"
+        - "ghcr.io/sikalabs/tergum:{{ .Tag }}-arm64v8"
+      dockerfile: Dockerfile.goreleaser.arm64v8
+      ids:
+        - tergum
+      build_flag_templates:
+        - "--platform=linux/arm64"
+        - "--label=org.opencontainers.image.created={{.Date}}"
+        - "--label=org.opencontainers.image.title={{.ProjectName}}"
+        - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+        - "--label=org.opencontainers.image.version={{.Version}}"
+        - "--label=org.opencontainers.image.source=https://github.com/sikalabs/tergum"
+        - "--label=org.label-schema.schema-version=1.0"
+        - "--label=org.label-schema.version={{.Version}}"
+        - "--label=org.label-schema.name={{.ProjectName}}"
+        - "--label=com.github.actions.name={{.ProjectName}}"
+        - "--label=repository=https://github.com/sikalabs/tergum"
+        - "--label=maintainer=SikaLabs <opensource@sikalabs.com>"
+
+scoops:
+  -
+    repository:
+      owner: sikalabs
+      name: scoop-bucket
+    homepage:  https://github.com/sikalabs/tergum
+    description: Tergum Backup Tool
+    license: MIT

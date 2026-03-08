@@ -1,0 +1,62 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - sudo go test -v ./...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    id: "docker-socket-router"
+    binary: "docker-socket-router"
+    ldflags:
+      - -s -w
+      - -X docker-socket-router/version.Version={{.Version}}
+      - -X docker-socket-router/version.Commit={{.Commit}}
+      - -X docker-socket-router/version.Date={{.Date}}
+
+nfpms:
+  - id: docker-socket-router
+    package_name: docker-socket-router
+    file_name_template: "{{ .PackageName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    vendor: Your Organization
+    homepage: https://github.com/youorg/docker-socket-router
+    maintainer: Your Name <your.email@example.com>
+    description: |
+      Docker Socket Router daemon for rootless socket routing.
+      Routes Docker API requests from system socket to user-specific rootless instances.
+    license: MIT
+    formats:
+      - deb
+    bindir: /usr/local/bin
+    contents:
+      - src: ./packaging/systemd/docker-socket-router.service
+        dst: /etc/systemd/system/docker-socket-router.service
+        type: config|noreplace
+        file_info:
+          mode: 0644
+          owner: root
+          group: root
+    scripts:
+      postinstall: ./packaging/scripts/postinstall.sh
+      postremove: ./packaging/scripts/postremove.sh
+    recommends:
+      - docker-ce
+    dependencies:
+      - systemd
+    suggests:
+      - docker-ce-rootless-extras
+
+changelog:
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^nit:"

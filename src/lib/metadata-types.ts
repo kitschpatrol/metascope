@@ -15,6 +15,7 @@ export type { FilesystemData } from './sources/filesystem'
 export type { GemspecData, GemSpecDependency } from './sources/gemspec'
 export type { GitConfig, GitData } from './sources/git'
 export type { GoModDependency, GoModSourceData } from './sources/go-mod'
+export type { GoreleaserSourceData } from './sources/goreleaser'
 export type { GitHubData } from './sources/github'
 export type { InfoPlistData } from './sources/info-plist'
 export type { LicenseFilesData } from './sources/license-file'
@@ -63,6 +64,7 @@ import type { GemspecData } from './sources/gemspec'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
 import type { GoModSourceData } from './sources/go-mod'
+import type { GoreleaserSourceData } from './sources/goreleaser'
 import type { InfoPlistData } from './sources/info-plist'
 import type { LicenseFilesData } from './sources/license-file'
 import type { LocData } from './sources/loc'
@@ -101,6 +103,7 @@ export type MetadataContext = {
 	git: GitData
 	github: GitHubData
 	goMod: GoModSourceData
+	goreleaser: GoreleaserSourceData
 	infoPlist: InfoPlistData
 	licenseFiles: LicenseFilesData
 	loc: LocData

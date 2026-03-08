@@ -1,0 +1,18 @@
+builds:
+  - binary: mackerel-plugin-dns-lookup
+    ldflags:
+      - -s -w
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+archives:
+  - format: zip
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    rlcp: true
+snapshot:
+  name_template: "{{ .Version }}-next"

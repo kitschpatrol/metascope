@@ -1,0 +1,35 @@
+version: 2
+project_name: blueprint
+
+builds:
+  - id: blueprint
+    main: ./cmd/blueprint
+    binary: blueprint
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/ale/blueprint/internal/version.Version={{.Version}}
+      - -X github.com/ale/blueprint/internal/version.Commit={{.Commit}}
+      - -X github.com/ale/blueprint/internal/version.Date={{.Date}}
+
+archives:
+  - id: default
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"

@@ -1,0 +1,30 @@
+project_name: fleet
+release:
+  github:
+    owner: kubectl-plus
+    name: kcf
+builds:
+  - id: fleet
+    goos:
+    - linux
+    - windows
+    - darwin
+    goarch:
+    - amd64
+    - "386"
+    - arm
+    - arm64
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    main: cmd/fleet/main.go
+    ldflags: -s -w
+      -X github.com/kubectl-plus/kcf/pkg/version.version=
+archives:
+  - id: fleet
+    builds:
+    - fleet
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+    - goos: windows
+      format: zip

@@ -1,0 +1,12 @@
+before:
+  hooks:
+    - make install
+    - make test
+builds:
+- skip: true
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

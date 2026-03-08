@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+project_name: wtutf
+version: 2
+
+builds:
+  - id: go
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    flags:
+      - -trimpath
+      - -tags=netgo
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: "386"
+      - goos: linux
+        goarch: "386"
+    binary: wtutf
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    # fixme: failed to add: 'dist/go_darwin_arm64_v8.0/wtutf-darwin-arm64.h' -> 'wtutf-darwin-arm64.h': dist/go_darwin_arm64_v8.0/wtutf-darwin-arm64.h: lstat dist/go_darwin_arm64_v8.0/wtutf-darwin-arm64.h: no such file or directory
+    #buildmode: "c-archive"
+    ldflags:
+      - "-s -w"
+      - "-X main.date={{ .CommitDate }}"
+      - "-X main.Version={{ .Version }}"
+      - "-X main.Commit={{ .FullCommit }}"
+      - "-X main.CommitDate={{ .CommitDate }}"
+
+before:
+  hooks:
+    - go fmt ./...
+    - go mod tidy
+
+archives:
+  - format_overrides:
+    - goos: windows
+      formats:
+      - "zip"
+
+checksum:
+  name_template: 'checksums.txt'
+
+release:
+  draft: true
+
+source:
+  enabled: true
+
+sboms:
+  - id: builds
+    artifacts: archive
+  - id: source
+    artifacts: source
+
+dockers:
+  - image_templates:
+      - &amd_image "ghcr.io/eliheady/{{ .ProjectName }}:{{ .Tag }}-amd64"
+    goos: linux
+    goarch: amd64
+    use: buildx
+    dockerfile: Containerfile
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url={{ .GitURL }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.name={{ .ProjectName }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.source={{ .GitURL }}
+      - --label=org.opencontainers.image.licenses=MIT
+  - image_templates:
+      - &arm_image "ghcr.io/eliheady/{{ .ProjectName }}:{{ .Tag }}-arm64"
+    goos: linux
+    goarch: arm64
+    use: buildx
+    dockerfile: Containerfile
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url={{ .GitURL }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.name={{ .ProjectName }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.source={{ .GitURL }}
+      - --label=org.opencontainers.image.licenses=MIT
+
+docker_manifests:
+  - name_template: ghcr.io/eliheady/{{ .ProjectName }}:{{ .Tag }}
+    image_templates:
+      - *amd_image
+      - *arm_image
+
+#docker_signs:
+#  - cmd: cosign
+#    artifacts: images
+#    output: true
+#    args:
+#      - "sign"
+#      - "${artifact}"
+#      - "--yes" # needed on cosign 2.0.0+

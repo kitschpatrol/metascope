@@ -1,0 +1,47 @@
+builds:
+  - binary: boondoggle
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -mod=vendor
+    ldflags:
+      - -s -w -X github.com/gmorse81/boondoggle/v3/cmd.gitTag={{.Tag}}
+
+brews:
+  -
+    name: boondoggle
+    homepage: "https://github.com/gmorse81/boondoggle"
+    tap:
+      owner: gmorse81
+      name: homebrew-boondoggle
+    commit_author:
+      name: gmorse81
+      email: gmorse81@gmail.com
+
+archives:
+  -
+    replacements:
+      darwin: MacOS
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

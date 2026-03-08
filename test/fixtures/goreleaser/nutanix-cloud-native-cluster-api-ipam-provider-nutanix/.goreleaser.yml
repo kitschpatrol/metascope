@@ -1,0 +1,119 @@
+# Copyright 2024 Nutanix. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+version: 2
+
+project_name: cluster-api-ipam-provider-nutanix
+
+changelog:
+  use: github
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+  filters:
+    exclude:
+      - '^docs:'
+      - '^chore:'
+      - '^build:'
+
+release:
+  footer: |
+    ### Summary
+    **Full Changelog**: https://github.com/nutanix-cloud-native/cluster-api-ipam-provider-nutanix/compare/{{ .PreviousTag }}...{{ .Tag }}
+  extra_files:
+    - glob: ./examples/*.yaml
+    - glob: release-metadata.yaml
+      name_template: metadata.yaml
+    - glob: ipam-components.yaml
+
+archives:
+  - name_template: 'caipamx_v{{trimprefix .Version "v"}}_{{ .Os }}_{{ .Arch }}'
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    allow_different_binary_count: true
+
+before:
+  hooks:
+    - kustomize build ./config/default >ipam-components.yaml
+    - sed -i -e 's/v0.0.0-dev/v{{ trimprefix .Version "v" }}/g' ipam-components.yaml
+    - |
+      sh -ec 'gojq --yaml-input --yaml-output \
+        ".releaseSeries |= (. + [{contract: \"v1beta1\", major: {{ .Major }}, minor: {{ .Minor }}}] | unique)" \
+        metadata.yaml >release-metadata.yaml'
+
+builds:
+  - id: controller
+    dir: ./cmd/controller
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X 'k8s.io/component-base/version.buildDate={{ .CommitDate }}'
+      - -X 'k8s.io/component-base/version.gitCommit={{ .FullCommit }}'
+      - -X 'k8s.io/component-base/version.gitTreeState={{ .Env.GIT_TREE_STATE }}'
+      - -X 'k8s.io/component-base/version.gitVersion=v{{ trimprefix .Version "v" }}'
+      - -X 'k8s.io/component-base/version.major={{ .Major }}'
+      - -X 'k8s.io/component-base/version.minor={{ .Minor }}'
+      - -X 'k8s.io/component-base/version/verflag.programName={{ .ProjectName }}'
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
+  - id: cli
+    dir: ./cmd/caipamx
+    binary: caipamx
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X 'k8s.io/component-base/version.buildDate={{ .CommitDate }}'
+      - -X 'k8s.io/component-base/version.gitCommit={{ .FullCommit }}'
+      - -X 'k8s.io/component-base/version.gitTreeState={{ .Env.GIT_TREE_STATE }}'
+      - -X 'k8s.io/component-base/version.gitVersion=v{{ trimprefix .Version "v" }}'
+      - -X 'k8s.io/component-base/version.major={{ .Major }}'
+      - -X 'k8s.io/component-base/version.minor={{ .Minor }}'
+      - -X 'k8s.io/component-base/version/verflag.programName={{ .ProjectName }}'
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
+
+kos:
+  - build: controller
+    labels:
+      org.opencontainers.image.created: "{{ .CommitDate }}"
+      org.opencontainers.image.title: "{{ .ProjectName}}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.version: v{{trimprefix .Version "v"}}
+      org.opencontainers.image.source: "{{ .GitURL }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    repositories:
+      - ghcr.io/nutanix-cloud-native/cluster-api-ipam-provider-nutanix
+    bare: true
+    tags:
+      - v{{trimprefix .Version "v"}}
+
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  version_template: "{{ incminor .Tag }}-dev"
+report_sizes: true

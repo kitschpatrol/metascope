@@ -1,0 +1,6 @@
+# Goreleaser Config
+
+builds:
+- main: ./cmd/anonymize-mysqldump
+  env:
+  - CGO_ENABLED=0
