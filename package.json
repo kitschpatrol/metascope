@@ -73,6 +73,8 @@
 		"spdx-license-list": "^6.11.0",
 		"tinyexec": "^1.0.2",
 		"tinyglobby": "^0.2.15",
+		"tree-sitter-python": "^0.25.0",
+		"tree-sitter-ruby": "^0.23.1",
 		"unified": "^11.0.5",
 		"updates": "^17.8.3",
 		"yaml": "^2.8.2",

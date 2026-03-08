@@ -89,6 +89,12 @@ importers:
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.15
+      tree-sitter-python:
+        specifier: ^0.25.0
+        version: 0.25.0
+      tree-sitter-ruby:
+        specifier: ^0.23.1
+        version: 0.23.1
       unified:
         specifier: ^11.0.5
         version: 11.0.5
@@ -4001,8 +4007,16 @@ packages:
     resolution: {integrity: sha512-HOVDDYP+gN7gtbRUrtj6C/cy12M1VG59deVRaO/Iyuw6oD5F9Y/M0jHxjV813HizOjJurV2uCPZaMVmzMszJHA==}
     engines: {node: '>=14.0'}
 
+  node-addon-api@8.6.0:
+    resolution: {integrity: sha512-gBVjCaqDlRUk0EwoPNKzIr9KkS9041G/q31IBShPs1Xz6UTA+EXdZADbzqAJQrpDRq71CIMnOP5VMut3SL0z5Q==}
+    engines: {node: ^18 || ^20 || >= 21}
+
   node-fetch-native@1.6.7:
     resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
+
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
+    hasBin: true
 
   node-inspect-extracted@3.3.0:
     resolution: {integrity: sha512-Fn5DDCDThvcGdjcXwxlqeLwifgfLgXulStrDG5DE9yp13sicf9Dl5TJdEsBub4vr1qLfDaBxYkTFUEJfKETveA==}
@@ -5106,6 +5120,22 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
+
+  tree-sitter-python@0.25.0:
+    resolution: {integrity: sha512-eCmJx6zQa35GxaCtQD+wXHOhYqBxEL+bp71W/s3fcDMu06MrtzkVXR437dRrCrbrDbyLuUDJpAgycs7ncngLXw==}
+    peerDependencies:
+      tree-sitter: ^0.25.0
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
+
+  tree-sitter-ruby@0.23.1:
+    resolution: {integrity: sha512-d9/RXgWjR6HanN7wTYhS5bpBQLz1VkH048Vm3CodPGyJVnamXMGb8oEhDypVCBq4QnHui9sTXuJBBP3WtCw5RA==}
+    peerDependencies:
+      tree-sitter: ^0.21.1
+    peerDependenciesMeta:
+      tree-sitter:
+        optional: true
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -10305,7 +10335,11 @@ snapshots:
 
   next-json@0.5.1: {}
 
+  node-addon-api@8.6.0: {}
+
   node-fetch-native@1.6.7: {}
+
+  node-gyp-build@4.8.4: {}
 
   node-inspect-extracted@3.3.0: {}
 
@@ -11758,6 +11792,16 @@ snapshots:
       eslint-visitor-keys: 5.0.1
 
   tree-kill@1.2.2: {}
+
+  tree-sitter-python@0.25.0:
+    dependencies:
+      node-addon-api: 8.6.0
+      node-gyp-build: 4.8.4
+
+  tree-sitter-ruby@0.23.1:
+    dependencies:
+      node-addon-api: 8.6.0
+      node-gyp-build: 4.8.4
 
   trim-lines@3.0.1: {}
 
