@@ -7,7 +7,7 @@ import {
 	spdxIdToUrl,
 } from '../../src/lib/parsers/license-file-parser'
 
-const fixturesDirectory = resolve('test/fixtures/license')
+const fixturesDirectory = resolve('test/fixtures/license-file')
 
 describe('isLicenseFilename', () => {
 	it('should match LICENSE variants', () => {

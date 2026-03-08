@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { licenseFileSource } from '../../src/lib/sources/license-file'
 
-const fixturesDirectory = resolve('test/fixtures/license')
+const fixturesDirectory = resolve('test/fixtures/license-file')
 
 describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENSE file', async () => {

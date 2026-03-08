@@ -7,7 +7,6 @@ export default eslintConfig({
 			'unicorn/prevent-abbreviations': [
 				'error',
 				{
-					// Allow variations on goMod and pkgInfo
 					ignore: [/go-?mod/i, /pkg-?info/i],
 				},
 			],

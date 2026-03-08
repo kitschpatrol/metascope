@@ -4,9 +4,8 @@ import { defineTemplate } from '../src/lib/metadata-types'
 
 const mockContext: MetadataContext = {
 	arduinoLibraryProperties: {},
-	cargoToml: {},
-	cinderCinderblock: {},
-	codemeta: {
+	cinderCinderblockXml: {},
+	codemetaJson: {
 		author: [
 			{
 				familyName: 'Doe',
@@ -18,13 +17,25 @@ const mockContext: MetadataContext = {
 		name: 'test-package',
 		version: '1.2.3',
 	},
-	codemetaJson: {},
+	codeStatistics: {
+		breakdown: [
+			{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
+		],
+		total: {
+			blanks: 100,
+			code: 500,
+			comments: 50,
+			files: 10,
+			languages: ['TypeScript'],
+			lines: 650,
+		},
+	},
+	dependencyUpdates: {},
 	filesystem: {
 		totalDirectoryCount: 20,
 		totalFileCount: 150,
 		totalSizeBytes: 1_048_576,
 	},
-	gemspec: {},
 	git: {
 		branchCurrent: 'main',
 		commitCount: 42,
@@ -38,56 +49,44 @@ const mockContext: MetadataContext = {
 		issueCountOpen: 5,
 		stargazerCount: 100,
 	},
-	goMod: {},
-	goreleaser: {},
-	infoPlist: {},
+	goGoMod: {},
+	goGoreleaserYaml: {},
+	javaPomXml: {},
 	licenseFiles: {},
-	loc: {
-		breakdown: [
-			{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
-		],
-		total: {
-			blanks: 100,
-			code: 500,
-			comments: 50,
-			files: 10,
-			languages: ['TypeScript'],
-			lines: 650,
-		},
-	},
 	metadataFile: {},
 	metascope: {
 		path: '/test/project',
 		scannedAt: '2026-01-01T00:00:00.000Z',
 		version: '0.0.0',
 	},
-	npm: {
+	nodeNpmRegistry: {
 		downloadsWeekly: 1000,
 	},
-	obsidian: {},
-	openFrameworksAddonConfig: {},
-	openFrameworksInstallXml: {},
-	packageJson: {
+	nodePackageJson: {
 		// eslint-disable-next-line ts/naming-convention
 		_id: 'test-package@1.2.3',
 		name: 'test-package',
 		readme: '',
 		version: '1.2.3',
 	},
-	pbxproj: {},
-	pkgInfo: {},
-	pomXml: {},
+	obsidianManifestJson: {},
+	openframeworksAddonConfigMk: {},
+	openframeworksInstallXml: {},
 	processingLibraryProperties: {},
-	publiccode: {},
-	pypi: {},
-	pyprojectToml: {},
+	publiccodeYaml: {},
+	pythonPkgInfo: {},
+	pythonPypiRegistry: {},
+	pythonPyprojectToml: {},
+	pythonSetupCfg: {},
 	pythonSetupPy: {},
-	readme: {},
-	setupCfg: {},
-	updates: {},
+	readmeFile: {},
+	rubyGemspec: {},
+	rustCargoToml: {},
+	xcodeInfoPlist: {},
+	xcodeProjectPbxproj: {},
 }
 
-const identityFunction = (context: MetadataContext) => ({ name: context.codemeta.name })
+const identityFunction = (context: MetadataContext) => ({ name: context.codemetaJson.name })
 
 describe('defineTemplate', () => {
 	it('should be an identity function', () => {
@@ -96,8 +95,8 @@ describe('defineTemplate', () => {
 	})
 
 	it('should produce the expected output shape', () => {
-		const template = defineTemplate(({ codemeta, github }) => ({
-			name: codemeta.name,
+		const template = defineTemplate(({ codemetaJson, github }) => ({
+			name: codemetaJson.name,
 			stars: github.stargazerCount,
 		}))
 
@@ -109,8 +108,8 @@ describe('defineTemplate', () => {
 	})
 
 	it('should support string interpolation', () => {
-		const template = defineTemplate(({ codemeta }) => {
-			const firstAuthor = codemeta.author?.[0]
+		const template = defineTemplate(({ codemetaJson }) => {
+			const firstAuthor = codemetaJson.author?.[0]
 			return {
 				author: `${firstAuthor?.givenName ?? ''} ${firstAuthor?.familyName ?? ''}`.trim(),
 			}
@@ -165,7 +164,9 @@ describe('defineTemplate', () => {
 		// Templates that only use the first arg still work since
 		// JS allows calling a function with more args than declared
 		// eslint-disable-next-line unicorn/consistent-function-scoping
-		const singleArgumentTemplate = (context: MetadataContext) => ({ name: context.codemeta.name })
+		const singleArgumentTemplate = (context: MetadataContext) => ({
+			name: context.codemetaJson.name,
+		})
 		const template = defineTemplate(singleArgumentTemplate)
 
 		const result = template(mockContext, {})

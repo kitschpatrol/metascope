@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { codemetaJsonSource } from '../../src/lib/sources/codemeta-json'
 
-const fixturesDirectory = resolve('test/fixtures/codemeta')
+const fixturesDirectory = resolve('test/fixtures/codemeta-json')
 
 describe('codemeta-json source', () => {
 	it('should be available in a directory with a codemeta.json file', async () => {

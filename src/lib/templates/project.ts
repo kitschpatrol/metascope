@@ -14,7 +14,15 @@ import {
  */
 export const project = defineTemplate(
 	(
-		{ codemeta, git, github, metascope, npm, packageJson, updates },
+		{
+			codemetaJson: codemeta,
+			dependencyUpdates,
+			git,
+			github,
+			metascope,
+			nodeNpmRegistry: npm,
+			nodePackageJson: packageJson,
+		},
 		{ authorName, githubAccount },
 	) => ({
 		description: codemeta.description,
@@ -33,8 +41,8 @@ export const project = defineTemplate(
 		issueCount: github.issueCountOpen,
 		lastCommitDate: git.commitDateLast,
 		license: toBasicLicenses(codemeta.license ?? github.licenseSpdxId)?.at(0),
-		majorUpdateCount: updates.major?.length ?? 0,
-		majorUpdateList: updates.major?.map((value) => value.name),
+		majorUpdateCount: dependencyUpdates.major?.length ?? 0,
+		majorUpdateList: dependencyUpdates.major?.map((value) => value.name),
 		npmDownloadCount: npm.downloadsTotal,
 		readmePath: toLocalUrl(codemeta.readme, metascope.path),
 		repositoryPath: metascope.path === undefined ? undefined : `file://${metascope.path}`,

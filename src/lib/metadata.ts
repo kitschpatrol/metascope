@@ -13,37 +13,36 @@ import type { MetadataSource, SourceContext } from './sources/source'
 import type { TemplateMap, TemplateName } from './templates/index.js'
 import { log } from './log'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
-import { cargoTomlSource } from './sources/cargo-toml'
-import { cinderCinderblockSource } from './sources/cinder-cinderblock'
-import { codemetaSource } from './sources/codemeta'
+import { cinderCinderblockXmlSource } from './sources/cinder-cinderblock-xml'
+import { codeStatisticsSource } from './sources/code-statistics'
 import { codemetaJsonSource } from './sources/codemeta-json'
+import { dependencyUpdatesSource } from './sources/dependency-updates'
 import { filesystemSource } from './sources/filesystem'
-import { gemspecSource } from './sources/gemspec'
 import { gitSource } from './sources/git'
 import { githubSource } from './sources/github'
-import { goModSource } from './sources/go-mod'
-import { goreleaserSource } from './sources/goreleaser'
-import { infoPlistSource } from './sources/info-plist.js'
+import { goGoModSource } from './sources/go-go-mod'
+import { goGoreleaserYamlSource } from './sources/go-goreleaser-yaml'
+import { javaPomXmlSource } from './sources/java-pom-xml'
 import { licenseFileSource } from './sources/license-file'
-import { locSource } from './sources/loc'
-import { metadataFileSource } from './sources/metadata'
+import { metadataFileSource } from './sources/metadata-file'
 import { metascopeSource } from './sources/metascope'
-import { npmSource } from './sources/npm'
-import { obsidianSource } from './sources/obsidian'
-import { openFrameworksAddonConfigSource } from './sources/open-frameworks-addon-config'
-import { openFrameworksInstallXmlSource } from './sources/open-frameworks-install-xml'
-import { packageSource } from './sources/package-json.js'
-import { pbxprojSource } from './sources/pbxproj'
-import { pkgInfoSource } from './sources/pkg-info'
-import { pomXmlSource } from './sources/pom-xml'
+import { nodeNpmRegistrySource } from './sources/node-npm-registry'
+import { nodePackageJsonSource } from './sources/node-package-json'
+import { obsidianManifestJsonSource } from './sources/obsidian-manifest-json'
+import { openframeworksAddonConfigMkSource } from './sources/openframeworks-addon-config-mk'
+import { openframeworksInstallXmlSource } from './sources/openframeworks-install-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
-import { publiccodeSource } from './sources/publiccode'
-import { pypiSource } from './sources/pypi'
-import { pyprojectSource } from './sources/pyproject-toml.js'
+import { publiccodeYamlSource } from './sources/publiccode-yaml'
+import { pythonPkgInfoSource } from './sources/python-pkg-info'
+import { pythonPypiRegistrySource } from './sources/python-pypi-registry'
+import { pythonPyprojectTomlSource } from './sources/python-pyproject-toml'
+import { pythonSetupCfgSource } from './sources/python-setup-cfg'
 import { pythonSetupPySource } from './sources/python-setup-py'
-import { readmeSource } from './sources/readme'
-import { setupCfgSource } from './sources/setup-cfg'
-import { updatesSource } from './sources/updates'
+import { readmeFileSource } from './sources/readme-file'
+import { rubyGemspecSource } from './sources/ruby-gemspec'
+import { rustCargoTomlSource } from './sources/rust-cargo-toml'
+import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
+import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
 import { stripUndefined } from './utilities'
 
 const execFileAsync = promisify(execFile)
@@ -54,37 +53,36 @@ const execFileAsync = promisify(execFile)
  */
 const sources: MetadataSource[] = [
 	arduinoLibraryPropertiesSource,
-	cargoTomlSource,
-	cinderCinderblockSource,
-	codemetaSource,
+	rustCargoTomlSource,
+	cinderCinderblockXmlSource,
 	codemetaJsonSource,
 	filesystemSource,
-	gemspecSource,
+	rubyGemspecSource,
 	gitSource,
 	githubSource,
-	goModSource,
-	goreleaserSource,
-	infoPlistSource,
+	goGoModSource,
+	goGoreleaserYamlSource,
+	xcodeInfoPlistSource,
 	licenseFileSource,
-	locSource,
+	codeStatisticsSource,
 	metadataFileSource,
 	metascopeSource,
-	npmSource,
-	obsidianSource,
-	openFrameworksAddonConfigSource,
-	openFrameworksInstallXmlSource,
-	pbxprojSource,
-	pkgInfoSource,
-	packageSource,
-	pomXmlSource,
+	nodeNpmRegistrySource,
+	obsidianManifestJsonSource,
+	openframeworksAddonConfigMkSource,
+	openframeworksInstallXmlSource,
+	xcodeProjectPbxprojSource,
+	pythonPkgInfoSource,
+	nodePackageJsonSource,
+	javaPomXmlSource,
 	processingLibraryPropertiesSource,
-	publiccodeSource,
-	readmeSource,
-	pypiSource,
-	pyprojectSource,
+	publiccodeYamlSource,
+	readmeFileSource,
+	pythonPypiRegistrySource,
+	pythonPyprojectTomlSource,
 	pythonSetupPySource,
-	setupCfgSource,
-	updatesSource,
+	pythonSetupCfgSource,
+	dependencyUpdatesSource,
 ]
 
 /**
@@ -208,37 +206,36 @@ export async function getMetadata<T>(
 	// Assemble context
 	const context: MetadataContext = {
 		arduinoLibraryProperties: {},
-		cargoToml: {},
-		cinderCinderblock: {},
-		codemeta: {},
+		cinderCinderblockXml: {},
 		codemetaJson: {},
+		codeStatistics: {},
+		dependencyUpdates: {},
 		filesystem: {},
-		gemspec: {},
 		git: {},
 		github: {},
-		goMod: {},
-		goreleaser: {},
-		infoPlist: {},
+		goGoMod: {},
+		goGoreleaserYaml: {},
+		javaPomXml: {},
 		licenseFiles: {},
-		loc: {},
 		metadataFile: {},
 		metascope: {},
-		npm: {},
-		obsidian: {},
-		openFrameworksAddonConfig: {},
-		openFrameworksInstallXml: {},
-		packageJson: {},
-		pbxproj: {},
-		pkgInfo: {},
-		pomXml: {},
+		nodeNpmRegistry: {},
+		nodePackageJson: {},
+		obsidianManifestJson: {},
+		openframeworksAddonConfigMk: {},
+		openframeworksInstallXml: {},
 		processingLibraryProperties: {},
-		publiccode: {},
-		pypi: {},
-		pyprojectToml: {},
+		publiccodeYaml: {},
+		pythonPkgInfo: {},
+		pythonPypiRegistry: {},
+		pythonPyprojectToml: {},
+		pythonSetupCfg: {},
 		pythonSetupPy: {},
-		readme: {},
-		setupCfg: {},
-		updates: {},
+		readmeFile: {},
+		rubyGemspec: {},
+		rustCargoToml: {},
+		xcodeInfoPlist: {},
+		xcodeProjectPbxproj: {},
 	}
 
 	for (const result of extractResults) {

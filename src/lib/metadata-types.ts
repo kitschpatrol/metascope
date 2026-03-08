@@ -1,68 +1,66 @@
 export type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
-export type { CargoTomlData } from './sources/cargo-toml'
-export type { CinderCinderblockData } from './sources/cinder-cinderblock'
-export type { CodeMetaData } from './sources/codemeta'
+export type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
+export type { CodeStatisticsData } from './sources/code-statistics'
 export type { CodeMetaJsonData } from './sources/codemeta-json'
+export type { DependencyUpdatesData, DependencyUpdatesPackage } from './sources/dependency-updates'
 export type { FilesystemData } from './sources/filesystem'
-export type { GemspecData } from './sources/gemspec'
 export type { GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
-export type { GoModData } from './sources/go-mod'
-export type { GoreleaserData } from './sources/goreleaser'
-export type { InfoPlistData } from './sources/info-plist'
+export type { GoGoModData } from './sources/go-go-mod'
+export type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
+export type { JavaPomXmlData } from './sources/java-pom-xml'
 export type { LicenseFilesData } from './sources/license-file'
-export type { LocData } from './sources/loc'
-export type { MetadataFileData } from './sources/metadata'
+export type { MetadataFileData } from './sources/metadata-file'
 export type { MetascopeData } from './sources/metascope'
-export type { NpmData } from './sources/npm'
-export type { ObsidianData } from './sources/obsidian'
-export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
-export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
-export type { PackageJsonData } from './sources/package-json'
-export type { PbxprojData } from './sources/pbxproj'
-export type { PkgInfoData } from './sources/pkg-info'
-export type { PomXmlData } from './sources/pom-xml'
+export type { NodeNpmRegistryData } from './sources/node-npm-registry'
+export type { NodePackageJsonData } from './sources/node-package-json'
+export type { ObsidianManifest, ObsidianManifestJsonData } from './sources/obsidian-manifest-json'
+export type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
+export type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 export type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
-export type { PubliccodeData } from './sources/publiccode'
-export type { PypiData } from './sources/pypi'
-export type { PyprojectData } from './sources/pyproject-toml'
+export type { PubliccodeYamlData } from './sources/publiccode-yaml'
+export type { PythonPkgInfoData } from './sources/python-pkg-info'
+export type { PythonPypiRegistryData } from './sources/python-pypi-registry'
+export type { PythonPyprojectTomlData } from './sources/python-pyproject-toml'
+export type { PythonSetupCfgData } from './sources/python-setup-cfg'
 export type { PythonSetupPyData } from './sources/python-setup-py'
-export type { ReadmeData } from './sources/readme'
-export type { SetupCfgData } from './sources/setup-cfg'
-export type { UpdatesData } from './sources/updates'
+export type { ReadmeFileData } from './sources/readme-file'
+export type { RubyGemspecData } from './sources/ruby-gemspec'
+export type { RustCargoTomlData } from './sources/rust-cargo-toml'
+export type { XcodeInfoPlistData } from './sources/xcode-info-plist'
+export type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
-import type { CargoTomlData } from './sources/cargo-toml'
-import type { CinderCinderblockData } from './sources/cinder-cinderblock'
-import type { CodeMetaData } from './sources/codemeta'
+import type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
+import type { CodeStatisticsData } from './sources/code-statistics'
 import type { CodeMetaJsonData } from './sources/codemeta-json'
+import type { DependencyUpdatesData } from './sources/dependency-updates'
 import type { FilesystemData } from './sources/filesystem'
-import type { GemspecData } from './sources/gemspec'
 import type { GitData } from './sources/git'
 import type { GitHubData } from './sources/github'
-import type { GoModData } from './sources/go-mod'
-import type { GoreleaserData } from './sources/goreleaser'
-import type { InfoPlistData } from './sources/info-plist'
+import type { GoGoModData } from './sources/go-go-mod'
+import type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
+import type { JavaPomXmlData } from './sources/java-pom-xml'
 import type { LicenseFilesData } from './sources/license-file'
-import type { LocData } from './sources/loc'
-import type { MetadataFileData } from './sources/metadata'
+import type { MetadataFileData } from './sources/metadata-file'
 import type { MetascopeData } from './sources/metascope'
-import type { NpmData } from './sources/npm'
-import type { ObsidianData } from './sources/obsidian'
-import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
-import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
-import type { PackageJsonData } from './sources/package-json'
-import type { PbxprojData } from './sources/pbxproj'
-import type { PkgInfoData } from './sources/pkg-info'
-import type { PomXmlData } from './sources/pom-xml'
+import type { NodeNpmRegistryData } from './sources/node-npm-registry'
+import type { NodePackageJsonData } from './sources/node-package-json'
+import type { ObsidianManifestJsonData } from './sources/obsidian-manifest-json'
+import type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
+import type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
-import type { PubliccodeData } from './sources/publiccode'
-import type { PypiData } from './sources/pypi'
-import type { PyprojectData } from './sources/pyproject-toml'
+import type { PubliccodeYamlData } from './sources/publiccode-yaml'
+import type { PythonPkgInfoData } from './sources/python-pkg-info'
+import type { PythonPypiRegistryData } from './sources/python-pypi-registry'
+import type { PythonPyprojectTomlData } from './sources/python-pyproject-toml'
+import type { PythonSetupCfgData } from './sources/python-setup-cfg'
 import type { PythonSetupPyData } from './sources/python-setup-py'
-import type { ReadmeData } from './sources/readme'
-import type { SetupCfgData } from './sources/setup-cfg'
-import type { UpdatesData } from './sources/updates'
+import type { ReadmeFileData } from './sources/readme-file'
+import type { RubyGemspecData } from './sources/ruby-gemspec'
+import type { RustCargoTomlData } from './sources/rust-cargo-toml'
+import type { XcodeInfoPlistData } from './sources/xcode-info-plist'
+import type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 
 // ── Aggregate Context ──────────────────────────────────
 
@@ -72,37 +70,36 @@ import type { UpdatesData } from './sources/updates'
  */
 export type MetadataContext = {
 	arduinoLibraryProperties: ArduinoLibraryPropertiesData
-	cargoToml: CargoTomlData
-	cinderCinderblock: CinderCinderblockData
-	codemeta: CodeMetaData
+	cinderCinderblockXml: CinderCinderblockXmlData
 	codemetaJson: CodeMetaJsonData
+	codeStatistics: CodeStatisticsData
+	dependencyUpdates: DependencyUpdatesData
 	filesystem: FilesystemData
-	gemspec: GemspecData
 	git: GitData
 	github: GitHubData
-	goMod: GoModData
-	goreleaser: GoreleaserData
-	infoPlist: InfoPlistData
+	goGoMod: GoGoModData
+	goGoreleaserYaml: GoGoreleaserYamlData
+	javaPomXml: JavaPomXmlData
 	licenseFiles: LicenseFilesData
-	loc: LocData
 	metadataFile: MetadataFileData
 	metascope: MetascopeData
-	npm: NpmData
-	obsidian: ObsidianData
-	openFrameworksAddonConfig: OpenFrameworksAddonConfigData
-	openFrameworksInstallXml: OpenFrameworksInstallXmlData
-	packageJson: PackageJsonData
-	pbxproj: PbxprojData
-	pkgInfo: PkgInfoData
-	pomXml: PomXmlData
+	nodeNpmRegistry: NodeNpmRegistryData
+	nodePackageJson: NodePackageJsonData
+	obsidianManifestJson: ObsidianManifestJsonData
+	openframeworksAddonConfigMk: OpenframeworksAddonConfigMkData
+	openframeworksInstallXml: OpenframeworksInstallXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
-	publiccode: PubliccodeData
-	pypi: PypiData
-	pyprojectToml: PyprojectData
+	publiccodeYaml: PubliccodeYamlData
+	pythonPkgInfo: PythonPkgInfoData
+	pythonPypiRegistry: PythonPypiRegistryData
+	pythonPyprojectToml: PythonPyprojectTomlData
+	pythonSetupCfg: PythonSetupCfgData
 	pythonSetupPy: PythonSetupPyData
-	readme: ReadmeData
-	setupCfg: SetupCfgData
-	updates: UpdatesData
+	readmeFile: ReadmeFileData
+	rubyGemspec: RubyGemspecData
+	rustCargoToml: RustCargoTomlData
+	xcodeInfoPlist: XcodeInfoPlistData
+	xcodeProjectPbxproj: XcodeProjectPbxprojData
 }
 
 /**
@@ -135,8 +132,8 @@ export type Template<T> = (context: MetadataContext, templateData: TemplateData)
  * ```typescript
  * import { defineTemplate } from 'metascope'
  *
- * export default defineTemplate(({ codemeta, github }) => ({
- *   name: codemeta.name,
+ * export default defineTemplate(({ codemetaJson, github }) => ({
+ *   name: codemetaJson.name,
  *   stars: github.stargazerCount,
  * }))
  * ```

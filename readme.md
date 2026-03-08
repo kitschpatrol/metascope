@@ -315,7 +315,7 @@ The green-checked entries below indicate metadata file formats and sources that 
 | ✅     | Ruby            | [Ruby Gems](https://rubygems.org/)                                                                      |               | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                                                                            | [Yes](https://codemeta.github.io/crosswalk/ruby/ 'Ruby Gem')                                                            |
 | ✅     | Rust            | [Crates](https://crates.io/)                                                                            |               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                                                                                        | [Yes](https://codemeta.github.io/crosswalk/cargo/ 'Rust Package Manager')                                               |
 | ✅     | Agnostic        |                                                                                                         |               | `README.md` (and variants)                                                                                                                                     | No                                                                                                                      |
-| ✅     | Agnostic        | [Documented below](#metadatajson)                                                                       |               | metadata.json`(and`.yaml`/`.yml\` variants)                                                                                                                    | No                                                                                                                      |
+| ✅     | Agnostic        | [Documented below](#metadatajson)                                                                       |               | `metadata.json` (and `.yaml` / `.yml` variants)                                                                                                                | No                                                                                                                      |
 | ✅     | Agnostic        | [SPDX](https://spdx.org/)                                                                               |               | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                                                                                       | No                                                                                                                      |
 | ✅     | Agnostic        | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 |               | _GitHub GraphQL metadata_                                                                                                                                      | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                                                            |
 | ❌     | .NET            | [NuGet](https://www.nuget.org/)                                                                         |               | [`*.nuspec`](https://learn.microsoft.com/nuget/reference/nuspec)                                                                                               | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'NuGet')                                              |
@@ -573,7 +573,7 @@ Available when the project directory contains a `package.json` file.
 
 The type is `Partial<NormalizedPackageJson>` from read-pkg. This provides the full normalized package manifest, including fields like `name`, `version`, `dependencies`, `scripts`, `bin`, etc. Refer to the [read-pkg documentation](https://github.com/sindresorhus/read-pkg) for details on normalization.
 
-### obsidian
+### obsidianManifestJson
 
 Obsidian community plugin metadata, fetched from the Obsidian community plugin registry and GitHub release stats.
 
@@ -619,29 +619,29 @@ Available when the project contains a `pyproject.toml` and the codemeta `name` f
 | `yanked`            | `boolean` | Whether the latest version has been yanked   |
 | `yankedReason`      | `string`  | Reason the version was yanked, if provided   |
 
-### pyprojectToml
+### pythonPyprojectToml
 
 Raw `pyproject.toml` contents, parsed via [read-pyproject](https://github.com/nicholasgasior/read-pyproject).
 
 Available when the project directory contains a `pyproject.toml` file.
 
-The type is `PyprojectData` from read-pyproject, with keys camel-cased. This provides the full parsed pyproject manifest, including `project`, `tool`, and `buildSystem` sections. Refer to the [read-pyproject documentation](https://github.com/nicholasgasior/read-pyproject) for the full type shape.
+The type is `PythonPyprojectTomlData` from read-pyproject, with keys camel-cased. This provides the full parsed pyproject manifest, including `project`, `tool`, and `buildSystem` sections. Refer to the [read-pyproject documentation](https://github.com/nicholasgasior/read-pyproject) for the full type shape.
 
-### updates
+### dependencyUpdates
 
 Dependency update analysis via [updates](https://github.com/silverwind/updates).
 
 Available when the project contains a `package.json`, `pyproject.toml`, `go.mod`, or `.github` workflows directory. Scans for outdated dependencies and classifies version bumps by severity.
 
-| Field      | Type               | Description                                                    |
-| ---------- | ------------------ | -------------------------------------------------------------- |
-| `libyears` | `number`           | Total dependency staleness in [libyears](https://libyear.com/) |
-| `major`    | `UpdatesPackage[]` | Packages with available major version updates                  |
-| `minor`    | `UpdatesPackage[]` | Packages with available minor version updates                  |
-| `patch`    | `UpdatesPackage[]` | Packages with available patch version updates                  |
-| `total`    | `number`           | Total number of outdated packages                              |
+| Field      | Type                         | Description                                                    |
+| ---------- | ---------------------------- | -------------------------------------------------------------- |
+| `libyears` | `number`                     | Total dependency staleness in [libyears](https://libyear.com/) |
+| `major`    | `DependencyUpdatesPackage[]` | Packages with available major version updates                  |
+| `minor`    | `DependencyUpdatesPackage[]` | Packages with available minor version updates                  |
+| `patch`    | `DependencyUpdatesPackage[]` | Packages with available patch version updates                  |
+| `total`    | `number`                     | Total number of outdated packages                              |
 
-Each `UpdatesPackage`:
+Each `DependencyUpdatesPackage`:
 
 | Field  | Type     | Description                                                |
 | ------ | -------- | ---------------------------------------------------------- |

@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCodemetaJson } from '../../src/lib/parsers/codemeta-json-parser'
 
-const fixturesDirectory = resolve('test/fixtures/codemeta')
+const fixturesDirectory = resolve('test/fixtures/codemeta-json')
 
 describe('parseCodemetaJson', () => {
 	it('should parse basic fields', () => {
@@ -134,7 +134,7 @@ describe('parseCodemetaJson', () => {
 	// @kitschpatrol/codemeta parser. Our basic parser handles them, but they
 	// may expose edge cases in normalization or downstream consumption.
 	it('should parse known-failing fixtures without returning undefined', async () => {
-		const failingDirectory = resolve('test/fixtures/codemeta-failing')
+		const failingDirectory = resolve('test/fixtures/codemeta-json-failing')
 		const entries = await readdir(failingDirectory, { withFileTypes: true })
 		const directories = entries.filter((entry) => entry.isDirectory())
 

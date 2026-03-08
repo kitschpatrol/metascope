@@ -246,79 +246,133 @@ function isValidLicenseFile(filename: string, _content: string): boolean {
 async function run() {
 	console.log('Proceeding with fetch...')
 
-	await saveAllFileSearchResults('codemeta.json', './test/fixtures/codemeta', false, isValidJson)
-	await saveAllFileSearchResults('package.json', './test/fixtures/package', false, isValidJson)
-	await saveAllFileSearchResults('pyproject.toml', './test/fixtures/python', false, isValidToml)
-	await saveAllFileSearchResults('Cargo.toml', './test/fixtures/cargo', false, isValidToml)
-	await saveAllFileSearchResults('pom.xml', './test/fixtures/pom', false, isValidXml)
-	await saveAllFileSearchResults('publiccode.yml', './test/fixtures/publiccode', false, isValidXml)
-	await saveAllFileSearchResults('publiccode.yml', './test/fixtures/publiccode', false, isValidYaml)
+	await saveAllFileSearchResults(
+		'codemeta.json',
+		'./test/fixtures/codemeta-json',
+		false,
+		isValidJson,
+	)
+	await saveAllFileSearchResults(
+		'package.json',
+		'./test/fixtures/node-package-json',
+		false,
+		isValidJson,
+	)
+	await saveAllFileSearchResults(
+		'pyproject.toml',
+		'./test/fixtures/python-pyproject-toml',
+		false,
+		isValidToml,
+	)
+	await saveAllFileSearchResults(
+		'Cargo.toml',
+		'./test/fixtures/rust-cargo-toml',
+		false,
+		isValidToml,
+	)
+	await saveAllFileSearchResults('pom.xml', './test/fixtures/java-pom-xml', false, isValidXml)
+	await saveAllFileSearchResults(
+		'publiccode.yml',
+		'./test/fixtures/publiccode-yaml',
+		false,
+		isValidXml,
+	)
 	await saveAllFileSearchResults(
 		'publiccode.yaml',
-		'./test/fixtures/publiccode',
+		'./test/fixtures/publiccode-yaml',
 		false,
 		isValidYaml,
 	)
 	await saveAllFileSearchResults('.gemspec', './test/fixtures/ruby-gemspec', true)
-	await saveAllFileSearchResults('PKG-INFO', './test/fixtures/pkg-info', false)
-	await saveAllFileSearchResults('setup.cfg', './test/fixtures/setup-cfg', false)
-	await saveAllFileSearchResults('setup.py', './test/fixtures/setup-py', false)
-	await saveAllFileSearchResults('go.mod', './test/fixtures/go-mod', false)
+	await saveAllFileSearchResults('PKG-INFO', './test/fixtures/python-pkg-info', false)
+	await saveAllFileSearchResults('setup.cfg', './test/fixtures/python-setup-cfg', false)
+	await saveAllFileSearchResults('setup.py', './test/fixtures/python-setup-py', false)
+	await saveAllFileSearchResults('go.mod', './test/fixtures/go-go-mod', false)
 	await saveAllFileSearchResults(
 		'.goreleaser.yaml',
-		'./test/fixtures/goreleaser',
+		'./test/fixtures/go-goreleaser-yaml',
 		false,
 		isValidYaml,
 	)
 	await saveAllFileSearchResults(
 		'.goreleaser.yml',
-		'./test/fixtures/goreleaser',
+		'./test/fixtures/go-goreleaser-yaml',
 		false,
 		isValidYaml,
 	)
-	await saveAllFileSearchResults('license', './test/fixtures/license', false, isValidLicenseFile)
-	await saveAllFileSearchResults('licence', './test/fixtures/licence', false, isValidLicenseFile)
-	await saveAllFileSearchResults('copying', './test/fixtures/copying', false, isValidLicenseFile)
+	await saveAllFileSearchResults(
+		'license',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'licence',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'copying',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
 	await saveAllFileSearchResults(
 		'unlicense',
 		'./test/fixtures/unlicense',
 		false,
 		isValidLicenseFile,
 	)
-	await saveAllFileSearchResults('license.md', './test/fixtures/license', false, isValidLicenseFile)
-	await saveAllFileSearchResults('licence.md', './test/fixtures/licence', false, isValidLicenseFile)
-	await saveAllFileSearchResults('copying.md', './test/fixtures/copying', false, isValidLicenseFile)
+	await saveAllFileSearchResults(
+		'license.md',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'licence.md',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'copying.md',
+		'./test/fixtures/license-file',
+		false,
+		isValidLicenseFile,
+	)
 	await saveAllFileSearchResults(
 		'unlicense.md',
-		'./test/fixtures/unlicense',
+		'./test/fixtures/license-file',
 		false,
 		isValidLicenseFile,
 	)
 	await saveAllFileSearchResults(
 		'license.txt',
-		'./test/fixtures/license',
+		'./test/fixtures/license-file',
 		false,
 		isValidLicenseFile,
 	)
 	await saveAllFileSearchResults(
 		'licence.txt',
-		'./test/fixtures/licence',
+		'./test/fixtures/license-file',
 		false,
 		isValidLicenseFile,
 	)
 	await saveAllFileSearchResults(
 		'copying.txt',
-		'./test/fixtures/copying',
+		'./test/fixtures/license-file',
 		false,
 		isValidLicenseFile,
 	)
 	await saveAllFileSearchResults(
 		'unlicense.txt',
-		'./test/fixtures/unlicense',
+		'./test/fixtures/license-file',
 		false,
 		isValidLicenseFile,
 	)
-	await saveAllFileSearchResults('readme.md', './test/fixtures/readme', false)
+	await saveAllFileSearchResults('readme.md', './test/fixtures/readme-file', false)
 	await saveAllFileSearchResults(
 		'info.plist',
 		'./test/fixtures/xcode-info-plist',
@@ -333,10 +387,10 @@ async function run() {
 	)
 
 	// This will now properly resolve to:
-	// ./test/fixtures/pbxproj/[prefix]/[prefix].xcodeproj/project.pbxproj
+	// ./test/fixtures/xcode-project-pbxproj/[prefix]/[prefix].xcodeproj/project.pbxproj
 	await saveAllFileSearchResults(
 		'project.pbxproj',
-		'./test/fixtures/pbxproj',
+		'./test/fixtures/xcode-project-pbxproj',
 		false,
 		isValidPbxproj,
 		'.xcodeproj',
@@ -344,14 +398,18 @@ async function run() {
 
 	await saveAllFileSearchResults(
 		'cinderblock.xml',
-		'./test/fixtures/cinderblock',
+		'./test/fixtures/cinder-cinderblock-xml',
 		false,
 		isValidXml,
 	)
-	await saveAllFileSearchResults('addon_config.mk', './test/fixtures/addon-config', false)
+	await saveAllFileSearchResults(
+		'addon_config.mk',
+		'./test/fixtures/openframeworks-addon-config-mk',
+		false,
+	)
 	await saveAllFileSearchResults(
 		'install.xml',
-		'./test/fixtures/install-xml',
+		'./test/fixtures/openframeworks-install-xml',
 		false,
 		isValidLegacyOpenFrameworksAddonXml,
 	)

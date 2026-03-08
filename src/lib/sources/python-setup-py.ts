@@ -1,9 +1,9 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { SetupPyData } from '../parsers/setup-py-parser'
+import type { SetupPyData } from '../parsers/python-setup-py-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-import { parseSetupPy } from '../parsers/setup-py-parser'
+import { parseSetupPy } from '../parsers/python-setup-py-parser'
 
 export type PythonSetupPyData = Partial<SetupPyData>
 

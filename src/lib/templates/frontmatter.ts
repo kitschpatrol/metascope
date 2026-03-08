@@ -22,7 +22,18 @@ import {
  */
 export const frontmatter = defineTemplate(
 	(
-		{ codemeta, filesystem, git, github, loc, metascope, npm, obsidian, pypi, updates },
+		{
+			codemetaJson: codemeta,
+			codeStatistics: loc,
+			dependencyUpdates,
+			filesystem,
+			git,
+			github,
+			metascope,
+			nodeNpmRegistry: npm,
+			obsidianManifestJson,
+			pythonPypiRegistry: pypi,
+		},
 		{ authorName, githubAccount },
 	) => ({
 		/* eslint-disable perfectionist/sort-objects */
@@ -38,7 +49,7 @@ export const frontmatter = defineTemplate(
 			) ?? null,
 		Version: codemeta.version ?? null,
 		Public: !(github.isPrivate ?? false),
-		Published: Boolean(obsidian.url ?? npm.url ?? pypi.url),
+		Published: Boolean(obsidianManifestJson.url ?? npm.url ?? pypi.url),
 		Status: toStatus(codemeta, authorName, githubAccount) ?? null,
 		'GitHub Owner': github.ownerLogin ?? null,
 		tags: codemeta.keywords ?? [], // Obsidian special field
@@ -58,7 +69,7 @@ export const frontmatter = defineTemplate(
 				? codemeta.url
 				: null,
 		'Repo URL': codemeta.codeRepository ?? github.url ?? null,
-		'Package URL': obsidian.url ?? npm.url ?? pypi.url ?? null,
+		'Package URL': obsidianManifestJson.url ?? npm.url ?? pypi.url ?? null,
 		'Readme URL': codemeta.readme ?? null,
 		'Issues URL': codemeta.issueTracker ?? null,
 
@@ -75,7 +86,7 @@ export const frontmatter = defineTemplate(
 			git.tagVersionDateLatest ??
 			null,
 		'Latest Release Version':
-			obsidian.manifest?.version ??
+			obsidianManifestJson.manifest?.version ??
 			npm.versionLatest ??
 			pypi.versionLatest ??
 			github.releaseVersionLatest ??
@@ -88,7 +99,7 @@ export const frontmatter = defineTemplate(
 		Contributors: github.contributorCount ?? git.contributorCount ?? null,
 		Forks: github.forkCount ?? null,
 		'Downloads Total':
-			obsidian.downloadCount ??
+			obsidianManifestJson.downloadCount ??
 			npm.downloadsTotal ??
 			pypi.downloads180Days ??
 			github.releaseDownloadCount ??
@@ -119,11 +130,11 @@ export const frontmatter = defineTemplate(
 		'Operating System': codemeta.operatingSystem ?? null,
 		Dependencies: codemeta.softwareRequirements?.length ?? 0,
 		'Dev Dependencies': codemeta.softwareSuggestions?.length ?? 0,
-		'Major Updates': updates.major?.length ?? 0,
-		'Minor Updates': updates.minor?.length ?? 0,
-		'Patch Updates': updates.patch?.length ?? 0,
-		'Total Updates': updates.total ?? 0,
-		Libyears: updates.libyears ?? 0,
+		'Major Updates': dependencyUpdates.major?.length ?? 0,
+		'Minor Updates': dependencyUpdates.minor?.length ?? 0,
+		'Patch Updates': dependencyUpdates.patch?.length ?? 0,
+		'Total Updates': dependencyUpdates.total ?? 0,
+		Libyears: dependencyUpdates.libyears ?? 0,
 		// 'Uses PNPM': usesPnpm(packageJson),
 		'Shared Config': usesSharedConfig(codemeta),
 

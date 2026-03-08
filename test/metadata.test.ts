@@ -5,12 +5,12 @@ import { defineTemplate } from '../src/lib/metadata-types'
 // @case-police-ignore github
 
 describe('getMetadata', () => {
-	it('should return metadata with packageJson and git sources', async () => {
+	it('should return metadata with nodePackageJson and git sources', async () => {
 		const result = await getMetadata({ path: '.' })
 
 		// Should have package.json data
-		expect(result.packageJson).toBeDefined()
-		expect(result.packageJson.name).toBe('metascope')
+		expect(result.nodePackageJson).toBeDefined()
+		expect(result.nodePackageJson.name).toBe('metascope')
 
 		// Should have git data
 		expect(result.git).toBeDefined()
@@ -35,9 +35,9 @@ describe('getMetadata', () => {
 	})
 
 	it('should apply a template function', async () => {
-		const template = defineTemplate(({ git, packageJson }) => ({
+		const template = defineTemplate(({ git, nodePackageJson }) => ({
 			branch: git.branchCurrent,
-			name: packageJson.name,
+			name: nodePackageJson.name,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
@@ -48,12 +48,12 @@ describe('getMetadata', () => {
 	})
 
 	it('should strip undefined from template output', async () => {
-		const template = defineTemplate(({ obsidian }) => ({
-			downloads: obsidian.downloadCount,
+		const template = defineTemplate(({ obsidianManifestJson }) => ({
+			downloads: obsidianManifestJson.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
-		// Obsidian source is not available (no obsidian-plugin keyword), so downloadCount is undefined
+		// The obsidianManifestJson source is not available (no obsidian-plugin keyword), so downloadCount is undefined
 		// stripUndefined should remove it, resulting in empty object (which is also stripped)
 		expect(result).not.toHaveProperty('downloads')
 	})
@@ -61,7 +61,7 @@ describe('getMetadata', () => {
 	it('should resolve path to absolute', async () => {
 		// Passing relative path should work
 		const result = await getMetadata({ path: '.' })
-		expect(result.packageJson).toBeDefined()
+		expect(result.nodePackageJson).toBeDefined()
 	})
 
 	it('should handle built-in template name', async () => {
