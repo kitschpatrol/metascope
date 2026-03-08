@@ -5,9 +5,6 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseProcessingLibraryProperties } from '../parsers/processing-library-properties-parser'
 
-export type ProcessingLibraryPropertiesAuthorEntry = ProcessingLibraryProperties['authors'][number]
-export type ProcessingLibraryPropertiesCategory = ProcessingLibraryProperties['categories'][number]
-
 export type ProcessingLibraryPropertiesData = Partial<ProcessingLibraryProperties>
 
 /** Processing-specific fields that distinguish from Arduino. */

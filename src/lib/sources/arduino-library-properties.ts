@@ -5,10 +5,6 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseArduinoLibraryProperties } from '../parsers/arduino-library-properties-parser'
 
-export type ArduinoLibraryPropertiesCategory = NonNullable<ArduinoLibraryProperties['category']>
-export type ArduinoLibraryPropertiesDependencyEntry = ArduinoLibraryProperties['depends'][number]
-export type ArduinoLibraryPropertiesPersonEntry = ArduinoLibraryProperties['authors'][number]
-
 export type ArduinoLibraryPropertiesData = Partial<ArduinoLibraryProperties>
 
 /**

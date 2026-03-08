@@ -1,64 +1,35 @@
-export type {
-	ArduinoLibraryPropertiesCategory,
-	ArduinoLibraryPropertiesData,
-	ArduinoLibraryPropertiesDependencyEntry,
-	ArduinoLibraryPropertiesPersonEntry,
-} from './sources/arduino-library-properties'
-export type {
-	CargoTomlAuthorEntry,
-	CargoTomlData,
-	CargoTomlDependencyEntry,
-} from './sources/cargo-toml'
+export type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
+export type { CargoTomlData } from './sources/cargo-toml'
 export type { CinderCinderblockData } from './sources/cinder-cinderblock'
 export type { CodeMetaData } from './sources/codemeta'
-export type {
-	CodeMetaDependency,
-	CodeMetaJsonData,
-	CodeMetaPersonOrOrg,
-} from './sources/codemeta-json'
+export type { CodeMetaJsonData } from './sources/codemeta-json'
 export type { FilesystemData } from './sources/filesystem'
-export type { GemspecData, GemSpecDependency } from './sources/gemspec'
-export type { GitConfig, GitData } from './sources/git'
+export type { GemspecData } from './sources/gemspec'
+export type { GitData } from './sources/git'
 export type { GitHubData } from './sources/github'
-export type { GoModDependency, GoModSourceData } from './sources/go-mod'
+export type { GoModSourceData } from './sources/go-mod'
 export type { GoreleaserSourceData } from './sources/goreleaser'
 export type { InfoPlistData } from './sources/info-plist'
 export type { LicenseFilesData } from './sources/license-file'
-export type { LocData, LocTotals } from './sources/loc'
+export type { LocData } from './sources/loc'
 export type { MetadataFileData } from './sources/metadata'
 export type { MetascopeData } from './sources/metascope'
 export type { NpmData } from './sources/npm'
-export type { ObsidianData, ObsidianManifest } from './sources/obsidian'
+export type { ObsidianData } from './sources/obsidian'
 export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-addon-config'
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 export type { PackageData } from './sources/package-json'
 export type { PbxprojData } from './sources/pbxproj'
 export type { PkgInfoSourceData } from './sources/pkg-info'
-export type {
-	PomXmlData,
-	PomXmlDependencyEntry,
-	PomXmlLicenseEntry,
-	PomXmlOrganization,
-	PomXmlPersonEntry,
-} from './sources/pom-xml'
-export type {
-	ProcessingLibraryPropertiesAuthorEntry,
-	ProcessingLibraryPropertiesCategory,
-	ProcessingLibraryPropertiesData,
-} from './sources/processing-library-properties'
-export type {
-	PubliccodeContactEntry,
-	PubliccodeContractorEntry,
-	PubliccodeData,
-	PubliccodeDependencyEntry,
-	PubliccodeDescription,
-} from './sources/publiccode'
+export type { PomXmlData } from './sources/pom-xml'
+export type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
+export type { PubliccodeData } from './sources/publiccode'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
 export type { SetupCfgSourceData } from './sources/setup-cfg'
-export type { UpdatesData, UpdatesPackage } from './sources/updates'
+export type { UpdatesData } from './sources/updates'
 
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
 import type { CargoTomlData } from './sources/cargo-toml'

@@ -37,4 +37,3 @@ export const gemspecSource: MetadataSource<'gemspec'> = {
 	key: 'gemspec',
 }
 
-export type GemSpecDependency = GemSpec['dependencies'][number]

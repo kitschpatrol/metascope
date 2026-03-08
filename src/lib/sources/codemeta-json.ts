@@ -29,5 +29,3 @@ export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 }
 
 export type { CodeMetaJsonData } from '../parsers/codemeta-json-parser'
-export type CodeMetaPersonOrOrg = NonNullable<CodeMetaJsonData['author']>[number]
-export type CodeMetaDependency = NonNullable<CodeMetaJsonData['softwareRequirements']>[number]

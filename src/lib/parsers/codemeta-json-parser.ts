@@ -28,7 +28,6 @@ const codeMetaString = z.preprocess((value) => {
 		const object = value as Record<string, unknown>
 		if (typeof object['@value'] === 'string') return object['@value']
 	}
-	return undefined
 }, nonEmptyString)
 
 /** Same as codeMetaString but semantically a URL field. */
@@ -38,7 +37,6 @@ const codeMetaUrl = z.preprocess((value) => {
 		const object = value as Record<string, unknown>
 		if (typeof object['@value'] === 'string') return object['@value']
 	}
-	return undefined
 }, optionalUrl)
 
 /**
@@ -49,7 +47,7 @@ const codeMetaUrl = z.preprocess((value) => {
  */
 const codeMetaStringArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return undefined
+		if (value === undefined || value === null) return
 
 		if (typeof value === 'string') {
 			return value.includes(',')
@@ -68,12 +66,9 @@ const codeMetaStringArray = z
 						const object = item as Record<string, unknown>
 						return typeof object.name === 'string' ? object.name : undefined
 					}
-					return undefined
 				})
 				.filter((s): s is string => typeof s === 'string' && s.length > 0)
 		}
-
-		return undefined
 	}, z.array(z.string()).optional())
 	.optional()
 
@@ -81,14 +76,16 @@ const codeMetaStringArray = z
  * License field — preserve as string or string[].
  */
 const codeMetaLicense = z
-	.preprocess((value) => {
-		if (typeof value === 'string') return value
-		if (Array.isArray(value)) {
-			const filtered = value.filter((l): l is string => typeof l === 'string')
-			return filtered.length > 0 ? filtered : undefined
-		}
-		return undefined
-	}, z.union([z.string(), z.array(z.string())]).optional())
+	.preprocess(
+		(value) => {
+			if (typeof value === 'string') return value
+			if (Array.isArray(value)) {
+				const filtered = value.filter((l): l is string => typeof l === 'string')
+				return filtered.length > 0 ? filtered : undefined
+			}
+		},
+		z.union([z.string(), z.array(z.string())]).optional(),
+	)
 	.optional()
 
 // ─── Person/Org sub-schema ───────────────────────────────────────────
@@ -160,7 +157,7 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
  */
 const codeMetaPersonArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return undefined
+		if (value === undefined || value === null) return
 
 		const items = Array.isArray(value) ? value : [value]
 		const normalized = items
@@ -214,7 +211,7 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
  */
 const codeMetaDependencyArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return undefined
+		if (value === undefined || value === null) return
 
 		const items = Array.isArray(value) ? value : [value]
 		const normalized = items
@@ -242,7 +239,6 @@ const codeMetaJsonDataSchema = z.object({
 			const parsed = Number.parseInt(v, 10)
 			return Number.isNaN(parsed) ? undefined : parsed
 		}
-		return undefined
 	}, z.number().optional()),
 	dateCreated: codeMetaString,
 	dateModified: codeMetaString,
@@ -306,7 +302,7 @@ export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined
 
 	const migrated = migrateV1Properties(raw)
 
-	// dateReleased → datePublished fallback
+	// DateReleased → datePublished fallback
 	if (migrated.datePublished === undefined && typeof migrated.dateReleased === 'string') {
 		migrated.datePublished = migrated.dateReleased
 	}

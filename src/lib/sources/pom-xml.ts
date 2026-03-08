@@ -25,7 +25,3 @@ export const pomXmlSource: MetadataSource<'pomXml'> = {
 	key: 'pomXml',
 }
 
-export type PomXmlPersonEntry = PomXml['developers'][number]
-export type PomXmlLicenseEntry = PomXml['licenses'][number]
-export type PomXmlDependencyEntry = PomXml['dependencies'][number]
-export type PomXmlOrganization = NonNullable<PomXml['organization']>

@@ -35,7 +35,3 @@ export const publiccodeSource: MetadataSource<'publiccode'> = {
 	key: 'publiccode',
 }
 
-export type PubliccodeContactEntry = Publiccode['contacts'][number]
-export type PubliccodeContractorEntry = Publiccode['contractors'][number]
-export type PubliccodeDependencyEntry = Publiccode['dependencies'][number]
-export type PubliccodeDescription = NonNullable<Publiccode['description']>

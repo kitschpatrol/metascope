@@ -5,7 +5,6 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseGoMod } from '../parsers/go-mod-parser'
 
-export type GoModDependency = GoModData['dependencies'][number]
 export type GoModSourceData = Partial<GoModData>
 
 /** Find a `go.mod` file in a directory. */

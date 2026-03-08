@@ -9,7 +9,8 @@ import path from 'node:path'
 import { titleCase } from 'scule'
 import type { PackageData } from './metadata-types'
 import type { CodeMetaJsonData } from './parsers/codemeta-json-parser'
-import type { CodeMetaPersonOrOrg } from './sources/codemeta-json'
+
+type CodeMetaPersonOrOrg = NonNullable<CodeMetaJsonData['author']>[number]
 
 const casePoliceDict: Record<string, string> = {
 	...abbreviates,

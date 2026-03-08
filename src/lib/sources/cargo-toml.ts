@@ -5,9 +5,6 @@ import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 import { parseCargoToml } from '../parsers/cargo-toml-parser'
 
-export type CargoTomlAuthorEntry = CargoToml['authors'][number]
-export type CargoTomlDependencyEntry = CargoToml['dependencies'][number]
-
 export type CargoTomlData = Partial<CargoToml>
 
 export const cargoTomlSource: MetadataSource<'cargoToml'> = {
