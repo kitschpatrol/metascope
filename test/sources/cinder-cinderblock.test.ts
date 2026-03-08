@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { cinderCinderblockSource } from '../../src/lib/sources/cinder-cinderblock'
 
-const fixturesDir = resolve('test/fixtures/cinder-cinderblock')
+const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock')
 
 describe('cinderCinderblock source', () => {
 	it('should be available in a directory with cinderblock.xml', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'astellato-cinder-syphon'),
+			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
 		expect(await cinderCinderblockSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('cinderCinderblock source', () => {
 	it('should extract parsed cinderblock data', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'astellato-cinder-syphon'),
+			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
 		const result = await cinderCinderblockSource.extract(context)
 

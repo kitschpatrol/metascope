@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseOpenFrameworksAddonConfig } from '../../src/lib/parsers/open-frameworks-addon-config-parser'
 
-const fixturesDir = resolve('test/fixtures/open-frameworks-addon-config')
+const fixturesDirectory = resolve('test/fixtures/open-frameworks-addon-config')
 
 describe('parseOpenFrameworksAddonConfig', () => {
 	it('should parse a simple addon config', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, '2bbb-ofxspeechsynthesizer/addon_config.mk'),
+			resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer/addon_config.mk'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksAddonConfig(content)
@@ -24,7 +24,7 @@ describe('parseOpenFrameworksAddonConfig', () => {
 
 	it('should parse dependencies from common section', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'armadillu-ofxremoteui/addon_config.mk'),
+			resolve(fixturesDirectory, 'armadillu-ofxremoteui/addon_config.mk'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksAddonConfig(content)
@@ -35,7 +35,7 @@ describe('parseOpenFrameworksAddonConfig', () => {
 
 	it('should parse multiple tags and platform sections', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'arturoc-ofxgstreamer/addon_config.mk'),
+			resolve(fixturesDirectory, 'arturoc-ofxgstreamer/addon_config.mk'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksAddonConfig(content)
@@ -51,13 +51,13 @@ describe('parseOpenFrameworksAddonConfig', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir, 'addon_config.mk'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir, 'addon_config.mk'), 'utf8')
 			expect(() => parseOpenFrameworksAddonConfig(content)).not.toThrow()
 		}
 	})

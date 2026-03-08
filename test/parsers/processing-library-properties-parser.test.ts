@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseProcessingLibraryProperties } from '../../src/lib/parsers/processing-library-properties-parser'
 
-const fixturesDir = resolve('test/fixtures/processing-library-properties')
+const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 
 describe('parseProcessingLibraryProperties', () => {
 	it('should parse a library with escaped URLs and revision constraints', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'hx2a-camera3d/library.properties'),
+			resolve(fixturesDirectory, 'hx2a-camera3d/library.properties'),
 			'utf8',
 		)
 		const result = parseProcessingLibraryProperties(content)
@@ -25,7 +25,7 @@ describe('parseProcessingLibraryProperties', () => {
 
 	it('should parse a library with legacy authorList field', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'artboffin-rocketuc/library.properties'),
+			resolve(fixturesDirectory, 'artboffin-rocketuc/library.properties'),
 			'utf8',
 		)
 		const result = parseProcessingLibraryProperties(content)
@@ -39,7 +39,7 @@ describe('parseProcessingLibraryProperties', () => {
 
 	it('should include raw key-value pairs', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'hx2a-camera3d/library.properties'),
+			resolve(fixturesDirectory, 'hx2a-camera3d/library.properties'),
 			'utf8',
 		)
 		const result = parseProcessingLibraryProperties(content)
@@ -50,13 +50,13 @@ describe('parseProcessingLibraryProperties', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir, 'library.properties'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir, 'library.properties'), 'utf8')
 			expect(() => parseProcessingLibraryProperties(content)).not.toThrow()
 		}
 	})

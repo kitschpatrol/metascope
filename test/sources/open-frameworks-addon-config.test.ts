@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { openFrameworksAddonConfigSource } from '../../src/lib/sources/open-frameworks-addon-config'
 
-const fixturesDir = resolve('test/fixtures/open-frameworks-addon-config')
+const fixturesDirectory = resolve('test/fixtures/open-frameworks-addon-config')
 
 describe('openFrameworksAddonConfig source', () => {
 	it('should be available in a directory with addon_config.mk', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, '2bbb-ofxspeechsynthesizer'),
+			path: resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer'),
 		}
 		expect(await openFrameworksAddonConfigSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('openFrameworksAddonConfig source', () => {
 	it('should extract parsed addon config data', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'arturoc-ofxgstreamer'),
+			path: resolve(fixturesDirectory, 'arturoc-ofxgstreamer'),
 		}
 		const result = await openFrameworksAddonConfigSource.extract(context)
 

@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { gemspecSource } from '../../src/lib/sources/gemspec'
 
-const fixturesDir = resolve('test/fixtures/ruby-gemspec')
+const fixturesDirectory = resolve('test/fixtures/ruby-gemspec')
 
 describe('gemspec source', () => {
 	it('should be available in a directory with a .gemspec file', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'ankane-blazer'),
+			path: resolve(fixturesDirectory, 'ankane-blazer'),
 		}
 		expect(await gemspecSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('gemspec source', () => {
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'ankane-blazer'),
+			path: resolve(fixturesDirectory, 'ankane-blazer'),
 		}
 		const result = await gemspecSource.extract(context)
 

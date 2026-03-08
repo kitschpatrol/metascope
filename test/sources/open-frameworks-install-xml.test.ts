@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { openFrameworksInstallXmlSource } from '../../src/lib/sources/open-frameworks-install-xml'
 
-const fixturesDir = resolve('test/fixtures/open-frameworks-install-xml')
+const fixturesDirectory = resolve('test/fixtures/open-frameworks-install-xml')
 
 describe('openFrameworksInstallXml source', () => {
 	it('should be available in a directory with install.xml', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'elliotwoods-ofxgraycode'),
+			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
 		expect(await openFrameworksInstallXmlSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('openFrameworksInstallXml source', () => {
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'elliotwoods-ofxgraycode'),
+			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
 		const result = await openFrameworksInstallXmlSource.extract(context)
 

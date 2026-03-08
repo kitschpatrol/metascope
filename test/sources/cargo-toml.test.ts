@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { cargoTomlSource } from '../../src/lib/sources/cargo-toml'
 
-const fixturesDir = resolve('test/fixtures/cargo-toml')
+const fixturesDirectory = resolve('test/fixtures/cargo-toml')
 
 describe('cargoToml source', () => {
 	it('should be available in a directory with Cargo.toml', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'aeshirey-emlparser'),
+			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
 		expect(await cargoTomlSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('cargoToml source', () => {
 	it('should extract parsed Cargo.toml data', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'aeshirey-emlparser'),
+			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
 		const result = await cargoTomlSource.extract(context)
 

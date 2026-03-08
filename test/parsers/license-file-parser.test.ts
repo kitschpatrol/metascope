@@ -8,7 +8,7 @@ import {
 	spdxIdToUrl,
 } from '../../src/lib/parsers/license-file-parser'
 
-const fixturesDir = resolve('test/fixtures/license')
+const fixturesDirectory = resolve('test/fixtures/license')
 
 describe('isLicenseFilename', () => {
 	it('should match LICENSE variants', () => {
@@ -51,7 +51,7 @@ describe('isLicenseFilename', () => {
 
 describe('identifyLicense', () => {
 	it('should identify a BSD-3-Clause license', async () => {
-		const content = await readFile(resolve(fixturesDir, 'pallets-flask/LICENSE'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'pallets-flask/LICENSE'), 'utf8')
 		const result = identifyLicense(content)
 
 		expect(result).toBeDefined()
@@ -61,7 +61,7 @@ describe('identifyLicense', () => {
 
 	it('should identify an AGPL-3.0 license from a full GPL text', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'callofduty4x-cod4x-server/COPYING.md'),
+			resolve(fixturesDirectory, 'callofduty4x-cod4x-server/COPYING.md'),
 			'utf8',
 		)
 		const result = identifyLicense(content)
@@ -89,14 +89,14 @@ describe('spdxIdToUrl', () => {
 
 describe('fixture coverage', () => {
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory() && entry.name !== 'multi')
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		let identified = 0
 		for (const dir of dirs) {
-			const dirPath = resolve(fixturesDir, dir.name)
+			const dirPath = resolve(fixturesDirectory, dir.name)
 			const files = await readdir(dirPath)
 			const licenseFile = files[0]
 			const content = await readFile(resolve(dirPath, licenseFile), 'utf8')

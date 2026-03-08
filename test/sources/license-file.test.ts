@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { licenseFileSource } from '../../src/lib/sources/license-file'
 
-const fixturesDir = resolve('test/fixtures/license')
+const fixturesDirectory = resolve('test/fixtures/license')
 
 describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENSE file', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'pallets-flask'),
+			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
 		expect(await licenseFileSource.isAvailable(context)).toBe(true)
 	})
@@ -17,7 +17,7 @@ describe('licenseFiles source', () => {
 	it('should be available in a directory with a COPYING file', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'pallets-flask-1'),
+			path: resolve(fixturesDirectory, 'pallets-flask-1'),
 		}
 		expect(await licenseFileSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENCE file', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'ashuk032-8secread'),
+			path: resolve(fixturesDirectory, 'ashuk032-8secread'),
 		}
 		expect(await licenseFileSource.isAvailable(context)).toBe(true)
 	})
@@ -41,7 +41,7 @@ describe('licenseFiles source', () => {
 	it('should extract SPDX URLs from a single license file', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'pallets-flask'),
+			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
 		const result = await licenseFileSource.extract(context)
 
@@ -53,7 +53,7 @@ describe('licenseFiles source', () => {
 	it('should deduplicate SPDX URLs from multiple license files', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'multi'),
+			path: resolve(fixturesDirectory, 'multi'),
 		}
 		const result = await licenseFileSource.extract(context)
 

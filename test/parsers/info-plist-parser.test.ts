@@ -1,15 +1,14 @@
-import { readFile } from 'node:fs/promises'
-import { readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseInfoPlist } from '../../src/lib/parsers/info-plist-parser'
 
-const fixturesDir = resolve('test/fixtures/info-plist')
+const fixturesDirectory = resolve('test/fixtures/xcode-info-plist')
 
 describe('parseInfoPlist', () => {
 	it('should parse an Alfred workflow plist', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'alexchantastic-alfred-lipsum-workflow/Info.plist'),
+			resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow/Info.plist'),
 			'utf8',
 		)
 		const result = parseInfoPlist(content)
@@ -25,7 +24,7 @@ describe('parseInfoPlist', () => {
 
 	it('should parse an Apple app bundle with iOS detection', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'brettalcox-logu-swift/Info.plist'),
+			resolve(fixturesDirectory, 'brettalcox-logu-swift/Info.plist'),
 			'utf8',
 		)
 		const result = parseInfoPlist(content)
@@ -39,7 +38,7 @@ describe('parseInfoPlist', () => {
 
 	it('should filter out Xcode build variables', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'brettalcox-logu-swift/Info.plist'),
+			resolve(fixturesDirectory, 'brettalcox-logu-swift/Info.plist'),
 			'utf8',
 		)
 		const result = parseInfoPlist(content)
@@ -52,7 +51,7 @@ describe('parseInfoPlist', () => {
 
 	it('should parse copyright information', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, '360controller-360controller/Info.plist'),
+			resolve(fixturesDirectory, '360controller-360controller/Info.plist'),
 			'utf8',
 		)
 		const result = parseInfoPlist(content)
@@ -76,13 +75,13 @@ describe('parseInfoPlist', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
-		const dirs = entries.filter((entry) => entry.isDirectory())
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
+		const directories = entries.filter((entry) => entry.isDirectory())
 
-		expect(dirs.length).toBeGreaterThan(0)
+		expect(directories.length).toBeGreaterThan(0)
 
-		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir.name, 'Info.plist'), 'utf8')
+		for (const dir of directories) {
+			const content = await readFile(resolve(fixturesDirectory, dir.name, 'Info.plist'), 'utf8')
 			const result = parseInfoPlist(content)
 			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
 		}

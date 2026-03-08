@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseArduinoLibraryProperties } from '../../src/lib/parsers/arduino-library-properties-parser'
 
-const fixturesDir = resolve('test/fixtures/arduino-library-properties')
+const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 
 describe('parseArduinoLibraryProperties', () => {
 	it('should parse a simple library properties file', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, '0xpit-esparklines/library.properties'),
+			resolve(fixturesDirectory, '0xpit-esparklines/library.properties'),
 			'utf8',
 		)
 		const result = parseArduinoLibraryProperties(content)
@@ -27,7 +27,10 @@ describe('parseArduinoLibraryProperties', () => {
 
 	it('should parse maintainer with email', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'abelectronicsuk-abelectronics-arduino-libraries/library.properties'),
+			resolve(
+				fixturesDirectory,
+				'abelectronicsuk-abelectronics-arduino-libraries/library.properties',
+			),
 			'utf8',
 		)
 		const result = parseArduinoLibraryProperties(content)
@@ -42,7 +45,7 @@ describe('parseArduinoLibraryProperties', () => {
 
 	it('should parse dependencies', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'adafruit-adafruit-ccs811/library.properties'),
+			resolve(fixturesDirectory, 'adafruit-adafruit-ccs811/library.properties'),
 			'utf8',
 		)
 		const result = parseArduinoLibraryProperties(content)
@@ -58,7 +61,7 @@ describe('parseArduinoLibraryProperties', () => {
 
 	it('should include raw key-value pairs', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, '0xpit-esparklines/library.properties'),
+			resolve(fixturesDirectory, '0xpit-esparklines/library.properties'),
 			'utf8',
 		)
 		const result = parseArduinoLibraryProperties(content)
@@ -69,13 +72,13 @@ describe('parseArduinoLibraryProperties', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir, 'library.properties'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir, 'library.properties'), 'utf8')
 			expect(() => parseArduinoLibraryProperties(content)).not.toThrow()
 		}
 	})

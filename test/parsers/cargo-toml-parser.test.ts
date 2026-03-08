@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCargoToml } from '../../src/lib/parsers/cargo-toml-parser'
 
-const fixturesDir = resolve('test/fixtures/cargo-toml')
+const fixturesDirectory = resolve('test/fixtures/cargo-toml')
 
 describe('parseCargoToml', () => {
 	it('should parse a simple Cargo.toml with package metadata', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'aeshirey-emlparser/Cargo.toml'),
+			resolve(fixturesDirectory, 'aeshirey-emlparser/Cargo.toml'),
 			'utf8',
 		)
 		const result = parseCargoToml(content)
@@ -29,7 +29,7 @@ describe('parseCargoToml', () => {
 
 	it('should parse a complex Cargo.toml with features and multiple dep types', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, '0x676e67-wreq-util/Cargo.toml'),
+			resolve(fixturesDirectory, '0x676e67-wreq-util/Cargo.toml'),
 			'utf8',
 		)
 		const result = parseCargoToml(content)
@@ -46,7 +46,7 @@ describe('parseCargoToml', () => {
 
 	it('should parse a workspace Cargo.toml', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'apache-dubbo-rust/Cargo.toml'),
+			resolve(fixturesDirectory, 'apache-dubbo-rust/Cargo.toml'),
 			'utf8',
 		)
 		const result = parseCargoToml(content)
@@ -62,13 +62,13 @@ describe('parseCargoToml', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir, 'Cargo.toml'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir, 'Cargo.toml'), 'utf8')
 			expect(() => parseCargoToml(content)).not.toThrow()
 		}
 	})

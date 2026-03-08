@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { publiccodeSource } from '../../src/lib/sources/publiccode'
 
-const fixturesDir = resolve('test/fixtures/publiccode')
+const fixturesDirectory = resolve('test/fixtures/publiccode')
 
 describe('publiccode source', () => {
 	it('should be available in a directory with publiccode.yml', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'cisofy-lynis'),
+			path: resolve(fixturesDirectory, 'cisofy-lynis'),
 		}
 		expect(await publiccodeSource.isAvailable(context)).toBe(true)
 	})
@@ -17,7 +17,7 @@ describe('publiccode source', () => {
 	it('should be available in a directory with publiccode.yaml', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'commongateway-corebundle'),
+			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
 		}
 		expect(await publiccodeSource.isAvailable(context)).toBe(true)
 	})
@@ -33,7 +33,7 @@ describe('publiccode source', () => {
 	it('should extract parsed metadata from a .yml fixture', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'cisofy-lynis'),
+			path: resolve(fixturesDirectory, 'cisofy-lynis'),
 		}
 		const result = await publiccodeSource.extract(context)
 
@@ -45,7 +45,7 @@ describe('publiccode source', () => {
 	it('should extract parsed metadata from a .yaml fixture', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'commongateway-corebundle'),
+			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
 		}
 		const result = await publiccodeSource.extract(context)
 

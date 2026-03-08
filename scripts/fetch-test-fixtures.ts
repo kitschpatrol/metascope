@@ -339,8 +339,8 @@ async function run() {
 	// 	isValidLicenseFile,
 	// )
 	// await saveAllFileSearchResults('readme.md', './test/fixtures/readme', false)
-	// await saveAllFileSearchResults('info.plist', './test/fixtures/info-plist', false, isValidPlist)
-	// await saveAllFileSearchResults('Info.plist', './test/fixtures/info-plist', false, isValidPlist)
+	// await saveAllFileSearchResults('info.plist', './test/fixtures/xcode-info-plist', false, isValidPlist)
+	// await saveAllFileSearchResults('Info.plist', './test/fixtures/xcode-info-plist', false, isValidPlist)
 	// await saveAllFileSearchResults(
 	// 	'project.pbxproj',
 	// 	'./test/fixtures/pbxproj',

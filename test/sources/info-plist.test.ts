@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { infoPlistSource } from '../../src/lib/sources/info-plist'
 
-const fixturesDir = resolve('test/fixtures/info-plist')
+const fixturesDirectory = resolve('test/fixtures/xcode-info-plist')
 
 describe('infoPlist source', () => {
 	it('should be available in a directory with Info.plist', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'alexchantastic-alfred-lipsum-workflow'),
+			path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow'),
 		}
 		expect(await infoPlistSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('infoPlist source', () => {
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'alexchantastic-alfred-lipsum-workflow'),
+			path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow'),
 		}
 		const result = await infoPlistSource.extract(context)
 

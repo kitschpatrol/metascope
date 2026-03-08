@@ -4,12 +4,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseOpenFrameworksInstallXml } from '../../src/lib/parsers/open-frameworks-install-xml-parser'
 
-const fixturesDir = resolve('test/fixtures/open-frameworks-install-xml')
+const fixturesDirectory = resolve('test/fixtures/open-frameworks-install-xml')
 
 describe('parseOpenFrameworksInstallXml', () => {
 	it('should parse a basic install.xml with name, version, and author', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'elliotwoods-ofxgraycode/install.xml'),
+			resolve(fixturesDirectory, 'elliotwoods-ofxgraycode/install.xml'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksInstallXml(content)
@@ -23,7 +23,7 @@ describe('parseOpenFrameworksInstallXml', () => {
 
 	it('should parse code_url, site_url, download_url, and description', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'armadillu-ofxscenemanager/install.xml'),
+			resolve(fixturesDirectory, 'armadillu-ofxscenemanager/install.xml'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksInstallXml(content)
@@ -37,7 +37,7 @@ describe('parseOpenFrameworksInstallXml', () => {
 
 	it('should extract operating systems from lib os attributes', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'nuigroup-ccv-tbeta/install.xml'),
+			resolve(fixturesDirectory, 'nuigroup-ccv-tbeta/install.xml'),
 			'utf8',
 		)
 		const result = parseOpenFrameworksInstallXml(content)
@@ -50,7 +50,7 @@ describe('parseOpenFrameworksInstallXml', () => {
 
 	it('should handle malformed CDATA', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'armadillu-ofxscenemanager/install.xml'),
+			resolve(fixturesDirectory, 'armadillu-ofxscenemanager/install.xml'),
 			'utf8',
 		)
 		// This fixture uses <[CDATA[...]]> instead of <![CDATA[...]]>
@@ -70,13 +70,13 @@ describe('parseOpenFrameworksInstallXml', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory())
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir.name, 'install.xml'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir.name, 'install.xml'), 'utf8')
 			const result = parseOpenFrameworksInstallXml(content)
 			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
 		}

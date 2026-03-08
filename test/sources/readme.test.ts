@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { readmeSource } from '../../src/lib/sources/readme'
 
-const fixturesDir = resolve('test/fixtures/readme')
+const fixturesDirectory = resolve('test/fixtures/readme')
 
 describe('readme source', () => {
 	it('should be available in a directory with a README.md', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'modallmedia-hyperspeed-sdk'),
+			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
 		expect(await readmeSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('readme source', () => {
 	it('should extract name from a fixture with an H1', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'modallmedia-hyperspeed-sdk'),
+			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
 		const result = await readmeSource.extract(context)
 
@@ -35,7 +35,7 @@ describe('readme source', () => {
 	it('should return empty object for a fixture without an H1', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'next-hat-nanocl'),
+			path: resolve(fixturesDirectory, 'next-hat-nanocl'),
 		}
 		const result = await readmeSource.extract(context)
 

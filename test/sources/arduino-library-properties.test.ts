@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { arduinoLibraryPropertiesSource } from '../../src/lib/sources/arduino-library-properties'
 
-const fixturesDir = resolve('test/fixtures/arduino-library-properties')
+const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 
 describe('arduinoLibraryProperties source', () => {
 	it('should be available in a directory with library.properties', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, '0xpit-esparklines'),
+			path: resolve(fixturesDirectory, '0xpit-esparklines'),
 		}
 		expect(await arduinoLibraryPropertiesSource.isAvailable(context)).toBe(true)
 	})
@@ -25,7 +25,7 @@ describe('arduinoLibraryProperties source', () => {
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'adafruit-adafruit-ccs811'),
+			path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811'),
 		}
 		const result = await arduinoLibraryPropertiesSource.extract(context)
 

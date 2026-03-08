@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCinderCinderblock } from '../../src/lib/parsers/cinder-cinderblock-parser'
 
-const fixturesDir = resolve('test/fixtures/cinder-cinderblock')
+const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock')
 
 describe('parseCinderCinderblock', () => {
 	it('should parse a cinderblock with full metadata', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'astellato-cinder-syphon/cinderblock.xml'),
+			resolve(fixturesDirectory, 'astellato-cinder-syphon/cinderblock.xml'),
 			'utf8',
 		)
 		const result = parseCinderCinderblock(content)
@@ -28,7 +28,7 @@ describe('parseCinderCinderblock', () => {
 
 	it('should parse a cinderblock with multiple OS support', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'danieldormann-cinder-qrcodegenerator/cinderblock.xml'),
+			resolve(fixturesDirectory, 'danieldormann-cinder-qrcodegenerator/cinderblock.xml'),
 			'utf8',
 		)
 		const result = parseCinderCinderblock(content)
@@ -49,13 +49,13 @@ describe('parseCinderCinderblock', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir, 'cinderblock.xml'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir, 'cinderblock.xml'), 'utf8')
 			expect(() => parseCinderCinderblock(content)).not.toThrow()
 		}
 	})

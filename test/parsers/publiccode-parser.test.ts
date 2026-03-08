@@ -4,11 +4,11 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parsePubliccode } from '../../src/lib/parsers/publiccode-parser'
 
-const fixturesDir = resolve('test/fixtures/publiccode')
+const fixturesDirectory = resolve('test/fixtures/publiccode')
 
 describe('parsePubliccode', () => {
 	it('should parse basic fields from cisofy-lynis', () => {
-		const content = readFileSync(resolve(fixturesDir, 'cisofy-lynis/publiccode.yml'), 'utf8')
+		const content = readFileSync(resolve(fixturesDirectory, 'cisofy-lynis/publiccode.yml'), 'utf8')
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -25,7 +25,7 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse English description with features', () => {
-		const content = readFileSync(resolve(fixturesDir, 'cisofy-lynis/publiccode.yml'), 'utf8')
+		const content = readFileSync(resolve(fixturesDirectory, 'cisofy-lynis/publiccode.yml'), 'utf8')
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -38,7 +38,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse multi-language descriptions', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -51,7 +54,7 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse contacts and maintenance', () => {
-		const content = readFileSync(resolve(fixturesDir, 'cisofy-lynis/publiccode.yml'), 'utf8')
+		const content = readFileSync(resolve(fixturesDirectory, 'cisofy-lynis/publiccode.yml'), 'utf8')
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -62,7 +65,7 @@ describe('parsePubliccode', () => {
 
 	it('should parse contacts with affiliation', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'commongateway-corebundle/publiccode.yaml'),
+			resolve(fixturesDirectory, 'commongateway-corebundle/publiccode.yaml'),
 			'utf8',
 		)
 		const result = parsePubliccode(content)
@@ -75,7 +78,7 @@ describe('parsePubliccode', () => {
 
 	it('should parse contractors', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'commongateway-corebundle/publiccode.yaml'),
+			resolve(fixturesDirectory, 'commongateway-corebundle/publiccode.yaml'),
 			'utf8',
 		)
 		const result = parsePubliccode(content)
@@ -89,7 +92,7 @@ describe('parsePubliccode', () => {
 
 	it('should parse dependencies with version constraints', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'commongateway-corebundle/publiccode.yaml'),
+			resolve(fixturesDirectory, 'commongateway-corebundle/publiccode.yaml'),
 			'utf8',
 		)
 		const result = parsePubliccode(content)
@@ -107,7 +110,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse dependencies from appsemble', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -122,7 +128,7 @@ describe('parsePubliccode', () => {
 
 	it('should parse inputTypes and outputTypes', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'commongateway-corebundle/publiccode.yaml'),
+			resolve(fixturesDirectory, 'commongateway-corebundle/publiccode.yaml'),
 			'utf8',
 		)
 		const result = parsePubliccode(content)
@@ -134,7 +140,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse usedBy', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -143,7 +152,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse legal section with all fields', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -153,7 +165,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse localisation section', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -164,7 +179,10 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse logo and monochromeLogo', () => {
-		const content = readFileSync(resolve(fixturesDir, 'appsemble-appsemble/publiccode.yml'), 'utf8')
+		const content = readFileSync(
+			resolve(fixturesDirectory, 'appsemble-appsemble/publiccode.yml'),
+			'utf8',
+		)
 		const result = parsePubliccode(content)
 
 		expect(result).toBeDefined()
@@ -174,7 +192,7 @@ describe('parsePubliccode', () => {
 
 	it('should parse landingURL', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'commongateway-corebundle/publiccode.yaml'),
+			resolve(fixturesDirectory, 'commongateway-corebundle/publiccode.yaml'),
 			'utf8',
 		)
 		const result = parsePubliccode(content)
@@ -196,14 +214,14 @@ describe('parsePubliccode', () => {
 	})
 
 	it('should parse all fixtures without returning undefined', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory())
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		let parsedCount = 0
 		for (const dir of dirs) {
-			const dirPath = resolve(fixturesDir, dir.name)
+			const dirPath = resolve(fixturesDirectory, dir.name)
 			const files = await readdir(dirPath)
 			const publiccodeFile = files.find(
 				(name) => name === 'publiccode.yml' || name === 'publiccode.yaml',

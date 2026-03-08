@@ -4,12 +4,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseReadme, readmePattern } from '../../src/lib/parsers/readme-parser'
 
-const fixturesDir = resolve('test/fixtures/readme')
+const fixturesDirectory = resolve('test/fixtures/readme')
 
 describe('parseReadme', () => {
 	it('should extract an H1 heading', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'modallmedia-hyperspeed-sdk/README.md'),
+			resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk/README.md'),
 			'utf8',
 		)
 		const result = parseReadme(content)
@@ -20,7 +20,7 @@ describe('parseReadme', () => {
 
 	it('should extract a plain H1 heading', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, '74th-qmk-firmware-sparrow-keyboard/README.md'),
+			resolve(fixturesDirectory, '74th-qmk-firmware-sparrow-keyboard/README.md'),
 			'utf8',
 		)
 		const result = parseReadme(content)
@@ -31,7 +31,7 @@ describe('parseReadme', () => {
 
 	it('should extract H1 with non-ASCII characters', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'fisco-bcos-hackathon/README.md'),
+			resolve(fixturesDirectory, 'fisco-bcos-hackathon/README.md'),
 			'utf8',
 		)
 		const result = parseReadme(content)
@@ -41,7 +41,7 @@ describe('parseReadme', () => {
 	})
 
 	it('should return undefined when there is no H1', () => {
-		const content = readFileSync(resolve(fixturesDir, 'next-hat-nanocl/README.md'), 'utf8')
+		const content = readFileSync(resolve(fixturesDirectory, 'next-hat-nanocl/README.md'), 'utf8')
 		const result = parseReadme(content)
 
 		expect(result).toBeUndefined()
@@ -53,7 +53,7 @@ describe('parseReadme', () => {
 
 	it('should extract from first H1 only when multiple exist', () => {
 		const content = readFileSync(
-			resolve(fixturesDir, 'sebastiendamaye-tryhackme/README.md'),
+			resolve(fixturesDirectory, 'sebastiendamaye-tryhackme/README.md'),
 			'utf8',
 		)
 		const result = parseReadme(content)
@@ -63,14 +63,14 @@ describe('parseReadme', () => {
 	})
 
 	it('should parse fixtures that have H1 headings', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory())
 
 		expect(dirs.length).toBe(19)
 
 		let withH1 = 0
 		for (const dir of dirs) {
-			const content = readFileSync(resolve(fixturesDir, dir.name, 'README.md'), 'utf8')
+			const content = readFileSync(resolve(fixturesDirectory, dir.name, 'README.md'), 'utf8')
 			const result = parseReadme(content)
 			if (result) withH1++
 		}

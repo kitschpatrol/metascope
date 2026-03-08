@@ -3,11 +3,11 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseMetadata } from '../../src/lib/parsers/metadata-parser'
 
-const fixturesDir = resolve('test/fixtures/metadata')
+const fixturesDirectory = resolve('test/fixtures/metadata')
 
 describe('parseMetadata', () => {
 	it('should parse a JSON metadata file', async () => {
-		const content = await readFile(resolve(fixturesDir, 'basic/metadata.json'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'basic/metadata.json'), 'utf8')
 		const result = parseMetadata(content, 'json')
 
 		expect(result).toBeDefined()
@@ -17,7 +17,7 @@ describe('parseMetadata', () => {
 	})
 
 	it('should parse a YAML metadata file', async () => {
-		const content = await readFile(resolve(fixturesDir, 'basic/metadata.yaml'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'basic/metadata.yaml'), 'utf8')
 		const result = parseMetadata(content, 'yaml')
 
 		expect(result).toBeDefined()
@@ -27,7 +27,7 @@ describe('parseMetadata', () => {
 	})
 
 	it('should parse a YML metadata file', async () => {
-		const content = await readFile(resolve(fixturesDir, 'basic/metadata.yml'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'basic/metadata.yml'), 'utf8')
 		const result = parseMetadata(content, 'yaml')
 
 		expect(result).toBeDefined()
@@ -37,7 +37,10 @@ describe('parseMetadata', () => {
 	})
 
 	it('should fall back from tags to keywords', async () => {
-		const content = await readFile(resolve(fixturesDir, 'tags-fallback/metadata.json'), 'utf8')
+		const content = await readFile(
+			resolve(fixturesDirectory, 'tags-fallback/metadata.json'),
+			'utf8',
+		)
 		const result = parseMetadata(content, 'json')
 
 		expect(result).toBeDefined()
@@ -46,7 +49,7 @@ describe('parseMetadata', () => {
 
 	it('should fall back from topics to keywords', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'topics-fallback/metadata.json'),
+			resolve(fixturesDirectory, 'topics-fallback/metadata.json'),
 			'utf8',
 		)
 		const result = parseMetadata(content, 'json')
@@ -56,7 +59,7 @@ describe('parseMetadata', () => {
 	})
 
 	it('should fall back from url to homepage', async () => {
-		const content = await readFile(resolve(fixturesDir, 'url-fallback/metadata.json'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'url-fallback/metadata.json'), 'utf8')
 		const result = parseMetadata(content, 'json')
 
 		expect(result).toBeDefined()
@@ -65,7 +68,7 @@ describe('parseMetadata', () => {
 
 	it('should fall back from website to homepage', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'website-fallback/metadata.json'),
+			resolve(fixturesDirectory, 'website-fallback/metadata.json'),
 			'utf8',
 		)
 		const result = parseMetadata(content, 'json')
@@ -75,7 +78,7 @@ describe('parseMetadata', () => {
 	})
 
 	it('should fall back from repository to homepage and normalize git URLs', async () => {
-		const content = await readFile(resolve(fixturesDir, 'git-url/metadata.json'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'git-url/metadata.json'), 'utf8')
 		const result = parseMetadata(content, 'json')
 
 		expect(result).toBeDefined()

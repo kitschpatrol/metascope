@@ -4,11 +4,11 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parsePomXml } from '../../src/lib/parsers/pom-xml-parser'
 
-const fixturesDir = resolve('test/fixtures/pom-xml')
+const fixturesDirectory = resolve('test/fixtures/pom-xml')
 
 describe('parsePomXml', () => {
 	it('should parse basic project coordinates and metadata', async () => {
-		const content = await readFile(resolve(fixturesDir, 'yahoo-halodb/pom.xml'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'yahoo-halodb/pom.xml'), 'utf8')
 		const result = parsePomXml(content)
 
 		expect(result).toBeDefined()
@@ -23,7 +23,7 @@ describe('parsePomXml', () => {
 
 	it('should parse developers with email, url, and organization', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'pennstate-alexa-tools/pom.xml'),
+			resolve(fixturesDirectory, 'pennstate-alexa-tools/pom.xml'),
 			'utf8',
 		)
 		const result = parsePomXml(content)
@@ -40,7 +40,7 @@ describe('parsePomXml', () => {
 
 	it('should parse licenses', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'pennstate-alexa-tools/pom.xml'),
+			resolve(fixturesDirectory, 'pennstate-alexa-tools/pom.xml'),
 			'utf8',
 		)
 		const result = parsePomXml(content)
@@ -54,7 +54,7 @@ describe('parsePomXml', () => {
 	})
 
 	it('should separate test-scope dependencies into devDependencies', async () => {
-		const content = await readFile(resolve(fixturesDir, 'yahoo-halodb/pom.xml'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'yahoo-halodb/pom.xml'), 'utf8')
 		const result = parsePomXml(content)
 
 		expect(result).toBeDefined()
@@ -67,7 +67,7 @@ describe('parsePomXml', () => {
 	})
 
 	it('should parse SCM URL', async () => {
-		const content = await readFile(resolve(fixturesDir, 'yahoo-halodb/pom.xml'), 'utf8')
+		const content = await readFile(resolve(fixturesDirectory, 'yahoo-halodb/pom.xml'), 'utf8')
 		const result = parsePomXml(content)
 
 		expect(result).toBeDefined()
@@ -76,7 +76,7 @@ describe('parsePomXml', () => {
 
 	it('should extract java version from properties', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'metersphere-metersphere/pom.xml'),
+			resolve(fixturesDirectory, 'metersphere-metersphere/pom.xml'),
 			'utf8',
 		)
 		const result = parsePomXml(content)
@@ -87,7 +87,7 @@ describe('parsePomXml', () => {
 
 	it('should resolve Maven variable references in name', async () => {
 		const content = await readFile(
-			resolve(fixturesDir, 'r351574nc3-cartographer/pom.xml'),
+			resolve(fixturesDirectory, 'r351574nc3-cartographer/pom.xml'),
 			'utf8',
 		)
 		const result = parsePomXml(content)
@@ -105,13 +105,13 @@ describe('parsePomXml', () => {
 	})
 
 	it('should parse all fixtures without throwing', async () => {
-		const entries = await readdir(fixturesDir, { withFileTypes: true })
+		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const dirs = entries.filter((entry) => entry.isDirectory())
 
 		expect(dirs.length).toBeGreaterThan(0)
 
 		for (const dir of dirs) {
-			const content = await readFile(resolve(fixturesDir, dir.name, 'pom.xml'), 'utf8')
+			const content = await readFile(resolve(fixturesDirectory, dir.name, 'pom.xml'), 'utf8')
 			const result = parsePomXml(content)
 			expect(result, `fixture "${dir.name}" should parse`).toBeDefined()
 		}

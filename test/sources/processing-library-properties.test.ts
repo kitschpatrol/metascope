@@ -3,13 +3,13 @@ import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { processingLibraryPropertiesSource } from '../../src/lib/sources/processing-library-properties'
 
-const fixturesDir = resolve('test/fixtures/processing-library-properties')
+const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 
 describe('processingLibraryProperties source', () => {
 	it('should be available in a directory with Processing library.properties', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'hx2a-camera3d'),
+			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
 		expect(await processingLibraryPropertiesSource.isAvailable(context)).toBe(true)
 	})
@@ -33,7 +33,7 @@ describe('processingLibraryProperties source', () => {
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
 			credentials: {},
-			path: resolve(fixturesDir, 'hx2a-camera3d'),
+			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
 		const result = await processingLibraryPropertiesSource.extract(context)
 
