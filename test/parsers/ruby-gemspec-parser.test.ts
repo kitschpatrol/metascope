@@ -9,7 +9,7 @@ const fixturesDirectory = resolve('test/fixtures/ruby-gemspec')
 describe('parseGemspec', () => {
 	it('should return an object with basic gemspec fields', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'ankane-blazer/blazer.gemspec'), 'utf8')
-		const result = (await parseGemspec(content)) as any
+		const result = await parseGemspec(content)
 
 		expect(result.name).toBe('blazer')
 		expect(result.summary).toBeDefined()
@@ -19,20 +19,21 @@ describe('parseGemspec', () => {
 
 	it('should return an object with a dependencies array', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'ankane-blazer/blazer.gemspec'), 'utf8')
-		const result = (await parseGemspec(content)) as any
+		const result = await parseGemspec(content)
 
-		expect(Array.isArray(result.dependencies)).toBe(true)
-		expect(result.dependencies.length).toBeGreaterThan(0)
-		expect(result.dependencies[0]).toHaveProperty('name')
-		expect(result.dependencies[0]).toHaveProperty('type')
+		expect(result.dependencies).toBeDefined()
+		expect(result.dependencies).toEqual(
+			// eslint-disable-next-line ts/no-unsafe-assignment
+			expect.arrayContaining([expect.objectContaining({ name: expect.stringContaining(''), type: expect.stringContaining('') })]),
+		)
 	})
 
 	it('should return an object with an authors array', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'adn-rb-adn/adn.gemspec'), 'utf8')
-		const result = (await parseGemspec(content)) as any
+		const result = await parseGemspec(content)
 
 		expect(Array.isArray(result.authors)).toBe(true)
-		expect(result.authors.length).toBeGreaterThan(0)
+		expect(result.authors).toEqual(expect.arrayContaining([expect.any(String)]))
 	})
 
 	it('should parse all 196 fixtures without throwing', async () => {

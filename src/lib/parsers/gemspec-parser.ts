@@ -1,6 +1,7 @@
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
+import is from '@sindresorhus/is'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -309,7 +310,8 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 			// Metadata is a hash
 			if (attribute === 'metadata') {
 				if (rhs.type === 'hash') {
-					spec.metadata = { ...(spec.metadata as Record<string, string>), ...extractHash(rhs) }
+					const existing = is.plainObject(spec.metadata) ? spec.metadata : {}
+					spec.metadata = { ...existing, ...extractHash(rhs) }
 				}
 				return
 			}
@@ -330,7 +332,7 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 
 			// Anything else → stash in extra
 			const value = extractValue(rhs)
-			if (value !== undefined) (spec.extra as Record<string, unknown>)[attribute] = value
+			if (value !== undefined && is.plainObject(spec.extra)) spec.extra[attribute] = value
 			return
 		}
 
@@ -338,13 +340,7 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 		if (node.type === 'call' || node.type === 'method_call') {
 			const dep = tryParseDependency(node)
 			if (dep) {
-				;(
-					spec.dependencies as Array<{
-						name: string
-						requirements: string[]
-						type: 'development' | 'runtime'
-					}>
-				).push(dep)
+				if (Array.isArray(spec.dependencies)) spec.dependencies.push(dep)
 				return
 			}
 		}

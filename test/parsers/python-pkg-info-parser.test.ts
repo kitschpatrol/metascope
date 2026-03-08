@@ -88,6 +88,7 @@ describe('splitMultiValues', () => {
 	})
 
 	it('should return an empty array for undefined', () => {
-		expect(splitMultiValues()).toEqual([])
+		const nothing: string | undefined = undefined
+		expect(splitMultiValues(nothing)).toEqual([])
 	})
 })

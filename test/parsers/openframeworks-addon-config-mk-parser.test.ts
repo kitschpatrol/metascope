@@ -11,7 +11,7 @@ describe('parseMakefileConfig', () => {
 			resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer/addon_config.mk'),
 			'utf8',
 		)
-		const result = parseMakefileConfig(content) as any
+		const result = parseMakefileConfig(content)
 
 		expect(result.name).toBe('ofxSpeechSynthesizer')
 		expect(result.description).toBeDefined()
@@ -23,7 +23,7 @@ describe('parseMakefileConfig', () => {
 			resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer/addon_config.mk'),
 			'utf8',
 		)
-		const result = parseMakefileConfig(content) as any
+		const result = parseMakefileConfig(content)
 
 		expect(Array.isArray(result.tags)).toBe(true)
 		expect(Array.isArray(result.dependencies)).toBe(true)
@@ -34,10 +34,11 @@ describe('parseMakefileConfig', () => {
 			resolve(fixturesDirectory, 'arturoc-ofxgstreamer/addon_config.mk'),
 			'utf8',
 		)
-		const result = parseMakefileConfig(content) as any
+		const result = parseMakefileConfig(content)
 
-		expect(Array.isArray(result.platformSections)).toBe(true)
-		expect(result.platformSections.length).toBeGreaterThan(0)
+		const sections = result.platformSections
+		expect(Array.isArray(sections)).toBe(true)
+		expect(sections).toEqual(expect.arrayContaining([expect.anything()]))
 	})
 
 	it('should parse all fixtures without throwing', async () => {

@@ -9,7 +9,7 @@ const fixturesDirectory = resolve('test/fixtures/python-setup-py')
 describe('parseSetupPy', () => {
 	it('should return an object with basic fields', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/setup.py'), 'utf8')
-		const result = (await parseSetupPy(content)) as any
+		const result = await parseSetupPy(content)
 
 		expect(result.name).toBe('example-package')
 		expect(result.version).toBe('1.2.3')
@@ -20,23 +20,23 @@ describe('parseSetupPy', () => {
 
 	it('should return an object with classifiers array', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/setup.py'), 'utf8')
-		const result = (await parseSetupPy(content)) as any
+		const result = await parseSetupPy(content)
 
 		expect(Array.isArray(result.classifiers)).toBe(true)
-		expect(result.classifiers.length).toBeGreaterThan(0)
+		expect(result.classifiers).toEqual(expect.arrayContaining([expect.any(String)]))
 	})
 
 	it('should return an object with install_requires array', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/setup.py'), 'utf8')
-		const result = (await parseSetupPy(content)) as any
+		const result = await parseSetupPy(content)
 
 		expect(Array.isArray(result.install_requires)).toBe(true)
-		expect(result.install_requires.length).toBeGreaterThan(0)
+		expect(result.install_requires).toEqual(expect.arrayContaining([expect.any(String)]))
 	})
 
 	it('should return an object with extras_require and project_urls', async () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/setup.py'), 'utf8')
-		const result = (await parseSetupPy(content)) as any
+		const result = await parseSetupPy(content)
 
 		expect(typeof result.extras_require).toBe('object')
 		expect(typeof result.project_urls).toBe('object')

@@ -9,7 +9,7 @@ const fixturesDirectory = resolve('test/fixtures/go-go-mod')
 describe('parseGoMod', () => {
 	it('should return an object with module and go_version fields', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
-		const result = parseGoMod(content) as any
+		const result = parseGoMod(content)
 
 		expect(result.module).toBe('github.com/caddyserver/certmagic')
 		expect(result.go_version).toBe('1.24.0')
@@ -17,24 +17,27 @@ describe('parseGoMod', () => {
 
 	it('should return an object with a dependencies array', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
-		const result = parseGoMod(content) as any
+		const result = parseGoMod(content)
 
-		expect(Array.isArray(result.dependencies)).toBe(true)
-		expect(result.dependencies.length).toBeGreaterThan(0)
-		expect(result.dependencies[0]).toHaveProperty('module')
-		expect(result.dependencies[0]).toHaveProperty('version')
+		expect(result.dependencies).toBeDefined()
+		expect(result.dependencies).toEqual(
+			expect.arrayContaining([
+				// eslint-disable-next-line ts/no-unsafe-assignment
+				expect.objectContaining({ module: expect.stringContaining(''), version: expect.stringContaining('') }),
+			]),
+		)
 	})
 
 	it('should return repository_url when module is on a known host', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
-		const result = parseGoMod(content) as any
+		const result = parseGoMod(content)
 
 		expect(result.repository_url).toBe('https://github.com/caddyserver/certmagic')
 	})
 
 	it('should return undefined repository_url for non-forge modules', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'dagger-dagger/go.mod'), 'utf8')
-		const result = parseGoMod(content) as any
+		const result = parseGoMod(content)
 
 		expect(result.repository_url).toBeUndefined()
 	})
