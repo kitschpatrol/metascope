@@ -74,7 +74,7 @@ describe('parseSetupPy', () => {
 		expect(result.name).toBe('minimal-pkg')
 		expect(result.version).toBe('0.1.0')
 		expect(result.description).toBe('Minimal setup.py')
-		expect(result.author).toBeNull()
+		expect(result.author).toBeUndefined()
 	})
 
 	it('should skip variable references (non-literal values)', async () => {
@@ -83,8 +83,8 @@ describe('parseSetupPy', () => {
 
 		expect(result.name).toBe('dynamic-pkg')
 		// VERSION and AUTHOR are variable references, not string literals
-		expect(result.version).toBeNull()
-		expect(result.author).toBeNull()
+		expect(result.version).toBeUndefined()
+		expect(result.author).toBeUndefined()
 		// But string literals are still extracted
 		expect(result.description).toBe('Package with variables')
 		expect(result.author_email).toBe('dynamic@example.com')

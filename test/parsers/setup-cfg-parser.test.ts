@@ -76,7 +76,7 @@ describe('parseSetupCfg', () => {
 		expect(result.name).toBe('minimal-pkg')
 		expect(result.version).toBe('0.1.0')
 		expect(result.description).toBe('Minimal setup.cfg')
-		expect(result.author).toBeNull()
+		expect(result.author).toBeUndefined()
 	})
 
 	it('should parse a real-world setup.cfg (gazu)', () => {

@@ -6,19 +6,20 @@
  * @see https://docs.arduino.cc/arduino-cli/library-specification/
  */
 
-// ─── Types ──────────────────────────────────────────────────────────
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-/** Parsed person entry from `author` or `maintainer` fields. */
-export type ArduinoLibraryPropertiesPersonEntry = {
-	email: string | undefined
-	name: string
-}
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed dependency entry from `depends` field. */
-export type ArduinoLibraryPropertiesDependencyEntry = {
-	name: string
-	versionConstraint: string | undefined
-}
+const arduinoLibraryPropertiesPersonEntrySchema = z.object({
+	email: z.string().optional(),
+	name: z.string(),
+})
+
+const arduinoLibraryPropertiesDependencyEntrySchema = z.object({
+	name: z.string(),
+	versionConstraint: z.string().optional(),
+})
 
 /** Canonical Arduino library categories. */
 const CANONICAL_CATEGORIES = [
@@ -34,49 +35,52 @@ const CANONICAL_CATEGORIES = [
 	'Uncategorized',
 ] as const
 
-export type ArduinoLibraryPropertiesCategory = (typeof CANONICAL_CATEGORIES)[number]
-
 /** Map from letters-only lowercase to canonical category form. */
-const CATEGORY_MAP = new Map<string, ArduinoLibraryPropertiesCategory>(
+const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>(
 	CANONICAL_CATEGORIES.map((cat) => [cat.replaceAll(/[^a-z]/gi, '').toLowerCase(), cat]),
 )
 
 // Singular→plural coercion
 CATEGORY_MAP.set('sensor', 'Sensors')
 
-/** Parsed result from an Arduino `library.properties` file. */
-export type ArduinoLibraryProperties = {
+const arduinoLibraryPropertiesSchema = z.object({
 	/** Comma-separated architecture identifiers, or ["*"] for all. */
-	architectures: string[]
+	architectures: stringArray,
 	/** Parsed author entries. */
-	authors: ArduinoLibraryPropertiesPersonEntry[]
+	authors: z.array(arduinoLibraryPropertiesPersonEntrySchema),
 	/** Normalized category, or undefined if invalid/empty. */
-	category: ArduinoLibraryPropertiesCategory | undefined
+	category: z.enum(CANONICAL_CATEGORIES).optional(),
 	/** Parsed dependency entries. */
-	depends: ArduinoLibraryPropertiesDependencyEntry[]
+	depends: z.array(arduinoLibraryPropertiesDependencyEntrySchema),
 	/** Top-level email field (non-standard, used in some fixtures). */
-	email: string | undefined
+	email: nonEmptyString,
 	/** Comma-separated header files. */
-	includes: string[]
+	includes: stringArray,
 	/** License value (non-standard field). */
-	license: string | undefined
+	license: nonEmptyString,
 	/** Parsed maintainer entry. */
-	maintainer: ArduinoLibraryPropertiesPersonEntry | undefined
+	maintainer: arduinoLibraryPropertiesPersonEntrySchema.optional(),
 	/** Library name. */
-	name: string | undefined
+	name: nonEmptyString,
 	/** Extended description paragraph. */
-	paragraph: string | undefined
+	paragraph: nonEmptyString,
 	/** Raw key-value pairs. */
-	raw: Record<string, string>
+	raw: z.record(z.string(), z.string()),
 	/** Repository URL (non-standard field). */
-	repository: string | undefined
+	repository: optionalUrl,
 	/** One-sentence description. */
-	sentence: string | undefined
+	sentence: nonEmptyString,
 	/** Project URL. */
-	url: string | undefined
+	url: optionalUrl,
 	/** Library version. */
-	version: string | undefined
-}
+	version: nonEmptyString,
+})
+
+export type ArduinoLibraryProperties = z.infer<typeof arduinoLibraryPropertiesSchema>
+
+type ArduinoLibraryPropertiesCategory = NonNullable<ArduinoLibraryProperties['category']>
+type ArduinoLibraryPropertiesPersonEntry = ArduinoLibraryProperties['authors'][number]
+type ArduinoLibraryPropertiesDependencyEntry = ArduinoLibraryProperties['depends'][number]
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -106,7 +110,7 @@ export function parseArduinoLibraryProperties(content: string): ArduinoLibraryPr
 
 	const includesValue = get(raw, 'includes')
 
-	return {
+	return arduinoLibraryPropertiesSchema.parse({
 		architectures: splitTrimmed(get(raw, 'architectures') ?? '*'),
 		authors: parsePersonList(get(raw, 'author') ?? ''),
 		category: normalizeCategory(get(raw, 'category')),
@@ -122,7 +126,7 @@ export function parseArduinoLibraryProperties(content: string): ArduinoLibraryPr
 		sentence: nonEmpty(get(raw, 'sentence')),
 		url: nonEmpty(get(raw, 'url')),
 		version: nonEmpty(get(raw, 'version')),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

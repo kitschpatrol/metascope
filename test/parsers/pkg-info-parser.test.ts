@@ -75,7 +75,7 @@ describe('parsePkgInfo', () => {
 
 		expect(result.name).toBe('axel')
 		expect(result.author).toBe('Adrian Cristea')
-		expect(result.home_page).toBeNull()
+		expect(result.home_page).toBeUndefined()
 	})
 
 	it('should parse a real-world PKG-INFO (bflb-mcu-tool)', () => {

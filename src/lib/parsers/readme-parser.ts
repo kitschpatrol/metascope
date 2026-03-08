@@ -9,14 +9,16 @@
 import type { Nodes, PhrasingContent } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
+import { z } from 'zod'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed README metadata. */
-export type Readme = {
+const readmeSchema = z.object({
 	/** Project name extracted from the first H1 heading. */
-	name: string
-}
+	name: z.string(),
+})
+
+export type Readme = z.infer<typeof readmeSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
@@ -65,5 +67,5 @@ export const readmePattern = /^readme(\.\w+)?$/i
 export function parseReadme(content: string): Readme | undefined {
 	const name = extractFirstH1(content)
 	if (!name) return undefined
-	return { name }
+	return readmeSchema.parse({ name })
 }

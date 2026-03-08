@@ -50,7 +50,7 @@ describe('parsePubliccode', () => {
 		expect(result!.descriptions.en.localisedName).toBe('Appsemble')
 		expect(result!.descriptions.nl.localisedName).toBe('Appsemble')
 		// Preferred description should be English
-		expect(result!.description).toBe(result!.descriptions.en)
+		expect(result!.description).toStrictEqual(result!.descriptions.en)
 	})
 
 	it('should parse contacts and maintenance', () => {

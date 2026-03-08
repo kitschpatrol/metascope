@@ -11,34 +11,37 @@
  */
 
 import { XMLParser } from 'fast-xml-parser'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed result from a `cinderblock.xml` file. */
-export type CinderCinderblock = {
+const cinderCinderblockSchema = z.object({
 	/** Block author name. */
-	author?: string
+	author: nonEmptyString,
 	/** Git repository URL. */
-	git?: string
+	git: optionalUrl,
 	/** Block identifier (e.g. "info.v002.syphon"). */
-	id?: string
+	id: nonEmptyString,
 	/** Library or libraryUrl reference link. */
-	library?: string
+	library: optionalUrl,
 	/** License identifier. */
-	license?: string
+	license: nonEmptyString,
 	/** Block display name. */
-	name?: string
+	name: nonEmptyString,
 	/** Software dependencies from `<requires>` elements. */
-	requires: string[]
+	requires: stringArray,
 	/** Block summary / description. */
-	summary?: string
+	summary: nonEmptyString,
 	/** Supported operating systems from `<supports os="...">` elements. */
-	supports: string[]
+	supports: stringArray,
 	/** Project URL. */
-	url?: string
+	url: optionalUrl,
 	/** Version string. */
-	version?: string
-}
+	version: nonEmptyString,
+})
+
+export type CinderCinderblock = z.infer<typeof cinderCinderblockSchema>
 
 /**
  * Map CinderBlock OS identifiers to human-readable OS names.
@@ -76,7 +79,7 @@ export function parseCinderCinderblock(content: string): CinderCinderblock | und
 	const block = cinder.block as Record<string, unknown> | undefined
 	if (!block) return undefined
 
-	return {
+	return cinderCinderblockSchema.parse({
 		author: getAttribute(block, 'author'),
 		git: getAttribute(block, 'git'),
 		id: getAttribute(block, 'id'),
@@ -88,7 +91,7 @@ export function parseCinderCinderblock(content: string): CinderCinderblock | und
 		supports: parseOperatingSystems(block),
 		url: getAttribute(block, 'url'),
 		version: getAttribute(block, 'version'),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

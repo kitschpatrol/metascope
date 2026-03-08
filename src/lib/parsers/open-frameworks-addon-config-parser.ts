@@ -11,23 +11,29 @@
  * by the openFrameworks Project Generator.
  */
 
-/** Parsed result from an `addon_config.mk` file. */
-export type OpenFrameworksAddonConfig = {
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
+
+// ─── Schema ─────────────────────────────────────────────────────────
+
+const openFrameworksAddonConfigSchema = z.object({
 	/** `ADDON_AUTHOR` from `meta:` section. */
-	author?: string
+	author: nonEmptyString,
 	/** `ADDON_DEPENDENCIES` from `common:` section (space-separated addon names). */
-	dependencies: string[]
+	dependencies: stringArray,
 	/** `ADDON_DESCRIPTION` from `meta:` section. */
-	description?: string
+	description: nonEmptyString,
 	/** `ADDON_NAME` from `meta:` section. */
-	name?: string
+	name: nonEmptyString,
 	/** Platform section names that contain at least one variable assignment. */
-	platformSections: string[]
+	platformSections: stringArray,
 	/** `ADDON_TAGS` from `meta:` section (quote-aware tokenized). */
-	tags: string[]
+	tags: stringArray,
 	/** `ADDON_URL` from `meta:` section. */
-	url?: string
-}
+	url: optionalUrl,
+})
+
+export type OpenFrameworksAddonConfig = z.infer<typeof openFrameworksAddonConfigSchema>
 
 /** Section header pattern: a word (with optional hyphens/slashes) followed by a colon. */
 const SECTION_RE = /^[\w/][\w/-]*:$/
@@ -101,7 +107,7 @@ export function parseOpenFrameworksAddonConfig(content: string): OpenFrameworksA
 		platformSectionsWithContent.add(currentSection)
 	}
 
-	return {
+	return openFrameworksAddonConfigSchema.parse({
 		author: singleValue(metaVariables, 'ADDON_AUTHOR'),
 		dependencies: commonDependencies,
 		description: singleValue(metaVariables, 'ADDON_DESCRIPTION'),
@@ -109,7 +115,7 @@ export function parseOpenFrameworksAddonConfig(content: string): OpenFrameworksA
 		platformSections: [...platformSectionsWithContent],
 		tags: metaVariables.get('ADDON_TAGS') ?? [],
 		url: singleValue(metaVariables, 'ADDON_URL'),
-	}
+	})
 }
 
 /**

@@ -4,266 +4,112 @@
  * Reads a codemeta.json file (v1, v2, or v3) and normalizes it into a
  * consistent shape with predictable types. No enrichment, no JSON-LD
  * expansion — just an honest representation of what's in the file.
+ *
+ * Uses Zod preprocess schemas to handle v1/v2/v3 normalization:
+ *   - `@`-prefixed JSON-LD keys stripped, v1 property names remapped
+ *   - `{"@type": "xsd:anyURI", "@value": "..."}` unwrapped to plain strings
+ *   - Person/org objects normalized (`@type`→`type`, `@id`→`id`, affiliation-as-object)
+ *   - Comma-separated strings split to arrays, `{"name":"..."}` objects unwrapped
+ *   - Dependencies normalized (string → `{name: string}`)
  */
 
-// ─── Types ───────────────────────────────────────────────────────────
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl } from './schema-primitives'
 
-export type CodeMetaPersonOrOrg = {
-	affiliation?: string
-	email?: string
-	familyName?: string
-	givenName?: string
-	id?: string
-	name?: string
-	type?: 'Organization' | 'Person'
-	url?: string
-}
-
-export type CodeMetaDependency = {
-	identifier?: string
-	name?: string
-	runtimePlatform?: string
-	version?: string
-}
-
-export type CodeMetaJsonData = {
-	applicationCategory?: string
-	applicationSubCategory?: string
-	author?: CodeMetaPersonOrOrg[]
-	buildInstructions?: string
-	codeRepository?: string
-	continuousIntegration?: string
-	contributor?: CodeMetaPersonOrOrg[]
-	copyrightHolder?: CodeMetaPersonOrOrg[]
-	copyrightYear?: number
-	dateCreated?: string
-	dateModified?: string
-	datePublished?: string
-	description?: string
-	developmentStatus?: string
-	downloadUrl?: string
-	funder?: CodeMetaPersonOrOrg[]
-	funding?: string
-	identifier?: string
-	installUrl?: string
-	isAccessibleForFree?: boolean
-	issueTracker?: string
-	keywords?: string[]
-	license?: string | string[]
-	maintainer?: CodeMetaPersonOrOrg[]
-	name?: string
-	operatingSystem?: string[]
-	programmingLanguage?: string[]
-	readme?: string
-	relatedLink?: string | string[]
-	releaseNotes?: string
-	runtimePlatform?: string[]
-	softwareHelp?: string
-	softwareRequirements?: CodeMetaDependency[]
-	softwareSuggestions?: CodeMetaDependency[]
-	softwareVersion?: string
-	url?: string
-	version?: string
-}
-
-// ─── V1 property name mapping ────────────────────────────────────────
-
-/** Map v1 property names to their v2/v3 equivalents. */
-const v1PropertyMap: Record<string, string> = {
-	// V1 used "agents" for people
-	agents: 'author',
-	// V1 used "contIntegration"
-	contIntegration: 'continuousIntegration',
-	// V1 used "depends"
-	depends: 'softwareRequirements',
-	// V1 used "suggests"
-	suggests: 'softwareSuggestions',
-	// V1 used "title"
-	title: 'name',
-}
-
-// ─── Fields that should always be arrays ─────────────────────────────
-
-const personFields = new Set([
-	'author',
-	'contributor',
-	'copyrightHolder',
-	'editor',
-	'funder',
-	'maintainer',
-	'producer',
-	'publisher',
-	'sponsor',
-])
-
-// ─── Parser ──────────────────────────────────────────────────────────
+// ─── Preprocess primitives ───────────────────────────────────────────
 
 /**
- *
+ * A string that also unwraps `{"@value": "..."}` JSON-LD typed values.
+ * Empty/whitespace strings become undefined via `nonEmptyString`.
  */
-export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined {
-	let raw: Record<string, unknown>
-	try {
-		raw = JSON.parse(content) as Record<string, unknown>
-	} catch {
+const codeMetaString = z.preprocess((value) => {
+	if (typeof value === 'string') return value
+	if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+		const object = value as Record<string, unknown>
+		if (typeof object['@value'] === 'string') return object['@value']
+	}
+	return undefined
+}, nonEmptyString)
+
+/** Same as codeMetaString but semantically a URL field. */
+const codeMetaUrl = z.preprocess((value) => {
+	if (typeof value === 'string') return value
+	if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+		const object = value as Record<string, unknown>
+		if (typeof object['@value'] === 'string') return object['@value']
+	}
+	return undefined
+}, optionalUrl)
+
+/**
+ * A string array that handles CodeMeta's polymorphic inputs:
+ *   - Single comma-separated string → split to array (common in v1)
+ *   - Array of strings → pass through
+ *   - Array of `{"name":"..."}` objects → extract name strings (e.g. programmingLanguage)
+ */
+const codeMetaStringArray = z
+	.preprocess((value) => {
+		if (value === undefined || value === null) return undefined
+
+		if (typeof value === 'string') {
+			return value.includes(',')
+				? value
+						.split(',')
+						.map((s) => s.trim())
+						.filter(Boolean)
+				: [value]
+		}
+
+		if (Array.isArray(value)) {
+			return value
+				.map((item) => {
+					if (typeof item === 'string') return item
+					if (typeof item === 'object' && item !== null) {
+						const object = item as Record<string, unknown>
+						return typeof object.name === 'string' ? object.name : undefined
+					}
+					return undefined
+				})
+				.filter((s): s is string => typeof s === 'string' && s.length > 0)
+		}
+
 		return undefined
-	}
+	}, z.array(z.string()).optional())
+	.optional()
 
-	if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+/**
+ * License field — preserve as string or string[].
+ */
+const codeMetaLicense = z
+	.preprocess((value) => {
+		if (typeof value === 'string') return value
+		if (Array.isArray(value)) {
+			const filtered = value.filter((l): l is string => typeof l === 'string')
+			return filtered.length > 0 ? filtered : undefined
+		}
 		return undefined
-	}
+	}, z.union([z.string(), z.array(z.string())]).optional())
+	.optional()
 
-	// Migrate v1 property names
-	const migrated = migrateV1Properties(raw)
+// ─── Person/Org sub-schema ───────────────────────────────────────────
 
-	const result: CodeMetaJsonData = {}
+const codeMetaPersonOrOrgSchema = z.object({
+	affiliation: nonEmptyString,
+	email: nonEmptyString,
+	familyName: nonEmptyString,
+	givenName: nonEmptyString,
+	id: nonEmptyString,
+	name: nonEmptyString,
+	type: z.enum(['Organization', 'Person']).optional(),
+	url: optionalUrl,
+})
 
-	// Extract simple string fields
-	assignString(result, migrated, 'applicationCategory')
-	assignString(result, migrated, 'applicationSubCategory')
-	assignString(result, migrated, 'buildInstructions')
-	assignString(result, migrated, 'codeRepository')
-	assignString(result, migrated, 'continuousIntegration')
-	assignString(result, migrated, 'dateCreated')
-	assignString(result, migrated, 'dateModified')
-	assignString(result, migrated, 'datePublished')
-	assignString(result, migrated, 'description')
-	assignString(result, migrated, 'developmentStatus')
-	assignString(result, migrated, 'downloadUrl')
-	assignString(result, migrated, 'funding')
-	assignString(result, migrated, 'identifier')
-	assignString(result, migrated, 'installUrl')
-	assignString(result, migrated, 'issueTracker')
-	assignString(result, migrated, 'name')
-	assignString(result, migrated, 'readme')
-	assignString(result, migrated, 'releaseNotes')
-	assignString(result, migrated, 'softwareHelp')
-	assignString(result, migrated, 'softwareVersion')
-	assignString(result, migrated, 'url')
-	assignString(result, migrated, 'version')
-
-	// Also check dateReleased → datePublished (common alternative)
-	if (!result.datePublished && typeof migrated.dateReleased === 'string') {
-		result.datePublished = migrated.dateReleased
-	}
-
-	// Boolean fields
-	if (typeof migrated.isAccessibleForFree === 'boolean') {
-		result.isAccessibleForFree = migrated.isAccessibleForFree
-	}
-
-	// Number fields
-	if (typeof migrated.copyrightYear === 'number') {
-		result.copyrightYear = migrated.copyrightYear
-	}
-
-	// License — preserve as string or string[]
-	const { license } = migrated
-	if (typeof license === 'string') {
-		result.license = license
-	} else if (Array.isArray(license)) {
-		const licenses = license.filter((l): l is string => typeof l === 'string')
-		if (licenses.length > 0) result.license = licenses
-	}
-
-	// RelatedLink — preserve as string or string[]
-	const { relatedLink } = migrated
-	if (typeof relatedLink === 'string') {
-		result.relatedLink = relatedLink
-	} else if (Array.isArray(relatedLink)) {
-		const links = relatedLink.filter((l): l is string => typeof l === 'string')
-		if (links.length > 0) result.relatedLink = links
-	}
-
-	// String array fields
-	assignStringArray(result, migrated, 'keywords')
-	assignStringArray(result, migrated, 'operatingSystem')
-	assignStringArray(result, migrated, 'programmingLanguage')
-	assignStringArray(result, migrated, 'runtimePlatform')
-
-	// Person/Org array fields
-	for (const field of personFields) {
-		const value = migrated[field]
-		if (value === undefined || value === null) continue
-		const people = normalizePersonArray(value)
-		if (people.length > 0) {
-			// eslint-disable-next-line ts/no-unsafe-member-access, ts/no-explicit-any
-			;(result as any)[field] = people
-		}
-	}
-
-	// Dependency fields
-	assignDependencyArray(result, migrated, 'softwareRequirements')
-	assignDependencyArray(result, migrated, 'softwareSuggestions')
-
-	return result
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────
-
-function migrateV1Properties(raw: Record<string, unknown>): Record<string, unknown> {
-	const result: Record<string, unknown> = {}
-	for (const [key, value] of Object.entries(raw)) {
-		// Skip JSON-LD boilerplate
-		if (key.startsWith('@')) continue
-		const mappedKey = v1PropertyMap[key] ?? key
-		// Don't overwrite if already set (prefer v2/v3 names)
-		if (!(mappedKey in result)) {
-			result[mappedKey] = value
-		}
-	}
-	return result
-}
-
-function assignString(
-	result: Record<string, unknown>,
-	source: Record<string, unknown>,
-	key: string,
-): void {
-	const value = source[key]
-	if (typeof value === 'string' && value.length > 0) {
-		result[key] = value
-	} else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-		// Handle {"@type": "xsd:anyURI", "@value": "..."} pattern from v3
-		const objectValue = value as Record<string, unknown>
-		if (typeof objectValue['@value'] === 'string') {
-			result[key] = objectValue['@value']
-		}
-	}
-}
-
-function assignStringArray(
-	result: Record<string, unknown>,
-	source: Record<string, unknown>,
-	key: string,
-): void {
-	const value = source[key]
-	if (value === undefined || value === null) return
-
-	if (typeof value === 'string') {
-		// Could be comma-separated (common in v1)
-		result[key] = value.includes(',')
-			? value
-					.split(',')
-					.map((s) => s.trim())
-					.filter(Boolean)
-			: [value]
-	} else if (Array.isArray(value)) {
-		const strings = value
-			.map((item) => {
-				if (typeof item === 'string') return item
-				// Handle {"name": "Python"} objects in programmingLanguage
-				if (typeof item === 'object' && item !== null) {
-					const object = item as Record<string, unknown>
-					return typeof object.name === 'string' ? object.name : undefined
-				}
-			})
-			.filter((s): s is string => typeof s === 'string' && s.length > 0)
-		if (strings.length > 0) result[key] = strings
-	}
-}
-
-function normalizePersonOrOrg(value: unknown): CodeMetaPersonOrOrg | undefined {
+/**
+ * Preprocess a raw person/org value into a normalized shape.
+ * Handles: plain string → {name: string}, `@type`→`type`, `@id`→`id`,
+ * affiliation-as-object → affiliation string.
+ */
+function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
 		return { name: value }
 	}
@@ -273,49 +119,72 @@ function normalizePersonOrOrg(value: unknown): CodeMetaPersonOrOrg | undefined {
 	}
 
 	const object = value as Record<string, unknown>
-	const person: CodeMetaPersonOrOrg = {}
+	const result: Record<string, unknown> = {}
 
+	// Normalize @type → type
 	if (typeof object['@type'] === 'string') {
 		const rawType = object['@type'].toLowerCase()
-		if (rawType === 'person') person.type = 'Person'
-		else if (rawType === 'organization') person.type = 'Organization'
+		if (rawType === 'person') result.type = 'Person'
+		else if (rawType === 'organization') result.type = 'Organization'
 	}
 
-	if (typeof object['@id'] === 'string') person.id = object['@id']
-	if (typeof object.name === 'string') person.name = object.name
-	if (typeof object.givenName === 'string') person.givenName = object.givenName
-	if (typeof object.familyName === 'string') person.familyName = object.familyName
-	if (typeof object.email === 'string') person.email = object.email
-	if (typeof object.url === 'string') person.url = object.url
+	// Normalize @id → id
+	if (typeof object['@id'] === 'string') result.id = object['@id']
 
-	// Affiliation can be a string or an object with a name
+	// Pass through standard fields
+	if (typeof object.name === 'string') result.name = object.name
+	if (typeof object.givenName === 'string') result.givenName = object.givenName
+	if (typeof object.familyName === 'string') result.familyName = object.familyName
+	if (typeof object.email === 'string') result.email = object.email
+	if (typeof object.url === 'string') result.url = object.url
+
+	// Normalize affiliation: string or {name: string}
 	if (typeof object.affiliation === 'string') {
-		person.affiliation = object.affiliation
+		result.affiliation = object.affiliation
 	} else if (typeof object.affiliation === 'object' && object.affiliation !== null) {
 		const aff = object.affiliation as Record<string, unknown>
-		if (typeof aff.name === 'string') person.affiliation = aff.name
+		if (typeof aff.name === 'string') result.affiliation = aff.name
 	}
 
-	// Only return if we got at least some identifying info
-	if (person.name || person.givenName || person.familyName || person.email) {
-		return person
+	// Only return if we have some identifying info
+	if (result.name || result.givenName || result.familyName || result.email) {
+		return result
 	}
 
 	return undefined
 }
 
-function normalizePersonArray(value: unknown): CodeMetaPersonOrOrg[] {
-	if (Array.isArray(value)) {
-		return value
-			.map((item) => normalizePersonOrOrg(item))
-			.filter((p): p is CodeMetaPersonOrOrg => p !== undefined)
-	}
+/**
+ * A person/org array that normalizes single values to arrays,
+ * and each element through `preprocessPersonOrOrg`.
+ */
+const codeMetaPersonArray = z
+	.preprocess((value) => {
+		if (value === undefined || value === null) return undefined
 
-	const single = normalizePersonOrOrg(value)
-	return single ? [single] : []
-}
+		const items = Array.isArray(value) ? value : [value]
+		const normalized = items
+			.map((item) => preprocessPersonOrOrg(item))
+			.filter((p): p is Record<string, unknown> => p !== undefined)
 
-function normalizeDependency(value: unknown): CodeMetaDependency | undefined {
+		return normalized.length > 0 ? normalized : undefined
+	}, z.array(codeMetaPersonOrOrgSchema).optional())
+	.optional()
+
+// ─── Dependency sub-schema ───────────────────────────────────────────
+
+const codeMetaDependencySchema = z.object({
+	identifier: nonEmptyString,
+	name: nonEmptyString,
+	runtimePlatform: nonEmptyString,
+	version: nonEmptyString,
+})
+
+/**
+ * Preprocess a raw dependency value into a normalized shape.
+ * Handles: plain string → {name: string}.
+ */
+function preprocessDependency(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
 		return { name: value }
 	}
@@ -325,7 +194,7 @@ function normalizeDependency(value: unknown): CodeMetaDependency | undefined {
 	}
 
 	const object = value as Record<string, unknown>
-	const dep: CodeMetaDependency = {}
+	const dep: Record<string, unknown> = {}
 
 	if (typeof object.name === 'string') dep.name = object.name
 	if (typeof object.identifier === 'string') dep.identifier = object.identifier
@@ -339,25 +208,126 @@ function normalizeDependency(value: unknown): CodeMetaDependency | undefined {
 	return undefined
 }
 
-function assignDependencyArray(
-	result: Record<string, unknown>,
-	source: Record<string, unknown>,
-	key: string,
-): void {
-	const value = source[key]
-	if (value === undefined || value === null) return
+/**
+ * A dependency array that normalizes single values to arrays,
+ * and each element through `preprocessDependency`.
+ */
+const codeMetaDependencyArray = z
+	.preprocess((value) => {
+		if (value === undefined || value === null) return undefined
 
-	if (Array.isArray(value)) {
-		const deps = value
-			.map((item) => normalizeDependency(item))
-			.filter((d): d is CodeMetaDependency => d !== undefined)
-		if (deps.length > 0) {
-			result[key] = deps
+		const items = Array.isArray(value) ? value : [value]
+		const normalized = items
+			.map((item) => preprocessDependency(item))
+			.filter((d): d is Record<string, unknown> => d !== undefined)
+
+		return normalized.length > 0 ? normalized : undefined
+	}, z.array(codeMetaDependencySchema).optional())
+	.optional()
+
+// ─── Top-level schema ────────────────────────────────────────────────
+
+const codeMetaJsonDataSchema = z.object({
+	applicationCategory: codeMetaString,
+	applicationSubCategory: codeMetaString,
+	author: codeMetaPersonArray,
+	buildInstructions: codeMetaUrl,
+	codeRepository: codeMetaUrl,
+	continuousIntegration: codeMetaUrl,
+	contributor: codeMetaPersonArray,
+	copyrightHolder: codeMetaPersonArray,
+	copyrightYear: z.preprocess((v) => {
+		if (typeof v === 'number') return v
+		if (typeof v === 'string') {
+			const parsed = Number.parseInt(v, 10)
+			return Number.isNaN(parsed) ? undefined : parsed
 		}
-	} else {
-		const dep = normalizeDependency(value)
-		if (dep) {
-			result[key] = [dep]
+		return undefined
+	}, z.number().optional()),
+	dateCreated: codeMetaString,
+	dateModified: codeMetaString,
+	datePublished: codeMetaString,
+	description: codeMetaString,
+	developmentStatus: codeMetaString,
+	downloadUrl: codeMetaUrl,
+	funder: codeMetaPersonArray,
+	funding: codeMetaString,
+	identifier: codeMetaString,
+	installUrl: codeMetaUrl,
+	isAccessibleForFree: z.boolean().optional(),
+	issueTracker: codeMetaUrl,
+	keywords: codeMetaStringArray,
+	license: codeMetaLicense,
+	maintainer: codeMetaPersonArray,
+	name: codeMetaString,
+	operatingSystem: codeMetaStringArray,
+	programmingLanguage: codeMetaStringArray,
+	readme: codeMetaUrl,
+	relatedLink: codeMetaLicense,
+	releaseNotes: codeMetaString,
+	runtimePlatform: codeMetaStringArray,
+	softwareHelp: codeMetaUrl,
+	softwareRequirements: codeMetaDependencyArray,
+	softwareSuggestions: codeMetaDependencyArray,
+	softwareVersion: codeMetaString,
+	url: codeMetaUrl,
+	version: codeMetaString,
+})
+
+export type CodeMetaJsonData = z.infer<typeof codeMetaJsonDataSchema>
+
+// ─── V1 property name mapping ────────────────────────────────────────
+
+/** Map v1 property names to their v2/v3 equivalents. */
+const v1PropertyMap: Record<string, string> = {
+	agents: 'author',
+	contIntegration: 'continuousIntegration',
+	depends: 'softwareRequirements',
+	suggests: 'softwareSuggestions',
+	title: 'name',
+}
+
+// ─── Parser ──────────────────────────────────────────────────────────
+
+/**
+ * Parse a codemeta.json file, normalizing v1/v2/v3 into a consistent shape.
+ */
+export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined {
+	let raw: Record<string, unknown>
+	try {
+		raw = JSON.parse(content) as Record<string, unknown>
+	} catch {
+		return undefined
+	}
+
+	if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+		return undefined
+	}
+
+	const migrated = migrateV1Properties(raw)
+
+	// dateReleased → datePublished fallback
+	if (migrated.datePublished === undefined && typeof migrated.dateReleased === 'string') {
+		migrated.datePublished = migrated.dateReleased
+	}
+
+	return codeMetaJsonDataSchema.parse(migrated)
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Strip `@`-prefixed JSON-LD keys and remap v1 property names.
+ */
+function migrateV1Properties(raw: Record<string, unknown>): Record<string, unknown> {
+	const result: Record<string, unknown> = {}
+	for (const [key, value] of Object.entries(raw)) {
+		if (key.startsWith('@')) continue
+		const mappedKey = v1PropertyMap[key] ?? key
+		// Don't overwrite if already set (prefer v2/v3 names)
+		if (!(mappedKey in result)) {
+			result[mappedKey] = value
 		}
 	}
+	return result
 }

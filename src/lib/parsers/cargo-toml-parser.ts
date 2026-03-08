@@ -9,60 +9,64 @@
  */
 
 import { parse as parseToml } from 'smol-toml'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed author entry from the `authors` field. */
-export type CargoTomlAuthorEntry = {
-	email: string | undefined
-	name: string
-}
+const cargoTomlAuthorEntrySchema = z.object({
+	email: z.string().optional(),
+	name: z.string(),
+})
 
-/** Parsed dependency with version info. */
-export type CargoTomlDependencyEntry = {
-	name: string
-	version: string | undefined
-}
+const cargoTomlDependencyEntrySchema = z.object({
+	name: z.string(),
+	version: z.string().optional(),
+})
 
-/** Parsed result from a `Cargo.toml` file. */
-export type CargoToml = {
+const cargoTomlSchema = z.object({
 	/** Parsed author entries from `package.authors`. */
-	authors: CargoTomlAuthorEntry[]
+	authors: z.array(cargoTomlAuthorEntrySchema),
 	/** Build dependency names and versions from `[build-dependencies]`. */
-	buildDependencies: CargoTomlDependencyEntry[]
+	buildDependencies: z.array(cargoTomlDependencyEntrySchema),
 	/** Category strings from `package.categories`. */
-	categories: string[]
+	categories: stringArray,
 	/** Dependencies from `[dependencies]`. */
-	dependencies: CargoTomlDependencyEntry[]
+	dependencies: z.array(cargoTomlDependencyEntrySchema),
 	/** Description from `package.description`. */
-	description: string | undefined
+	description: nonEmptyString,
 	/** Dev dependency names and versions from `[dev-dependencies]`. */
-	devDependencies: CargoTomlDependencyEntry[]
+	devDependencies: z.array(cargoTomlDependencyEntrySchema),
 	/** Documentation URL from `package.documentation`. */
-	documentation: string | undefined
+	documentation: optionalUrl,
 	/** Rust edition from `package.edition`. */
-	edition: string | undefined
+	edition: nonEmptyString,
 	/** Homepage URL from `package.homepage`. */
-	homepage: string | undefined
+	homepage: optionalUrl,
 	/** Keywords from `package.keywords`. */
-	keywords: string[]
+	keywords: stringArray,
 	/** License identifier from `package.license`. */
-	license: string | undefined
+	license: nonEmptyString,
 	/** License file path from `package.license-file`. */
-	licenseFile: string | undefined
+	licenseFile: nonEmptyString,
 	/** Package name from `package.name`. */
-	name: string | undefined
+	name: nonEmptyString,
 	/** Readme file path from `package.readme`. */
-	readme: string | undefined
+	readme: nonEmptyString,
 	/** Repository URL from `package.repository`. */
-	repository: string | undefined
+	repository: optionalUrl,
 	/** Minimum Rust version from `package.rust-version`. */
-	rustVersion: string | undefined
+	rustVersion: nonEmptyString,
 	/** Version string from `package.version`. */
-	version: string | undefined
+	version: nonEmptyString,
 	/** Workspace members from `[workspace]`. */
-	workspaceMembers: string[]
-}
+	workspaceMembers: stringArray,
+})
+
+export type CargoToml = z.infer<typeof cargoTomlSchema>
+
+type CargoTomlAuthorEntry = CargoToml['authors'][number]
+type CargoTomlDependencyEntry = CargoToml['dependencies'][number]
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -81,7 +85,7 @@ export function parseCargoToml(content: string): CargoToml | undefined {
 	const pkg = (data.package ?? {}) as Record<string, unknown>
 	const workspace = data.workspace as Record<string, unknown> | undefined
 
-	return {
+	return cargoTomlSchema.parse({
 		authors: parseAuthors(pkg.authors),
 		buildDependencies: parseDependencies(
 			(data['build-dependencies'] ?? {}) as Record<string, unknown>,
@@ -102,7 +106,7 @@ export function parseCargoToml(content: string): CargoToml | undefined {
 		rustVersion: nonEmpty(pkg['rust-version']),
 		version: nonEmpty(pkg.version),
 		workspaceMembers: toStringArray(workspace?.members),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

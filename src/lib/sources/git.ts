@@ -158,9 +158,14 @@ export const gitSource: MetadataSource<'git'> = {
 		const remoteStatusEntries = await Promise.all(
 			remotes.map(async (remote) => {
 				for (const branch of ['main', 'master']) {
-					const ref = `${remote.name}/${branch}`
+					const reference = `${remote.name}/${branch}`
 					try {
-						const output = await git.raw(['rev-list', '--left-right', '--count', `HEAD...${ref}`])
+						const output = await git.raw([
+							'rev-list',
+							'--left-right',
+							'--count',
+							`HEAD...${reference}`,
+						])
 						const [ahead, behind] = output.trim().split('\t').map(Number)
 						return [remote.name, { ahead, behind }] as const
 					} catch {

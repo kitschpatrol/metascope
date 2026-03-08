@@ -1,21 +1,27 @@
+/* eslint-disable complexity */
+/* eslint-disable ts/naming-convention */
 /* eslint-disable ts/no-unsafe-member-access */
 /* eslint-disable ts/no-explicit-any */
 
 import { parse as parseYaml } from 'yaml'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+const goreleaserDataSchema = z.object({
+	description: nonEmptyString,
+	homepage: optionalUrl,
+	license: nonEmptyString,
+	maintainer: nonEmptyString,
+	operating_systems: stringArray,
+	project_name: nonEmptyString,
+	repository_url: optionalUrl,
+	vendor: nonEmptyString,
+})
+
 /** Parsed goreleaser metadata */
-export type GoreleaserData = {
-	description: null | string
-	homepage: null | string
-	license: null | string
-	maintainer: null | string
-	operating_systems: string[]
-	project_name: null | string
-	repository_url: null | string
-	vendor: null | string
-}
+export type GoreleaserData = z.infer<typeof goreleaserDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -50,7 +56,7 @@ function isNonEmptyString(value: unknown): value is string {
  * Get the first non-empty string value of a given field from an array of
  * package-manager section entries. Skips Go template strings (containing `{{`).
  */
-function firstString(sections: unknown[], field: string): null | string {
+function firstString(sections: unknown[], field: string): string | undefined {
 	for (const section of sections) {
 		if (isPlainObject(section)) {
 			const value = (section as any)[field]
@@ -60,7 +66,7 @@ function firstString(sections: unknown[], field: string): null | string {
 		}
 	}
 
-	return null
+	return undefined
 }
 
 /**
@@ -101,14 +107,14 @@ export function parseGoreleaser(source: string): GoreleaserData | undefined {
 	if (!isPlainObject(data)) return undefined
 
 	const result: GoreleaserData = {
-		description: null,
-		homepage: null,
-		license: null,
-		maintainer: null,
+		description: undefined,
+		homepage: undefined,
+		license: undefined,
+		maintainer: undefined,
 		operating_systems: [],
-		project_name: null,
-		repository_url: null,
-		vendor: null,
+		project_name: undefined,
+		repository_url: undefined,
+		vendor: undefined,
 	}
 
 	// Project_name
@@ -193,5 +199,5 @@ export function parseGoreleaser(source: string): GoreleaserData | undefined {
 		(os) => GOOS_MAP[os] ?? os.charAt(0).toUpperCase() + os.slice(1),
 	)
 
-	return result
+	return goreleaserDataSchema.parse(result)
 }

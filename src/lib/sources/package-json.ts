@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { PackageJsonData } from '../parsers/package-json-parser'
-import { parsePackageJson } from '../parsers/package-json-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
+import { parsePackageJson } from '../parsers/package-json-parser'
 
 export type PackageData = PackageJsonData
 

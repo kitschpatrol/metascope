@@ -1,18 +1,26 @@
+/* eslint-disable ts/naming-convention */
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type GoModDependency = {
-	module: string
-	version: string
-}
+const goModDependencySchema = z.object({
+	module: z.string(),
+	version: z.string(),
+})
+
+const goModDataSchema = z.object({
+	dependencies: z.array(goModDependencySchema),
+	go_version: nonEmptyString,
+	module: nonEmptyString,
+	repository_url: optionalUrl,
+	tool_dependencies: stringArray,
+})
+
+export type GoModDependency = z.infer<typeof goModDependencySchema>
 
 /** Parsed go.mod metadata */
-export type GoModData = {
-	dependencies: GoModDependency[]
-	go_version: null | string
-	module: null | string
-	repository_url: null | string
-	tool_dependencies: string[]
-}
+export type GoModData = z.infer<typeof goModDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -34,13 +42,13 @@ const HOST_SEGMENTS: Record<string, number> = {
 }
 
 /** Derive a repository URL from a Go module path, if on a known host. */
-function moduleToRepoUrl(modulePath: string): null | string {
+function moduleToRepoUrl(modulePath: string): string | undefined {
 	const segments = modulePath.split('/')
 	const host = segments[0]
-	if (!host) return null
+	if (!host) return undefined
 
 	const needed = HOST_SEGMENTS[host]
-	if (!needed || segments.length < needed) return null
+	if (!needed || segments.length < needed) return undefined
 
 	let repoPath = segments.slice(0, needed).join('/')
 	// Strip /vN major-version suffix
@@ -63,7 +71,7 @@ function isIndirect(line: string): boolean {
 /** Parse a require-style line: `module version [// indirect]` */
 function parseRequireLine(
 	line: string,
-): { indirect: boolean; module: string; version: string } | undefined {
+): undefined | { indirect: boolean; module: string; version: string } {
 	const indirect = isIndirect(line)
 	const clean = stripComment(line)
 	const match = /^(\S+)\s+(\S+)/.exec(clean)
@@ -73,7 +81,7 @@ function parseRequireLine(
 }
 
 /** Parse a replace-style line: `old [version] => new version` or `old [version] => ./local` */
-function parseReplaceLine(line: string): { from: string; to: Replacement } | undefined {
+function parseReplaceLine(line: string): undefined | { from: string; to: Replacement } {
 	const clean = stripComment(line)
 	const parts = clean.split('=>')
 	if (parts.length !== 2) return undefined
@@ -113,9 +121,9 @@ function parseToolLine(line: string): string | undefined {
 export function parseGoMod(source: string): GoModData {
 	const data: GoModData = {
 		dependencies: [],
-		go_version: null,
-		module: null,
-		repository_url: null,
+		go_version: undefined,
+		module: undefined,
+		repository_url: undefined,
 		tool_dependencies: [],
 	}
 
@@ -223,5 +231,5 @@ export function parseGoMod(source: string): GoModData {
 		data.repository_url = moduleToRepoUrl(data.module)
 	}
 
-	return data
+	return goModDataSchema.parse(data)
 }

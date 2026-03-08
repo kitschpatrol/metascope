@@ -45,14 +45,14 @@ describe('pypi source', () => {
 	it('should return empty object for nonexistent package', async () => {
 		// Create a temp directory with a fake pyproject.toml
 
-		const tempDirectory = mkdtempSync(join('/tmp', 'pypi-test-'))
+		const temporaryDirectory = mkdtempSync(join('/tmp', 'pypi-test-'))
 		writeFileSync(
-			join(tempDirectory, 'pyproject.toml'),
+			join(temporaryDirectory, 'pyproject.toml'),
 			'[project]\nname = "this-package-definitely-does-not-exist-on-pypi-12345"',
 		)
 		const context: SourceContext = {
 			credentials: {},
-			path: tempDirectory,
+			path: temporaryDirectory,
 		}
 		const result = await pypiSource.extract(context)
 		expect(result).toEqual({})

@@ -87,12 +87,12 @@ const mockContext: MetadataContext = {
 	updates: {},
 }
 
-const identityFn = (context: MetadataContext) => ({ name: context.codemeta.name })
+const identityFunction = (context: MetadataContext) => ({ name: context.codemeta.name })
 
 describe('defineTemplate', () => {
 	it('should be an identity function', () => {
-		const template = defineTemplate(identityFn)
-		expect(template).toBe(identityFn)
+		const template = defineTemplate(identityFunction)
+		expect(template).toBe(identityFunction)
 	})
 
 	it('should produce the expected output shape', () => {
@@ -169,8 +169,8 @@ describe('defineTemplate', () => {
 		// Templates that only use the first arg still work since
 		// JS allows calling a function with more args than declared
 		// eslint-disable-next-line unicorn/consistent-function-scoping
-		const singleArgTemplate = (context: MetadataContext) => ({ name: context.codemeta.name })
-		const template = defineTemplate(singleArgTemplate)
+		const singleArgumentTemplate = (context: MetadataContext) => ({ name: context.codemeta.name })
+		const template = defineTemplate(singleArgumentTemplate)
 
 		const result = template(mockContext, {})
 		expect(result).toEqual({ name: 'test-package' })

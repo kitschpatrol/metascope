@@ -216,7 +216,7 @@ All `undefined` values and empty source objects are deep-stripped from the outpu
 
 ```ts
 function defineTemplate<T>(
-  fn: (context: MetadataContext, templateData: TemplateData) => T,
+  transform: (context: MetadataContext, templateData: TemplateData) => T,
 ): Template<T>
 ```
 

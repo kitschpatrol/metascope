@@ -100,7 +100,7 @@ describe('parseCodemetaJson', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.name).toBe('DeepSeaTreasure')
-		// v1 "agents" → "author"
+		// V1 "agents" → "author"
 		expect(result!.author).toBeDefined()
 		expect(result!.author!.length).toBe(2)
 		expect(result!.author![0].name).toBe('Thomas Cassimon')
@@ -110,7 +110,7 @@ describe('parseCodemetaJson', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'v1-all-fields/codemeta.json'), 'utf8')
 		const result = parseCodemetaJson(content)
 
-		// v1 "depends" → "softwareRequirements"
+		// V1 "depends" → "softwareRequirements"
 		expect(result!.softwareRequirements).toBeDefined()
 		expect(result!.softwareRequirements!.length).toBeGreaterThan(0)
 		expect(result!.softwareRequirements![0].name).toBe('export_fig')

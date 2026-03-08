@@ -5,77 +5,83 @@
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
+import { z } from 'zod'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type GemSpecDependency = {
-	name: string
-	requirements: string[]
-	type: 'development' | 'runtime'
-}
+const gemSpecDependencySchema = z.object({
+	name: z.string(),
+	requirements: z.array(z.string()),
+	type: z.enum(['development', 'runtime']),
+})
 
 /** @public */
-export type GemSpec = {
-	authors: string[]
-	bindir: null | string
-	cert_chain: string[]
-	dependencies: GemSpecDependency[]
-	description: null | string
-	email: null | string | string[]
-	executables: string[]
-	extensions: string[]
+const gemSpecSchema = z.object({
+	authors: stringArray,
+	bindir: nonEmptyString,
+	cert_chain: stringArray,
+	dependencies: z.array(gemSpecDependencySchema),
+	description: nonEmptyString,
+	email: z.union([z.string(), z.array(z.string())]).optional(),
+	executables: stringArray,
+	extensions: stringArray,
 	/** Any attributes not explicitly modeled above */
-	extra: Record<string, unknown>
-	extra_rdoc_files: string[]
-	files: string[]
-	homepage: null | string
-	license: null | string
-	licenses: string[]
-	metadata: Record<string, string>
-	name: null | string
-	platform: null | string
-	post_install_message: null | string
-	rdoc_options: string[]
-	require_paths: string[]
-	required_ruby_version: null | string
-	required_rubygems_version: null | string
-	signing_key: null | string
-	summary: null | string
-	test_files: string[]
-	version: null | string
-}
+	extra: z.record(z.string(), z.unknown()),
+	extra_rdoc_files: stringArray,
+	files: stringArray,
+	homepage: optionalUrl,
+	license: nonEmptyString,
+	licenses: stringArray,
+	metadata: z.record(z.string(), z.string()),
+	name: nonEmptyString,
+	platform: nonEmptyString,
+	post_install_message: nonEmptyString,
+	rdoc_options: stringArray,
+	require_paths: stringArray,
+	required_ruby_version: nonEmptyString,
+	required_rubygems_version: nonEmptyString,
+	signing_key: nonEmptyString,
+	summary: nonEmptyString,
+	test_files: stringArray,
+	version: nonEmptyString,
+})
+
+export type GemSpec = z.infer<typeof gemSpecSchema>
+
+type GemSpecDependency = GemSpec['dependencies'][number]
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function emptySpec(): GemSpec {
 	return {
 		authors: [],
-		bindir: null,
+		bindir: undefined,
 		cert_chain: [],
 		dependencies: [],
-		description: null,
-		email: null,
+		description: undefined,
+		email: undefined,
 		executables: [],
 		extensions: [],
 		extra: {},
 		extra_rdoc_files: [],
 		files: [],
-		homepage: null,
-		license: null,
+		homepage: undefined,
+		license: undefined,
 		licenses: [],
 		metadata: {},
-		name: null,
-		platform: null,
-		post_install_message: null,
+		name: undefined,
+		platform: undefined,
+		post_install_message: undefined,
 		rdoc_options: [],
 		require_paths: [],
-		required_ruby_version: null,
-		required_rubygems_version: null,
-		signing_key: null,
-		summary: null,
+		required_ruby_version: undefined,
+		required_rubygems_version: undefined,
+		signing_key: undefined,
+		summary: undefined,
 		test_files: [],
-		version: null,
+		version: undefined,
 	}
 }
 
@@ -89,7 +95,7 @@ function children(node: Node): Node[] {
 const IDENTITY_METHODS = new Set(['-@', 'dup', 'freeze'])
 
 /** Extract the raw string value from a tree-sitter string/symbol node. */
-function extractString(node: Node): null | string {
+function extractString(node: Node): string | undefined {
 	switch (node.type) {
 		case 'call': {
 			// Handle "value".freeze, "value".dup, -"value" (frozen string literal)
@@ -98,7 +104,7 @@ function extractString(node: Node): null | string {
 				const receiver = node.childForFieldName('receiver')
 				if (receiver) return extractString(receiver)
 			}
-			return null
+			return undefined
 		}
 		case 'float':
 		case 'integer': {
@@ -119,7 +125,7 @@ function extractString(node: Node): null | string {
 			return node.text.replaceAll(/^["']|["']$/g, '')
 		}
 		default: {
-			return null
+			return undefined
 		}
 	}
 }
@@ -129,7 +135,7 @@ function extractStringArray(node: Node): string[] {
 	if (node.type === 'array') {
 		return children(node)
 			.map((element) => extractString(element))
-			.filter((s): s is string => s !== null)
+			.filter((s): s is string => s !== undefined)
 	}
 	// %w[] word arrays appear as string_array
 	if (node.type === 'string_array') {
@@ -137,7 +143,7 @@ function extractStringArray(node: Node): string[] {
 	}
 	// Single value → wrap in array
 	const single = extractString(node)
-	return single === null ? [] : [single]
+	return single === undefined ? [] : [single]
 }
 
 /**
@@ -145,7 +151,7 @@ function extractStringArray(node: Node): string[] {
  * Returns string | string[] | null — we intentionally skip expressions
  * we can't statically evaluate (method calls, constants, etc.).
  */
-function extractValue(node: Node): null | string | string[] {
+function extractValue(node: Node): string | string[] | undefined {
 	if (node.type === 'array' || node.type === 'string_array') {
 		return extractStringArray(node)
 	}
@@ -159,18 +165,18 @@ function extractValue(node: Node): null | string | string[] {
 	}
 	if (node.type === 'true') return 'true'
 	if (node.type === 'false') return 'false'
-	if (node.type === 'nil') return null
+	if (node.type === 'nil') return undefined
 	return extractString(node)
 }
 
 /** Resolve the attribute name from the LHS of `spec.foo = ...` */
-function resolveAttribute(node: Node): null | string {
+function resolveAttribute(node: Node): string | undefined {
 	// Node is a `call` like `spec.name`  or a  `method_call`
 	if (node.type === 'call') {
 		const methodNode = node.childForFieldName('method')
-		return methodNode?.text ?? null
+		return methodNode?.text ?? undefined
 	}
-	return null
+	return undefined
 }
 
 // ─── Dependency helpers ──────────────────────────────────────────────────────
@@ -181,18 +187,18 @@ const DEP_METHODS: Record<string, GemSpecDependency['type']> = {
 	add_runtime_dependency: 'runtime',
 }
 
-function tryParseDependency(node: Node): GemSpecDependency | null {
+function tryParseDependency(node: Node): GemSpecDependency | undefined {
 	// We're looking for:  spec.add_dependency "name", "~> 1.0"
-	if (node.type !== 'call' && node.type !== 'method_call') return null
+	if (node.type !== 'call' && node.type !== 'method_call') return undefined
 
 	const methodNode = node.childForFieldName('method')
-	if (!methodNode) return null
+	if (!methodNode) return undefined
 
 	// Method is itself a `call` node like `spec.add_dependency`
-	let methodName: null | string = null
+	let methodName: string | undefined = undefined
 	if (methodNode.type === 'call') {
 		const inner = methodNode.childForFieldName('method')
-		methodName = inner?.text ?? null
+		methodName = inner?.text ?? undefined
 	} else if (methodNode.type === 'identifier') {
 		methodName = methodNode.text
 	} else {
@@ -225,23 +231,23 @@ function tryParseDependency(node: Node): GemSpecDependency | null {
 	}
 
 	// eslint-disable-next-line ts/no-unnecessary-condition
-	if (!methodName || !DEP_METHODS[methodName]) return null
+	if (!methodName || !DEP_METHODS[methodName]) return undefined
 
 	const depType = DEP_METHODS[methodName]
 
 	const args = node.childForFieldName('arguments')
-	if (!args) return null
+	if (!args) return undefined
 
 	const argNodes = children(args)
-	if (argNodes.length === 0) return null
+	if (argNodes.length === 0) return undefined
 
 	const depName = extractString(argNodes[0])
-	if (!depName) return null
+	if (!depName) return undefined
 
 	const requirements = argNodes
 		.slice(1)
 		.map((element) => extractString(element))
-		.filter((s): s is string => s !== null)
+		.filter((s): s is string => s !== undefined)
 
 	return { name: depName, requirements, type: depType }
 }
@@ -334,7 +340,7 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 			// Email can be string or array
 			if (attribute === 'email') {
 				const value = extractValue(rhs)
-				if (value !== null) spec.email = value
+				if (value !== undefined) spec.email = value
 				return
 			}
 
@@ -349,7 +355,7 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 			// String attributes
 			if (STRING_ATTRS.includes(attribute as keyof GemSpec)) {
 				const value = extractString(rhs)
-				if (value !== null) (spec as any)[attribute] = value
+				if (value !== undefined) (spec as any)[attribute] = value
 				return
 			}
 
@@ -362,7 +368,7 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 
 			// Anything else → stash in extra
 			const value = extractValue(rhs)
-			if (value !== null) spec.extra[attribute] = value
+			if (value !== undefined) spec.extra[attribute] = value
 			return
 		}
 
@@ -390,5 +396,5 @@ export async function parseGemspec(source: string): Promise<GemSpec> {
 	}
 
 	visit(tree.rootNode)
-	return spec
+	return gemSpecSchema.parse(spec)
 }

@@ -27,7 +27,7 @@ describe('parseGoMod', () => {
 		const result = parseGoMod(content)
 
 		expect(result.module).toBe('dagger/dev')
-		expect(result.repository_url).toBeNull()
+		expect(result.repository_url).toBeUndefined()
 	})
 
 	it('should extract direct dependencies and skip indirect ones', () => {

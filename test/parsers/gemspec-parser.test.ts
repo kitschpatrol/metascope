@@ -62,15 +62,15 @@ describe('parseGemspec', () => {
 		)
 		const result = await parseGemspec(content)
 
-		const runtimeDeps = result.dependencies.filter((d) => d.type === 'runtime')
-		const devDeps = result.dependencies.filter((d) => d.type === 'development')
+		const runtimeDependencies = result.dependencies.filter((d) => d.type === 'runtime')
+		const developmentDependencies = result.dependencies.filter((d) => d.type === 'development')
 
-		expect(runtimeDeps.length).toBeGreaterThanOrEqual(2)
-		expect(devDeps.length).toBeGreaterThanOrEqual(4)
+		expect(runtimeDependencies.length).toBeGreaterThanOrEqual(2)
+		expect(developmentDependencies.length).toBeGreaterThanOrEqual(4)
 
-		expect(runtimeDeps.find((d) => d.name === 'activesupport')).toBeDefined()
-		expect(devDeps.find((d) => d.name === 'bundler')).toBeDefined()
-		expect(devDeps.find((d) => d.name === 'minitest')).toBeDefined()
+		expect(runtimeDependencies.find((d) => d.name === 'activesupport')).toBeDefined()
+		expect(developmentDependencies.find((d) => d.name === 'bundler')).toBeDefined()
+		expect(developmentDependencies.find((d) => d.name === 'minitest')).toBeDefined()
 	})
 
 	it('should parse all 196 fixtures without throwing', async () => {

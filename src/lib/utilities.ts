@@ -1,4 +1,3 @@
-import type { CodeMetaJsonData, CodeMetaPersonOrOrg } from './parsers/codemeta-json-parser'
 import is from '@sindresorhus/is'
 import { replaceCore } from 'case-police'
 import abbreviates from 'case-police/dict/abbreviates.json'
@@ -9,6 +8,8 @@ import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
 import type { PackageData } from './metadata-types'
+import type { CodeMetaJsonData } from './parsers/codemeta-json-parser'
+import type { CodeMetaPersonOrOrg } from './sources/codemeta-json'
 
 const casePoliceDict: Record<string, string> = {
 	...abbreviates,

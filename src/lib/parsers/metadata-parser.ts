@@ -12,20 +12,23 @@
  */
 
 import { parse as parseYaml } from 'yaml'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed result from a metadata file. */
-export type Metadata = {
+const metadataSchema = z.object({
 	/** Project description. */
-	description: string | undefined
+	description: nonEmptyString,
 	/** Project homepage URL (resolved from homepage, url, repository, or website). */
-	homepage: string | undefined
+	homepage: optionalUrl,
 	/** Keyword list (resolved from keywords, tags, or topics). */
-	keywords: string[]
+	keywords: stringArray,
 	/** Repository URL (normalized, stripped of git+ prefix and .git suffix). */
-	repository: string | undefined
-}
+	repository: optionalUrl,
+})
+
+export type Metadata = z.infer<typeof metadataSchema>
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -59,12 +62,12 @@ export function parseMetadata(content: string, format: 'json' | 'yaml'): Metadat
 		parseKeywords(record.topics) ??
 		[]
 
-	return {
-		description: nonEmpty(record.description),
+	return metadataSchema.parse({
+		description: record.description,
 		homepage,
 		keywords,
 		repository,
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

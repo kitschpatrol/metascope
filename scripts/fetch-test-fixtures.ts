@@ -140,8 +140,8 @@ function isValidLegacyOpenFrameworksAddonXml(filename: string, content: string):
 }
 
 function isValidYaml(_filename: string, content: string): boolean {
-	const doc = parseYaml(content)
-	return doc.errors.length === 0 && doc.contents !== null
+	const yamlDocument = parseYaml(content)
+	return yamlDocument.errors.length === 0 && yamlDocument.contents !== null
 }
 
 function isValidPlist(_filename: string, content: string): boolean {
@@ -203,18 +203,18 @@ function isValidProcessingLibraryProperties(filename: string, content: string): 
 function isValidPbxproj(_filename: string, content: string): boolean {
 	// Write to temp file
 
-	const tempProjectPath = path.join(os.tmpdir(), `${randomUUID()}-project.pbxproj`)
-	fsSync.writeFileSync(tempProjectPath, content, 'utf8')
+	const temporaryProjectPath = path.join(os.tmpdir(), `${randomUUID()}-project.pbxproj`)
+	fsSync.writeFileSync(temporaryProjectPath, content, 'utf8')
 	let valid = false
 
 	try {
-		XcodeProject.open(tempProjectPath)
+		XcodeProject.open(temporaryProjectPath)
 		valid = true
 	} catch {
 		valid = false
 	} finally {
 		// Clean up temp file
-		fsSync.rmSync(tempProjectPath, { force: true })
+		fsSync.rmSync(temporaryProjectPath, { force: true })
 	}
 
 	return valid

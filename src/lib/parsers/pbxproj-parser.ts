@@ -13,36 +13,39 @@
  */
 
 import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
+import { z } from 'zod'
+import { nonEmptyString, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** A Swift Package Manager dependency. */
-export type PbxprojDependency = {
-	/** Repository URL. */
-	url: string
-}
+const pbxprojDependencySchema = z.object({
+	url: z.string(),
+})
 
-/** Parsed result from a `.pbxproj` file. */
-export type Pbxproj = {
+const pbxprojSchema = z.object({
 	/** Copyright holder name. */
-	copyrightHolder?: string
+	copyrightHolder: nonEmptyString,
 	/** Copyright year. */
-	copyrightYear?: string
+	copyrightYear: nonEmptyString,
 	/** Swift Package Manager dependencies. */
-	dependencies: PbxprojDependency[]
+	dependencies: z.array(pbxprojDependencySchema),
 	/** Bundle identifier (e.g. "com.example.app"). */
-	identifier?: string
+	identifier: nonEmptyString,
 	/** Display name of the app or target. */
-	name?: string
+	name: nonEmptyString,
 	/** Inferred operating systems with deployment targets. */
-	operatingSystems: string[]
+	operatingSystems: stringArray,
 	/** Organization name from project attributes. */
-	organizationName?: string
+	organizationName: nonEmptyString,
 	/** Detected programming language (Swift or Objective-C). */
-	programmingLanguage?: string
+	programmingLanguage: nonEmptyString,
 	/** Marketing version string. */
-	version?: string
-}
+	version: nonEmptyString,
+})
+
+export type Pbxproj = z.infer<typeof pbxprojSchema>
+
+type PbxprojDependency = Pbxproj['dependencies'][number]
 
 // ─── Constants ──────────────────────────────────────────────────────
 
@@ -164,7 +167,7 @@ export function parsePbxproj(filePath: string): Pbxproj | undefined {
 		}
 	}
 
-	return {
+	return pbxprojSchema.parse({
 		copyrightHolder,
 		copyrightYear,
 		dependencies: parseDependencies(root),
@@ -179,7 +182,7 @@ export function parsePbxproj(filePath: string): Pbxproj | undefined {
 		organizationName,
 		programmingLanguage,
 		version: getSetting(targetSettings, projectSettings, 'MARKETING_VERSION'),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

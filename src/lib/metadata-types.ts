@@ -19,9 +19,9 @@ export type {
 export type { FilesystemData } from './sources/filesystem'
 export type { GemspecData, GemSpecDependency } from './sources/gemspec'
 export type { GitConfig, GitData } from './sources/git'
+export type { GitHubData } from './sources/github'
 export type { GoModDependency, GoModSourceData } from './sources/go-mod'
 export type { GoreleaserSourceData } from './sources/goreleaser'
-export type { GitHubData } from './sources/github'
 export type { InfoPlistData } from './sources/info-plist'
 export type { LicenseFilesData } from './sources/license-file'
 export type { LocData, LocTotals } from './sources/loc'
@@ -33,6 +33,7 @@ export type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-ad
 export type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 export type { PackageData } from './sources/package-json'
 export type { PbxprojData } from './sources/pbxproj'
+export type { PkgInfoSourceData } from './sources/pkg-info'
 export type {
 	PomXmlData,
 	PomXmlDependencyEntry,
@@ -54,7 +55,6 @@ export type {
 } from './sources/publiccode'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
-export type { PkgInfoSourceData } from './sources/pkg-info'
 export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
 export type { SetupCfgSourceData } from './sources/setup-cfg'
@@ -82,12 +82,12 @@ import type { OpenFrameworksAddonConfigData } from './sources/open-frameworks-ad
 import type { OpenFrameworksInstallXmlData } from './sources/open-frameworks-install-xml'
 import type { PackageData } from './sources/package-json'
 import type { PbxprojData } from './sources/pbxproj'
+import type { PkgInfoSourceData } from './sources/pkg-info'
 import type { PomXmlData } from './sources/pom-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
 import type { PubliccodeData } from './sources/publiccode'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
-import type { PkgInfoSourceData } from './sources/pkg-info'
 import type { PythonSetupPyData } from './sources/python-setup-py'
 import type { ReadmeData } from './sources/readme'
 import type { SetupCfgSourceData } from './sources/setup-cfg'
@@ -170,8 +170,8 @@ export type Template<T> = (context: MetadataContext, templateData: TemplateData)
  * }))
  * ```
  */
-export function defineTemplate<T>(fn: Template<T>): Template<T> {
-	return fn
+export function defineTemplate<T>(transform: Template<T>): Template<T> {
+	return transform
 }
 
 // ── Credentials ────────────────────────────────────────

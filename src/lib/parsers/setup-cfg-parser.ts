@@ -1,25 +1,31 @@
+/* eslint-disable ts/naming-convention */
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+const setupCfgDataSchema = z.object({
+	author: nonEmptyString,
+	author_email: nonEmptyString,
+	classifiers: stringArray,
+	description: nonEmptyString,
+	download_url: optionalUrl,
+	extras_require: z.record(z.string(), z.array(z.string())),
+	install_requires: stringArray,
+	keywords: z.array(z.string()).optional(),
+	license: nonEmptyString,
+	long_description: nonEmptyString,
+	maintainer: nonEmptyString,
+	maintainer_email: nonEmptyString,
+	name: nonEmptyString,
+	project_urls: z.record(z.string(), z.string()),
+	python_requires: nonEmptyString,
+	url: optionalUrl,
+	version: nonEmptyString,
+})
+
 /** Parsed setup.cfg metadata */
-export type SetupCfgData = {
-	author: null | string
-	author_email: null | string
-	classifiers: string[]
-	description: null | string
-	download_url: null | string
-	extras_require: Record<string, string[]>
-	install_requires: string[]
-	keywords: null | string[]
-	license: null | string
-	long_description: null | string
-	maintainer: null | string
-	maintainer_email: null | string
-	name: null | string
-	project_urls: Record<string, string>
-	python_requires: null | string
-	url: null | string
-	version: null | string
-}
+export type SetupCfgData = z.infer<typeof setupCfgDataSchema>
 
 // ─── INI parser ──────────────────────────────────────────────────────────────
 
@@ -112,23 +118,23 @@ export function parseSetupCfg(source: string): SetupCfgData {
 	const options = sections.options ?? {}
 
 	const data: SetupCfgData = {
-		author: null,
-		author_email: null,
+		author: undefined,
+		author_email: undefined,
 		classifiers: [],
-		description: null,
-		download_url: null,
+		description: undefined,
+		download_url: undefined,
 		extras_require: {},
 		install_requires: [],
-		keywords: null,
-		license: null,
-		long_description: null,
-		maintainer: null,
-		maintainer_email: null,
-		name: null,
+		keywords: undefined,
+		license: undefined,
+		long_description: undefined,
+		maintainer: undefined,
+		maintainer_email: undefined,
+		name: undefined,
 		project_urls: {},
-		python_requires: null,
-		url: null,
-		version: null,
+		python_requires: undefined,
+		url: undefined,
+		version: undefined,
 	}
 
 	// String attributes from [metadata]
@@ -184,5 +190,5 @@ export function parseSetupCfg(source: string): SetupCfgData {
 		}
 	}
 
-	return data
+	return setupCfgDataSchema.parse(data)
 }

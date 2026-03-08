@@ -4,30 +4,34 @@
 /* eslint-disable ts/no-unsafe-type-assertion */
 
 import type { Node } from 'web-tree-sitter'
+import { z } from 'zod'
 import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 /** Parsed setup.py metadata */
-export type SetupPyData = {
-	author: null | string
-	author_email: null | string
-	classifiers: string[]
-	description: null | string
-	download_url: null | string
-	extras_require: Record<string, string[]>
-	install_requires: string[]
-	keywords: null | string[]
-	license: null | string
-	long_description: null | string
-	maintainer: null | string
-	maintainer_email: null | string
-	name: null | string
-	project_urls: Record<string, string>
-	python_requires: null | string
-	url: null | string
-	version: null | string
-}
+const setupPyDataSchema = z.object({
+	author: nonEmptyString,
+	author_email: nonEmptyString,
+	classifiers: stringArray,
+	description: nonEmptyString,
+	download_url: optionalUrl,
+	extras_require: z.record(z.string(), z.array(z.string())),
+	install_requires: stringArray,
+	keywords: z.array(z.string()).optional(),
+	license: nonEmptyString,
+	long_description: nonEmptyString,
+	maintainer: nonEmptyString,
+	maintainer_email: nonEmptyString,
+	name: nonEmptyString,
+	project_urls: z.record(z.string(), z.string()),
+	python_requires: nonEmptyString,
+	url: optionalUrl,
+	version: nonEmptyString,
+})
+
+export type SetupPyData = z.infer<typeof setupPyDataSchema>
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -39,35 +43,35 @@ function children(node: Node): Node[] {
 
 function emptySetupPyData(): SetupPyData {
 	return {
-		author: null,
-		author_email: null,
+		author: undefined,
+		author_email: undefined,
 		classifiers: [],
-		description: null,
-		download_url: null,
+		description: undefined,
+		download_url: undefined,
 		extras_require: {},
 		install_requires: [],
-		keywords: null,
-		license: null,
-		long_description: null,
-		maintainer: null,
-		maintainer_email: null,
-		name: null,
+		keywords: undefined,
+		license: undefined,
+		long_description: undefined,
+		maintainer: undefined,
+		maintainer_email: undefined,
+		name: undefined,
 		project_urls: {},
-		python_requires: null,
-		url: null,
-		version: null,
+		python_requires: undefined,
+		url: undefined,
+		version: undefined,
 	}
 }
 
 /** Extract a string literal value from a tree-sitter node. */
-function extractString(node: Node): null | string {
+function extractString(node: Node): string | undefined {
 	switch (node.type) {
 		case 'concatenated_string': {
 			// "hello" "world" → "helloworld"
 			const parts = children(node)
 				.map((child) => extractString(child))
-				.filter((s): s is string => s !== null)
-			return parts.length > 0 ? parts.join('') : null
+				.filter((s): s is string => s !== undefined)
+			return parts.length > 0 ? parts.join('') : undefined
 		}
 		case 'float':
 		case 'integer': {
@@ -91,7 +95,7 @@ function extractString(node: Node): null | string {
 			return node.text
 		}
 		default: {
-			return null
+			return undefined
 		}
 	}
 }
@@ -101,19 +105,19 @@ function extractStringList(node: Node): string[] {
 	if (node.type === 'list') {
 		return children(node)
 			.map((child) => extractString(child))
-			.filter((s): s is string => s !== null)
+			.filter((s): s is string => s !== undefined)
 	}
 
 	// Tuple
 	if (node.type === 'tuple') {
 		return children(node)
 			.map((child) => extractString(child))
-			.filter((s): s is string => s !== null)
+			.filter((s): s is string => s !== undefined)
 	}
 
 	// Single value
 	const single = extractString(node)
-	return single === null ? [] : [single]
+	return single === undefined ? [] : [single]
 }
 
 /** Extract a dict literal into a Record<string, string>. */
@@ -191,30 +195,30 @@ export async function parseSetupPy(source: string): Promise<SetupPyData> {
 	if (!setupCall) return data
 
 	// Extract keyword arguments from the setup() call
-	const args = setupCall.childForFieldName('arguments')
-	if (!args) return data
+	const argumentChildren = setupCall.childForFieldName('arguments')
+	if (!argumentChildren) return data
 
-	for (const child of children(args)) {
+	for (const child of children(argumentChildren)) {
 		if (child.type !== 'keyword_argument') continue
 
 		const nameNode = child.childForFieldName('name')
 		const valueNode = child.childForFieldName('value')
 		if (!nameNode || !valueNode) continue
 
-		const argName = nameNode.text
+		const argumentName = nameNode.text
 
 		// String attributes
-		if (STRING_ATTRS.has(argName as keyof SetupPyData)) {
+		if (STRING_ATTRS.has(argumentName as keyof SetupPyData)) {
 			const value = extractString(valueNode)
-			if (value !== null) {
-				;(data as any)[argName] = value
+			if (value !== undefined) {
+				;(data as any)[argumentName] = value
 			}
 
 			continue
 		}
 
 		// List attributes
-		switch (argName) {
+		switch (argumentName) {
 			case 'classifiers': {
 				data.classifiers = extractStringList(valueNode)
 				break
@@ -248,13 +252,13 @@ export async function parseSetupPy(source: string): Promise<SetupPyData> {
 		}
 	}
 
-	return data
+	return setupPyDataSchema.parse(data)
 }
 
 /**
  * Recursively find the setup() or setuptools.setup() call in the AST.
  */
-function findSetupCall(node: Node): Node | null {
+function findSetupCall(node: Node): Node | undefined {
 	if (node.type === 'call') {
 		const function_ = node.childForFieldName('function')
 		if (function_) {
@@ -278,5 +282,5 @@ function findSetupCall(node: Node): Node | null {
 		if (result) return result
 	}
 
-	return null
+	return undefined
 }

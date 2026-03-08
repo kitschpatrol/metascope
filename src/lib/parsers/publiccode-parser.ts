@@ -13,124 +13,109 @@
  */
 
 import { parse as parseYaml } from 'yaml'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** A maintenance contact entry from a publiccode file. */
-export type PubliccodeContactEntry = {
-	/** Organization or affiliation. */
-	affiliation?: string
-	/** Email address. */
-	email?: string
-	/** Person display name. */
-	name: string
-	/** Phone number. */
-	phone?: string
-}
+const publiccodeContactEntrySchema = z.object({
+	affiliation: z.string().optional(),
+	email: z.string().optional(),
+	name: z.string(),
+	phone: z.string().optional(),
+})
 
-/** A contractor entry from a publiccode file. */
-export type PubliccodeContractorEntry = {
-	/** Contractor display name. */
-	name: string
-	/** End date of contract (YYYY-MM-DD). */
-	until?: string
-	/** Contractor website URL. */
-	website?: string
-}
+const publiccodeContractorEntrySchema = z.object({
+	name: z.string(),
+	until: z.string().optional(),
+	website: z.string().optional(),
+})
 
-/** A dependency entry from a publiccode file. */
-export type PubliccodeDependencyEntry = {
-	/** Dependency category. */
-	category: 'hardware' | 'open' | 'proprietary'
-	/** Dependency name. */
-	name: string
-	/** Whether the dependency is optional. */
-	optional?: boolean
-	/** Exact version requirement. */
-	version?: string
-	/** Maximum version requirement. */
-	versionMax?: string
-	/** Minimum version requirement. */
-	versionMin?: string
-}
+const publiccodeDependencyEntrySchema = z.object({
+	category: z.enum(['hardware', 'open', 'proprietary']),
+	name: z.string(),
+	optional: z.boolean().optional(),
+	version: z.string().optional(),
+	versionMax: z.string().optional(),
+	versionMin: z.string().optional(),
+})
 
-/** A localized description block from a publiccode file. */
-export type PubliccodeDescription = {
-	/** URL to documentation. */
-	documentation?: string
-	/** Feature list. */
-	features: string[]
-	/** Generic software category name. */
-	genericName?: string
-	/** Localized software name. */
-	localisedName?: string
-	/** Full description text. */
-	longDescription?: string
-	/** Brief one-line description. */
-	shortDescription?: string
-}
+const publiccodeDescriptionSchema = z.object({
+	documentation: z.string().optional(),
+	features: z.array(z.string()),
+	genericName: z.string().optional(),
+	localisedName: z.string().optional(),
+	longDescription: z.string().optional(),
+	shortDescription: z.string().optional(),
+})
 
-/** Parsed publiccode.yml / publiccode.yaml metadata. */
-export type Publiccode = {
+const publiccodeSchema = z.object({
 	/** Application suite this software belongs to. */
-	applicationSuite?: string
+	applicationSuite: nonEmptyString,
 	/** Available localization languages (BCP 47). */
-	availableLanguages: string[]
+	availableLanguages: stringArray,
 	/** Software categories (e.g. "it-security", "cloud-management"). */
-	categories: string[]
+	categories: stringArray,
 	/** Maintenance contacts. */
-	contacts: PubliccodeContactEntry[]
+	contacts: z.array(publiccodeContactEntrySchema),
 	/** Maintenance contractors. */
-	contractors: PubliccodeContractorEntry[]
+	contractors: z.array(publiccodeContractorEntrySchema),
 	/** Software dependencies (open, proprietary, hardware). */
-	dependencies: PubliccodeDependencyEntry[]
+	dependencies: z.array(publiccodeDependencyEntrySchema),
 	/** Preferred description (English if available, else first language). */
-	description?: PubliccodeDescription
+	description: publiccodeDescriptionSchema.optional(),
 	/** All localized descriptions keyed by language code. */
-	descriptions: Record<string, PubliccodeDescription>
+	descriptions: z.record(z.string(), publiccodeDescriptionSchema),
 	/** Development status (concept, development, beta, stable, obsolete). */
-	developmentStatus?: string
+	developmentStatus: nonEmptyString,
 	/** Supported input MIME types. */
-	inputTypes: string[]
+	inputTypes: stringArray,
 	/** URL of upstream software this is based on. */
-	isBasedOn?: string
+	isBasedOn: optionalUrl,
 	/** Landing page URL. */
-	landingUrl?: string
+	landingUrl: optionalUrl,
 	/** SPDX license expression. */
-	license?: string
+	license: nonEmptyString,
 	/** Whether the software supports localization. */
-	localisationReady?: boolean
+	localisationReady: z.boolean().optional(),
 	/** Path or URL to logo image. */
-	logo?: string
+	logo: optionalUrl,
 	/** Main copyright holder. */
-	mainCopyrightOwner?: string
+	mainCopyrightOwner: nonEmptyString,
 	/** Maintenance type (internal, community, contract, none). */
-	maintenanceType?: string
+	maintenanceType: nonEmptyString,
 	/** Path or URL to monochrome logo image. */
-	monochromeLogo?: string
+	monochromeLogo: optionalUrl,
 	/** Software name. */
-	name?: string
+	name: nonEmptyString,
 	/** Supported output MIME types. */
-	outputTypes: string[]
+	outputTypes: stringArray,
 	/** Supported platforms (e.g. "web", "linux", "mac"). */
-	platforms: string[]
+	platforms: stringArray,
 	/** The publiccode.yml schema version. */
-	publiccodeYmlVersion?: string
+	publiccodeYmlVersion: nonEmptyString,
 	/** Release date (YYYY-MM-DD). */
-	releaseDate?: string
+	releaseDate: nonEmptyString,
 	/** Repository owner name. */
-	repoOwner?: string
+	repoOwner: nonEmptyString,
 	/** Roadmap URL. */
-	roadmap?: string
+	roadmap: optionalUrl,
 	/** Software type (e.g. "standalone/web", "standalone/other"). */
-	softwareType?: string
+	softwareType: nonEmptyString,
 	/** Software version string. */
-	softwareVersion?: string
+	softwareVersion: nonEmptyString,
 	/** Repository URL. */
-	url?: string
+	url: optionalUrl,
 	/** Organizations using this software. */
-	usedBy: string[]
-}
+	usedBy: stringArray,
+})
+
+export type Publiccode = z.infer<typeof publiccodeSchema>
+
+type PubliccodeContactEntry = Publiccode['contacts'][number]
+type PubliccodeContractorEntry = Publiccode['contractors'][number]
+type PubliccodeDependencyEntry = Publiccode['dependencies'][number]
+type PubliccodeDescription = NonNullable<Publiccode['description']>
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
@@ -320,7 +305,7 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 	const version = toString(data.softwareVersion)
 	const releaseDate = toString(data.releaseDate)
 
-	return {
+	return publiccodeSchema.parse({
 		...(isNonEmptyString(data.applicationSuite) ? { applicationSuite: data.applicationSuite } : {}),
 		availableLanguages,
 		categories: toStringArray(data.categories),
@@ -358,5 +343,5 @@ export function parsePubliccode(content: string): Publiccode | undefined {
 		...(version ? { softwareVersion: version } : {}),
 		...(isNonEmptyString(data.url) ? { url: data.url } : {}),
 		usedBy: toStringArray(data.usedBy),
-	}
+	})
 }

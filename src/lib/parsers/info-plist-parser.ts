@@ -12,36 +12,39 @@
  */
 
 import plist from 'plist'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed result from an `Info.plist` file. */
-export type InfoPlist = {
+const infoPlistSchema = z.object({
 	/** Application category (humanized from UTI). */
-	applicationCategory?: string
+	applicationCategory: nonEmptyString,
 	/** Author / creator name. */
-	author?: string
+	author: nonEmptyString,
 	/** Author email (decoded from ROT13 for TextMate bundles). */
-	authorEmail?: string
+	authorEmail: nonEmptyString,
 	/** Copyright holder name. */
-	copyrightHolder?: string
+	copyrightHolder: nonEmptyString,
 	/** Copyright year. */
-	copyrightYear?: string
+	copyrightYear: nonEmptyString,
 	/** Description / readme text. */
-	description?: string
+	description: nonEmptyString,
 	/** Bundle identifier (e.g. "com.example.app"). */
-	identifier?: string
+	identifier: nonEmptyString,
 	/** Display name of the app or bundle. */
-	name?: string
+	name: nonEmptyString,
 	/** Inferred operating systems. */
-	operatingSystems: string[]
+	operatingSystems: stringArray,
 	/** Processor architecture requirements (e.g. "armv7"). */
-	processorRequirements: string[]
+	processorRequirements: stringArray,
 	/** Homepage URL. */
-	url?: string
+	url: optionalUrl,
 	/** Version string. */
-	version?: string
-}
+	version: nonEmptyString,
+})
+
+export type InfoPlist = z.infer<typeof infoPlistSchema>
 
 type PlistDict = Record<string, unknown>
 
@@ -107,7 +110,7 @@ export function parseInfoPlist(content: string): InfoPlist | undefined {
 
 	const applicationCategory = parseApplicationCategory(data)
 
-	return {
+	return infoPlistSchema.parse({
 		applicationCategory,
 		author: authorName,
 		authorEmail,
@@ -120,7 +123,7 @@ export function parseInfoPlist(content: string): InfoPlist | undefined {
 		processorRequirements: parseProcessorRequirements(data),
 		url,
 		version,
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

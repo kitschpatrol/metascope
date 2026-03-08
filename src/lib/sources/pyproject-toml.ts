@@ -1,11 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { PyprojectData } from '../parsers/pyproject-toml-parser'
-import { parsePyprojectToml } from '../parsers/pyproject-toml-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
-
-export type { PyprojectData }
+import { parsePyprojectToml } from '../parsers/pyproject-toml-parser'
 
 /** Try to read pyproject.toml from a directory. */
 async function readPyprojectFile(directoryPath: string): Promise<string | undefined> {
@@ -30,3 +28,5 @@ export const pyprojectSource: MetadataSource<'pyprojectToml'> = {
 	},
 	key: 'pyprojectToml',
 }
+
+export { type PyprojectData } from '../parsers/pyproject-toml-parser'

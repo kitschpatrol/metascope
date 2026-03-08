@@ -95,8 +95,8 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
 	if (credentials?.githubToken) return credentials
 
 	// Environment variable
-	const envToken = process.env.GITHUB_TOKEN
-	if (envToken) return { ...credentials, githubToken: envToken }
+	const environmentToken = process.env.GITHUB_TOKEN
+	if (environmentToken) return { ...credentials, githubToken: environmentToken }
 
 	// Fall back to `gh auth token`
 	try {

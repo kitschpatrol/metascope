@@ -10,86 +10,79 @@
  */
 
 import { XMLParser } from 'fast-xml-parser'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** A developer or contributor entry from a POM file. */
-export type PomXmlPersonEntry = {
-	/** Email address. */
-	email?: string
-	/** Person display name. */
-	name: string
-	/** Organization affiliation. */
-	organization?: string
-	/** Personal URL. */
-	url?: string
-}
+const pomXmlPersonEntrySchema = z.object({
+	email: z.string().optional(),
+	name: z.string(),
+	organization: z.string().optional(),
+	url: z.string().optional(),
+})
 
-/** A license entry from a POM file. */
-export type PomXmlLicenseEntry = {
-	/** License name (e.g. "The Apache License, Version 2.0"). */
-	name?: string
-	/** URL to the license text. */
-	url?: string
-}
+const pomXmlLicenseEntrySchema = z.object({
+	name: z.string().optional(),
+	url: z.string().optional(),
+})
 
-/** A dependency entry from a POM file. */
-export type PomXmlDependencyEntry = {
+const pomXmlDependencyEntrySchema = z.object({
+	artifactId: z.string(),
+	groupId: z.string(),
+	version: z.string().optional(),
+})
+
+const pomXmlOrganizationSchema = z.object({
+	name: z.string(),
+	url: z.string().optional(),
+})
+
+const pomXmlSchema = z.object({
 	/** Maven artifactId. */
-	artifactId: string
-	/** Maven groupId. */
-	groupId: string
-	/** Version string (excluded if it references a Maven variable). */
-	version?: string
-}
-
-/** An organization entry from a POM file. */
-export type PomXmlOrganization = {
-	/** Organization name. */
-	name: string
-	/** Organization URL. */
-	url?: string
-}
-
-/** Parsed result from a Maven `pom.xml` file. */
-export type PomXml = {
-	/** Maven artifactId. */
-	artifactId?: string
+	artifactId: nonEmptyString,
 	/** CI management URL. */
-	ciManagementUrl?: string
+	ciManagementUrl: optionalUrl,
 	/** Project contributors. */
-	contributors: PomXmlPersonEntry[]
+	contributors: z.array(pomXmlPersonEntrySchema),
 	/** Runtime dependencies (non-test scope). */
-	dependencies: PomXmlDependencyEntry[]
+	dependencies: z.array(pomXmlDependencyEntrySchema),
 	/** Project description. */
-	description?: string
+	description: nonEmptyString,
 	/** Test-scope dependencies. */
-	devDependencies: PomXmlDependencyEntry[]
+	devDependencies: z.array(pomXmlDependencyEntrySchema),
 	/** Project developers / authors. */
-	developers: PomXmlPersonEntry[]
+	developers: z.array(pomXmlPersonEntrySchema),
 	/** Maven groupId. */
-	groupId?: string
+	groupId: nonEmptyString,
 	/** Combined identifier (groupId.artifactId). */
-	identifier?: string
+	identifier: nonEmptyString,
 	/** Year of project inception. */
-	inceptionYear?: string
+	inceptionYear: nonEmptyString,
 	/** Issue tracker URL. */
-	issueManagementUrl?: string
+	issueManagementUrl: optionalUrl,
 	/** Java version from properties. */
-	javaVersion?: string
+	javaVersion: nonEmptyString,
 	/** Project licenses. */
-	licenses: PomXmlLicenseEntry[]
+	licenses: z.array(pomXmlLicenseEntrySchema),
 	/** Project name (with Maven variables resolved). */
-	name?: string
+	name: nonEmptyString,
 	/** Producer organization. */
-	organization?: PomXmlOrganization
+	organization: pomXmlOrganizationSchema.optional(),
 	/** SCM (source code management) URL. */
-	scmUrl?: string
+	scmUrl: optionalUrl,
 	/** Project URL / homepage. */
-	url?: string
+	url: optionalUrl,
 	/** Project version. */
-	version?: string
-}
+	version: nonEmptyString,
+})
+
+export type PomXml = z.infer<typeof pomXmlSchema>
+
+type PomXmlPersonEntry = PomXml['developers'][number]
+type PomXmlLicenseEntry = PomXml['licenses'][number]
+type PomXmlDependencyEntry = PomXml['dependencies'][number]
+type PomXmlOrganization = NonNullable<PomXml['organization']>
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -119,7 +112,7 @@ export function parsePomXml(content: string): PomXml | undefined {
 
 	const { dependencies, devDependencies } = parseDependencies(project)
 
-	return {
+	return pomXmlSchema.parse({
 		artifactId,
 		ciManagementUrl: getNestedUrl(project.ciManagement),
 		contributors: parsePersonEntries(project.contributors, 'contributor'),
@@ -138,7 +131,7 @@ export function parsePomXml(content: string): PomXml | undefined {
 		scmUrl: parseScmUrl(project),
 		url: getString(project.url),
 		version: getString(project.version),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -331,9 +324,9 @@ function parseOrganization(project: Record<string, unknown>): PomXmlOrganization
  * Checks `java.version`, `maven.compiler.source`, and `java.compiler.source`.
  */
 function parseJavaVersion(project: Record<string, unknown>): string | undefined {
-	const props = project.properties
-	if (typeof props !== 'object' || props === null) return undefined
-	const record = props as Record<string, unknown>
+	const { properties } = project
+	if (typeof properties !== 'object' || properties === null) return undefined
+	const record = properties as Record<string, unknown>
 
 	return (
 		getCleanString(record['java.version']) ??

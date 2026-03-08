@@ -1,28 +1,35 @@
+/* eslint-disable ts/naming-convention */
+
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives.js'
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 /** Parsed PKG-INFO / METADATA metadata */
-export type PkgInfoData = {
-	author: null | string
-	author_email: null | string
-	classifiers: string[]
-	description: null | string
-	description_content_type: null | string
-	download_url: null | string
-	home_page: null | string
-	keywords: null | string[]
-	license: null | string
-	long_description: null | string
-	maintainer: null | string
-	maintainer_email: null | string
-	metadata_version: null | string
-	name: null | string
-	platforms: string[]
-	project_urls: Record<string, string>
-	requires_dist: string[]
-	requires_python: null | string
-	summary: null | string
-	version: null | string
-}
+const pkgInfoDataSchema = z.object({
+	author: nonEmptyString,
+	author_email: nonEmptyString,
+	classifiers: stringArray,
+	description: nonEmptyString,
+	description_content_type: nonEmptyString,
+	download_url: optionalUrl,
+	home_page: optionalUrl,
+	keywords: z.array(z.string()).optional(),
+	license: nonEmptyString,
+	long_description: nonEmptyString,
+	maintainer: nonEmptyString,
+	maintainer_email: nonEmptyString,
+	metadata_version: nonEmptyString,
+	name: nonEmptyString,
+	platforms: stringArray,
+	project_urls: z.record(z.string(), z.string()),
+	requires_dist: stringArray,
+	requires_python: nonEmptyString,
+	summary: nonEmptyString,
+	version: nonEmptyString,
+})
+
+export type PkgInfoData = z.infer<typeof pkgInfoDataSchema>
 
 // ─── Header parser ──────────────────────────────────────────────────────────
 
@@ -76,11 +83,11 @@ function parseHeaders(content: string): Record<string, string> {
 }
 
 /** Extract body text after the first blank line. */
-function extractBody(content: string): null | string {
+function extractBody(content: string): string | undefined {
 	const blankIndex = content.indexOf('\n\n')
-	if (blankIndex === -1) return null
+	if (blankIndex === -1) return undefined
 	const body = content.slice(blankIndex + 2).trim()
-	return body || null
+	return body || undefined
 }
 
 /** Split newline-separated multi-value into array. */
@@ -123,26 +130,26 @@ export function parsePkgInfo(source: string): PkgInfoData {
 	const headers = parseHeaders(source)
 
 	const data: PkgInfoData = {
-		author: null,
-		author_email: null,
+		author: undefined,
+		author_email: undefined,
 		classifiers: [],
-		description: null,
-		description_content_type: null,
-		download_url: null,
-		home_page: null,
-		keywords: null,
-		license: null,
-		long_description: null,
-		maintainer: null,
-		maintainer_email: null,
-		metadata_version: null,
-		name: null,
+		description: undefined,
+		description_content_type: undefined,
+		download_url: undefined,
+		home_page: undefined,
+		keywords: undefined,
+		license: undefined,
+		long_description: undefined,
+		maintainer: undefined,
+		maintainer_email: undefined,
+		metadata_version: undefined,
+		name: undefined,
 		platforms: [],
 		project_urls: {},
 		requires_dist: [],
-		requires_python: null,
-		summary: null,
-		version: null,
+		requires_python: undefined,
+		summary: undefined,
+		version: undefined,
 	}
 
 	// Simple string fields
@@ -191,5 +198,5 @@ export function parsePkgInfo(source: string): PkgInfoData {
 	// Long description from body
 	data.long_description = extractBody(source)
 
-	return data
+	return pkgInfoDataSchema.parse(data)
 }

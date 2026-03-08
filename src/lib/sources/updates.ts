@@ -157,29 +157,29 @@ export const updatesSource: MetadataSource<'updates'> = {
 						libyears += parseAgeToYears(dep.age)
 					}
 
-					const pkg: UpdatesPackage = {
+					const packageStatus: UpdatesPackage = {
 						name,
 						new: dep.new,
 						old: dep.old,
 					}
 
-					if (dep.age) pkg.age = dep.age
-					if (dep.info) pkg.info = dep.info
+					if (dep.age) packageStatus.age = dep.age
+					if (dep.info) packageStatus.info = dep.info
 
 					const bump = classifyBump(dep.old, dep.new)
 					switch (bump) {
 						case 'major': {
-							major.push(pkg)
+							major.push(packageStatus)
 							break
 						}
 
 						case 'minor': {
-							minor.push(pkg)
+							minor.push(packageStatus)
 							break
 						}
 
 						case 'patch': {
-							patch.push(pkg)
+							patch.push(packageStatus)
 							break
 						}
 					}

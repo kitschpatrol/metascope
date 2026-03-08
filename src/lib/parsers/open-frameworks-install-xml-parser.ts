@@ -14,32 +14,35 @@
  */
 
 import { XMLParser } from 'fast-xml-parser'
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl, stringArray } from './schema-primitives'
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ─── Schema ─────────────────────────────────────────────────────────
 
-/** Parsed result from a legacy openFrameworks `install.xml` file. */
-export type OpenFrameworksInstallXml = {
+const openFrameworksInstallXmlSchema = z.object({
 	/** Addon author name. */
-	author?: string
+	author: nonEmptyString,
 	/** Source code repository URL. */
-	codeUrl?: string
+	codeUrl: optionalUrl,
 	/** Description of the addon. */
-	description?: string
+	description: nonEmptyString,
 	/** Download URL. */
-	downloadUrl?: string
+	downloadUrl: optionalUrl,
 	/** Addon display name. */
-	name?: string
+	name: nonEmptyString,
 	/** Supported operating systems from `<lib os="...">` attributes. */
-	operatingSystems: string[]
+	operatingSystems: stringArray,
 	/** Software dependencies from `<requires>` elements. */
-	requirements: string[]
+	requirements: stringArray,
 	/** Website URL. */
-	siteUrl?: string
+	siteUrl: optionalUrl,
 	/** Generic URL (used when no code_url / site_url provided). */
-	url?: string
+	url: optionalUrl,
 	/** Version string. */
-	version?: string
-}
+	version: nonEmptyString,
+})
+
+export type OpenFrameworksInstallXml = z.infer<typeof openFrameworksInstallXmlSchema>
 
 /**
  * Map `<lib os="...">` attribute values to human-readable OS names.
@@ -85,7 +88,7 @@ export function parseOpenFrameworksInstallXml(
 	const install = data.install as Record<string, unknown> | undefined
 	if (!install) return undefined
 
-	return {
+	return openFrameworksInstallXmlSchema.parse({
 		author: getString(install.author),
 		codeUrl: getString(install.code_url),
 		description: getString(install.description),
@@ -96,7 +99,7 @@ export function parseOpenFrameworksInstallXml(
 		siteUrl: getString(install.site_url),
 		url: getString(install.url),
 		version: getString(install.version),
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────

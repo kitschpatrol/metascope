@@ -61,8 +61,8 @@ describe('licenseFiles source', () => {
 		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have at least 2
 		expect(result.spdxUrls!.length).toBeGreaterThanOrEqual(2)
 		// Should be sorted
-		for (let i = 1; i < result.spdxUrls!.length; i++) {
-			expect(result.spdxUrls![i] >= result.spdxUrls![i - 1]).toBe(true)
+		for (let index = 1; index < result.spdxUrls!.length; index++) {
+			expect(result.spdxUrls![index] >= result.spdxUrls![index - 1]).toBe(true)
 		}
 	})
 })

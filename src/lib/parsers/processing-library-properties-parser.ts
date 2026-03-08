@@ -10,13 +10,15 @@
  * @see https://github.com/benfry/processing4/wiki/Library-Guidelines
  */
 
-// ─── Types ──────────────────────────────────────────────────────────
+import { z } from 'zod'
+import { nonEmptyString, optionalUrl } from './schema-primitives'
 
-/** Parsed author entry with optional URL from markdown syntax. */
-export type ProcessingLibraryPropertiesAuthorEntry = {
-	name: string
-	url: string | undefined
-}
+// ─── Schema ─────────────────────────────────────────────────────────
+
+const processingLibraryPropertiesAuthorEntrySchema = z.object({
+	name: z.string(),
+	url: z.string().optional(),
+})
 
 /** Canonical Processing library categories. */
 const CANONICAL_CATEGORIES = [
@@ -38,47 +40,49 @@ const CANONICAL_CATEGORIES = [
 	'Video & Vision',
 ] as const
 
-export type ProcessingLibraryPropertiesCategory = (typeof CANONICAL_CATEGORIES)[number]
-
 /** Map from letters-only lowercase to canonical category form. */
-const CATEGORY_MAP = new Map<string, ProcessingLibraryPropertiesCategory>(
+const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>(
 	CANONICAL_CATEGORIES.map((cat) => [cat.replaceAll(/[^a-z]/gi, '').toLowerCase(), cat]),
 )
 
 // Explicit aliases for categories that lose digits/symbols when stripped
 CATEGORY_MAP.set('3d', '3D')
 
-/** Parsed result from a Processing `library.properties` file. */
-export type ProcessingLibraryProperties = {
+const processingLibraryPropertiesSchema = z.object({
 	/** Parsed author entries with optional URLs. */
-	authors: ProcessingLibraryPropertiesAuthorEntry[]
+	authors: z.array(processingLibraryPropertiesAuthorEntrySchema),
 	/** Normalized categories. */
-	categories: ProcessingLibraryPropertiesCategory[]
+	categories: z.array(z.enum(CANONICAL_CATEGORIES)),
 	/** Direct download URL for the .zip distribution. */
-	download: string | undefined
+	download: optionalUrl,
 	/** Numeric identifier assigned by Processing contribution manager. */
-	id: string | undefined
+	id: nonEmptyString,
 	/** Maximum Processing revision, or 0 for no upper constraint. */
-	maxRevision: number
+	maxRevision: z.number(),
 	/** Minimum Processing revision, or 0 for no lower constraint. */
-	minRevision: number
+	minRevision: z.number(),
 	/** Library name. */
-	name: string | undefined
+	name: nonEmptyString,
 	/** Extended description paragraph. */
-	paragraph: string | undefined
+	paragraph: nonEmptyString,
 	/** Human-readable version string. */
-	prettyVersion: string | undefined
+	prettyVersion: nonEmptyString,
 	/** Raw key-value pairs. */
-	raw: Record<string, string>
+	raw: z.record(z.string(), z.string()),
 	/** One-sentence description. */
-	sentence: string | undefined
+	sentence: nonEmptyString,
 	/** Contribution type (library, tool, mode, examples). */
-	type: string | undefined
+	type: nonEmptyString,
 	/** Project URL. */
-	url: string | undefined
+	url: optionalUrl,
 	/** Integer release counter. */
-	version: number
-}
+	version: z.number(),
+})
+
+export type ProcessingLibraryProperties = z.infer<typeof processingLibraryPropertiesSchema>
+
+type ProcessingLibraryPropertiesAuthorEntry = ProcessingLibraryProperties['authors'][number]
+type ProcessingLibraryPropertiesCategory = ProcessingLibraryProperties['categories'][number]
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -118,7 +122,7 @@ export function parseProcessingLibraryProperties(content: string): ProcessingLib
 	const maxRevisionRaw = get(raw, 'maxRevision')
 	const maxParsed = maxRevisionRaw ? Number.parseInt(maxRevisionRaw, 10) : 0
 
-	return {
+	return processingLibraryPropertiesSchema.parse({
 		authors: parseAuthors(get(raw, 'authors') ?? get(raw, 'authorList') ?? ''),
 		categories: parseCategories(get(raw, 'categories') ?? get(raw, 'category') ?? ''),
 		download: nonEmpty(get(raw, 'download')),
@@ -133,7 +137,7 @@ export function parseProcessingLibraryProperties(content: string): ProcessingLib
 		type: nonEmpty(get(raw, 'type')),
 		url: nonEmpty(unescapeUrl(get(raw, 'url') ?? '')),
 		version: Number.isNaN(versionParsed) ? 0 : versionParsed,
-	}
+	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
