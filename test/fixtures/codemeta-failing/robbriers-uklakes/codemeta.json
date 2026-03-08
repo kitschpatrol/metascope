@@ -1,0 +1,92 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "uklakes",
+	"description": "Retrieves a summary of the lake information from the UK CEH Lake Portal for a lake or series of lakes, based on the lakeid. Can also search for lakeid values based on strings in the lake name. For details of the information available, see the Lakes Portal Website (\\urlhttps://uklakes.ceh.ac.uk/.)",
+	"name": "uklakes: Retrieves Lake Information from UK CEH Lakes Portal",
+	"codeRepository": "https://github.com/robbriers/uklakes",
+	"license": "https://spdx.org/licenses/GPL-3.0",
+	"version": "0.2.0",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.4.1 (2024-06-14 ucrt)",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Rob",
+			"familyName": "Briers",
+			"email": "r.briers@napier.ac.uk",
+			"@id": "https://orcid.org/0000-0003-0341-1203"
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Rob",
+			"familyName": "Briers",
+			"email": "r.briers@napier.ac.uk",
+			"@id": "https://orcid.org/0000-0003-0341-1203"
+		}
+	],
+	"softwareSuggestions": [
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "knitr",
+			"name": "knitr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "rmarkdown",
+			"name": "rmarkdown"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "testthat",
+			"name": "testthat",
+			"version": ">= 3.0.0"
+		}
+	],
+	"softwareRequirements": {
+		"1": {
+			"@type": "SoftwareApplication",
+			"identifier": "R",
+			"name": "R",
+			"version": ">= 3.5"
+		},
+		"2": {
+			"@type": "SoftwareApplication",
+			"identifier": "polite",
+			"name": "polite"
+		},
+		"3": {
+			"@type": "SoftwareApplication",
+			"identifier": "rnrfa",
+			"name": "rnrfa"
+		},
+		"4": {
+			"@type": "SoftwareApplication",
+			"identifier": "rvest",
+			"name": "rvest"
+		},
+		"5": {
+			"@type": "SoftwareApplication",
+			"identifier": "tidyr",
+			"name": "tidyr"
+		},
+		"SystemRequirements": null
+	},
+	"fileSize": "264.001KB",
+	"relatedLink": "https://robbriers.github.io/uklakes/",
+	"readme": "https://github.com/robbriers/uklakes/blob/main/README.md",
+	"contIntegration": [
+		"https://github.com/robbriers/uklakes/actions/workflows/R-CMD-check.yaml",
+		"https://app.codecov.io/gh/robbriers/uklakes"
+	],
+	"developmentStatus": [
+		"https://lifecycle.r-lib.org/articles/stages.html#stable",
+		"https://www.repostatus.org/#active"
+	]
+}

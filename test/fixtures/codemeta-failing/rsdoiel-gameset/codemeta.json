@@ -1,0 +1,27 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"license": "https://spdx.org/licenses/GPL-3.0-or-later",
+	"codeRepository": "https://github.com/rsdoiel/gameset",
+	"dateCreated": "2022-10-01",
+	"datePublished": "2023-05-20",
+	"issueTracker": "https://github.com/rsdoiel/gameset/issues",
+	"name": "gameset",
+	"version": "0.0.0",
+	"description": "A collection of go packages for creating simple games.",
+	"applicationCategory": "games",
+	"developmentStatus": "concept",
+	"keywords": ["games", "amusements"],
+	"programmingLanguage": ["Go"],
+	"operatingSystem": ["Linux", "Windows", "macOS"],
+	"softwareRequirements": ["Golang >= 1.20", "Pandoc 2.19.2 or better"],
+	"author": [
+		{
+			"@type": "Person",
+			"@id": "https://orcid.org/0000-0003-0900-6903",
+			"givenName": "R. S.",
+			"familyName": "Doiel",
+			"email": "rsdoiel@gmail.com"
+		}
+	]
+}

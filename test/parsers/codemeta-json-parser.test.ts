@@ -95,10 +95,7 @@ describe('parseCodemetaJson', () => {
 	})
 
 	it('should handle v1 property names', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'v1-example/codemeta.json'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'v1-example/codemeta.json'), 'utf8')
 		const result = parseCodemetaJson(content)
 
 		expect(result).toBeDefined()
@@ -110,10 +107,7 @@ describe('parseCodemetaJson', () => {
 	})
 
 	it('should handle v1 dependencies', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'v1-all-fields/codemeta.json'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'v1-all-fields/codemeta.json'), 'utf8')
 		const result = parseCodemetaJson(content)
 
 		// v1 "depends" → "softwareRequirements"
@@ -123,10 +117,7 @@ describe('parseCodemetaJson', () => {
 	})
 
 	it('should strip JSON-LD boilerplate', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'with-id/codemeta.json'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'with-id/codemeta.json'), 'utf8')
 		const result = parseCodemetaJson(content)
 
 		// @context, @type, @id should not appear as keys
@@ -137,6 +128,24 @@ describe('parseCodemetaJson', () => {
 
 	it('should return undefined for invalid JSON', () => {
 		expect(parseCodemetaJson('not json')).toBeUndefined()
+	})
+
+	// TODO: Revisit these fixtures — they were known to fail with the old
+	// @kitschpatrol/codemeta parser. Our basic parser handles them, but they
+	// may expose edge cases in normalization or downstream consumption.
+	it('should parse known-failing fixtures without returning undefined', async () => {
+		const failingDirectory = resolve('test/fixtures/codemeta-failing')
+		const entries = await readdir(failingDirectory, { withFileTypes: true })
+		const directories = entries.filter((entry) => entry.isDirectory())
+
+		expect(directories.length).toBe(51)
+
+		for (const directory of directories) {
+			const directoryPath = resolve(failingDirectory, directory.name)
+			const content = readFileSync(resolve(directoryPath, 'codemeta.json'), 'utf8')
+			const result = parseCodemetaJson(content)
+			expect(result, `failing fixture "${directory.name}" should still parse`).toBeDefined()
+		}
 	})
 
 	it('should parse all fixtures without returning undefined', async () => {
@@ -153,10 +162,7 @@ describe('parseCodemetaJson', () => {
 
 			const content = readFileSync(resolve(directoryPath, 'codemeta.json'), 'utf8')
 			const result = parseCodemetaJson(content)
-			expect(
-				result,
-				`fixture "${directory.name}" should parse`,
-			).toBeDefined()
+			expect(result, `fixture "${directory.name}" should parse`).toBeDefined()
 			parsedCount++
 		}
 

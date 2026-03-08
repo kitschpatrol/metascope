@@ -1,0 +1,346 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "graphicalMCP",
+	"description": "Multiple comparison procedures (MCPs) control the familywise error rate in clinical trials. Graphical MCPs include many commonly used procedures as special cases; see Bretz et al. (2011) <doi:10.1002/bimj.201000239>, Lu (2016) <doi:10.1002/sim.6985>, and Xi et al. (2017) <doi:10.1002/bimj.201600233>. This package is a low-dependency implementation of graphical MCPs which allow mixed types of tests. It also includes power simulations and visualization of graphical MCPs.",
+	"name": "graphicalMCP: Graphical Multiple Comparison Procedures",
+	"codeRepository": "https://github.com/openpharma/graphicalMCP",
+	"issueTracker": "https://github.com/openpharma/graphicalMCP/issues",
+	"license": "Apache License 2",
+	"version": "0.2.8",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.1.2 (2021-11-01)",
+	"provider": {
+		"@id": "https://cran.r-project.org",
+		"@type": "Organization",
+		"name": "Comprehensive R Archive Network (CRAN)",
+		"url": "https://cran.r-project.org"
+	},
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Dong",
+			"familyName": "Xi",
+			"email": "dong.xi1@gilead.com"
+		},
+		{
+			"@type": "Person",
+			"givenName": "Ethan",
+			"familyName": "Brockmann",
+			"email": "ethan.brockmann@atorusresearch.com"
+		}
+	],
+	"copyrightHolder": [
+		{
+			"@type": "Organization",
+			"name": "Gilead Sciences, Inc."
+		}
+	],
+	"funder": [
+		{
+			"@type": "Organization",
+			"name": "Gilead Sciences, Inc."
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Dong",
+			"familyName": "Xi",
+			"email": "dong.xi1@gilead.com"
+		}
+	],
+	"softwareSuggestions": [
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "bench",
+			"name": "bench",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=bench"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "dplyr",
+			"name": "dplyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=dplyr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "forcats",
+			"name": "forcats",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=forcats"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "ggplot2",
+			"name": "ggplot2",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggplot2"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "gMCP",
+			"name": "gMCP",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=gMCP"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "gt",
+			"name": "gt",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=gt"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "here",
+			"name": "here",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=here"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "htmltools",
+			"name": "htmltools",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=htmltools"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "igraph",
+			"name": "igraph",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=igraph"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "knitr",
+			"name": "knitr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=knitr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "lrstat",
+			"name": "lrstat",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=lrstat"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "prompt",
+			"name": "prompt",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=prompt"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "rmarkdown",
+			"name": "rmarkdown",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "scales",
+			"name": "scales",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=scales"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "testthat",
+			"name": "testthat",
+			"version": ">= 3.0.0",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=testthat"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "tibble",
+			"name": "tibble",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tibble"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "tictoc",
+			"name": "tictoc",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tictoc"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "tidyr",
+			"name": "tidyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tidyr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "xfun",
+			"name": "xfun",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=xfun"
+		}
+	],
+	"softwareRequirements": {
+		"1": {
+			"@type": "SoftwareApplication",
+			"identifier": "R",
+			"name": "R",
+			"version": ">= 4.1.0"
+		},
+		"2": {
+			"@type": "SoftwareApplication",
+			"identifier": "matrixStats",
+			"name": "matrixStats",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=matrixStats"
+		},
+		"3": {
+			"@type": "SoftwareApplication",
+			"identifier": "mvtnorm",
+			"name": "mvtnorm",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=mvtnorm"
+		},
+		"SystemRequirements": null
+	},
+	"fileSize": "803.544KB",
+	"citation": [
+		{
+			"@type": "SoftwareSourceCode",
+			"datePublished": "2024",
+			"author": [
+				{
+					"@type": "Person",
+					"givenName": "Dong",
+					"familyName": "Xi"
+				},
+				{
+					"@type": "Person",
+					"givenName": "Ethan",
+					"familyName": "Brockmann"
+				}
+			],
+			"name": "{graphicalMCP}: Graphical multiple comparison procedures",
+			"url": "https://CRAN.R-project.org/package=graphicalMCP"
+		}
+	],
+	"releaseNotes": "https://github.com/openpharma/graphicalMCP/blob/master/NEWS.md",
+	"readme": "https://github.com/openpharma/graphicalMCP/blob/main/README.md",
+	"developmentStatus": "https://www.repostatus.org/#active",
+	"relatedLink": "https://CRAN.R-project.org/package=graphicalMCP"
+}

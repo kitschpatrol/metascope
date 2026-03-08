@@ -1,0 +1,37 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"type": "SoftwareSourceCode",
+	"author": [
+		{
+			"id": "https://orcid.org/0000-0001-9860-7203",
+			"type": "Person",
+			"affiliation": {
+				"type": "Organization",
+				"name": "Departement of Formal Method, TYPES team, LORIA, CNRS"
+			},
+			"email": "dominique.larchey-Wendling@loria.fr",
+			"familyName": "Larchey-Wendling",
+			"givenName": "Dominique"
+		}
+	],
+	"codeRepository": "git+https://github.com/DmxLarchey/Kruskal-Fan.git",
+	"dateCreated": "2024-05-21",
+	"dateModified": "2024-11-22",
+	"datePublished": "2024-05-21",
+	"description": "This library formalizes in Coq 8.14+ a constructive proof of the Fan theorem and of a variant of König's lemma.",
+	"downloadUrl": "https://github.com/DmxLarchey/Kruskal-Fan/archive/refs/tags/1.2.tar.gz",
+	"funder": {
+		"type": "Organization",
+		"name": "CNRS"
+	},
+	"isPartOf": "https://github.com/DmxLarchey/Coq-Kruskal",
+	"keywords": ["coq", "dependent types", "Fan theorem", "König's lemma"],
+	"license": "https://spdx.org/licenses/MPL-2.0",
+	"name": "Kruskal-Fan",
+	"operatingSystem": ["Linux", "MacOS"],
+	"programmingLanguage": "Coq",
+	"softwareRequirements": "opam, ocaml",
+	"version": "1.2",
+	"developmentStatus": "active",
+	"issueTracker": "https://github.com/DmxLarchey/Kruskal-Fan/issues"
+}

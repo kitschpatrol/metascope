@@ -70,10 +70,7 @@ describe('parsePkgInfo', () => {
 	})
 
 	it('should skip UNKNOWN values', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'axel-events-axel/PKG-INFO'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'axel-events-axel/PKG-INFO'), 'utf8')
 		const result = parsePkgInfo(content)
 
 		expect(result.name).toBe('axel')

@@ -1,11 +1,11 @@
 {
 	"name": "metascope",
 	"version": "0.0.0",
-	"description": "Easily extract all kinds of metadata from a code repository.",
+	"description": "A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.",
 	"keywords": [
-		"cli",
 		"metadata",
 		"codemeta",
+		"cli",
 		"npm-package"
 	],
 	"homepage": "https://github.com/kitschpatrol/metascope",

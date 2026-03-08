@@ -65,9 +65,7 @@ describe('parseSetupCfg', () => {
 
 		expect(result.project_urls.Homepage).toBe('https://urltest.dev')
 		expect(result.project_urls.Repository).toBe('https://github.com/alice/urltest')
-		expect(result.project_urls['Bug Tracker']).toBe(
-			'https://github.com/alice/urltest/issues',
-		)
+		expect(result.project_urls['Bug Tracker']).toBe('https://github.com/alice/urltest/issues')
 		expect(result.project_urls.Documentation).toBe('https://urltest.readthedocs.io')
 	})
 

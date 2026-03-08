@@ -61,6 +61,28 @@ describe('parseCargoToml', () => {
 		expect(parseCargoToml('not valid toml {')).toBeUndefined()
 	})
 
+	// TODO: Revisit these fixtures — they were known to fail with the old
+	// @kitschpatrol/codemeta parser. Our basic parser handles them, but they
+	// may expose edge cases in normalization or downstream consumption.
+	it('should parse known-failing fixtures without throwing', async () => {
+		const failingDirectory = resolve('test/fixtures/cargo-failing')
+		const entries = await readdir(failingDirectory, { withFileTypes: true })
+		const directories = entries.filter((entry) => entry.isDirectory())
+
+		expect(directories.length).toBe(1)
+
+		for (const directory of directories) {
+			const content = await readFile(
+				resolve(failingDirectory, directory.name, 'Cargo.toml'),
+				'utf8',
+			)
+			expect(
+				() => parseCargoToml(content),
+				`failing fixture "${directory.name}" should still parse`,
+			).not.toThrow()
+		}
+	})
+
 	it('should parse all fixtures without throwing', async () => {
 		const entries = await readdir(fixturesDirectory, { withFileTypes: true })
 		const directories = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)

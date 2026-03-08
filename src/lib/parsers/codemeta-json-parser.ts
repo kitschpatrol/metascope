@@ -70,15 +70,15 @@ export type CodeMetaJsonData = {
 
 /** Map v1 property names to their v2/v3 equivalents. */
 const v1PropertyMap: Record<string, string> = {
-	// v1 used "agents" for people
+	// V1 used "agents" for people
 	agents: 'author',
-	// v1 used "contIntegration"
+	// V1 used "contIntegration"
 	contIntegration: 'continuousIntegration',
-	// v1 used "depends"
+	// V1 used "depends"
 	depends: 'softwareRequirements',
-	// v1 used "suggests"
+	// V1 used "suggests"
 	suggests: 'softwareSuggestions',
-	// v1 used "title"
+	// V1 used "title"
 	title: 'name',
 }
 
@@ -98,6 +98,9 @@ const personFields = new Set([
 
 // ─── Parser ──────────────────────────────────────────────────────────
 
+/**
+ *
+ */
 export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined {
 	let raw: Record<string, unknown>
 	try {
@@ -155,7 +158,7 @@ export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined
 	}
 
 	// License — preserve as string or string[]
-	const license = migrated.license
+	const { license } = migrated
 	if (typeof license === 'string') {
 		result.license = license
 	} else if (Array.isArray(license)) {
@@ -163,8 +166,8 @@ export function parseCodemetaJson(content: string): CodeMetaJsonData | undefined
 		if (licenses.length > 0) result.license = licenses
 	}
 
-	// relatedLink — preserve as string or string[]
-	const relatedLink = migrated.relatedLink
+	// RelatedLink — preserve as string or string[]
+	const { relatedLink } = migrated
 	if (typeof relatedLink === 'string') {
 		result.relatedLink = relatedLink
 	} else if (Array.isArray(relatedLink)) {
@@ -222,9 +225,9 @@ function assignString(
 		result[key] = value
 	} else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
 		// Handle {"@type": "xsd:anyURI", "@value": "..."} pattern from v3
-		const objValue = value as Record<string, unknown>
-		if (typeof objValue['@value'] === 'string') {
-			result[key] = objValue['@value']
+		const objectValue = value as Record<string, unknown>
+		if (typeof objectValue['@value'] === 'string') {
+			result[key] = objectValue['@value']
 		}
 	}
 }
@@ -240,7 +243,10 @@ function assignStringArray(
 	if (typeof value === 'string') {
 		// Could be comma-separated (common in v1)
 		result[key] = value.includes(',')
-			? value.split(',').map((s) => s.trim()).filter(Boolean)
+			? value
+					.split(',')
+					.map((s) => s.trim())
+					.filter(Boolean)
 			: [value]
 	} else if (Array.isArray(value)) {
 		const strings = value
@@ -248,10 +254,9 @@ function assignStringArray(
 				if (typeof item === 'string') return item
 				// Handle {"name": "Python"} objects in programmingLanguage
 				if (typeof item === 'object' && item !== null) {
-					const obj = item as Record<string, unknown>
-					return (typeof obj.name === 'string' ? obj.name : undefined)
+					const object = item as Record<string, unknown>
+					return typeof object.name === 'string' ? object.name : undefined
 				}
-				return undefined
 			})
 			.filter((s): s is string => typeof s === 'string' && s.length > 0)
 		if (strings.length > 0) result[key] = strings
@@ -267,27 +272,27 @@ function normalizePersonOrOrg(value: unknown): CodeMetaPersonOrOrg | undefined {
 		return undefined
 	}
 
-	const obj = value as Record<string, unknown>
+	const object = value as Record<string, unknown>
 	const person: CodeMetaPersonOrOrg = {}
 
-	if (typeof obj['@type'] === 'string') {
-		const rawType = obj['@type'].toLowerCase()
+	if (typeof object['@type'] === 'string') {
+		const rawType = object['@type'].toLowerCase()
 		if (rawType === 'person') person.type = 'Person'
 		else if (rawType === 'organization') person.type = 'Organization'
 	}
 
-	if (typeof obj['@id'] === 'string') person.id = obj['@id']
-	if (typeof obj.name === 'string') person.name = obj.name
-	if (typeof obj.givenName === 'string') person.givenName = obj.givenName
-	if (typeof obj.familyName === 'string') person.familyName = obj.familyName
-	if (typeof obj.email === 'string') person.email = obj.email
-	if (typeof obj.url === 'string') person.url = obj.url
+	if (typeof object['@id'] === 'string') person.id = object['@id']
+	if (typeof object.name === 'string') person.name = object.name
+	if (typeof object.givenName === 'string') person.givenName = object.givenName
+	if (typeof object.familyName === 'string') person.familyName = object.familyName
+	if (typeof object.email === 'string') person.email = object.email
+	if (typeof object.url === 'string') person.url = object.url
 
 	// Affiliation can be a string or an object with a name
-	if (typeof obj.affiliation === 'string') {
-		person.affiliation = obj.affiliation
-	} else if (typeof obj.affiliation === 'object' && obj.affiliation !== null) {
-		const aff = obj.affiliation as Record<string, unknown>
+	if (typeof object.affiliation === 'string') {
+		person.affiliation = object.affiliation
+	} else if (typeof object.affiliation === 'object' && object.affiliation !== null) {
+		const aff = object.affiliation as Record<string, unknown>
 		if (typeof aff.name === 'string') person.affiliation = aff.name
 	}
 
@@ -319,13 +324,13 @@ function normalizeDependency(value: unknown): CodeMetaDependency | undefined {
 		return undefined
 	}
 
-	const obj = value as Record<string, unknown>
+	const object = value as Record<string, unknown>
 	const dep: CodeMetaDependency = {}
 
-	if (typeof obj.name === 'string') dep.name = obj.name
-	if (typeof obj.identifier === 'string') dep.identifier = obj.identifier
-	if (typeof obj.version === 'string') dep.version = obj.version
-	if (typeof obj.runtimePlatform === 'string') dep.runtimePlatform = obj.runtimePlatform
+	if (typeof object.name === 'string') dep.name = object.name
+	if (typeof object.identifier === 'string') dep.identifier = object.identifier
+	if (typeof object.version === 'string') dep.version = object.version
+	if (typeof object.runtimePlatform === 'string') dep.runtimePlatform = object.runtimePlatform
 
 	if (dep.name || dep.identifier) {
 		return dep

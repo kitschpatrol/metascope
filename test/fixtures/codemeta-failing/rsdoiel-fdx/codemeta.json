@@ -1,0 +1,27 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"description": "A Go package and command line programs for working with fdx XML files used by Screen Writing software.",
+	"name": "fdx",
+	"codeRepository": "https://github.com/rsdoiel/fdx",
+	"issueTracker": "https://github.com/rsdoiel/fdx/issues",
+	"license": "https://spdx.org/licenses/AGPL-3.0-or-later",
+	"version": "1.0.3",
+	"dateCreated": "2017-12-07",
+	"dateRelease": "2023-05-19",
+	"dateModified": "2024-05-20",
+	"releaseNotes": "Updated compiler to go 1.22, add tagging for YAML, fixed typo in mapping, changed license to GNU AFFERO GENERAL PUBLIC LICENSE",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Robert",
+			"familyName": "Doiel",
+			"email": "rsdoiel@gmail.com",
+			"@id": "https://orcid.org/0000-0003-0900-6903"
+		}
+	],
+	"developmentStatus": "inactive",
+	"keywords": ["GitHub", "text markup", "screen play"],
+	"maintainer": "https://orcid.org/0000-0003-0900-6903",
+	"programmingLanguage": ["Go >= 1.22"]
+}

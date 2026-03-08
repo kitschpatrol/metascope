@@ -78,7 +78,7 @@ function parseHeaders(content: string): Record<string, string> {
 /** Extract body text after the first blank line. */
 function extractBody(content: string): null | string {
 	const blankIndex = content.indexOf('\n\n')
-	if (blankIndex < 0) return null
+	if (blankIndex === -1) return null
 	const body = content.slice(blankIndex + 2).trim()
 	return body || null
 }
@@ -96,20 +96,20 @@ function splitMulti(value: string | undefined): string[] {
 
 /** Simple header-to-field mappings. */
 const HEADER_MAP: Record<string, keyof PkgInfoData> = {
-	'Author': 'author',
+	Author: 'author',
 	'Author-email': 'author_email',
 	'Description-Content-Type': 'description_content_type',
 	'Download-URL': 'download_url',
 	'Home-Page': 'home_page',
 	'Home-page': 'home_page',
-	'License': 'license',
-	'Maintainer': 'maintainer',
+	License: 'license',
+	Maintainer: 'maintainer',
 	'Maintainer-email': 'maintainer_email',
 	'Metadata-Version': 'metadata_version',
-	'Name': 'name',
+	Name: 'name',
 	'Requires-Python': 'requires_python',
-	'Summary': 'summary',
-	'Version': 'version',
+	Summary: 'summary',
+	Version: 'version',
 }
 
 /**

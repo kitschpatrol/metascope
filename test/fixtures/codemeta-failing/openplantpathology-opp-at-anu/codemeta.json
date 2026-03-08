@@ -1,0 +1,196 @@
+{
+	"@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+	"@type": "SoftwareSourceCode",
+	"identifier": "OPP.at.ANU",
+	"description": "Supplementary material for talk at ANU Open Science Day delivered by Adam H Sparks.",
+	"name": "OPP.at.ANU: What's so Open About Plant Pathology?",
+	"codeRepository": "https://github.com/openplantpathology/OPP.at.ANU",
+	"issueTracker": "https://github.com/openplantpathology/OPP.at.ANU/issues",
+	"license": "https://spdx.org/licenses/MIT",
+	"version": "0.0.10",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"version": "3.5.3",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 3.5.3 (2019-03-11)",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Adam H.",
+			"familyName": "Sparks",
+			"email": "adamhsparks@gmail.com",
+			"@id": "https://orcid.org/0000-0002-0061-8359"
+		},
+		{
+			"@type": "Person",
+			"givenName": "Emerson M.",
+			"familyName": "Del Ponte",
+			"email": "edelponte@gmail.com",
+			"@id": "https://orcid.org/0000-0003-4398-409X"
+		}
+	],
+	"contributor": {},
+	"copyrightHolder": {},
+	"funder": {},
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Adam H.",
+			"familyName": "Sparks",
+			"email": "adamhsparks@gmail.com",
+			"@id": "https://orcid.org/0000-0002-0061-8359"
+		}
+	],
+	"softwareSuggestions": [],
+	"softwareRequirements": [
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "devtools",
+			"name": "devtools",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=devtools"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "dplyr",
+			"name": "dplyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=dplyr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "ggplot2",
+			"name": "ggplot2",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggplot2"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "ggthemes",
+			"name": "ggthemes",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggthemes"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "gsheet",
+			"name": "gsheet",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=gsheet"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "knitr",
+			"name": "knitr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=knitr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "hrbrthemes",
+			"name": "hrbrthemes",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=hrbrthemes"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "magrittr",
+			"name": "magrittr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=magrittr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "rmarkdown",
+			"name": "rmarkdown",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "tidyr",
+			"name": "tidyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tidyr"
+		}
+	],
+	"readme": "https://github.com/openplantpathology/OPP.at.ANU/blob/master/README.md",
+	"fileSize": "904.654KB",
+	"contIntegration": [
+		"https://travis-ci.org/openplantpathology/OPP.at.ANU",
+		"https://ci.appveyor.com/project/adamhsparks/opp-at-anu/branch/master"
+	],
+	"developmentStatus": "http://www.repostatus.org/#active",
+	"citation": [
+		{
+			"@type": "ScholarlyArticle",
+			"datePublished": "2019",
+			"author": [
+				{
+					"@type": "Person",
+					"givenName": "Adam",
+					"familyName": "Sparks"
+				},
+				{
+					"@type": "Person",
+					"givenName": "Emerson",
+					"familyName": "Del Ponte"
+				}
+			],
+			"name": " What's so Open About Plant Pathology?",
+			"url": "https://openplantpathology.github.io/OPP.at.ANU/"
+		}
+	]
+}

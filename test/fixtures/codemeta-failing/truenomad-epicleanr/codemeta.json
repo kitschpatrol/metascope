@@ -1,0 +1,153 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "epiCleanr",
+	"description": "epiCleanr is specifically designed to meet the requirements of epidemiologists and public health data experts. It offers a comprehensive suite of functionalities for importing, cleaning, unit testing, visualizing, and preprocessing data—tasks that are frequently encountered in epidemiological analysis. By focusing on addressing the unique challenges inherent in epidemiological datasets, epiCleanr enhances both the efficiency and reproducibility of your work.",
+	"name": "epiCleanr: A Tidy Solution for Epidemiological Data",
+	"license": "https://spdx.org/licenses/MIT",
+	"version": "0.1.0",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.3.1 (2023-06-16)",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Mohamed A.",
+			"familyName": "Yusuf",
+			"email": "mohamedayusuf87@gmail.com",
+			"@id": "https://orcid.org/0000-0002-9339-4613"
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Mohamed A.",
+			"familyName": "Yusuf",
+			"email": "mohamedayusuf87@gmail.com",
+			"@id": "https://orcid.org/0000-0002-9339-4613"
+		}
+	],
+	"softwareRequirements": {
+		"1": {
+			"@type": "SoftwareApplication",
+			"identifier": "testthat",
+			"name": "testthat",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=testthat"
+		},
+		"2": {
+			"@type": "SoftwareApplication",
+			"identifier": "rio",
+			"name": "rio",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=rio"
+		},
+		"3": {
+			"@type": "SoftwareApplication",
+			"identifier": "dplyr",
+			"name": "dplyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=dplyr"
+		},
+		"4": {
+			"@type": "SoftwareApplication",
+			"identifier": "tidyr",
+			"name": "tidyr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tidyr"
+		},
+		"5": {
+			"@type": "SoftwareApplication",
+			"identifier": "tools",
+			"name": "tools"
+		},
+		"6": {
+			"@type": "SoftwareApplication",
+			"identifier": "withr",
+			"name": "withr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=withr"
+		},
+		"7": {
+			"@type": "SoftwareApplication",
+			"identifier": "ggplot2",
+			"name": "ggplot2",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggplot2"
+		},
+		"8": {
+			"@type": "SoftwareApplication",
+			"identifier": "stringr",
+			"name": "stringr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=stringr"
+		},
+		"9": {
+			"@type": "SoftwareApplication",
+			"identifier": "tidyselect",
+			"name": "tidyselect",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=tidyselect"
+		},
+		"10": {
+			"@type": "SoftwareApplication",
+			"identifier": "rlang",
+			"name": "rlang",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=rlang"
+		},
+		"SystemRequirements": null
+	},
+	"fileSize": "178.36KB",
+	"codeRepository": "https://github.com/truenomad/epiCleanr",
+	"readme": "https://github.com/truenomad/epiCleanr/blob/main/README.md",
+	"contIntegration": "https://codecov.io/gh/truenomad/epiCleanr?branch=main"
+}

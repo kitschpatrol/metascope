@@ -8,10 +8,7 @@ const fixturesDirectory = resolve('test/fixtures/go-mod')
 
 describe('parseGoMod', () => {
 	it('should parse module path and go version', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		expect(result.module).toBe('github.com/caddyserver/certmagic')
@@ -19,20 +16,14 @@ describe('parseGoMod', () => {
 	})
 
 	it('should derive repository URL from module path', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		expect(result.repository_url).toBe('https://github.com/caddyserver/certmagic')
 	})
 
 	it('should not derive repository URL for non-forge modules', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'dagger-dagger/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'dagger-dagger/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		expect(result.module).toBe('dagger/dev')
@@ -40,10 +31,7 @@ describe('parseGoMod', () => {
 	})
 
 	it('should extract direct dependencies and skip indirect ones', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		const depNames = result.dependencies.map((d) => d.module)
@@ -56,10 +44,7 @@ describe('parseGoMod', () => {
 	})
 
 	it('should include version in dependencies', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		const zerossl = result.dependencies.find((d) => d.module === 'github.com/caddyserver/zerossl')
@@ -68,10 +53,7 @@ describe('parseGoMod', () => {
 	})
 
 	it('should handle single-line replace directives', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, 'dagger-dagger/go.mod'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, 'dagger-dagger/go.mod'), 'utf8')
 		const result = parseGoMod(content)
 
 		// The replace directives in dagger replace indirect deps, so they

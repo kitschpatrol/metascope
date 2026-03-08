@@ -1,0 +1,44 @@
+{
+	"@context": "https://w3id.org/codemeta/3.0",
+	"type": "SoftwareSourceCode",
+	"applicationCategory": "Application",
+	"author": [
+		{
+			"id": "https://www.drnil.com",
+			"type": "Person",
+			"affiliation": {
+				"type": "Organization",
+				"name": "RISE Research Institutes of Sweden"
+			},
+			"email": "instant@drnil.com",
+			"familyName": "Nilsson",
+			"givenName": "Martin"
+		}
+	],
+	"codeRepository": "https://github.com/drnil/instant",
+	"dateCreated": "2020-12-16",
+	"dateModified": "2020-12-16",
+	"datePublished": "2020-12-16",
+	"description": "The INSTANT Neuronal Spike-Train ANalysis Toolbox is a program that inputs a spike train and estimates the corresponding neuronal parameters. This program also estimates errors and performs statistical tests of stationarity and independence. The program is implemented in MATLAB.",
+	"downloadUrl": "https://github.com/drnil/instant",
+	"funder": {
+		"type": "Organization",
+		"name": "European Commission"
+	},
+	"identifier": "10.1103/physreve.103.022407",
+	"keywords": ["neuron", "spike train", "analysis", "neural encoding", "neural information"],
+	"license": "https://spdx.org/licenses/MIT",
+	"name": "The INSTANT Neuronal Spike-Train ANalysis Toolbox",
+	"operatingSystem": "Windows",
+	"programmingLanguage": ["Matlab", "C"],
+	"relatedLink": "https://journals.aps.org/pre/abstract/10.1103/PhysRevE.103.022407",
+	"runtimePlatform": [
+		"MATLAB version 2013a or MATLAB Compiler Runtime (MCR) version 2013a (8.1)",
+		"32-bit"
+	],
+	"softwareRequirements": "Visual C (for compiling certain low-level routines)",
+	"developmentStatus": "inactive",
+	"funding": "EC 6th Framework GA No 28056, 7th Framework GA No 248587.",
+	"issueTracker": "https://github.com/drnil/instant/issues",
+	"referencePublication": "https://doi.org/10.1103/physreve.103.022407"
+}

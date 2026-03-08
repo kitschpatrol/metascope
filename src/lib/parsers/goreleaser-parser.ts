@@ -111,9 +111,9 @@ export function parseGoreleaser(source: string): GoreleaserData | undefined {
 		vendor: null,
 	}
 
-	// project_name
+	// Project_name
 	if (isNonEmptyString(data.project_name)) {
-		result.project_name = data.project_name as string
+		result.project_name = data.project_name
 	}
 
 	// Collect package manager sections (priority order)
@@ -126,52 +126,59 @@ export function parseGoreleaser(source: string): GoreleaserData | undefined {
 	const aurs = collectSections(data, 'aurs', 'aur')
 	const krews = collectSections(data, 'krews', 'krew')
 
-	const allSections = [...nfpms, ...brews, ...snaps, ...scoops, ...chocs, ...winget, ...aurs, ...krews]
+	const allSections = [
+		...nfpms,
+		...brews,
+		...snaps,
+		...scoops,
+		...chocs,
+		...winget,
+		...aurs,
+		...krews,
+	]
 
-	// description
+	// Description
 	result.description =
 		firstString(allSections, 'description') ??
 		firstString(snaps, 'summary') ??
 		firstString(chocs, 'summary') ??
 		firstString(winget, 'short_description')
 
-	// homepage
+	// Homepage
 	result.homepage = firstString(allSections, 'homepage') ?? firstString(chocs, 'project_url')
 
-	// license
+	// License
 	result.license = firstString(allSections, 'license')
 
-	// maintainer
+	// Maintainer
 	result.maintainer = firstString(nfpms, 'maintainer') ?? firstString(aurs, 'maintainer')
 
-	// vendor
+	// Vendor
 	result.vendor =
-		firstString(nfpms, 'vendor') ??
-		firstString(chocs, 'owners') ??
-		firstString(winget, 'publisher')
+		firstString(nfpms, 'vendor') ?? firstString(chocs, 'owners') ?? firstString(winget, 'publisher')
 
-	// release.github/gitlab → repository_url
+	// Release.github/gitlab → repository_url
 	if (isPlainObject(data.release)) {
-		const release = data.release as Record<string, unknown>
+		const { release } = data
 		if (isPlainObject(release.github)) {
-			const gh = release.github as Record<string, unknown>
+			const gh = release.github
 			if (typeof gh.owner === 'string' && typeof gh.name === 'string') {
 				result.repository_url = `https://github.com/${gh.owner}/${gh.name}`
 			}
 		} else if (isPlainObject(release.gitlab)) {
-			const gl = release.gitlab as Record<string, unknown>
+			const gl = release.gitlab
 			if (typeof gl.owner === 'string' && typeof gl.name === 'string') {
 				result.repository_url = `https://gitlab.com/${gl.owner}/${gl.name}`
 			}
 		}
 	}
 
-	// builds[].goos → operating_systems
+	// Builds[].goos → operating_systems
 	const goosSet = new Set<string>()
 	const builds = collectSections(data, 'builds', 'build')
 	for (const build of builds) {
 		if (isPlainObject(build)) {
-			const { goos } = build as Record<string, unknown>
+			const { goos } = build
 			if (Array.isArray(goos)) {
 				for (const os of goos) {
 					if (typeof os === 'string') {

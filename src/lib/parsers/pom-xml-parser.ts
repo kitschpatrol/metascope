@@ -184,11 +184,11 @@ function resolveName(
 
 	let resolved = name
 	if (groupId) {
-		resolved = resolved.replace(project.groupId, groupId)
+		resolved = resolved.replaceAll('${project.groupId}', groupId)
 	}
 
 	if (artifactId) {
-		resolved = resolved.replace(project.artifactId, artifactId)
+		resolved = resolved.replaceAll('${project.artifactId}', artifactId)
 	}
 
 	return resolved

@@ -1,0 +1,52 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "DataTidy23RodoHonsMult",
+	"description": "Tidy data for demonstration and assessment for UCT statistics honours multivariate course",
+	"name": "DataTidy23RodoHonsMult: Tidy data for demonstration and assessment for UCT statistics\n    honours multivariate course",
+	"relatedLink": "https://github.com/MiguelRodo/DataTidy23RodoHonsMult/#readme",
+	"codeRepository": "https://github.com/MiguelRodo/DataTidy23RodoHonsMult",
+	"issueTracker": "https://github.com/MiguelRodo/DataTidy23RodoHonsMult/issues",
+	"license": "{{ License }}",
+	"version": "0.0.0.1",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.3.2 (2023-10-31)",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Miguel",
+			"familyName": "Rodo",
+			"email": "miguel.rodo@uct.ac.za"
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Miguel",
+			"familyName": "Rodo",
+			"email": "miguel.rodo@uct.ac.za"
+		}
+	],
+	"softwareRequirements": {
+		"SystemRequirements": null
+	},
+	"fileSize": "1.931KB",
+	"citation": [
+		{
+			"@type": "CreativeWork",
+			"author": [
+				{
+					"@type": "Person",
+					"givenName": "Miguel",
+					"familyName": "Rodo"
+				}
+			],
+			"name": "DataTidy23RodoHonsMult: Tidy data for demonstration and assessment for UCT statistics honours multivariate course",
+			"url": "https://github.com/MiguelRodo/DataTidy23RodoHonsMult/#readme"
+		}
+	]
+}

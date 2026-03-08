@@ -1,0 +1,104 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "flowmapblue",
+	"description": "Create interactive flow maps using 'FlowmapBlue' 'TypeScript' library <https://github.com/FlowmapBlue/FlowmapBlue>, which is a free tool for representing aggregated numbers of movements between geographic locations as flow maps. It is used to visualize urban mobility, commuting behavior, bus, subway and air travels, bicycle sharing, human and bird migration, refugee flows, freight transportation, trade, supply chains, scientific collaboration, epidemiological and historical data and many other topics. The package allows to either create standalone flow maps in form of 'htmlwidgets' and save them in 'HTML' files, or integrate flow maps into 'Shiny' applications.",
+	"name": "flowmapblue: Flow Map Rendering",
+	"relatedLink": "https://flowmapblue.github.io/flowmapblue.R/",
+	"codeRepository": "https://github.com/FlowmapBlue/flowmapblue.R",
+	"issueTracker": "https://github.com/FlowmapBlue/flowmapblue.R/issues",
+	"license": "https://spdx.org/licenses/MIT",
+	"version": "0.0.2",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.4.1 (2024-06-14)",
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Ilya",
+			"familyName": "Boyandin",
+			"email": "ilya@boyandin.me",
+			"@id": "https://orcid.org/0000-0001-5585-7587"
+		}
+	],
+	"copyrightHolder": [
+		{
+			"@type": "Person",
+			"givenName": "Ilya",
+			"familyName": "Boyandin",
+			"email": "ilya@boyandin.me",
+			"@id": "https://orcid.org/0000-0001-5585-7587"
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Egor",
+			"familyName": "Kotov",
+			"email": "kotov.egor@gmail.com",
+			"@id": "https://orcid.org/0000-0001-6690-5345"
+		}
+	],
+	"softwareSuggestions": [
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "quarto",
+			"name": "quarto",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=quarto"
+		}
+	],
+	"softwareRequirements": {
+		"1": {
+			"@type": "SoftwareApplication",
+			"identifier": "R",
+			"name": "R",
+			"version": ">= 2.10"
+		},
+		"2": {
+			"@type": "SoftwareApplication",
+			"identifier": "htmlwidgets",
+			"name": "htmlwidgets",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=htmlwidgets"
+		},
+		"SystemRequirements": null
+	},
+	"fileSize": "4552.747KB",
+	"citation": [
+		{
+			"@type": "SoftwareSourceCode",
+			"datePublished": "2024",
+			"author": [
+				{
+					"@type": "Person",
+					"givenName": "Ilya",
+					"familyName": "Boyandin",
+					"email": "ilya@boyandin.me",
+					"@id": "https://orcid.org/0000-0001-5585-7587"
+				}
+			],
+			"name": "Flowmap.blue widget for R",
+			"identifier": "10.32614/CRAN.package.flowmapblue",
+			"url": "https://github.com/FlowmapBlue/flowmapblue.R",
+			"@id": "https://doi.org/10.32614/CRAN.package.flowmapblue",
+			"sameAs": "https://doi.org/10.32614/CRAN.package.flowmapblue"
+		}
+	],
+	"releaseNotes": "https://github.com/FlowmapBlue/flowmapblue.R/blob/master/NEWS.md",
+	"readme": "https://github.com/FlowmapBlue/flowmapblue.R/blob/master/README.md",
+	"keywords": ["mobility", "datavis", "rstats", "rstudio", "movement-data", "mobility-data"]
+}

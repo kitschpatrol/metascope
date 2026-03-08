@@ -1,6 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { CodeMetaDependency, CodeMetaJsonData, CodeMetaPersonOrOrg } from '../parsers/codemeta-json-parser'
+import type {
+	CodeMetaDependency,
+	CodeMetaJsonData,
+	CodeMetaPersonOrOrg,
+} from '../parsers/codemeta-json-parser'
 import { parseCodemetaJson } from '../parsers/codemeta-json-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'

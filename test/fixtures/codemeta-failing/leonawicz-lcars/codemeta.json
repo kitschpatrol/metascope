@@ -1,0 +1,190 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"@type": "SoftwareSourceCode",
+	"identifier": "lcars",
+	"description": "Provides Shiny widgets and theme that support a 'Library Computer Access/Retrieval System' (LCARS) aesthetic for Shiny apps. The package also includes functions for adding a minimal LCARS theme to static 'ggplot2' graphs. More details about LCARS can be found at <https://en.wikipedia.org/wiki/LCARS>.",
+	"name": "lcars: LCARS Aesthetic for Shiny",
+	"codeRepository": "https://github.com/leonawicz/lcars",
+	"issueTracker": "https://github.com/leonawicz/lcars/issues",
+	"license": "https://spdx.org/licenses/MIT",
+	"version": "0.4.1",
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"name": "R",
+		"url": "https://r-project.org"
+	},
+	"runtimePlatform": "R version 4.5.0 (2025-04-11 ucrt)",
+	"provider": {
+		"@id": "https://cran.r-project.org",
+		"@type": "Organization",
+		"name": "Comprehensive R Archive Network (CRAN)",
+		"url": "https://cran.r-project.org"
+	},
+	"author": [
+		{
+			"@type": "Person",
+			"givenName": "Matthew",
+			"familyName": "Leonawicz",
+			"email": "rpkgs@pm.me",
+			"@id": "https://orcid.org/0000-0001-9452-2771"
+		}
+	],
+	"maintainer": [
+		{
+			"@type": "Person",
+			"givenName": "Matthew",
+			"familyName": "Leonawicz",
+			"email": "rpkgs@pm.me",
+			"@id": "https://orcid.org/0000-0001-9452-2771"
+		}
+	],
+	"softwareSuggestions": [
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "testthat",
+			"name": "testthat",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=testthat"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "knitr",
+			"name": "knitr",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=knitr"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "rmarkdown",
+			"name": "rmarkdown",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "png",
+			"name": "png",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=png"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "ggrepel",
+			"name": "ggrepel",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggrepel"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "showtext",
+			"name": "showtext",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=showtext"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "leaflet",
+			"name": "leaflet",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=leaflet"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"identifier": "leaflet.extras",
+			"name": "leaflet.extras",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=leaflet.extras"
+		}
+	],
+	"softwareRequirements": {
+		"1": {
+			"@type": "SoftwareApplication",
+			"identifier": "R",
+			"name": "R",
+			"version": ">= 3.5.0"
+		},
+		"2": {
+			"@type": "SoftwareApplication",
+			"identifier": "grid",
+			"name": "grid"
+		},
+		"3": {
+			"@type": "SoftwareApplication",
+			"identifier": "ggplot2",
+			"name": "ggplot2",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=ggplot2"
+		},
+		"4": {
+			"@type": "SoftwareApplication",
+			"identifier": "shiny",
+			"name": "shiny",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=shiny"
+		},
+		"5": {
+			"@type": "SoftwareApplication",
+			"identifier": "trekcolors",
+			"name": "trekcolors",
+			"provider": {
+				"@id": "https://cran.r-project.org",
+				"@type": "Organization",
+				"name": "Comprehensive R Archive Network (CRAN)",
+				"url": "https://cran.r-project.org"
+			},
+			"sameAs": "https://CRAN.R-project.org/package=trekcolors"
+		},
+		"SystemRequirements": null
+	},
+	"fileSize": "693.355KB"
+}

@@ -1,0 +1,40 @@
+{
+	"description": "A desktop GUI for editing+simulating OpenSim models.",
+	"license": "https://opensource.org/licenses/Apache-2.0",
+	"creator": [
+		{
+			"affiliation": "Delft University of Technology",
+			"@id": "https://orcid.org/0000-0002-6505-5374",
+			"@type": "Person",
+			"name": "Kewley, Adam"
+		},
+		{
+			"@id": "https://orcid.org/0000-0001-5457-0103",
+			"@type": "Person",
+			"name": "Beesel, Julia"
+		},
+		{
+			"affiliation": "Delft University of Technology",
+			"@id": "https://orcid.org/0000-0003-4217-1580",
+			"@type": "Person",
+			"name": "Seth, Ajay"
+		}
+	],
+	"url": "https://doi.org/10.5281/zenodo.18223720",
+	"codeRepository": "https://github.com/ComputationalBiomechanicsLab/opensim-creator",
+	"datePublished": "2026-01-13",
+	"version": "0.7.1",
+	"keywords": [
+		"OpenSim",
+		"Biomechanics",
+		"Musculoskeletal Modelling",
+		"Simbody",
+		"Mechanical Modelling",
+		"Simulation Software"
+	],
+	"@context": "https://schema.org/",
+	"identifier": "https://doi.org/10.5281/zenodo.18223720",
+	"@id": "https://doi.org/10.5281/zenodo.18223720",
+	"@type": "SoftwareSourceCode",
+	"name": "OpenSim Creator"
+}

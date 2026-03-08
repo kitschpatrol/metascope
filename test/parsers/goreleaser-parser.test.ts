@@ -45,10 +45,7 @@ describe('parseGoreleaser', () => {
 	})
 
 	it('should extract goos from builds with only goos (no metadata sections)', () => {
-		const content = readFileSync(
-			resolve(fixturesDirectory, '0p5dev-ops/.goreleaser.yaml'),
-			'utf8',
-		)
+		const content = readFileSync(resolve(fixturesDirectory, '0p5dev-ops/.goreleaser.yaml'), 'utf8')
 		const result = parseGoreleaser(content)
 
 		expect(result).toBeDefined()

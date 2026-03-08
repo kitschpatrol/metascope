@@ -73,12 +73,14 @@ async function findPackageDirectory(packageName: string): Promise<string> {
 export default defineConfig([
 	// CLI tool
 	{
+		deps: {
+			alwaysBundle: /.+/,
+			onlyAllowBundle: false,
+		},
 		dts: false,
 		entry: 'src/bin/cli.ts',
 		fixedExtension: false,
-		inlineOnly: false,
 		minify: true,
-		noExternal: /.+/,
 		outDir: 'dist/bin',
 		platform: 'node',
 		plugins: [treeSitterWasmPlugin()],

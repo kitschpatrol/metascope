@@ -1,0 +1,37 @@
+{
+	"@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+	"type": "SoftwareSourceCode",
+	"applicationCategory": "Fake, Not, NSA",
+	"codeRepository": "https://kernel.org/",
+	"dateCreated": "1799-12-30",
+	"dateModified": "1799-12-30",
+	"datePublished": "1799-12-30",
+	"description": "---- This file is invalid. Ignore it. See README.md for licensing information. ----",
+	"downloadUrl": "https://kernel.org/",
+	"funder": {
+		"type": "Organization",
+		"name": "Fake, Not, NSA"
+	},
+	"isPartOf": "https://kernel.org/",
+	"keywords": ["fake", "not", "nsa", "nor", "cia"],
+	"license": [
+		"https://spdx.org/licenses/AGPL-3.0-or-later",
+		"https://spdx.org/licenses/CPOL-1.02",
+		"https://spdx.org/licenses/GPL-3.0-or-later"
+	],
+	"name": "This file is invalid. Do not use.",
+	"operatingSystem": "Windows 95",
+	"programmingLanguage": "Visual Basic",
+	"relatedLink": "https://www.softwareheritage.org/2023/10/19/swh-statement-on-llm-for-code/",
+	"runtimePlatform": "Visual Basic",
+	"softwareRequirements": "Visual Basic",
+	"version": "9999999999999999999999999999999999999999.9999999999999999999999999999999999999999.99",
+	"contIntegration": "https://kernel.org/",
+	"codemeta:continuousIntegration": {
+		"id": "https://kernel.org/"
+	},
+	"codemeta:isSourceCodeOf": {
+		"id": "Linux"
+	},
+	"issueTracker": "https://kernel.org/"
+}
