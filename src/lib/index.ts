@@ -46,6 +46,7 @@ export type {
 	PubliccodeData,
 	PubliccodeDependencyEntry,
 	PubliccodeDescription,
+	ReadmeData,
 	PypiData,
 	PyprojectData,
 	SourceName,

@@ -44,6 +44,7 @@ export type {
 	ProcessingLibraryPropertiesCategory,
 	ProcessingLibraryPropertiesData,
 } from './sources/processing-library-properties'
+export type { ReadmeData } from './sources/readme'
 export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
@@ -69,6 +70,7 @@ import type { PubliccodeData } from './sources/publiccode'
 import type { PackageData } from './sources/package-json'
 import type { PomXmlData } from './sources/pom-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
+import type { ReadmeData } from './sources/readme'
 import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
 import type { UpdatesData } from './sources/updates'
@@ -101,6 +103,7 @@ export type MetadataContext = {
 	pomXml: PomXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
 	publiccode: PubliccodeData
+	readme: ReadmeData
 	pypi: PypiData
 	pyprojectToml: PyprojectData
 	updates: UpdatesData

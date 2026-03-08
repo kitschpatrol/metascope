@@ -58,6 +58,7 @@ const mockContext: MetadataContext = {
 	pomXml: {},
 	processingLibraryProperties: {},
 	publiccode: {},
+	readme: {},
 	packageJson: {
 		// eslint-disable-next-line ts/naming-convention
 		_id: 'test-package@1.2.3',
