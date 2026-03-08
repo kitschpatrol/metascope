@@ -79,6 +79,7 @@ const mockContext: MetadataContext = {
 	pyprojectToml: {},
 	pythonSetupPy: {},
 	readme: {},
+	setupCfg: {},
 	updates: {},
 }
 

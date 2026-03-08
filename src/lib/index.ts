@@ -51,6 +51,7 @@ export type {
 	PyprojectData,
 	PythonSetupPyData,
 	ReadmeData,
+	SetupCfgSourceData,
 	SourceName,
 	Template,
 	TemplateData,

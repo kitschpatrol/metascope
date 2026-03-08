@@ -49,6 +49,7 @@ export type { PypiData } from './sources/pypi'
 export type { PyprojectData } from './sources/pyproject-toml'
 export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeData } from './sources/readme'
+export type { SetupCfgSourceData } from './sources/setup-cfg'
 export type { UpdatesData, UpdatesPackage } from './sources/updates'
 
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
@@ -77,6 +78,7 @@ import type { PypiData } from './sources/pypi'
 import type { PyprojectData } from './sources/pyproject-toml'
 import type { PythonSetupPyData } from './sources/python-setup-py'
 import type { ReadmeData } from './sources/readme'
+import type { SetupCfgSourceData } from './sources/setup-cfg'
 import type { UpdatesData } from './sources/updates'
 
 // ── Aggregate Context ──────────────────────────────────
@@ -112,6 +114,7 @@ export type MetadataContext = {
 	pyprojectToml: PyprojectData
 	pythonSetupPy: PythonSetupPyData
 	readme: ReadmeData
+	setupCfg: SetupCfgSourceData
 	updates: UpdatesData
 }
 

@@ -1,6 +1,4 @@
-/* eslint-disable ts/require-await */
 /* eslint-disable ts/naming-convention */
-/* eslint-disable ts/no-unused-vars */
 
 import { XcodeProject } from '@bacons/xcode'
 import { XMLParser } from 'fast-xml-parser'
@@ -247,137 +245,122 @@ async function run() {
 	// await saveAllFileSearchResults('CONTRIBUTORS', './test/fixtures/contributors', true)
 	// await saveAllFileSearchResults('MAINTAINERS', './test/fixtures/maintainers', true)
 
-	// await saveAllFileSearchResults('codemeta.json', './test/fixtures/codemeta', false, isValidJson)
-	// await saveAllFileSearchResults('package.json', './test/fixtures/package', false, isValidJson)
-	// await saveAllFileSearchResults('pyproject.toml', './test/fixtures/python', false, isValidToml)
-	// await saveAllFileSearchResults('Cargo.toml', './test/fixtures/cargo', false, isValidToml)
-	// await saveAllFileSearchResults('pom.xml', './test/fixtures/pom', false, isValidXml)
-	// await saveAllFileSearchResults(
-	// 	'publiccode.yml',
-	// 	'./test/fixtures/publiccode',
-	// 	false,
-	// 	isValidXml,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'publiccode.yml',
-	// 	'./test/fixtures/publiccode',
-	// 	false,
-	// 	isValidYaml,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'publiccode.yaml',
-	// 	'./test/fixtures/publiccode',
-	// 	false,
-	// 	isValidYaml,
-	// )
-	// await saveAllFileSearchResults('.gemspec', './test/fixtures/ruby-gemspec', true)
-	// await saveAllFileSearchResults('PKG-INFO', './test/fixtures/pkg-info', false)
-	// await saveAllFileSearchResults('setup.cfg', './test/fixtures/setup-cfg', false)
-	// await saveAllFileSearchResults('setup.py', './test/fixtures/setup-py', false)
-	// await saveAllFileSearchResults('go.mod', './test/fixtures/go-mod', false)
-	// await saveAllFileSearchResults(
-	// 	'.goreleaser.yaml',
-	// 	'./test/fixtures/goreleaser',
-	// 	false,
-	// 	isValidYaml,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'.goreleaser.yml',
-	// 	'./test/fixtures/goreleaser',
-	// 	false,
-	// 	isValidYaml,
-	// )
-	// await saveAllFileSearchResults('license', './test/fixtures/license', false, isValidLicenseFile)
-	// await saveAllFileSearchResults('licence', './test/fixtures/licence', false, isValidLicenseFile)
-	// await saveAllFileSearchResults('copying', './test/fixtures/copying', false, isValidLicenseFile)
-	// await saveAllFileSearchResults(
-	// 	'unlicense',
-	// 	'./test/fixtures/unlicense',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'license.md',
-	// 	'./test/fixtures/license',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'licence.md',
-	// 	'./test/fixtures/licence',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'copying.md',
-	// 	'./test/fixtures/copying',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'unlicense.md',
-	// 	'./test/fixtures/unlicense',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'license.txt',
-	// 	'./test/fixtures/license',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'licence.txt',
-	// 	'./test/fixtures/licence',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'copying.txt',
-	// 	'./test/fixtures/copying',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'unlicense.txt',
-	// 	'./test/fixtures/unlicense',
-	// 	false,
-	// 	isValidLicenseFile,
-	// )
-	// await saveAllFileSearchResults('readme.md', './test/fixtures/readme', false)
-	// await saveAllFileSearchResults('info.plist', './test/fixtures/xcode-info-plist', false, isValidPlist)
-	// await saveAllFileSearchResults('Info.plist', './test/fixtures/xcode-info-plist', false, isValidPlist)
-	// await saveAllFileSearchResults(
-	// 	'project.pbxproj',
-	// 	'./test/fixtures/pbxproj',
-	// 	false,
-	// 	isValidPbxproj,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'cinderblock.xml',
-	// 	'./test/fixtures/cinderblock',
-	// 	false,
-	// 	isValidXml,
-	// )
-	// await saveAllFileSearchResults('addon_config.mk', './test/fixtures/addon-config', false)
-	// await saveAllFileSearchResults(
-	// 	'install.xml',
-	// 	'./test/fixtures/install-xml',
-	// 	false,
-	// 	isValidLegacyOpenFrameworksAddonXml,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'library.properties',
-	// 	'./test/fixtures/arduino-library-properties',
-	// 	false,
-	// 	isValidArduinoLibraryProperties,
-	// )
-	// await saveAllFileSearchResults(
-	// 	'library.properties',
-	// 	'./test/fixtures/processing-library-properties',
-	// 	false,
-	// 	isValidProcessingLibraryProperties,
-	// )
+	await saveAllFileSearchResults('codemeta.json', './test/fixtures/codemeta', false, isValidJson)
+	await saveAllFileSearchResults('package.json', './test/fixtures/package', false, isValidJson)
+	await saveAllFileSearchResults('pyproject.toml', './test/fixtures/python', false, isValidToml)
+	await saveAllFileSearchResults('Cargo.toml', './test/fixtures/cargo', false, isValidToml)
+	await saveAllFileSearchResults('pom.xml', './test/fixtures/pom', false, isValidXml)
+	await saveAllFileSearchResults('publiccode.yml', './test/fixtures/publiccode', false, isValidXml)
+	await saveAllFileSearchResults('publiccode.yml', './test/fixtures/publiccode', false, isValidYaml)
+	await saveAllFileSearchResults(
+		'publiccode.yaml',
+		'./test/fixtures/publiccode',
+		false,
+		isValidYaml,
+	)
+	await saveAllFileSearchResults('.gemspec', './test/fixtures/ruby-gemspec', true)
+	await saveAllFileSearchResults('PKG-INFO', './test/fixtures/pkg-info', false)
+	await saveAllFileSearchResults('setup.cfg', './test/fixtures/setup-cfg', false)
+	await saveAllFileSearchResults('setup.py', './test/fixtures/setup-py', false)
+	await saveAllFileSearchResults('go.mod', './test/fixtures/go-mod', false)
+	await saveAllFileSearchResults(
+		'.goreleaser.yaml',
+		'./test/fixtures/goreleaser',
+		false,
+		isValidYaml,
+	)
+	await saveAllFileSearchResults(
+		'.goreleaser.yml',
+		'./test/fixtures/goreleaser',
+		false,
+		isValidYaml,
+	)
+	await saveAllFileSearchResults('license', './test/fixtures/license', false, isValidLicenseFile)
+	await saveAllFileSearchResults('licence', './test/fixtures/licence', false, isValidLicenseFile)
+	await saveAllFileSearchResults('copying', './test/fixtures/copying', false, isValidLicenseFile)
+	await saveAllFileSearchResults(
+		'unlicense',
+		'./test/fixtures/unlicense',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults('license.md', './test/fixtures/license', false, isValidLicenseFile)
+	await saveAllFileSearchResults('licence.md', './test/fixtures/licence', false, isValidLicenseFile)
+	await saveAllFileSearchResults('copying.md', './test/fixtures/copying', false, isValidLicenseFile)
+	await saveAllFileSearchResults(
+		'unlicense.md',
+		'./test/fixtures/unlicense',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'license.txt',
+		'./test/fixtures/license',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'licence.txt',
+		'./test/fixtures/licence',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'copying.txt',
+		'./test/fixtures/copying',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults(
+		'unlicense.txt',
+		'./test/fixtures/unlicense',
+		false,
+		isValidLicenseFile,
+	)
+	await saveAllFileSearchResults('readme.md', './test/fixtures/readme', false)
+	await saveAllFileSearchResults(
+		'info.plist',
+		'./test/fixtures/xcode-info-plist',
+		false,
+		isValidPlist,
+	)
+	await saveAllFileSearchResults(
+		'Info.plist',
+		'./test/fixtures/xcode-info-plist',
+		false,
+		isValidPlist,
+	)
+	await saveAllFileSearchResults(
+		'project.pbxproj',
+		'./test/fixtures/pbxproj',
+		false,
+		isValidPbxproj,
+	)
+	await saveAllFileSearchResults(
+		'cinderblock.xml',
+		'./test/fixtures/cinderblock',
+		false,
+		isValidXml,
+	)
+	await saveAllFileSearchResults('addon_config.mk', './test/fixtures/addon-config', false)
+	await saveAllFileSearchResults(
+		'install.xml',
+		'./test/fixtures/install-xml',
+		false,
+		isValidLegacyOpenFrameworksAddonXml,
+	)
+	await saveAllFileSearchResults(
+		'library.properties',
+		'./test/fixtures/arduino-library-properties',
+		false,
+		isValidArduinoLibraryProperties,
+	)
+	await saveAllFileSearchResults(
+		'library.properties',
+		'./test/fixtures/processing-library-properties',
+		false,
+		isValidProcessingLibraryProperties,
+	)
 }
 
 // Execute

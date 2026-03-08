@@ -38,6 +38,7 @@ import { pypiSource } from './sources/pypi'
 import { pyprojectSource } from './sources/pyproject-toml.js'
 import { pythonSetupPySource } from './sources/python-setup-py'
 import { readmeSource } from './sources/readme'
+import { setupCfgSource } from './sources/setup-cfg'
 import { updatesSource } from './sources/updates'
 import { stripUndefined } from './utilities'
 
@@ -74,6 +75,7 @@ const sources: MetadataSource[] = [
 	pypiSource,
 	pyprojectSource,
 	pythonSetupPySource,
+	setupCfgSource,
 	updatesSource,
 ]
 
@@ -236,6 +238,7 @@ export async function getMetadata<T>(
 		pyprojectToml: {},
 		pythonSetupPy: {},
 		readme: {},
+		setupCfg: {},
 		updates: {},
 	}
 
