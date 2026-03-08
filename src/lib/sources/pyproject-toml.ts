@@ -1,30 +1,32 @@
-import type { PyprojectData as ReadPyprojectData } from 'read-pyproject'
-import { getChildLogger } from 'lognow'
-import { access } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { readPyproject, setLogger } from 'read-pyproject'
+import type { PyprojectData } from '../parsers/pyproject-toml-parser'
+import { parsePyprojectToml } from '../parsers/pyproject-toml-parser'
 import type { MetadataSource, SourceContext } from './source'
 import { log } from '../log'
 
-setLogger(getChildLogger(log, 'read-pyproject'))
+export type { PyprojectData }
 
-export type PyprojectData = ReadPyprojectData
+/** Try to read pyproject.toml from a directory. */
+async function readPyprojectFile(directoryPath: string): Promise<string | undefined> {
+	try {
+		return await readFile(resolve(directoryPath, 'pyproject.toml'), 'utf8')
+	} catch {
+		return undefined
+	}
+}
 
 export const pyprojectSource: MetadataSource<'pyprojectToml'> = {
 	async extract(context: SourceContext): Promise<PyprojectData> {
 		log.debug('Extracting pyproject.toml metadata...')
-		return readPyproject(context.path, {
-			camelCase: true,
-			unknownKeyPolicy: 'strip',
-		})
+
+		const content = await readPyprojectFile(context.path)
+		if (!content) return {}
+		return parsePyprojectToml(content) ?? {}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await access(resolve(context.path, 'pyproject.toml'))
-			return true
-		} catch {
-			return false
-		}
+		const content = await readPyprojectFile(context.path)
+		return content !== undefined
 	},
 	key: 'pyprojectToml',
 }

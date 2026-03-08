@@ -1,0 +1,23 @@
+[project]
+name = "codemetapy"
+version = "2.5.3"
+description = "Generate and manage CodeMeta software metadata"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.6"
+authors = [{ name = "Maarten van Gompel", email = "proycon@anaproy.nl" }]
+keywords = ["codemeta", "metadata", "linked-data"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Programming Language :: Python :: 3",
+	"Operating System :: POSIX",
+	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+dependencies = ["rdflib>=6.0.0", "nameparser", "requests"]
+
+[project.urls]
+Homepage = "https://github.com/proycon/codemetapy"
+Repository = "https://github.com/proycon/codemetapy"
+"Bug Tracker" = "https://github.com/proycon/codemetapy/issues"
+Documentation = "https://codemetapy.readthedocs.io"

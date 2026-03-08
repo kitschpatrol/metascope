@@ -65,7 +65,7 @@
 		"pkg-types": "^2.3.0",
 		"plist": "^3.1.0",
 		"read-pkg": "^10.1.0",
-		"read-pyproject": "^0.2.0",
+		"read-pyproject": "^0.3.0",
 		"remark-parse": "^11.0.0",
 		"scule": "^1.3.0",
 		"semver": "^7.7.4",
@@ -95,7 +95,7 @@
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.18"
 	},
-	"packageManager": "pnpm@10.30.3",
+	"packageManager": "pnpm@10.31.0",
 	"engines": {
 		"node": ">=24.1.0"
 	}

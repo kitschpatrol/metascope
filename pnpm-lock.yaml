@@ -63,8 +63,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       read-pyproject:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       remark-parse:
         specifier: ^11.0.0
         version: 11.0.0
@@ -4520,8 +4520,8 @@ packages:
     resolution: {integrity: sha512-I8g2lArQiP78ll51UeMZojewtYgIRCKCWqZEgOO8c/uefTI+XDXvCSXu3+YNUaTNvZzobrL5+SqHjBrByRRTdg==}
     engines: {node: '>=20'}
 
-  read-pyproject@0.2.0:
-    resolution: {integrity: sha512-K0jd37yWT3Kk9R/A7+R/yJr3FlcWJgsv6qEzVIjTkxLj1d0NGJm2cJzdwKoUcwxxDDnGkAV0xm1yZdX1BE7ohg==}
+  read-pyproject@0.3.0:
+    resolution: {integrity: sha512-qkOiA4nQR88xrhXQ+0c9ZSvb8Ue2rkHyVTPoRGnH02Lt+tTkjRgOk2QdoGaYZtK2fnFtilFBO4d1FyspdVLcZA==}
     engines: {node: '>=20.17.0'}
 
   readable-stream@3.6.2:
@@ -10853,7 +10853,7 @@ snapshots:
       type-fest: 5.4.4
       unicorn-magic: 0.4.0
 
-  read-pyproject@0.2.0:
+  read-pyproject@0.3.0:
     dependencies:
       lognow: 0.5.2
       smol-toml: 1.6.0
