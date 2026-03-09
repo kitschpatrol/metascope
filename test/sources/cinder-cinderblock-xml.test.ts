@@ -12,23 +12,23 @@ const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock-xml')
 describe('cinderCinderblockXml source', () => {
 	it('should be available in a directory with cinderblock.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
-		expect(await cinderCinderblockXmlSource.isAvailable(context)).toBe(true)
+		expect(await cinderCinderblockXmlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without cinderblock.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await cinderCinderblockXmlSource.isAvailable(context)).toBe(false)
+		expect(await cinderCinderblockXmlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed cinderblock data', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
 		const result = await cinderCinderblockXmlSource.extract(context)

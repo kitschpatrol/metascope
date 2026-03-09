@@ -53,21 +53,21 @@ const mockContext: MetadataContext = {
 		},
 		source: 'test',
 	},
-	gitStatistics: {
-		data: {
-			branchCurrent: 'main',
-			commitCount: 42,
-			isClean: true,
-			isDirty: false,
-		},
-		source: 'test',
-	},
 	github: {
 		data: {
 			forkCount: 10,
 			issueCountClosed: 3,
 			issueCountOpen: 5,
 			stargazerCount: 100,
+		},
+		source: 'test',
+	},
+	gitStatistics: {
+		data: {
+			branchCurrent: 'main',
+			commitCount: 42,
+			isClean: true,
+			isDirty: false,
 		},
 		source: 'test',
 	},

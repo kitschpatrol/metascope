@@ -157,17 +157,13 @@ async function findMetadataFile(
 
 export const metadataFileSource: MetadataSource<'metadataFile'> = {
 	async extract(context: SourceContext): Promise<MetadataFileData> {
-		log.debug('Extracting metadata file metadata...')
-
 		const found = await findMetadataFile(context.path)
 		if (!found) return undefined
 
+		log.debug('Extracting metadata file metadata...')
 		const data = parse(found.content, found.format)
 		if (!data) return undefined
 		return { data, source: found.filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		return (await findMetadataFile(context.path)) !== undefined
-	},
 	key: 'metadataFile',
-}
+	phase: 1,}

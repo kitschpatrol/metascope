@@ -39,9 +39,5 @@ export const nodePackageJsonSource: MetadataSource<'nodePackageJson'> = {
 		const filePath = resolve(context.path, 'package.json')
 		return { data: parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const content = await readPackageJsonFile(context.path)
-		return content !== undefined
-	},
 	key: 'nodePackageJson',
-}
+	phase: 1,}

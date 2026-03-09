@@ -2,7 +2,14 @@
 
 import { defineTemplate } from '../metadata-types'
 import { toLocalUrl } from '../utilities/formatting'
-import { getStatus, isAuthoredBy, isOnGithubAccountOf, toBasicLicenses, usesPnpm, usesSharedConfig } from '../utilities/template-helpers'
+import {
+	getStatus,
+	isAuthoredBy,
+	isOnGithubAccountOf,
+	toBasicLicenses,
+	usesPnpm,
+	usesSharedConfig,
+} from '../utilities/template-helpers'
 
 /**
  * Legacy structure used in AllWork desktop app
@@ -12,8 +19,8 @@ export const project = defineTemplate(
 		{
 			codemetaJson: codemeta,
 			dependencyUpdates,
-			gitStatistics: git,
 			github,
+			gitStatistics: git,
 			metascope,
 			nodeNpmRegistry: npm,
 			nodePackageJson: packageJson,

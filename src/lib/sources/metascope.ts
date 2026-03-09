@@ -44,9 +44,5 @@ export const metascopeSource: MetadataSource<'metascope'> = {
 			source: context.path,
 		}
 	},
-	// eslint-disable-next-line ts/require-await
-	async isAvailable(): Promise<boolean> {
-		return true
-	},
 	key: 'metascope',
-}
+	phase: 1,}

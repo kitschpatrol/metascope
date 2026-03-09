@@ -43,6 +43,10 @@ await yargsInstance
 					type: 'string',
 					array: true,
 				})
+				.option('offline', {
+					description: 'Skip network requests (web-based sources will return only locally-available data)',
+					type: 'boolean',
+				})
 				.option('verbose', {
 					description: 'Run with verbose logging',
 					type: 'boolean',
@@ -100,9 +104,10 @@ await yargsInstance
 					...(argv.authorName ? { authorName: argv.authorName } : {}),
 					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
 				}
+				const offline = argv.offline ?? false
 				const result = template
-					? await getMetadata({ credentials, path: argv.path, template, templateData })
-					: await getMetadata({ credentials, path: argv.path, templateData })
+					? await getMetadata({ credentials, offline, path: argv.path, template, templateData })
+					: await getMetadata({ credentials, offline, path: argv.path, templateData })
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

@@ -191,21 +191,18 @@ export type RustCargoTomlData = SourceRecord<CargoToml> | undefined
 
 export const rustCargoTomlSource: MetadataSource<'rustCargoToml'> = {
 	async extract(context: SourceContext): Promise<RustCargoTomlData> {
-		log.debug('Extracting Cargo.toml metadata...')
-
 		const filePath = resolve(context.path, 'Cargo.toml')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
+		log.debug('Extracting Cargo.toml metadata...')
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await readFile(resolve(context.path, 'Cargo.toml'), 'utf8')
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'rustCargoToml',
-}
+	phase: 1,}

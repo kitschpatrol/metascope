@@ -42,9 +42,5 @@ export const codeStatisticsSource: MetadataSource<'codeStatistics'> = {
 			source: context.path,
 		}
 	},
-	// eslint-disable-next-line ts/require-await -- interface requires async
-	async isAvailable(): Promise<boolean> {
-		return true
-	},
 	key: 'codeStatistics',
-}
+	phase: 2,}

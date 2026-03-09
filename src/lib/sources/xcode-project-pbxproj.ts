@@ -364,9 +364,5 @@ export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = 
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findPbxprojFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'xcodeProjectPbxproj',
-}
+	phase: 1,}

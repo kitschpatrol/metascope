@@ -42,16 +42,14 @@ export const openframeworksAddonConfigMkSource: MetadataSource<'openframeworksAd
 		log.debug('Extracting openFrameworks addon config metadata...')
 
 		const filePath = resolve(context.path, 'addon_config.mk')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
 		return { data: parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await readFile(resolve(context.path, 'addon_config.mk'), 'utf8')
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'openframeworksAddonConfigMk',
-}
+	phase: 1,}

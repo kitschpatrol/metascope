@@ -40,9 +40,10 @@ async function findLicenseFiles(directoryPath: string): Promise<string[]> {
 
 export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 	async extract(context: SourceContext): Promise<LicenseFilesData> {
-		log.debug('Extracting license file metadata...')
-
 		const filenames = await findLicenseFiles(context.path)
+		if (filenames.length === 0) return []
+
+		log.debug('Extracting license file metadata...')
 		const results: LicenseFilesData = []
 
 		for (const filename of filenames) {
@@ -70,9 +71,5 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 
 		return results
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filenames = await findLicenseFiles(context.path)
-		return filenames.length > 0
-	},
 	key: 'licenseFiles',
-}
+	phase: 1,}

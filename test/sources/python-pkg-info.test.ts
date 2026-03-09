@@ -9,23 +9,23 @@ const fixturesDirectory = resolve('test/fixtures/python-pkg-info')
 describe('pythonPkgInfo source', () => {
 	it('should be available in a directory with a PKG-INFO file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		expect(await pythonPkgInfoSource.isAvailable(context)).toBe(true)
+		expect(await pythonPkgInfoSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without PKG-INFO', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await pythonPkgInfoSource.isAvailable(context)).toBe(false)
+		expect(await pythonPkgInfoSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		const result = await pythonPkgInfoSource.extract(context)

@@ -214,15 +214,5 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 			source: context.path,
 		}
 	},
-	// eslint-disable-next-line ts/require-await -- Synchronous check wrapped in async interface
-	async isAvailable(): Promise<boolean> {
-		try {
-			resolveUpdatesBinary()
-			return true
-		} catch {
-			log.warn('Failed to resolve bundled updates binary.')
-			return false
-		}
-	},
 	key: 'dependencyUpdates',
-}
+	phase: 2,}

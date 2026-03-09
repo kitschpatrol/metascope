@@ -12,31 +12,31 @@ const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 describe('processingLibraryProperties source', () => {
 	it('should be available in a directory with Processing library.properties', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
-		expect(await processingLibraryPropertiesSource.isAvailable(context)).toBe(true)
+		expect(await processingLibraryPropertiesSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await processingLibraryPropertiesSource.isAvailable(context)).toBe(false)
+		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
 	})
 
 	it('should not be available for Arduino library.properties', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve('test/fixtures/arduino-library-properties/0xpit-esparklines'),
 		}
-		expect(await processingLibraryPropertiesSource.isAvailable(context)).toBe(false)
+		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
 		const result = await processingLibraryPropertiesSource.extract(context)

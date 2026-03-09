@@ -288,21 +288,18 @@ function parseProcessorRequirements(data: PlistDict): string[] {
 
 export const xcodeInfoPlistSource: MetadataSource<'xcodeInfoPlist'> = {
 	async extract(context: SourceContext): Promise<XcodeInfoPlistData> {
-		log.debug('Extracting Info.plist metadata...')
-
 		const filePath = resolve(context.path, 'Info.plist')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
+		log.debug('Extracting Info.plist metadata...')
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await readFile(resolve(context.path, 'Info.plist'), 'utf8')
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'xcodeInfoPlist',
-}
+	phase: 1,}

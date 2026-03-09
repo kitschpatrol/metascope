@@ -305,16 +305,16 @@ export const processingLibraryPropertiesSource: MetadataSource<'processingLibrar
 		log.debug('Extracting Processing library.properties metadata...')
 
 		const filePath = resolve(context.path, 'library.properties')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
+		if (!isProcessingLibraryProperties(content)) return undefined
+
 		return { data: parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			const content = await readFile(resolve(context.path, 'library.properties'), 'utf8')
-			return isProcessingLibraryProperties(content)
-		} catch {
-			return false
-		}
-	},
 	key: 'processingLibraryProperties',
-}
+	phase: 1,}

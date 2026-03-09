@@ -4,21 +4,21 @@ import type { SourceContext } from '../../src/lib/sources/source'
 import { gitStatisticsSource } from '../../src/lib/sources/git-statistics'
 
 const context: SourceContext = {
-	credentials: {},
+	context: {}, credentials: {}, offline: false,
 	path: resolve('.'),
 }
 
 describe('git statistics source', () => {
 	it('should be available in a git repo', async () => {
-		expect(await gitStatisticsSource.isAvailable(context)).toBe(true)
+		expect(await gitStatisticsSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a non-git directory', async () => {
 		const nonGitContext: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await gitStatisticsSource.isAvailable(nonGitContext)).toBe(false)
+		expect(await gitStatisticsSource.extract(nonGitContext)).toBeUndefined()
 	})
 
 	it('should fetch git statistics metadata', async () => {

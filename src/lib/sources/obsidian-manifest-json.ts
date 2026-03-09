@@ -77,6 +77,8 @@ export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> 
 	async extract(context: SourceContext): Promise<ObsidianManifestJsonData> {
 		log.debug('Extracting Obsidian metadata...')
 
+		if (!(await isObsidianPlugin(context.path))) return undefined
+
 		const manifest = await readManifest(context.path)
 		if (!manifest) return undefined
 
@@ -101,8 +103,5 @@ export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> 
 			return { data: manifest, extra: { url }, source: manifestSource }
 		}
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		return isObsidianPlugin(context.path)
-	},
 	key: 'obsidianManifestJson',
-}
+	phase: 1,}

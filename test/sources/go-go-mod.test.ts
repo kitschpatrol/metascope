@@ -9,23 +9,23 @@ const fixturesDirectory = resolve('test/fixtures/go-go-mod')
 describe('goGoMod source', () => {
 	it('should be available in a directory with a go.mod file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'caddyserver-certmagic'),
 		}
-		expect(await goGoModSource.isAvailable(context)).toBe(true)
+		expect(await goGoModSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without go.mod', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await goGoModSource.isAvailable(context)).toBe(false)
+		expect(await goGoModSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'caddyserver-certmagic'),
 		}
 		const result = await goGoModSource.extract(context)

@@ -10,23 +10,23 @@ const fixturesDirectory = resolve('test/fixtures/readme-file')
 describe('readmeFile source', () => {
 	it('should be available in a directory with a README.md', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
-		expect(await readmeFileSource.isAvailable(context)).toBe(true)
+		expect(await readmeFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without README files', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await readmeFileSource.isAvailable(context)).toBe(false)
+		expect(await readmeFileSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract name from a fixture with an H1', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
 		const result = await readmeFileSource.extract(context)
@@ -38,7 +38,7 @@ describe('readmeFile source', () => {
 
 	it('should return undefined for a fixture without an H1', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'next-hat-nanocl'),
 		}
 		const result = await readmeFileSource.extract(context)

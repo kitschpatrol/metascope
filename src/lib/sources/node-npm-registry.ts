@@ -1,5 +1,5 @@
 import is from '@sindresorhus/is'
-import { access, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
@@ -111,22 +111,5 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 			source: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
 		}
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await access(resolve(context.path, 'package.json'))
-		} catch {
-			return false
-		}
-
-		const name = await getPackageName(context)
-		if (!name) return false
-
-		try {
-			await packageJson(name, { fullMetadata: false })
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'nodeNpmRegistry',
-}
+	phase: 2,}

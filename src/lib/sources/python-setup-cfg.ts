@@ -164,9 +164,5 @@ export const pythonSetupCfgSource: MetadataSource<'pythonSetupCfg'> = {
 		const data = parse(content)
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findSetupCfgFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'pythonSetupCfg',
-}
+	phase: 1,}

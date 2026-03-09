@@ -62,6 +62,13 @@ export type GitStatisticsData = SourceRecord<GitStatisticsInfo> | undefined
 export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 	async extract(context: SourceContext): Promise<GitStatisticsData> {
 		log.debug('Extracting git statistics metadata...')
+
+		try {
+			await access(join(context.path, '.git'))
+		} catch {
+			return undefined
+		}
+
 		const git = simpleGit(context.path)
 
 		const [
@@ -216,13 +223,5 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 			source: join(context.path, '.git'),
 		}
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await access(join(context.path, '.git'))
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'gitStatistics',
-}
+	phase: 2,}

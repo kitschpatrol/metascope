@@ -10,23 +10,23 @@ const fixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 describe('pythonPyprojectToml source', () => {
 	it('should be available in a directory with a pyproject.toml file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'proycon-codemetapy'),
 		}
-		expect(await pythonPyprojectTomlSource.isAvailable(context)).toBe(true)
+		expect(await pythonPyprojectTomlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without pyproject.toml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await pythonPyprojectTomlSource.isAvailable(context)).toBe(false)
+		expect(await pythonPyprojectTomlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'proycon-codemetapy'),
 		}
 		const result = await pythonPyprojectTomlSource.extract(context)

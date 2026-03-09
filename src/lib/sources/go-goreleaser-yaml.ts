@@ -228,19 +228,14 @@ async function findGoreleaserFile(directoryPath: string): Promise<string | undef
 
 export const goGoreleaserYamlSource: MetadataSource<'goGoreleaserYaml'> = {
 	async extract(context: SourceContext): Promise<GoGoreleaserYamlData> {
-		log.debug('Extracting goreleaser metadata...')
-
 		const filePath = await findGoreleaserFile(context.path)
 		if (!filePath) return undefined
 
+		log.debug('Extracting goreleaser metadata...')
 		const content = await readFile(filePath, 'utf8')
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findGoreleaserFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'goGoreleaserYaml',
-}
+	phase: 1,}

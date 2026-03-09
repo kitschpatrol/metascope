@@ -12,23 +12,23 @@ const fixturesDirectory = resolve('test/fixtures/openframeworks-install-xml')
 describe('openframeworksInstallXml source', () => {
 	it('should be available in a directory with install.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
-		expect(await openframeworksInstallXmlSource.isAvailable(context)).toBe(true)
+		expect(await openframeworksInstallXmlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without install.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await openframeworksInstallXmlSource.isAvailable(context)).toBe(false)
+		expect(await openframeworksInstallXmlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
 		const result = await openframeworksInstallXmlSource.extract(context)

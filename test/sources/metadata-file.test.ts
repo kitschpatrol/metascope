@@ -9,31 +9,31 @@ const fixturesDirectory = resolve('test/fixtures/metadata-file')
 describe('metadataFile source', () => {
 	it('should be available in a directory with metadata.json', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'git-url'),
 		}
-		expect(await metadataFileSource.isAvailable(context)).toBe(true)
+		expect(await metadataFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with metadata.yaml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		expect(await metadataFileSource.isAvailable(context)).toBe(true)
+		expect(await metadataFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without metadata files', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await metadataFileSource.isAvailable(context)).toBe(false)
+		expect(await metadataFileSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from JSON', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'git-url'),
 		}
 		const result = await metadataFileSource.extract(context)
@@ -47,7 +47,7 @@ describe('metadataFile source', () => {
 
 	it('should prefer metadata.json over metadata.yaml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		const result = await metadataFileSource.extract(context)

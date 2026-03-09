@@ -49,42 +49,46 @@ import { stripUndefined } from './utilities/formatting'
 const execFileAsync = promisify(execFile)
 
 /**
- * All registered metadata sources, in execution order.
- * Codemeta is first because other sources depend on its output for discovery.
+ * All registered metadata sources.
+ * Each source declares its `phase` number. Sources with the same phase run in parallel.
+ * Lower phases run first, and their accumulated results are available to later phases
+ * via `context` in `SourceContext`.
  */
 const sources: MetadataSource[] = [
+	// Phase 1: File sources — discover and extract config from the local file system
 	arduinoLibraryPropertiesSource,
-	rustCargoTomlSource,
 	cinderCinderblockXmlSource,
 	codemetaJsonSource,
-	fileStatisticsSource,
-	rubyGemspecSource,
 	gitConfigSource,
-	gitStatisticsSource,
-	githubSource,
 	goGoModSource,
 	goGoreleaserYamlSource,
-	xcodeInfoPlistSource,
+	javaPomXmlSource,
 	licenseFileSource,
-	codeStatisticsSource,
 	metadataFileSource,
 	metascopeSource,
-	nodeNpmRegistrySource,
+	nodePackageJsonSource,
 	obsidianManifestJsonSource,
 	openframeworksAddonConfigMkSource,
 	openframeworksInstallXmlSource,
-	xcodeProjectPbxprojSource,
-	pythonPkgInfoSource,
-	nodePackageJsonSource,
-	javaPomXmlSource,
 	processingLibraryPropertiesSource,
 	publiccodeYamlSource,
-	readmeFileSource,
-	pythonPypiRegistrySource,
+	pythonPkgInfoSource,
 	pythonPyprojectTomlSource,
-	pythonSetupPySource,
 	pythonSetupCfgSource,
+	pythonSetupPySource,
+	readmeFileSource,
+	rubyGemspecSource,
+	rustCargoTomlSource,
+	xcodeInfoPlistSource,
+	xcodeProjectPbxprojSource,
+	// Phase 2: Tool sources — run local tools or fetch from remote APIs
+	codeStatisticsSource,
 	dependencyUpdatesSource,
+	fileStatisticsSource,
+	gitStatisticsSource,
+	githubSource,
+	nodeNpmRegistrySource,
+	pythonPypiRegistrySource,
 ]
 
 /**
@@ -130,6 +134,40 @@ async function resolveTemplate(
 	return undefined
 }
 
+/**
+ * Check availability and extract data from a set of sources in parallel,
+ * writing results into the provided MetadataContext.
+ */
+async function runSources(
+	phaseSources: MetadataSource[],
+	sourceContext: SourceContext,
+	result: MetadataContext,
+): Promise<void> {
+	const extractResults = await Promise.all(
+		phaseSources.map(async (source) => {
+			try {
+				const startTime = performance.now()
+				const data = await source.extract(sourceContext)
+				const duration = Math.round(performance.now() - startTime)
+				log.debug(`Source "${source.key}" extracted in ${duration}ms`)
+				return { data, key: source.key }
+			} catch (error) {
+				log.warn(
+					`Source "${source.key}" extraction failed: ${error instanceof Error ? error.message : String(error)}`,
+				)
+				return { data: undefined, key: source.key }
+			}
+		}),
+	)
+
+	for (const entry of extractResults) {
+		if (entry.data !== undefined) {
+			// Key and data are correlated but TypeScript can't narrow the union
+			Object.assign(result, { [entry.key]: entry.data })
+		}
+	}
+}
+
 // Overload: built-in template name → mapped return type
 export async function getMetadata<K extends TemplateName>(
 	options: Omit<GetMetadataOptions, 'template'> & { template: K },
@@ -163,49 +201,9 @@ export async function getMetadata<T>(
 	const template = await resolveTemplate(options.template)
 
 	const credentials = await resolveCredentials(options.credentials)
-	const sourceContext: SourceContext = { credentials, path: absolutePath }
+	const offline = options.offline ?? false
 
-	// Check availability of all sources in parallel
-	log.debug('Checking source availability...')
-	const availabilityResults = await Promise.all(
-		sources.map(async (source) => {
-			try {
-				const available = await source.isAvailable(sourceContext)
-				log.debug(`Source "${source.key}": ${available ? 'available' : 'not available'}`)
-				return { available, source }
-			} catch (error) {
-				log.warn(
-					`Source "${source.key}" availability check failed: ${error instanceof Error ? error.message : String(error)}`,
-				)
-				return { available: false, source }
-			}
-		}),
-	)
-
-	const availableSources = availabilityResults
-		.filter((result) => result.available)
-		.map((result) => result.source)
-
-	// Extract data from available sources in parallel
-	log.debug(`Extracting from ${availableSources.length} available sources...`)
-	const extractResults = await Promise.all(
-		availableSources.map(async (source) => {
-			try {
-				const startTime = performance.now()
-				const data = await source.extract(sourceContext)
-				const duration = Math.round(performance.now() - startTime)
-				log.debug(`Source "${source.key}" extracted in ${duration}ms`)
-				return { data, key: source.key }
-			} catch (error) {
-				log.warn(
-					`Source "${source.key}" extraction failed: ${error instanceof Error ? error.message : String(error)}`,
-				)
-				return { data: {}, key: source.key }
-			}
-		}),
-	)
-
-	// Assemble context
+	// Assemble context with defaults
 	const context: MetadataContext = {
 		arduinoLibraryProperties: undefined,
 		cinderCinderblockXml: undefined,
@@ -241,9 +239,20 @@ export async function getMetadata<T>(
 		xcodeProjectPbxproj: undefined,
 	}
 
-	for (const result of extractResults) {
-		// Key and data are correlated but TypeScript can't narrow the union
-		Object.assign(context, { [result.key]: result.data })
+	// Group sources by phase and run each phase sequentially.
+	// Within a phase, all sources run in parallel.
+	// Each phase receives the accumulated context from all previous phases.
+	const phases = new Set(sources.map((s) => s.phase))
+	for (const phase of [...phases].sort((a, b) => a - b)) {
+		const phaseSources = sources.filter((s) => s.phase === phase)
+		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
+		const sourceContext: SourceContext = {
+			context: { ...context },
+			credentials,
+			offline,
+			path: absolutePath,
+		}
+		await runSources(phaseSources, sourceContext, context)
 	}
 
 	// Inject total scan duration into metascope data

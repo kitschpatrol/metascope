@@ -12,23 +12,23 @@ const fixturesDirectory = resolve('test/fixtures/python-setup-cfg')
 describe('pythonSetupCfg source', () => {
 	it('should be available in a directory with a setup.cfg file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		expect(await pythonSetupCfgSource.isAvailable(context)).toBe(true)
+		expect(await pythonSetupCfgSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without setup.cfg', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await pythonSetupCfgSource.isAvailable(context)).toBe(false)
+		expect(await pythonSetupCfgSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		const result = await pythonSetupCfgSource.extract(context)

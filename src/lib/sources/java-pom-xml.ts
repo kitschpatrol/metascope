@@ -321,18 +321,16 @@ export const javaPomXmlSource: MetadataSource<'javaPomXml'> = {
 		log.debug('Extracting Maven pom.xml metadata...')
 
 		const filePath = resolve(context.path, 'pom.xml')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await readFile(resolve(context.path, 'pom.xml'), 'utf8')
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'javaPomXml',
-}
+	phase: 1,}

@@ -166,21 +166,18 @@ function parseDependencies(block: Record<string, unknown>): string[] {
 
 export const cinderCinderblockXmlSource: MetadataSource<'cinderCinderblockXml'> = {
 	async extract(context: SourceContext): Promise<CinderCinderblockXmlData> {
-		log.debug('Extracting Cinder cinderblock.xml metadata...')
-
 		const filePath = resolve(context.path, 'cinderblock.xml')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
+		log.debug('Extracting Cinder cinderblock.xml metadata...')
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await readFile(resolve(context.path, 'cinderblock.xml'), 'utf8')
-			return true
-		} catch {
-			return false
-		}
-	},
 	key: 'cinderCinderblockXml',
-}
+	phase: 1,}

@@ -101,9 +101,5 @@ export const readmeFileSource: MetadataSource<'readmeFile'> = {
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findReadmeFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'readmeFile',
-}
+	phase: 1,}

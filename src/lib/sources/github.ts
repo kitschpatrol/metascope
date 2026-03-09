@@ -637,9 +637,5 @@ export const githubSource: MetadataSource<'github'> = {
 			source: `https://github.com/${owner}/${repo}`,
 		}
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const remote = await getGitHubRemote(context.path)
-		return remote !== undefined
-	},
 	key: 'github',
-}
+	phase: 2,}

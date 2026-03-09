@@ -14,39 +14,39 @@ const fixturesDirectory = resolve('test/fixtures/license-file')
 describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENSE file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
-		expect(await licenseFileSource.isAvailable(context)).toBe(true)
+		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with a COPYING file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask-1'),
 		}
-		expect(await licenseFileSource.isAvailable(context)).toBe(true)
+		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with a LICENCE file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'ashuk032-8secread'),
 		}
-		expect(await licenseFileSource.isAvailable(context)).toBe(true)
+		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
-	it('should not be available in a directory without license files', async () => {
+	it('should return empty array in a directory without license files', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await licenseFileSource.isAvailable(context)).toBe(false)
+		expect(await licenseFileSource.extract(context)).toEqual([])
 	})
 
 	it('should extract license records from a single license file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
 		const result = await licenseFileSource.extract(context)
@@ -59,7 +59,7 @@ describe('licenseFiles source', () => {
 
 	it('should return multiple records from multiple license files', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'multi'),
 		}
 		const result = await licenseFileSource.extract(context)

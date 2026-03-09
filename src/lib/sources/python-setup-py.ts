@@ -70,9 +70,5 @@ export const pythonSetupPySource: MetadataSource<'pythonSetupPy'> = {
 		const data = await parse(content)
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findSetupPyFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'pythonSetupPy',
-}
+	phase: 1,}

@@ -57,6 +57,7 @@
 		"case-police": "^2.2.0",
 		"fast-xml-parser": "^5.4.2",
 		"git-url-parse": "^16.1.0",
+		"globby": "^16.1.1",
 		"jiti": "^2.6.1",
 		"lognow": "^0.5.2",
 		"octokit": "^5.0.5",

@@ -172,9 +172,5 @@ export const pythonPkgInfoSource: MetadataSource<'pythonPkgInfo'> = {
 		const data = parse(content)
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findPkgInfoFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'pythonPkgInfo',
-}
+	phase: 1,}

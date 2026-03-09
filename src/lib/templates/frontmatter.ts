@@ -3,8 +3,19 @@
 /* eslint-disable ts/naming-convention */
 
 import { defineTemplate } from '../metadata-types'
-import { REPLACEMENTS, mixedStringsToArray, toAlias, toLocalUrl, toMb } from '../utilities/formatting'
-import { toBasicLicenses, basicNames as toBasicNames, getStatus as toStatus, usesSharedConfig } from '../utilities/template-helpers'
+import {
+	mixedStringsToArray,
+	REPLACEMENTS,
+	toAlias,
+	toLocalUrl,
+	toMb,
+} from '../utilities/formatting'
+import {
+	toBasicLicenses,
+	basicNames as toBasicNames,
+	getStatus as toStatus,
+	usesSharedConfig,
+} from '../utilities/template-helpers'
 
 /**
  * A compact, non-nested, polyglot overview of the project.
@@ -18,8 +29,8 @@ export const frontmatter = defineTemplate(
 			codeStatistics: loc,
 			dependencyUpdates,
 			fileStatistics: filesystem,
-			gitStatistics: git,
 			github,
+			gitStatistics: git,
 			metascope,
 			nodeNpmRegistry: npm,
 			obsidianManifestJson,

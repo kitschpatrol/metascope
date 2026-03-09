@@ -22,7 +22,6 @@ describe('parseGoMod', () => {
 		expect(result.dependencies).toBeDefined()
 		expect(result.dependencies).toEqual(
 			expect.arrayContaining([
-				// eslint-disable-next-line ts/no-unsafe-assignment
 				expect.objectContaining({
 					module: expect.stringContaining(''),
 					version: expect.stringContaining(''),

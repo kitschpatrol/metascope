@@ -10,23 +10,23 @@ const fixturesDirectory = resolve('test/fixtures/codemeta-json')
 describe('codemeta-json source', () => {
 	it('should be available in a directory with a codemeta.json file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'caltechlibrary-iga'),
 		}
-		expect(await codemetaJsonSource.isAvailable(context)).toBe(true)
+		expect(await codemetaJsonSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without codemeta.json', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await codemetaJsonSource.isAvailable(context)).toBe(false)
+		expect(await codemetaJsonSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'caltechlibrary-iga'),
 		}
 		const result = await codemetaJsonSource.extract(context)

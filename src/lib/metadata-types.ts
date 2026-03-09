@@ -79,8 +79,8 @@ export type MetadataContext = {
 	dependencyUpdates: DependencyUpdatesData
 	fileStatistics: FileStatisticsData
 	gitConfig: GitConfigData
-	gitStatistics: GitStatisticsData
 	github: GitHubData
+	gitStatistics: GitStatisticsData
 	goGoMod: GoGoModData
 	goGoreleaserYaml: GoGoreleaserYamlData
 	javaPomXml: JavaPomXmlData
@@ -163,6 +163,8 @@ export type Credentials = {
 export type GetMetadataOptions = {
 	/** API credentials for remote sources. */
 	credentials?: Credentials
+	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
+	offline?: boolean
 	/** Project directory path. */
 	path: string
 	/** Built-in template name or omit for full output. */
@@ -177,6 +179,8 @@ export type GetMetadataOptions = {
 export type GetMetadataTemplateOptions<T> = {
 	/** API credentials for remote sources. */
 	credentials?: Credentials
+	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
+	offline?: boolean
 	/** Project directory path. */
 	path: string
 	/** Template function that transforms MetadataContext into a custom shape. */

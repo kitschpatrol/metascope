@@ -333,17 +333,14 @@ async function readCodemetaJsonFile(directoryPath: string): Promise<string | und
 
 export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 	async extract(context: SourceContext): Promise<CodeMetaJsonData> {
-		log.debug('Extracting codemeta.json metadata...')
 		const content = await readCodemetaJsonFile(context.path)
 		if (!content) return undefined
+
+		log.debug('Extracting codemeta.json metadata...')
 		const data = parse(content)
 		if (!data) return undefined
 		const filePath = resolve(context.path, 'codemeta.json')
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const content = await readCodemetaJsonFile(context.path)
-		return content !== undefined
-	},
 	key: 'codemetaJson',
-}
+	phase: 1,}

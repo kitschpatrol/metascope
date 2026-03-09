@@ -46,9 +46,5 @@ export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
 			source: context.path,
 		}
 	},
-	// eslint-disable-next-line ts/require-await
-	async isAvailable(): Promise<boolean> {
-		return true
-	},
 	key: 'fileStatistics',
-}
+	phase: 2,}

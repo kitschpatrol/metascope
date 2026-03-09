@@ -387,9 +387,5 @@ export const publiccodeYamlSource: MetadataSource<'publiccodeYaml'> = {
 		if (!data) return undefined
 		return { data, source: result.filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const result = await readPubliccodeFile(context.path)
-		return result !== undefined
-	},
 	key: 'publiccodeYaml',
-}
+	phase: 1,}

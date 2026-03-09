@@ -197,19 +197,16 @@ export const openframeworksInstallXmlSource: MetadataSource<'openframeworksInsta
 		log.debug('Extracting openFrameworks install.xml metadata...')
 
 		const filePath = resolve(context.path, 'install.xml')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
 		const data = parse(content)
 		if (!data) return undefined
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			const content = await readFile(resolve(context.path, 'install.xml'), 'utf8')
-			// Validate it's actually an oF addon install.xml, not some other install.xml
-			return parse(content) !== undefined
-		} catch {
-			return false
-		}
-	},
 	key: 'openframeworksInstallXml',
-}
+	phase: 1,}

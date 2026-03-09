@@ -267,19 +267,18 @@ function isArduinoLibraryProperties(content: string): boolean {
 
 export const arduinoLibraryPropertiesSource: MetadataSource<'arduinoLibraryProperties'> = {
 	async extract(context: SourceContext): Promise<ArduinoLibraryPropertiesData> {
-		log.debug('Extracting Arduino library.properties metadata...')
-
 		const filePath = resolve(context.path, 'library.properties')
-		const content = await readFile(filePath, 'utf8')
+		let content: string
+		try {
+			content = await readFile(filePath, 'utf8')
+		} catch {
+			return undefined
+		}
+
+		if (!isArduinoLibraryProperties(content)) return undefined
+
+		log.debug('Extracting Arduino library.properties metadata...')
 		return { data: parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			const content = await readFile(resolve(context.path, 'library.properties'), 'utf8')
-			return isArduinoLibraryProperties(content)
-		} catch {
-			return false
-		}
-	},
 	key: 'arduinoLibraryProperties',
-}
+	phase: 1,}

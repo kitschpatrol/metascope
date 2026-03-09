@@ -42,9 +42,5 @@ export const pythonPyprojectTomlSource: MetadataSource<'pythonPyprojectToml'> = 
 		const data = parse(content)
 		return { data, source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const content = await readPyprojectFile(context.path)
-		return content !== undefined
-	},
 	key: 'pythonPyprojectToml',
-}
+	phase: 1,}

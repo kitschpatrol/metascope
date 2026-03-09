@@ -4,8 +4,12 @@ import type { Credentials, MetadataContext, SourceName } from '../metadata-types
  * Context provided to each metadata source during availability checks and extraction.
  */
 export type SourceContext = {
+	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
+	context: Partial<MetadataContext>
 	/** API credentials for remote sources. */
 	credentials: Credentials
+	/** When true, sources should skip network requests and return only locally-available data. */
+	offline: boolean
 	/** Absolute path to the project directory. */
 	path: string
 }
@@ -35,9 +39,9 @@ export type SourceRecord<
 export type MetadataSource<K extends SourceName = SourceName> = {
 	/** The top-level key this source populates in MetadataContext. */
 	key: K
-	/** Extract all available metadata from this source. */
+	/** The execution phase. Sources with the same phase run in parallel. Lower phases run first. */
+	phase: number
+	/** Extract metadata from this source. Returns undefined if the source is not available. */
 	extract(context: SourceContext): Promise<MetadataContext[K]>
-	/** Check if this source can provide data for the given project. */
-	isAvailable(context: SourceContext): Promise<boolean>
 }
 /* eslint-enable perfectionist/sort-object-types */

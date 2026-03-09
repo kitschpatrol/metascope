@@ -9,23 +9,23 @@ const fixturesDirectory = resolve('test/fixtures/java-pom-xml')
 describe('javaPomXml source', () => {
 	it('should be available in a directory with pom.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'yahoo-halodb'),
 		}
-		expect(await javaPomXmlSource.isAvailable(context)).toBe(true)
+		expect(await javaPomXmlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without pom.xml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await javaPomXmlSource.isAvailable(context)).toBe(false)
+		expect(await javaPomXmlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'yahoo-halodb'),
 		}
 		const result = await javaPomXmlSource.extract(context)

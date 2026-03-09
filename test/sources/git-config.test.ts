@@ -4,21 +4,21 @@ import type { SourceContext } from '../../src/lib/sources/source'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
 
 const context: SourceContext = {
-	credentials: {},
+	context: {}, credentials: {}, offline: false,
 	path: resolve('.'),
 }
 
 describe('git config source', () => {
 	it('should be available in a git repo', async () => {
-		expect(await gitConfigSource.isAvailable(context)).toBe(true)
+		expect(await gitConfigSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a non-git directory', async () => {
 		const nonGitContext: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await gitConfigSource.isAvailable(nonGitContext)).toBe(false)
+		expect(await gitConfigSource.extract(nonGitContext)).toBeUndefined()
 	})
 
 	it('should fetch git config metadata', async () => {

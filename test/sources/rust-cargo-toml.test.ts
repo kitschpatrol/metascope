@@ -9,23 +9,23 @@ const fixturesDirectory = resolve('test/fixtures/rust-cargo-toml')
 describe('rustCargoToml source', () => {
 	it('should be available in a directory with Cargo.toml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
-		expect(await rustCargoTomlSource.isAvailable(context)).toBe(true)
+		expect(await rustCargoTomlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without Cargo.toml', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await rustCargoTomlSource.isAvailable(context)).toBe(false)
+		expect(await rustCargoTomlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed Cargo.toml data', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
 		const result = await rustCargoTomlSource.extract(context)

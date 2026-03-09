@@ -76,17 +76,12 @@ async function findGemspecFile(directoryPath: string): Promise<string | undefine
 
 export const rubyGemspecSource: MetadataSource<'rubyGemspec'> = {
 	async extract(context: SourceContext): Promise<RubyGemspecData> {
-		log.debug('Extracting gemspec metadata...')
-
 		const filePath = await findGemspecFile(context.path)
 		if (!filePath) return undefined
 
+		log.debug('Extracting gemspec metadata...')
 		const content = await readFile(filePath, 'utf8')
 		return { data: await parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findGemspecFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'rubyGemspec',
-}
+	phase: 1,}

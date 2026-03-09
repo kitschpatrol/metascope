@@ -1,6 +1,6 @@
 /* eslint-disable ts/naming-convention */
 
-import { access, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { MetadataSource, SourceContext, SourceRecord } from './source'
@@ -154,24 +154,5 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 			source: `https://pypi.org/project/${encodeURIComponent(name)}/`,
 		}
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		try {
-			await access(resolve(context.path, 'pyproject.toml'))
-		} catch {
-			return false
-		}
-
-		const name = await getPackageName(context)
-		if (!name) return false
-
-		try {
-			const response = await fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`, {
-				method: 'HEAD',
-			})
-			return response.ok
-		} catch {
-			return false
-		}
-	},
 	key: 'pythonPypiRegistry',
-}
+	phase: 2,}

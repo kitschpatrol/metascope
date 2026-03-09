@@ -10,23 +10,23 @@ const fixturesDirectory = resolve('test/fixtures/node-package-json')
 describe('nodePackageJson source', () => {
 	it('should be available in a directory with a package.json file', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'bschlenk-node-roku-client'),
 		}
-		expect(await nodePackageJsonSource.isAvailable(context)).toBe(true)
+		expect(await nodePackageJsonSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without package.json', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await nodePackageJsonSource.isAvailable(context)).toBe(false)
+		expect(await nodePackageJsonSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'bschlenk-node-roku-client'),
 		}
 		const result = await nodePackageJsonSource.extract(context)

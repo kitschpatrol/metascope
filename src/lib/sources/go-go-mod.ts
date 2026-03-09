@@ -50,17 +50,12 @@ async function findGoModFile(directoryPath: string): Promise<string | undefined>
 
 export const goGoModSource: MetadataSource<'goGoMod'> = {
 	async extract(context: SourceContext): Promise<GoGoModData> {
-		log.debug('Extracting go.mod metadata...')
-
 		const filePath = await findGoModFile(context.path)
 		if (!filePath) return undefined
 
+		log.debug('Extracting go.mod metadata...')
 		const content = await readFile(filePath, 'utf8')
 		return { data: parse(content), source: filePath }
 	},
-	async isAvailable(context: SourceContext): Promise<boolean> {
-		const filePath = await findGoModFile(context.path)
-		return filePath !== undefined
-	},
 	key: 'goGoMod',
-}
+	phase: 1,}

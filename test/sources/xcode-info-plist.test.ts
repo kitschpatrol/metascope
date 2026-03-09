@@ -9,23 +9,23 @@ const fixturesDirectory = resolve('test/fixtures/xcode-info-plist')
 describe('xcodeInfoPlist source', () => {
 	it('should be available in a directory with Info.plist', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow'),
 		}
-		expect(await xcodeInfoPlistSource.isAvailable(context)).toBe(true)
+		expect(await xcodeInfoPlistSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without Info.plist', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: '/tmp',
 		}
-		expect(await xcodeInfoPlistSource.isAvailable(context)).toBe(false)
+		expect(await xcodeInfoPlistSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			credentials: {},
+			context: {}, credentials: {}, offline: false,
 			path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow'),
 		}
 		const result = await xcodeInfoPlistSource.extract(context)
