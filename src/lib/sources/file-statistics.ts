@@ -2,7 +2,7 @@ import { stat } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import type { SourceRecord } from './source'
 import { log } from '../log'
-import { defineSource, getMatches } from './source'
+import { defineSource, getMatches, getWorkspaces } from './source'
 
 export type FileStatistics = {
 	/** Total number of directories (recursive). */
@@ -18,15 +18,21 @@ export type FileStatisticsData = SourceRecord<FileStatistics> | undefined
 export const fileStatisticsSource = defineSource<'fileStatistics'>({
 	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
-		return [context.options.path]
+		return [
+			context.options.path,
+			...getWorkspaces(context.options.path, context.options.workspaces),
+		]
 	},
 	key: 'fileStatistics',
-	async parseInput(_input, context) {
+	async parseInput(input, context) {
 		log.debug('Extracting file statistics metadata...')
 
-		const allFiles = await getMatches({ ...context.options, recursive: true }, ['**'], {
-			rawPatterns: true,
-		})
+		const allFiles = await getMatches(
+			{ ...context.options, path: input, recursive: true },
+			['**'],
+			['**'],
+		)
+
 		const totalFileCount = allFiles.length
 
 		const uniqueDirectories = new Set<string>()
@@ -42,7 +48,7 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 		const sizes = await Promise.all(
 			allFiles.map(async (file) => {
 				try {
-					const fileStat = await stat(resolve(context.options.path, file))
+					const fileStat = await stat(resolve(input, file))
 					return fileStat.size
 				} catch {
 					return 0
@@ -58,7 +64,7 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 				totalFileCount,
 				totalSizeBytes,
 			},
-			source: context.options.path,
+			source: input,
 		}
 	},
 	phase: 2,

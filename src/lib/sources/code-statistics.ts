@@ -3,7 +3,7 @@ import { tokei } from '@kitschpatrol/tokei'
 import path from 'node:path'
 import type { OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
-import { defineSource } from './source'
+import { defineSource, getWorkspaces } from './source'
 
 type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
 	languages: Language[]
@@ -49,11 +49,10 @@ async function getStatistics(
 export const codeStatisticsSource = defineSource<'codeStatistics'>({
 	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
-		if (context.options.recursive && (context.workspaces?.length ?? 0) > 1) {
-			return context.workspaces!
-		}
-
-		return [context.options.path]
+		return [
+			context.options.path,
+			...getWorkspaces(context.options.path, context.options.workspaces),
+		]
 	},
 	key: 'codeStatistics',
 	async parseInput(input, context) {

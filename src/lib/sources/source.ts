@@ -1,4 +1,8 @@
+import is from '@sindresorhus/is'
+import { findWorkspaces } from 'find-workspaces'
 import { globby } from 'globby'
+import { existsSync } from 'node:fs'
+import { isAbsolute, resolve } from 'node:path'
 import picomatch from 'picomatch'
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from '../metadata-types'
 import { log } from '../log'
@@ -11,12 +15,6 @@ export type SourceContext = {
 	metadata: Partial<MetadataContext>
 	/** The resolved options passed to `getMetadata`. */
 	options: GetMetadataBaseOptions
-	/**
-	 * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment
-	 * Always includes at least root path if no "real" workspaces are found, and always includes root path
-	 * even if technically not a workspace
-	 */
-	workspaces?: string[]
 }
 
 /**
@@ -27,6 +25,7 @@ export type OneOrMany<T> = T | T[]
 // ─── File Matching ──────────────────────────────────────────────────
 
 const matchCache = new Map<string, string[]>()
+const workspaceCache = new Map<string, string[]>()
 
 /**
  * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
@@ -44,11 +43,75 @@ async function getTree(path: string, respectIgnored: boolean): Promise<string[]>
 }
 
 /**
+ * Get workspace locations for a directory, memoized by directory path.
+ * Returns all found workspace location paths, relative to the directory.
+ *
+ * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment.
+ * Never includes the root path!
+ * @param directory - The root directory to search from
+ * @param workspaces - `false` to disable, `true` to auto-discover, `string[]` for a manual list
+ */
+export function getWorkspaces(directory: string, workspaces: boolean | string[] = true): string[] {
+	if (workspaces === false) return []
+
+	if (Array.isArray(workspaces)) {
+		const seen = new Set<string>()
+		const validated: string[] = []
+
+		for (const workspace of workspaces) {
+			if (!is.nonEmptyString(workspace)) {
+				log.warn(`Skipping invalid workspace: expected non-empty string, got ${is(workspace)}`)
+				continue
+			}
+
+			// Hmm...
+			// if (isAbsolute(workspace)) {
+			// 	log.warn(`Skipping workspace "${workspace}": must be a relative path`)
+			// 	continue
+			// }
+
+			const absolute = resolve(directory, workspace)
+			if (!absolute.startsWith(directory)) {
+				log.warn(`Skipping workspace "${workspace}": must be a child of "${directory}"`)
+				continue
+			}
+
+			if (!existsSync(absolute)) {
+				log.warn(`Skipping workspace "${workspace}": path does not exist`)
+				continue
+			}
+
+			if (seen.has(absolute)) {
+				log.warn(`Skipping workspace "${workspace}": duplicate entry`)
+				continue
+			}
+
+			seen.add(absolute)
+			validated.push(workspace)
+		}
+
+		return validated
+	}
+
+	let locations = workspaceCache.get(directory)
+	if (!locations) {
+		locations =
+			findWorkspaces(directory)
+				?.map((value) => value.location)
+				.filter((value) => value !== directory) ?? []
+		workspaceCache.set(directory, locations)
+	}
+
+	return locations
+}
+
+/**
  * Clear the memoized file tree cache. Call between test runs or when
  * the same path needs to be re-scanned.
  */
 export function resetMatchCache(): void {
 	matchCache.clear()
+	workspaceCache.clear()
 }
 
 type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respectIgnored'>
@@ -57,20 +120,25 @@ type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respect
  * Find files matching glob patterns in a directory's file tree.
  *
  * - Memoizes the file tree internally (keyed by path + respectIgnored)
- * - Auto-prepends `** /` to patterns when `options.recursive` is true
+ * - Auto-prepends `**\/` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
  * @param options - Must include `path`; optionally `recursive` and `respectIgnored`
  * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
- * @param options_ - Set `rawPatterns: true` to skip auto-prepending `** /` when recursive
+ * @param patternsRecursive - Optionally explicitly specify recursive pattern
+ * variation, otherwise  `**\/` is prepended automatically
  */
 export async function getMatches(
 	options: MatchOptions,
 	patterns: string[],
-	options_?: { rawPatterns?: boolean },
+	patternsRecursive?: string[],
 ): Promise<string[]> {
 	const tree = await getTree(options.path, options.respectIgnored ?? true)
-	const effectivePatterns =
-		options.recursive && !options_?.rawPatterns ? patterns.map((p) => `**/${p}`) : patterns
+	const effectivePatterns = options.recursive
+		? // Recursive... use explicit if available, otherwise fall back to implicit
+			(patternsRecursive ?? patterns.map((p) => `**/${p}`))
+		: // Non-recursive...
+			patterns
+
 	const isMatch = picomatch(effectivePatterns, { nocase: true })
 	return tree.filter((filePath) => isMatch(filePath))
 }

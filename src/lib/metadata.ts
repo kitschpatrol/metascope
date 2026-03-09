@@ -1,4 +1,3 @@
-import { findWorkspaces } from 'find-workspaces'
 import { execFile } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
@@ -206,6 +205,7 @@ export async function getMetadata<T>(
 	const offline = options.offline ?? false
 	const recursive = options.recursive ?? false
 	const respectIgnored = options.respectIgnored ?? true
+	const workspaces = options.workspaces ?? true
 
 	// Reset match cache to ensure fresh results for each getMetadata call
 	resetMatchCache()
@@ -215,15 +215,9 @@ export async function getMetadata<T>(
 	const allFiles = await getMatches(
 		{ path: absolutePath, recursive: true, respectIgnored },
 		['**'],
-		{ rawPatterns: true },
+		['**'],
 	)
 	log.debug(`File tree contains ${allFiles.length} entries`)
-
-	const workspaces = findWorkspaces(absolutePath)?.map((value) => value.location) ?? []
-	// Always include the root of the repo
-	if (!workspaces.includes(absolutePath)) {
-		workspaces.unshift(absolutePath)
-	}
 
 	// Assemble context with defaults
 	const context: MetadataContext = {
@@ -277,8 +271,8 @@ export async function getMetadata<T>(
 				recursive,
 				respectIgnored,
 				templateData: options.templateData,
+				workspaces,
 			},
-			workspaces,
 		}
 		await runSources(phaseSources, sourceContext, context)
 	}

@@ -329,7 +329,11 @@ function parseDependencies(
 
 export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
 	async getInputs(context) {
-		return getMatches(context.options, ['*.xcodeproj/project.pbxproj'], { rawPatterns: true })
+		return getMatches(
+			context.options,
+			['*.xcodeproj/project.pbxproj'],
+			['**/*.xcodeproj/project.pbxproj'],
+		)
 	},
 	key: 'xcodeProjectPbxproj',
 	// eslint-disable-next-line ts/require-await

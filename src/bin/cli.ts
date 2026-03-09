@@ -57,6 +57,17 @@ await yargsInstance
 					description: 'Search for metadata files recursively in subdirectories',
 					type: 'boolean',
 				})
+				.option('workspaces', {
+					alias: 'w',
+					coerce: (value: (boolean | string)[] | boolean | string) => {
+						if (value === true || value === false) return value
+						const values = Array.isArray(value) ? value : [value]
+						const strings = values.filter((v): v is string => typeof v === 'string')
+						return strings.length > 0 ? strings : true
+					},
+					description:
+						'Monorepo workspace paths relative to the project directory. Use --workspaces to auto-discover, --no-workspaces to disable, or --workspaces path1 path2 for specific paths',
+				})
 				.option('verbose', {
 					description: 'Run with verbose logging',
 					type: 'boolean',
@@ -117,6 +128,7 @@ await yargsInstance
 				const noIgnore = argv.noIgnore ?? false
 				const offline = argv.offline ?? false
 				const recursive = argv.recursive ?? false
+				const workspaces = argv.workspaces as boolean | string[] | undefined
 				const result = template
 					? await getMetadata({
 							credentials,
@@ -126,6 +138,7 @@ await yargsInstance
 							recursive,
 							template,
 							templateData,
+							workspaces,
 						})
 					: await getMetadata({
 							credentials,
@@ -134,6 +147,7 @@ await yargsInstance
 							path: argv.path,
 							recursive,
 							templateData,
+							workspaces,
 						})
 
 				// JSON output: pretty when TTY, compact when piped

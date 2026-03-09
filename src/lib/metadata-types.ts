@@ -173,6 +173,12 @@ export type GetMetadataBaseOptions = {
 	respectIgnored?: boolean
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
+	/**
+	 * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment
+	 * Never includes the root path!
+	 * False is disable, true is auto-discover which turns into string[], string[] is manual list relative to the project directory path...
+	 */
+	workspaces?: boolean | string[]
 }
 
 /**
