@@ -1,0 +1,11 @@
+{
+  "id": "all-sources-plugin",
+  "name": "All Sources Plugin",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "A comprehensive Obsidian plugin fixture.",
+  "author": "Test Author",
+  "authorUrl": "https://example.com",
+  "fundingUrl": "https://github.com/sponsors/test-org",
+  "isDesktopOnly": false
+}

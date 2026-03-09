@@ -1,0 +1,27 @@
+<install>
+	<name>ofxAllSources</name>
+	<version>1.0.0</version>
+	<author><![CDATA[Test Author <test@example.com>]]></author>
+
+	<code_url>https://github.com/test-org/all-sources/tree/main/addons</code_url>
+	<site_url>https://example.com/all-sources</site_url>
+	<download_url>https://example.com/all-sources/releases/v1.0.0</download_url>
+
+	<description><![CDATA[
+		A comprehensive test fixture for openFrameworks addons metadata.
+	]]></description>
+
+	<add>
+		<src>src</src>
+		<link>
+			<lib os="linux">libs/linux/lib.a</lib>
+			<lib os="mac">libs/mac/lib.a</lib>
+			<lib os="win32">libs/win32/lib.lib</lib>
+		</link>
+	</add>
+
+	<requires>
+		<addon>ofxXmlSettings</addon>
+		<addon>ofxOsc</addon>
+	</requires>
+</install>

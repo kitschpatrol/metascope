@@ -1,0 +1,33 @@
+from setuptools import setup
+
+setup(
+    name="all-sources-fixture",
+    version="1.0.0",
+    author="Test Author",
+    author_email="test@example.com",
+    maintainer="Test Maintainer",
+    maintainer_email="maintainer@example.com",
+    description="A comprehensive test fixture.",
+    long_description="A comprehensive test fixture for metadata extraction.",
+    url="https://example.com/all-sources",
+    download_url="https://example.com/all-sources/releases/v1.0.0",
+    license="MIT",
+    keywords=["test", "fixture"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+    ],
+    python_requires=">=3.10",
+    install_requires=[
+        "requests>=2.28",
+        "click>=8.0",
+    ],
+    extras_require={
+        "dev": ["pytest>=7.0", "mypy>=1.0"],
+    },
+    project_urls={
+        "Repository": "https://github.com/test-org/all-sources",
+        "Documentation": "https://docs.example.com/all-sources",
+    },
+)

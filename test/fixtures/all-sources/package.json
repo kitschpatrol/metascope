@@ -1,0 +1,44 @@
+{
+  "name": "all-sources-fixture",
+  "version": "1.0.0",
+  "description": "A test fixture that exercises every metadata source.",
+  "keywords": ["test", "fixture", "metadata"],
+  "homepage": "https://example.com/all-sources",
+  "bugs": "https://github.com/test-org/all-sources/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/test-org/all-sources.git"
+  },
+  "funding": "https://github.com/sponsors/test-org",
+  "license": "MIT",
+  "author": {
+    "name": "Test Author",
+    "email": "test@example.com",
+    "url": "https://example.com"
+  },
+  "contributors": [
+    {
+      "name": "Contributor One",
+      "email": "contributor@example.com"
+    }
+  ],
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "all-sources": "bin/cli.js"
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cinder>
+  <block
+    name="AllSourcesBlock"
+    id="com.example.all-sources"
+    git="https://github.com/test-org/all-sources.git"
+    author="Test Author"
+    license="MIT"
+    version="1.0.0"
+    summary="A comprehensive test fixture for Cinder."
+    url="https://example.com/all-sources"
+    library="https://example.com/all-sources/lib"
+  >
+    <supports os="macosx" />
+    <supports os="msw" />
+    <supports os="linux" />
+    <requires>cinder/core</requires>
+    <requires>cinder/gl</requires>
+  </block>
+</cinder>

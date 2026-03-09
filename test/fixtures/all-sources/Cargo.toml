@@ -1,0 +1,28 @@
+[package]
+name = "all-sources-fixture"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.70"
+authors = ["Test Author <test@example.com>"]
+description = "A comprehensive test fixture."
+license = "MIT"
+license-file = "LICENSE"
+readme = "README.md"
+homepage = "https://example.com/all-sources"
+repository = "https://github.com/test-org/all-sources"
+documentation = "https://docs.rs/all-sources-fixture"
+keywords = ["test", "fixture"]
+categories = ["development-tools::testing"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+tokio = "1.0"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[build-dependencies]
+cc = "1.0"
+
+[workspace]
+members = ["crates/*"]

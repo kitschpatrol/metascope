@@ -1,0 +1,89 @@
+publiccodeYmlVersion: "0.3"
+name: All Sources Fixture
+url: https://github.com/test-org/all-sources
+landingURL: https://example.com/all-sources
+isBasedOn: https://github.com/upstream/project
+softwareVersion: "1.0.0"
+releaseDate: "2024-03-01"
+logo: https://example.com/logo.png
+monochromeLogo: https://example.com/logo-mono.png
+platforms:
+  - web
+  - linux
+  - mac
+  - windows
+categories:
+  - it-security
+  - cloud-management
+developmentStatus: stable
+softwareType: standalone/web
+inputTypes:
+  - application/json
+  - text/csv
+outputTypes:
+  - application/json
+  - text/html
+roadmap: https://example.com/all-sources/roadmap
+usedBy:
+  - Test Organization
+  - Example Corp
+applicationSuite: Test Suite
+
+description:
+  en:
+    localisedName: All Sources
+    genericName: Metadata Tool
+    shortDescription: A comprehensive test fixture.
+    longDescription: >
+      This is a comprehensive test fixture that exercises every field
+      in the publiccode.yml metadata source. It contains all possible
+      fields to ensure complete coverage during testing.
+    documentation: https://docs.example.com/all-sources
+    features:
+      - Metadata extraction
+      - Multi-format support
+  it:
+    localisedName: Tutte le Fonti
+    genericName: Strumento Metadati
+    shortDescription: Un fixture di test completo.
+    longDescription: >
+      Questo è un fixture di test completo che esercita ogni campo
+      nella sorgente di metadati publiccode.yml.
+    features:
+      - Estrazione metadati
+
+legal:
+  license: MIT
+  mainCopyrightOwner: Test Author
+  repoOwner: Test Org
+
+maintenance:
+  type: community
+  contacts:
+    - name: Test Maintainer
+      email: maintainer@example.com
+      phone: "+1234567890"
+      affiliation: Test Org
+  contractors:
+    - name: Dev Agency
+      until: "2025-12-31"
+      website: https://devagency.example.com
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - it
+
+dependsOn:
+  open:
+    - name: Node.js
+      version: ">=18"
+      optional: false
+  proprietary:
+    - name: Oracle DB
+      version: "19c"
+      optional: true
+  hardware:
+    - name: GPU
+      optional: true

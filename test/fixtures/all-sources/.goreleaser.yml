@@ -1,0 +1,23 @@
+project_name: all-sources-fixture
+
+builds:
+  - goos:
+      - linux
+      - darwin
+      - windows
+
+nfpms:
+  - description: A comprehensive test fixture for metadata.
+    license: MIT
+    maintainer: Test Maintainer <maintainer@example.com>
+    vendor: Test Org
+    homepage: https://example.com/all-sources
+
+brews:
+  - description: A comprehensive test fixture.
+    homepage: https://example.com/all-sources
+
+release:
+  github:
+    owner: test-org
+    name: all-sources

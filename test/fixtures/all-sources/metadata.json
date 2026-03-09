@@ -1,0 +1,7 @@
+{
+  "name": "All Sources Fixture",
+  "description": "A comprehensive test fixture for metadata extraction.",
+  "homepage": "https://example.com/all-sources",
+  "repository": "https://github.com/test-org/all-sources",
+  "keywords": ["test", "fixture", "metadata"]
+}

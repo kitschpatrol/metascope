@@ -1,0 +1,87 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "All Sources Fixture",
+  "description": "A comprehensive test fixture.",
+  "version": "1.0.0",
+  "softwareVersion": "1.0.0",
+  "license": "https://spdx.org/licenses/MIT",
+  "codeRepository": "https://github.com/test-org/all-sources",
+  "issueTracker": "https://github.com/test-org/all-sources/issues",
+  "url": "https://example.com/all-sources",
+  "applicationCategory": "Developer Tools",
+  "applicationSubCategory": "Testing",
+  "dateCreated": "2024-01-01",
+  "dateModified": "2024-06-15",
+  "datePublished": "2024-03-01",
+  "downloadUrl": "https://example.com/all-sources/releases/v1.0.0",
+  "installUrl": "https://example.com/all-sources/install",
+  "releaseNotes": "Initial release with all sources.",
+  "softwareHelp": "https://example.com/all-sources/docs",
+  "buildInstructions": "https://example.com/all-sources/build",
+  "continuousIntegration": "https://github.com/test-org/all-sources/actions",
+  "developmentStatus": "active",
+  "funding": "https://github.com/sponsors/test-org",
+  "identifier": "all-sources-fixture",
+  "isAccessibleForFree": true,
+  "keywords": ["test", "fixture"],
+  "programmingLanguage": ["TypeScript", "JavaScript"],
+  "operatingSystem": ["Linux", "macOS", "Windows"],
+  "runtimePlatform": ["Node.js"],
+  "readme": "README.md",
+  "relatedLink": "https://example.com/related",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Test",
+      "familyName": "Author",
+      "email": "test@example.com",
+      "url": "https://example.com",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Test Org"
+      }
+    }
+  ],
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Contributor",
+      "familyName": "One",
+      "email": "contributor@example.com"
+    }
+  ],
+  "copyrightHolder": [
+    {
+      "@type": "Person",
+      "name": "Test Author"
+    }
+  ],
+  "copyrightYear": 2024,
+  "funder": [
+    {
+      "@type": "Organization",
+      "name": "Test Foundation"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "name": "Test Maintainer",
+      "email": "maintainer@example.com"
+    }
+  ],
+  "softwareRequirements": [
+    {
+      "name": "Node.js",
+      "version": ">=18",
+      "identifier": "nodejs"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "name": "Docker",
+      "version": ">=20"
+    }
+  ]
+}
