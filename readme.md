@@ -376,7 +376,7 @@ Extracts package metadata from `package.json` (and other supported manifest file
 
 Always available. Extracted first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
 
-### filesystem
+### fileStatistics
 
 Basic filesystem statistics for the project directory.
 

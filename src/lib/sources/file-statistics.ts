@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type Filesystem = {
+export type FileStatistics = {
 	/** Total number of directories (recursive). */
 	totalDirectoryCount?: number
 	/** Total number of files (recursive). */
@@ -12,11 +12,11 @@ export type Filesystem = {
 	totalSizeBytes?: number
 }
 
-export type FilesystemData = SourceRecord<Filesystem> | undefined
+export type FileStatisticsData = SourceRecord<FileStatistics> | undefined
 
-export const filesystemSource: MetadataSource<'filesystem'> = {
-	async extract(context: SourceContext): Promise<FilesystemData> {
-		log.debug('Extracting filesystem metadata...')
+export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
+	async extract(context: SourceContext): Promise<FileStatisticsData> {
+		log.debug('Extracting file statistics metadata...')
 
 		const entries = await readdir(context.path, { recursive: true, withFileTypes: true })
 
@@ -50,5 +50,5 @@ export const filesystemSource: MetadataSource<'filesystem'> = {
 	async isAvailable(): Promise<boolean> {
 		return true
 	},
-	key: 'filesystem',
+	key: 'fileStatistics',
 }

@@ -17,7 +17,7 @@ import { cinderCinderblockXmlSource } from './sources/cinder-cinderblock-xml'
 import { codeStatisticsSource } from './sources/code-statistics'
 import { codemetaJsonSource } from './sources/codemeta-json'
 import { dependencyUpdatesSource } from './sources/dependency-updates'
-import { filesystemSource } from './sources/filesystem'
+import { fileStatisticsSource } from './sources/file-statistics'
 import { gitConfigSource } from './sources/git-config'
 import { gitStatisticsSource } from './sources/git-statistics'
 import { githubSource } from './sources/github'
@@ -57,7 +57,7 @@ const sources: MetadataSource[] = [
 	rustCargoTomlSource,
 	cinderCinderblockXmlSource,
 	codemetaJsonSource,
-	filesystemSource,
+	fileStatisticsSource,
 	rubyGemspecSource,
 	gitConfigSource,
 	gitStatisticsSource,
@@ -212,7 +212,7 @@ export async function getMetadata<T>(
 		codemetaJson: undefined,
 		codeStatistics: undefined,
 		dependencyUpdates: undefined,
-		filesystem: undefined,
+		fileStatistics: undefined,
 		gitConfig: undefined,
 		gitStatistics: undefined,
 		github: undefined,

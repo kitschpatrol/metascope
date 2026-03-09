@@ -9,7 +9,7 @@ export type {
 	Credentials,
 	DependencyUpdatesData,
 	DependencyUpdatesPackage,
-	FilesystemData,
+	FileStatisticsData,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	GitConfigData,

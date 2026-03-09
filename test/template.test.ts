@@ -39,7 +39,7 @@ const mockContext: MetadataContext = {
 		source: 'test',
 	},
 	dependencyUpdates: undefined,
-	filesystem: {
+	fileStatistics: {
 		data: {
 			totalDirectoryCount: 20,
 			totalFileCount: 150,

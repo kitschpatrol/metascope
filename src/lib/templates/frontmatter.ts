@@ -17,7 +17,7 @@ export const frontmatter = defineTemplate(
 			codemetaJson: codemeta,
 			codeStatistics: loc,
 			dependencyUpdates,
-			filesystem,
+			fileStatistics: filesystem,
 			gitStatistics: git,
 			github,
 			metascope,

@@ -3,7 +3,7 @@ export type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
 export type { CodeStatisticsData } from './sources/code-statistics'
 export type { CodeMetaJsonData } from './sources/codemeta-json'
 export type { DependencyUpdatesData, DependencyUpdatesPackage } from './sources/dependency-updates'
-export type { FilesystemData } from './sources/filesystem'
+export type { FileStatisticsData } from './sources/file-statistics'
 export type { GitConfigData } from './sources/git-config'
 export type { GitStatisticsData } from './sources/git-statistics'
 export type { GitHubData } from './sources/github'
@@ -37,7 +37,7 @@ import type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
 import type { CodeStatisticsData } from './sources/code-statistics'
 import type { CodeMetaJsonData } from './sources/codemeta-json'
 import type { DependencyUpdatesData } from './sources/dependency-updates'
-import type { FilesystemData } from './sources/filesystem'
+import type { FileStatisticsData } from './sources/file-statistics'
 import type { GitConfigData } from './sources/git-config'
 import type { GitStatisticsData } from './sources/git-statistics'
 import type { GitHubData } from './sources/github'
@@ -77,7 +77,7 @@ export type MetadataContext = {
 	codemetaJson: CodeMetaJsonData
 	codeStatistics: CodeStatisticsData
 	dependencyUpdates: DependencyUpdatesData
-	filesystem: FilesystemData
+	fileStatistics: FileStatisticsData
 	gitConfig: GitConfigData
 	gitStatistics: GitStatisticsData
 	github: GitHubData
