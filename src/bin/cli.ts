@@ -45,7 +45,7 @@ await yargsInstance
 				})
 				.option('absolute', {
 					description:
-					'Output absolute paths (default: true). Use --no-absolute for relative paths.',
+						'Output absolute paths (default: true). Use --no-absolute for relative paths.',
 					type: 'boolean',
 				})
 				.option('offline', {

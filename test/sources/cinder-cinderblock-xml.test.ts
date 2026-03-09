@@ -16,18 +16,24 @@ describe('cinderCinderblockXml source', () => {
 
 	it('should be available in a directory with cinderblock.xml', async () => {
 		expect(
-			await cinderCinderblockXmlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') } }),
+			await cinderCinderblockXmlSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without cinderblock.xml', async () => {
 		expect(
-			await cinderCinderblockXmlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await cinderCinderblockXmlSource.getInputs({
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed cinderblock data', async () => {
-		const result = await cinderCinderblockXmlSource.parseInput('cinderblock.xml', { options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') } })
+		const result = await cinderCinderblockXmlSource.parseInput('cinderblock.xml', {
+			options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Syphon')

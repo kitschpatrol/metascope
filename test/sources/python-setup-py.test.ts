@@ -13,7 +13,9 @@ describe('python-setup-py source', () => {
 
 	it('should be available in a directory with a setup.py file', async () => {
 		expect(
-			await pythonSetupPySource.getInputs({ options: { path: resolve(fixturesDirectory, 'basic') } }),
+			await pythonSetupPySource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'basic') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -24,7 +26,9 @@ describe('python-setup-py source', () => {
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await pythonSetupPySource.parseInput('setup.py', { options: { path: resolve(fixturesDirectory, 'basic') } })
+		const result = await pythonSetupPySource.parseInput('setup.py', {
+			options: { path: resolve(fixturesDirectory, 'basic') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('setup.py')

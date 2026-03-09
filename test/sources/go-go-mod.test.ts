@@ -13,7 +13,9 @@ describe('goGoMod source', () => {
 
 	it('should be available in a directory with a go.mod file', async () => {
 		expect(
-			await goGoModSource.getInputs({ options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') } }),
+			await goGoModSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -24,7 +26,9 @@ describe('goGoMod source', () => {
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await goGoModSource.parseInput('go.mod', { options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') } })
+		const result = await goGoModSource.parseInput('go.mod', {
+			options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.module).toBe('github.com/caddyserver/certmagic')

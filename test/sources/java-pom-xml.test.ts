@@ -13,7 +13,9 @@ describe('javaPomXml source', () => {
 
 	it('should be available in a directory with pom.xml', async () => {
 		expect(
-			await javaPomXmlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'yahoo-halodb') } }),
+			await javaPomXmlSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -24,7 +26,9 @@ describe('javaPomXml source', () => {
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const result = await javaPomXmlSource.parseInput('pom.xml', { options: { path: resolve(fixturesDirectory, 'yahoo-halodb') } })
+		const result = await javaPomXmlSource.parseInput('pom.xml', {
+			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('HaloDB')

@@ -16,18 +16,24 @@ describe('arduinoLibraryProperties source', () => {
 
 	it('should be available in a directory with library.properties', async () => {
 		expect(
-			await arduinoLibraryPropertiesSource.getInputs({ options: { path: resolve(fixturesDirectory, '0xpit-esparklines') } }),
+			await arduinoLibraryPropertiesSource.getInputs({
+				options: { path: resolve(fixturesDirectory, '0xpit-esparklines') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
 		expect(
-			await arduinoLibraryPropertiesSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await arduinoLibraryPropertiesSource.getInputs({
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed library properties data', async () => {
-		const result = await arduinoLibraryPropertiesSource.parseInput('library.properties', { options: { path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811') } })
+		const result = await arduinoLibraryPropertiesSource.parseInput('library.properties', {
+			options: { path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Adafruit CCS811 Library')

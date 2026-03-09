@@ -13,7 +13,9 @@ describe('rubyGemspec source', () => {
 
 	it('should be available in a directory with a .gemspec file', async () => {
 		expect(
-			await rubyGemspecSource.getInputs({ options: { path: resolve(fixturesDirectory, 'ankane-blazer') } }),
+			await rubyGemspecSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -24,7 +26,9 @@ describe('rubyGemspec source', () => {
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await rubyGemspecSource.parseInput('blazer.gemspec', { options: { path: resolve(fixturesDirectory, 'ankane-blazer') } })
+		const result = await rubyGemspecSource.parseInput('blazer.gemspec', {
+			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('blazer')

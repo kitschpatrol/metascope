@@ -14,7 +14,9 @@ describe('readmeFile source', () => {
 
 	it('should be available in a directory with a README.md', async () => {
 		expect(
-			await readmeFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') } }),
+			await readmeFileSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -25,7 +27,9 @@ describe('readmeFile source', () => {
 	})
 
 	it('should extract name from a fixture with an H1', async () => {
-		const result = await readmeFileSource.parseInput('README.md', { options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') } })
+		const result = await readmeFileSource.parseInput('README.md', {
+			options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Hyperspeed SDK V1.0.0')
@@ -33,7 +37,9 @@ describe('readmeFile source', () => {
 	})
 
 	it('should return undefined for a fixture without an H1', async () => {
-		const result = await readmeFileSource.parseInput('README.md', { options: { path: resolve(fixturesDirectory, 'next-hat-nanocl') } })
+		const result = await readmeFileSource.parseInput('README.md', {
+			options: { path: resolve(fixturesDirectory, 'next-hat-nanocl') },
+		})
 
 		expect(result).toBeUndefined()
 	})

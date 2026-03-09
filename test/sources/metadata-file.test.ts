@@ -13,13 +13,17 @@ describe('metadataFile source', () => {
 
 	it('should be available in a directory with metadata.json', async () => {
 		expect(
-			await metadataFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'git-url') } }),
+			await metadataFileSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'git-url') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with metadata.yaml', async () => {
 		expect(
-			await metadataFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'basic') } }),
+			await metadataFileSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'basic') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -30,7 +34,9 @@ describe('metadataFile source', () => {
 	})
 
 	it('should extract parsed metadata from JSON', async () => {
-		const result = await metadataFileSource.parseInput('metadata.json', { options: { path: resolve(fixturesDirectory, 'git-url') } })
+		const result = await metadataFileSource.parseInput('metadata.json', {
+			options: { path: resolve(fixturesDirectory, 'git-url') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('metadata.json')
@@ -40,7 +46,9 @@ describe('metadataFile source', () => {
 	})
 
 	it('should return all metadata files when multiple exist', async () => {
-		const result = await metadataFileSource.extract({ options: { path: resolve(fixturesDirectory, 'basic') } })
+		const result = await metadataFileSource.extract({
+			options: { path: resolve(fixturesDirectory, 'basic') },
+		})
 
 		expect(result).toBeDefined()
 		// The basic/ directory has all three formats; all should be returned

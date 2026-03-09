@@ -4,6 +4,7 @@ export default cspellConfig({
 	ignorePaths: ['codemeta.json', 'test/fixtures/**/*'],
 	words: [
 		'abelectronics',
+		'golangci',
 		'abelectronicsuk',
 		'aenthill',
 		'aeshirey',

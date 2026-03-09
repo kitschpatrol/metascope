@@ -16,23 +16,31 @@ describe('processingLibraryProperties source', () => {
 
 	it('should be available in a directory with Processing library.properties', async () => {
 		expect(
-			await processingLibraryPropertiesSource.getInputs({ options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') } }),
+			await processingLibraryPropertiesSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
 		expect(
-			await processingLibraryPropertiesSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await processingLibraryPropertiesSource.getInputs({
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
 		).toHaveLength(0)
 	})
 
 	it('should not be available for Arduino library.properties', async () => {
-		const result = await processingLibraryPropertiesSource.parseInput('library.properties', { options: { path: resolve('test/fixtures/arduino-library-properties/0xpit-esparklines') } })
+		const result = await processingLibraryPropertiesSource.parseInput('library.properties', {
+			options: { path: resolve('test/fixtures/arduino-library-properties/0xpit-esparklines') },
+		})
 		expect(result).toBeUndefined()
 	})
 
 	it('should extract parsed library properties data', async () => {
-		const result = await processingLibraryPropertiesSource.parseInput('library.properties', { options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') } })
+		const result = await processingLibraryPropertiesSource.parseInput('library.properties', {
+			options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Camera 3D')

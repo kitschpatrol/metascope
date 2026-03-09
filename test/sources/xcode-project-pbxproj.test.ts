@@ -13,13 +13,17 @@ describe('xcodeProjectPbxproj source', () => {
 
 	it('should be available in a directory with a .xcodeproj', async () => {
 		expect(
-			await xcodeProjectPbxprojSource.getInputs({ options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') } }),
+			await xcodeProjectPbxprojSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without .xcodeproj', async () => {
 		expect(
-			await xcodeProjectPbxprojSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await xcodeProjectPbxprojSource.getInputs({
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
 		).toHaveLength(0)
 	})
 

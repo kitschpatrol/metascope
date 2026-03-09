@@ -77,9 +77,13 @@ const mockContext: MetadataContext = {
 	metadataFile: undefined,
 	metascope: {
 		data: {
-			path: '/test/project',
+			durationMs: 100,
+			options: {
+				path: 'test',
+			},
 			scannedAt: '2026-01-01T00:00:00.000Z',
 			version: '0.0.0',
+			workspaceDirectories: [],
 		},
 		source: 'test',
 	},

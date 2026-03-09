@@ -68,10 +68,13 @@ export const frontmatter = defineTemplate(
 				) ?? null,
 
 			// ── Local Repo ─────────────────────────────────────────────
-			'Repo Path': metascope?.data.path === undefined ? null : `file://${metascope.data.path}`,
-			'Readme Path': toLocalUrl(codemeta?.data.readme, metascope?.data.path) ?? null,
+			'Repo Path':
+				metascope?.data.options.path === undefined ? null : `file://${metascope.data.options.path}`,
+			'Readme Path': toLocalUrl(codemeta?.data.readme, metascope?.data.options.path) ?? null,
 			'VS Code Path':
-				metascope?.data.path === undefined ? null : `vscode://file/${metascope.data.path}`,
+				metascope?.data.options.path === undefined
+					? null
+					: `vscode://file/${metascope.data.options.path}`,
 
 			// ── Links ─────────────────────────────────────────────
 			'Homepage URL':

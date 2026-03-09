@@ -21,12 +21,8 @@ describe('all-sources fixture', () => {
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('AllSourcesLib')
 		expect(data!.version).toBe('1.0.0')
-		expect(data!.authors).toContainEqual(
-			expect.objectContaining({ name: 'Test Author' }),
-		)
-		expect(data!.maintainer).toEqual(
-			expect.objectContaining({ name: 'Test Maintainer' }),
-		)
+		expect(data!.authors).toContainEqual(expect.objectContaining({ name: 'Test Author' }))
+		expect(data!.maintainer).toEqual(expect.objectContaining({ name: 'Test Maintainer' }))
 		expect(data!.sentence).toBe('A comprehensive test fixture library.')
 		expect(data!.paragraph).toContain('exercises every field')
 		expect(data!.category).toBe('Data Processing')
@@ -132,9 +128,7 @@ describe('all-sources fixture', () => {
 		expect(data!.inceptionYear).toBe('2024')
 		expect(data!.javaVersion).toBe('17')
 		expect(data!.licenses).toHaveLength(1)
-		expect(data!.organization).toEqual(
-			expect.objectContaining({ name: 'Test Org' }),
-		)
+		expect(data!.organization).toEqual(expect.objectContaining({ name: 'Test Org' }))
 		expect(data!.developers).toHaveLength(1)
 		expect(data!.contributors).toHaveLength(1)
 		expect(data!.dependencies).toHaveLength(1)
@@ -152,7 +146,7 @@ describe('all-sources fixture', () => {
 				? [result.licenseFiles]
 				: []
 		expect(records.length).toBeGreaterThan(0)
-		const data = records[0].data
+		const { data } = records[0]
 		expect(data.spdxId).toBe('MIT')
 		expect(data.confidence).toBeGreaterThan(0)
 		expect(records[0].extra?.spdxUrl).toContain('spdx.org')
@@ -327,7 +321,7 @@ describe('all-sources fixture', () => {
 
 	it('should extract pythonSetupPy', async () => {
 		const result = await resultPromise
-		// setup.py parsing uses tree-sitter which may not support all grammar versions
+		// Setup.py parsing uses tree-sitter which may not support all grammar versions
 		// in all environments; skip if extraction failed gracefully
 		if (result.pythonSetupPy) {
 			const data = firstOf(result.pythonSetupPy)?.data
@@ -391,7 +385,7 @@ describe('all-sources fixture', () => {
 		expect(data!.edition).toBe('2021')
 		expect(data!.rustVersion).toBe('1.70')
 		expect(data!.authors).toContainEqual(
-			expect.objectContaining({ name: 'Test Author', email: 'test@example.com' }),
+			expect.objectContaining({ email: 'test@example.com', name: 'Test Author' }),
 		)
 		expect(data!.description).toBe('A comprehensive test fixture.')
 		expect(data!.license).toBe('MIT')
@@ -448,7 +442,7 @@ describe('all-sources fixture', () => {
 	it('should extract codeStatistics', async () => {
 		const result = await resultPromise
 		const data = result.codeStatistics
-		// code-statistics uses tokei, which may or may not be available
+		// Code-statistics uses tokei, which may or may not be available
 		if (data) {
 			const stats = firstOf(data)?.data
 			expect(stats!.total).toBeDefined()

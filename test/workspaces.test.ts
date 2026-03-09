@@ -61,8 +61,8 @@ describe('getWorkspaces', () => {
 	})
 
 	it('should skip non-string values', () => {
-		// eslint-disable-next-line ts/no-unsafe-argument, ts/no-explicit-any
-		const locations = getWorkspaces(fixturesDirectory, [42, '', 'packages/pkg-a'] as any)
+		// @ts-expect-error - Intentional type error for testing
+		const locations = getWorkspaces(fixturesDirectory, [42, '', 'packages/pkg-a'])
 		expect(locations).toEqual([resolve(fixturesDirectory, 'packages/pkg-a')])
 	})
 })
@@ -83,10 +83,9 @@ describe('getMatches with workspaces', () => {
 	})
 
 	it('should not include workspace matches when workspaces is false', async () => {
-		const matches = await getMatches(
-			{ path: fixturesDirectory, workspaces: false },
-			['package.json'],
-		)
+		const matches = await getMatches({ path: fixturesDirectory, workspaces: false }, [
+			'package.json',
+		])
 		expect(matches).toEqual([resolve(fixturesDirectory, 'package.json')])
 	})
 
@@ -104,6 +103,8 @@ describe('getMatches with workspaces', () => {
 			{ path: fixturesDirectory, workspaces: ['packages/pkg-a', 'packages/pkg-b'] },
 			['package.json'],
 		)
+
+		// eslint-disable-next-line unicorn/no-array-sort
 		const sorted = [...matches].sort(
 			(a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length,
 		)
@@ -140,8 +141,8 @@ describe('getMetadata with absolute flag', () => {
 		})
 		expect(result.metascope).toBeDefined()
 		expect(result.metascope!.data.workspaceDirectories.length).toBeGreaterThan(0)
-		for (const dir of result.metascope!.data.workspaceDirectories) {
-			expect(isAbsolute(dir)).toBe(true)
+		for (const directory of result.metascope!.data.workspaceDirectories) {
+			expect(isAbsolute(directory)).toBe(true)
 		}
 	})
 
@@ -152,8 +153,8 @@ describe('getMetadata with absolute flag', () => {
 			workspaces: true,
 		})
 		expect(result.metascope).toBeDefined()
-		for (const dir of result.metascope!.data.workspaceDirectories) {
-			expect(isAbsolute(dir)).toBe(false)
+		for (const directory of result.metascope!.data.workspaceDirectories) {
+			expect(isAbsolute(directory)).toBe(false)
 		}
 	})
 })

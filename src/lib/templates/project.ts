@@ -49,9 +49,11 @@ export const project = defineTemplate(
 			majorUpdateCount: dependencyUpdates?.data.major?.length ?? 0,
 			majorUpdateList: dependencyUpdates?.data.major?.map((value) => value.name),
 			npmDownloadCount: npm?.data.downloadsTotal,
-			readmePath: toLocalUrl(codemeta?.data.readme, metascope?.data.path),
+			readmePath: toLocalUrl(codemeta?.data.readme, metascope?.data.options.path),
 			repositoryPath:
-				metascope?.data.path === undefined ? undefined : `file://${metascope.data.path}`,
+				metascope?.data.options.path === undefined
+					? undefined
+					: `file://${metascope.data.options.path}`,
 			semverUpdateCount: undefined, // TODO, Not well supported by `updates` package
 			semverUpdateList: undefined, // TODO, Not well supported by `updates` package
 			tags: codemeta?.data.keywords,

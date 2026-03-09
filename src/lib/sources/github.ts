@@ -609,10 +609,14 @@ export const githubSource = defineSource<'github'>({
 				.filter((remote) => remote !== undefined)
 		}
 
-		const ownerRepos = gitRemotes
-			.map((config) => getGitHubRemoteFromConfig(config))
-			.filter((remote) => remote !== undefined)
-			.map((remote) => `${remote.owner}/${remote.repo}`)
+		const ownerRepos = [
+			...new Set(
+				gitRemotes
+					.map((config) => getGitHubRemoteFromConfig(config))
+					.filter((remote) => remote !== undefined)
+					.map((remote) => `${remote.owner}/${remote.repo}`),
+			),
+		]
 
 		return ownerRepos
 	},

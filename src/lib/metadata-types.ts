@@ -183,20 +183,12 @@ export type GetMetadataBaseOptions = {
 	workspaces?: boolean | string[]
 }
 
-/** The keys of `GetMetadataBaseOptions` that have defaults. */
-type DefaultedOptionKeys = keyof typeof DEFAULT_GET_METADATA_OPTIONS
-
-/**
- * Resolved options after applying defaults. Fields with defaults are required;
- * fields without defaults (`credentials`, `templateData`) remain optional.
- */
-export type ResolvedGetMetadataOptions = Required<Pick<GetMetadataBaseOptions, DefaultedOptionKeys>> &
-	Omit<GetMetadataBaseOptions, DefaultedOptionKeys>
-
 /**
  * Default values for optional fields in `GetMetadataBaseOptions`.
  */
-export const DEFAULT_GET_METADATA_OPTIONS: Required<Omit<GetMetadataBaseOptions, 'credentials' | 'templateData'>> = {
+export const DEFAULT_GET_METADATA_OPTIONS: Required<
+	Omit<GetMetadataBaseOptions, 'credentials' | 'templateData'>
+> = {
 	absolute: true,
 	offline: false,
 	path: '.',

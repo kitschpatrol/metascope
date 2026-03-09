@@ -125,7 +125,11 @@ export function resetMatchCache(): void {
  * Format an absolute path as either absolute or relative, based on the `absolute` option.
  * When relative, paths identical to `basePath` are returned as `'.'`.
  */
-export function formatPath(absolutePath: string, basePath: string, absolute = DEFAULT_GET_METADATA_OPTIONS.absolute): string {
+export function formatPath(
+	absolutePath: string,
+	basePath: string,
+	absolute = DEFAULT_GET_METADATA_OPTIONS.absolute,
+): string {
 	if (absolute) return absolutePath
 	const relativePath = relative(basePath, absolutePath)
 	return relativePath === '' ? '.' : relativePath
@@ -301,7 +305,11 @@ export function defineSource<K extends SourceName>(
 				try {
 					const result = await config.parseInput(input, resolved)
 					if (result) {
-						result.source = formatPath(result.source, resolved.options.path, resolved.options.absolute)
+						result.source = formatPath(
+							result.source,
+							resolved.options.path,
+							resolved.options.absolute,
+						)
 						results.push(result)
 					}
 				} catch (error) {

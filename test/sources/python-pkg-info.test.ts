@@ -13,7 +13,9 @@ describe('pythonPkgInfo source', () => {
 
 	it('should be available in a directory with a PKG-INFO file', async () => {
 		expect(
-			await pythonPkgInfoSource.getInputs({ options: { path: resolve(fixturesDirectory, 'basic') } }),
+			await pythonPkgInfoSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'basic') },
+			}),
 		).not.toHaveLength(0)
 	})
 
@@ -24,7 +26,9 @@ describe('pythonPkgInfo source', () => {
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await pythonPkgInfoSource.parseInput('PKG-INFO', { options: { path: resolve(fixturesDirectory, 'basic') } })
+		const result = await pythonPkgInfoSource.parseInput('PKG-INFO', {
+			options: { path: resolve(fixturesDirectory, 'basic') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('PKG-INFO')

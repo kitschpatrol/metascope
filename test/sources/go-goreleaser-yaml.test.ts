@@ -17,18 +17,24 @@ describe('goGoreleaserYaml source', () => {
 
 	it('should be available in a directory with a .goreleaser.yml file', async () => {
 		expect(
-			await goGoreleaserYamlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') } }),
+			await goGoreleaserYamlSource.getInputs({
+				options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
+			}),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without goreleaser config', async () => {
 		expect(
-			await goGoreleaserYamlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await goGoreleaserYamlSource.getInputs({
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await goGoreleaserYamlSource.parseInput('.goreleaser.yml', { options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') } })
+		const result = await goGoreleaserYamlSource.parseInput('.goreleaser.yml', {
+			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.project_name).toBe('Aenthill')

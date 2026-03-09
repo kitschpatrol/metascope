@@ -1,20 +1,20 @@
+import { defu } from 'defu'
 import { execFile } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
-import { defu } from 'defu'
 import prettyMs from 'pretty-ms'
-import {
-	DEFAULT_GET_METADATA_OPTIONS,
-	type Credentials,
-	type GetMetadataOptions,
-	type GetMetadataTemplateOptions,
-	type MetadataContext,
-	type Template,
+import type {
+	Credentials,
+	GetMetadataOptions,
+	GetMetadataTemplateOptions,
+	MetadataContext,
+	Template,
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './sources/source'
 import type { TemplateMap, TemplateName } from './templates/index.js'
 import { log } from './log'
+import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
 import { cinderCinderblockXmlSource } from './sources/cinder-cinderblock-xml'
 import { codeStatisticsSource } from './sources/code-statistics'
@@ -179,9 +179,13 @@ export async function getMetadata<K extends TemplateName>(
 	options: PartialPath<Omit<GetMetadataOptions, 'template'> & { template: K }>,
 ): Promise<TemplateMap[K]>
 // Overload: template function → inferred return type
-export async function getMetadata<T>(options: PartialPath<GetMetadataTemplateOptions<T>>): Promise<T>
+export async function getMetadata<T>(
+	options: PartialPath<GetMetadataTemplateOptions<T>>,
+): Promise<T>
 // Overload: no template → full context
-export async function getMetadata(options?: PartialPath<GetMetadataOptions>): Promise<MetadataContext>
+export async function getMetadata(
+	options?: PartialPath<GetMetadataOptions>,
+): Promise<MetadataContext>
 /**
  * Extract metadata from a project directory.
  */
@@ -214,7 +218,9 @@ export async function getMetadata<T>(
 	resetMatchCache()
 
 	// Pre-populate the memoized file tree (sources access it via getMatches)
-	log.debug(`Building file tree (recursive: ${resolvedOptions.recursive}, respectIgnored: ${resolvedOptions.respectIgnored})...`)
+	log.debug(
+		`Building file tree (recursive: ${resolvedOptions.recursive}, respectIgnored: ${resolvedOptions.respectIgnored})...`,
+	)
 	const allFiles = await getMatches(
 		{ path: absolutePath, recursive: true, respectIgnored: resolvedOptions.respectIgnored },
 		['**'],
@@ -287,8 +293,9 @@ export async function getMetadata<T>(
 	if (template) {
 		const templateStartTime = performance.now()
 		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Template return type T is guaranteed by the overload signatures
-		const finalTemplateResult = (stripUndefined(template(context, resolvedOptions.templateData ?? {})) ??
-			{}) as unknown as T
+		const finalTemplateResult = (stripUndefined(
+			template(context, resolvedOptions.templateData ?? {}),
+		) ?? {}) as unknown as T
 		const templateDuration = performance.now() - templateStartTime
 		log.warn(`Template duration: ${prettyMs(templateDuration)}`)
 		log.warn(`Total duration: ${prettyMs(performance.now() - startTime)}`)
