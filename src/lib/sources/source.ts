@@ -11,6 +11,12 @@ export type SourceContext = {
 	metadata: Partial<MetadataContext>
 	/** The resolved options passed to `getMetadata`. */
 	options: GetMetadataBaseOptions
+	/**
+	 * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment
+	 * Always includes at least root path if no "real" workspaces are found, and always includes root path
+	 * even if technically not a workspace
+	 */
+	workspaces: string[]
 }
 
 /**

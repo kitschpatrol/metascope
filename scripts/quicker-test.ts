@@ -1,7 +1,9 @@
 import { getMetadata } from '../src/lib'
 
 const metadata = await getMetadata({
-	path: '/Users/mika/Code/metascope',
+	offline: true,
+	path: '/Users/mika/Code/shared-config',
+	recursive: true,
 })
 
-// Console.log(JSON.stringify(metadata, undefined, 2))
+console.log(metadata.codeStatistics)
