@@ -317,6 +317,7 @@ The green-checked entries below indicate metadata file formats and sources that 
 | ✅     | Agnostic        |                                                                                                         |               | `README.md` (and variants)                                                                                                                                     | No                                                                                                                      |
 | ✅     | Agnostic        | [Documented below](#metadatajson)                                                                       |               | `metadata.json` (and `.yaml` / `.yml` variants)                                                                                                                | No                                                                                                                      |
 | ✅     | Agnostic        | [SPDX](https://spdx.org/)                                                                               |               | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                                                                                       | No                                                                                                                      |
+| ✅     | Agnostic        | [Git](https://git-scm.com/)                                                                             |               | `.git/config`                                                                                                                                                  | No                                                                                                                      |
 | ✅     | Agnostic        | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 |               | _GitHub GraphQL metadata_                                                                                                                                      | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                                                            |
 | ❌     | .NET            | [NuGet](https://www.nuget.org/)                                                                         |               | [`*.nuspec`](https://learn.microsoft.com/nuget/reference/nuspec)                                                                                               | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'NuGet')                                              |
 | ❌     | Scholarly       | [Citation File Format (v1.2.0)](https://github.com/citation-file-format/citation-file-format)           |               | [`CITATION.cff`](https://github.com/citation-file-format/citation-file-format/blob/main/CITATION.cff)                                                          | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Citation File Format (1.2.0)')                       |
@@ -387,9 +388,19 @@ Always available.
 | `totalFileCount`      | `number` | Total number of files (recursive)       |
 | `totalSizeBytes`      | `number` | Total size of all files in bytes        |
 
-### git
+### gitConfig
 
-Local git repository metadata via [simple-git](https://github.com/steveukx/git-js).
+Parsed `.git/config` file contents via [pkg-types](https://github.com/unjs/pkg-types).
+
+Available when the project directory contains a `.git/config` file.
+
+| Field    | Type        | Description              |
+| -------- | ----------- | ------------------------ |
+| `config` | `GitConfig` | Parsed .git/config contents |
+
+### gitStatistics
+
+Local git repository statistics via [simple-git](https://github.com/steveukx/git-js).
 
 Available when the project directory contains a `.git` directory.
 
@@ -400,7 +411,6 @@ Available when the project directory contains a `.git` directory.
 | `commitCount`          | `number`                                           | Total number of commits in the current branch           |
 | `commitDateFirst`      | `string`                                           | ISO 8601 date of the repository's first commit          |
 | `commitDateLast`       | `string`                                           | ISO 8601 date of the most recent commit                 |
-| `config`               | `GitConfig`                                        | Parsed .git/config contents                             |
 | `contributorCount`     | `number`                                           | Number of unique commit author emails                   |
 | `hasLfs`               | `boolean`                                          | Whether the repo uses Git LFS                           |
 | `isClean`              | `boolean`                                          | Whether the working tree has no uncommitted changes     |

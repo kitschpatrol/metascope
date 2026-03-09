@@ -4,7 +4,8 @@ export type { CodeStatisticsData } from './sources/code-statistics'
 export type { CodeMetaJsonData } from './sources/codemeta-json'
 export type { DependencyUpdatesData, DependencyUpdatesPackage } from './sources/dependency-updates'
 export type { FilesystemData } from './sources/filesystem'
-export type { GitData } from './sources/git'
+export type { GitConfigData } from './sources/git-config'
+export type { GitStatisticsData } from './sources/git-statistics'
 export type { GitHubData } from './sources/github'
 export type { GoGoModData } from './sources/go-go-mod'
 export type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
@@ -37,7 +38,8 @@ import type { CodeStatisticsData } from './sources/code-statistics'
 import type { CodeMetaJsonData } from './sources/codemeta-json'
 import type { DependencyUpdatesData } from './sources/dependency-updates'
 import type { FilesystemData } from './sources/filesystem'
-import type { GitData } from './sources/git'
+import type { GitConfigData } from './sources/git-config'
+import type { GitStatisticsData } from './sources/git-statistics'
 import type { GitHubData } from './sources/github'
 import type { GoGoModData } from './sources/go-go-mod'
 import type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
@@ -76,7 +78,8 @@ export type MetadataContext = {
 	codeStatistics: CodeStatisticsData
 	dependencyUpdates: DependencyUpdatesData
 	filesystem: FilesystemData
-	git: GitData
+	gitConfig: GitConfigData
+	gitStatistics: GitStatisticsData
 	github: GitHubData
 	goGoMod: GoGoModData
 	goGoreleaserYaml: GoGoreleaserYamlData

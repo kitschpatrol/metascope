@@ -12,7 +12,7 @@ export const project = defineTemplate(
 		{
 			codemetaJson: codemeta,
 			dependencyUpdates,
-			git,
+			gitStatistics: git,
 			github,
 			metascope,
 			nodeNpmRegistry: npm,

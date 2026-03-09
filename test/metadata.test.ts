@@ -12,9 +12,9 @@ describe('getMetadata', () => {
 		expect(result.nodePackageJson).toBeDefined()
 		expect(result.nodePackageJson!.data.name).toBe('metascope')
 
-		// Should have git data
-		expect(result.git).toBeDefined()
-		expect(result.git!.data.branchCurrent).toBe('main')
+		// Should have git statistics data
+		expect(result.gitStatistics).toBeDefined()
+		expect(result.gitStatistics!.data.branchCurrent).toBe('main')
 	})
 
 	it('should not contain undefined values in output', async () => {
@@ -35,8 +35,8 @@ describe('getMetadata', () => {
 	})
 
 	it('should apply a template function', async () => {
-		const template = defineTemplate(({ git, nodePackageJson }) => ({
-			branch: git?.data.branchCurrent,
+		const template = defineTemplate(({ gitStatistics, nodePackageJson }) => ({
+			branch: gitStatistics?.data.branchCurrent,
 			name: nodePackageJson?.data.name,
 		}))
 

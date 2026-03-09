@@ -1,14 +1,12 @@
 /* eslint-disable unicorn/no-await-expression-member */
 /* eslint-disable unicorn/no-useless-undefined */
-import type { GitConfig } from 'pkg-types'
 import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import { readGitConfig } from 'pkg-types'
 import { simpleGit } from 'simple-git'
 import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type GitInfo = {
+export type GitStatisticsInfo = {
 	/** Total number of local branches. */
 	branchCount?: number
 	/** Name of the currently checked-out branch. */
@@ -19,8 +17,6 @@ export type GitInfo = {
 	commitDateFirst?: string
 	/** ISO 8601 date of the most recent commit. */
 	commitDateLast?: string
-	/** Parsed .git/config contents. */
-	config?: GitConfig
 	/** Number of unique commit author emails. */
 	contributorCount?: number
 	/** Whether the repo uses Git LFS. */
@@ -61,11 +57,11 @@ export type GitInfo = {
 	uncommittedFileCount?: number
 }
 
-export type GitData = SourceRecord<GitInfo> | undefined
+export type GitStatisticsData = SourceRecord<GitStatisticsInfo> | undefined
 
-export const gitSource: MetadataSource<'git'> = {
-	async extract(context: SourceContext): Promise<GitData> {
-		log.debug('Extracting git metadata...')
+export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
+	async extract(context: SourceContext): Promise<GitStatisticsData> {
+		log.debug('Extracting git statistics metadata...')
 		const git = simpleGit(context.path)
 
 		const [
@@ -75,7 +71,6 @@ export const gitSource: MetadataSource<'git'> = {
 			tagResult,
 			commitDateFirst,
 			trackedFiles,
-			config,
 			remotes,
 			submoduleCount,
 			hasLfs,
@@ -93,7 +88,6 @@ export const gitSource: MetadataSource<'git'> = {
 				return lines.at(-1) ?? undefined
 			}),
 			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean)),
-			readGitConfig(context.path),
 			git.getRemotes(),
 			git
 				.raw(['submodule', 'status'])
@@ -199,7 +193,6 @@ export const gitSource: MetadataSource<'git'> = {
 				commitCount: logResult.total,
 				commitDateFirst,
 				commitDateLast: logResult.latest?.date ?? undefined,
-				config,
 				contributorCount: contributors.size,
 				hasLfs,
 				isClean: statusResult.isClean(),
@@ -231,5 +224,5 @@ export const gitSource: MetadataSource<'git'> = {
 			return false
 		}
 	},
-	key: 'git',
+	key: 'gitStatistics',
 }

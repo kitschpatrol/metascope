@@ -18,7 +18,8 @@ import { codeStatisticsSource } from './sources/code-statistics'
 import { codemetaJsonSource } from './sources/codemeta-json'
 import { dependencyUpdatesSource } from './sources/dependency-updates'
 import { filesystemSource } from './sources/filesystem'
-import { gitSource } from './sources/git'
+import { gitConfigSource } from './sources/git-config'
+import { gitStatisticsSource } from './sources/git-statistics'
 import { githubSource } from './sources/github'
 import { goGoModSource } from './sources/go-go-mod'
 import { goGoreleaserYamlSource } from './sources/go-goreleaser-yaml'
@@ -58,7 +59,8 @@ const sources: MetadataSource[] = [
 	codemetaJsonSource,
 	filesystemSource,
 	rubyGemspecSource,
-	gitSource,
+	gitConfigSource,
+	gitStatisticsSource,
 	githubSource,
 	goGoModSource,
 	goGoreleaserYamlSource,
@@ -211,7 +213,8 @@ export async function getMetadata<T>(
 		codeStatistics: undefined,
 		dependencyUpdates: undefined,
 		filesystem: undefined,
-		git: undefined,
+		gitConfig: undefined,
+		gitStatistics: undefined,
 		github: undefined,
 		goGoMod: undefined,
 		goGoreleaserYaml: undefined,
