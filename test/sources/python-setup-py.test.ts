@@ -30,10 +30,12 @@ describe('python-setup-py source', () => {
 		}
 		const result = await pythonSetupPySource.extract(context)
 
-		expect(result.name).toBe('example-package')
-		expect(result.version).toBe('1.2.3')
-		expect(result.license).toBe('MIT')
-		expect(result.install_requires).toContain('requests>=2.25.0')
+		expect(result).toBeDefined()
+		expect(result!.source).toBe(resolve(fixturesDirectory, 'basic/setup.py'))
+		expect(result!.data.name).toBe('example-package')
+		expect(result!.data.version).toBe('1.2.3')
+		expect(result!.data.license).toBe('MIT')
+		expect(result!.data.install_requires).toContain('requests>=2.25.0')
 	})
 })
 

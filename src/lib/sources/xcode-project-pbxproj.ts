@@ -17,7 +17,7 @@ import is from '@sindresorhus/is'
 import { readdir, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
 
@@ -50,7 +50,7 @@ const pbxprojSchema = z.object({
 
 export type Pbxproj = z.infer<typeof pbxprojSchema>
 
-export type XcodeProjectPbxprojData = Partial<Pbxproj>
+export type XcodeProjectPbxprojData = SourceRecord<Pbxproj> | undefined
 
 type PbxprojDependency = Pbxproj['dependencies'][number]
 
@@ -358,9 +358,11 @@ export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = 
 		log.debug('Extracting pbxproj metadata...')
 
 		const filePath = await findPbxprojFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
-		return parse(filePath) ?? {}
+		const data = parse(filePath)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findPbxprojFile(context.path)

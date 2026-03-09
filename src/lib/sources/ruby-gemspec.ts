@@ -3,7 +3,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseGemspec } from '../parsers/gemspec-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
@@ -59,7 +59,7 @@ export async function parse(content: string): Promise<GemSpec> {
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-export type RubyGemspecData = Partial<GemSpec>
+export type RubyGemspecData = SourceRecord<GemSpec> | undefined
 
 /** Find the first `*.gemspec` file in a directory. */
 async function findGemspecFile(directoryPath: string): Promise<string | undefined> {
@@ -79,10 +79,10 @@ export const rubyGemspecSource: MetadataSource<'rubyGemspec'> = {
 		log.debug('Extracting gemspec metadata...')
 
 		const filePath = await findGemspecFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content)
+		return { data: await parse(content), source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findGemspecFile(context.path)

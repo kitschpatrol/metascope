@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseLibraryProperties } from '../parsers/library-properties-parser'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
@@ -77,7 +77,7 @@ export type ProcessingLibraryProperties = z.infer<typeof processingLibraryProper
 type ProcessingLibraryPropertiesAuthorEntry = ProcessingLibraryProperties['authors'][number]
 type ProcessingLibraryPropertiesCategory = ProcessingLibraryProperties['categories'][number]
 
-export type ProcessingLibraryPropertiesData = Partial<ProcessingLibraryProperties>
+export type ProcessingLibraryPropertiesData = SourceRecord<ProcessingLibraryProperties> | undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 
@@ -304,8 +304,9 @@ export const processingLibraryPropertiesSource: MetadataSource<'processingLibrar
 	async extract(context: SourceContext): Promise<ProcessingLibraryPropertiesData> {
 		log.debug('Extracting Processing library.properties metadata...')
 
-		const content = await readFile(resolve(context.path, 'library.properties'), 'utf8')
-		return parse(content)
+		const filePath = resolve(context.path, 'library.properties')
+		const content = await readFile(filePath, 'utf8')
+		return { data: parse(content), source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

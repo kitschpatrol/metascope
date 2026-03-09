@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseJsonRecord } from '../utilities/schema-primitives'
 
@@ -26,14 +26,16 @@ export type ObsidianManifest = {
 	version?: string
 }
 
-export type ObsidianManifestJsonData = {
+export type ObsidianManifestJsonExtra = {
 	/** Total community download count. */
 	downloadCount?: number
-	/** Parsed manifest.json contents. */
-	manifest?: ObsidianManifest
 	/** Obsidian plugin directory URL. */
 	url?: string
 }
+
+export type ObsidianManifestJsonData =
+	| SourceRecord<ObsidianManifest, ObsidianManifestJsonExtra>
+	| undefined
 
 const communityPluginsUrl =
 	'https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json'
@@ -76,29 +78,27 @@ export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> 
 		log.debug('Extracting Obsidian metadata...')
 
 		const manifest = await readManifest(context.path)
-		const url =
-			manifest === undefined
-				? undefined
-				: `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
+		if (!manifest) return undefined
 
-		if (!manifest) return {}
+		const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
+		const manifestSource = resolve(context.path, 'manifest.json')
 
 		try {
 			const response = await fetch(communityPluginsUrl)
-			if (!response.ok) return { manifest, url }
+			if (!response.ok) return { data: manifest, extra: { url }, source: manifestSource }
 
 			const stats = pluginStatsSchema.parse(await response.json())
-			if (!(manifest.id in stats)) return { manifest, url }
+			if (!(manifest.id in stats)) return { data: manifest, extra: { url }, source: manifestSource }
 			const pluginStats = stats[manifest.id]
 			const downloadCount = pluginStats.downloads || undefined
 
 			return {
-				downloadCount,
-				manifest,
-				url,
+				data: manifest,
+				extra: { downloadCount, url },
+				source: manifestSource,
 			}
 		} catch {
-			return { manifest, url }
+			return { data: manifest, extra: { url }, source: manifestSource }
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

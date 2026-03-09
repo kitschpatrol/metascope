@@ -39,9 +39,11 @@ describe('publiccodeYaml source', () => {
 		}
 		const result = await publiccodeYamlSource.extract(context)
 
-		expect(result.name).toBe('Lynis')
-		expect(result.license).toBe('AGPL-3.0-only')
-		expect(result.platforms).toContain('linux')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Lynis')
+		expect(result!.data.license).toBe('AGPL-3.0-only')
+		expect(result!.data.platforms).toContain('linux')
+		expect(result!.source).toContain('publiccode.yml')
 	})
 
 	it('should extract parsed metadata from a .yaml fixture', async () => {
@@ -51,9 +53,11 @@ describe('publiccodeYaml source', () => {
 		}
 		const result = await publiccodeYamlSource.extract(context)
 
-		expect(result.name).toBe('CoreBundle')
-		expect(result.license).toBe('EUPL-1.2-or-later')
-		expect(result.dependencies?.length).toBe(1)
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('CoreBundle')
+		expect(result!.data.license).toBe('EUPL-1.2-or-later')
+		expect(result!.data.dependencies.length).toBe(1)
+		expect(result!.source).toContain('publiccode.yaml')
 	})
 })
 

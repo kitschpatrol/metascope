@@ -16,7 +16,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import {
 	nonEmptyString,
@@ -40,7 +40,7 @@ const metadataSchema = z.object({
 
 export type Metadata = z.infer<typeof metadataSchema>
 
-export type MetadataFileData = Partial<Metadata>
+export type MetadataFileData = SourceRecord<Metadata> | undefined
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -141,11 +141,12 @@ const METADATA_FILES: ReadonlyArray<{ format: 'json' | 'yaml'; name: string }> =
  */
 async function findMetadataFile(
 	directoryPath: string,
-): Promise<undefined | { content: string; format: 'json' | 'yaml' }> {
+): Promise<undefined | { content: string; filePath: string; format: 'json' | 'yaml' }> {
 	for (const { format, name } of METADATA_FILES) {
 		try {
-			const content = await readFile(resolve(directoryPath, name), 'utf8')
-			return { content, format }
+			const filePath = resolve(directoryPath, name)
+			const content = await readFile(filePath, 'utf8')
+			return { content, filePath, format }
 		} catch {
 			// File doesn't exist, try next
 		}
@@ -159,9 +160,11 @@ export const metadataFileSource: MetadataSource<'metadataFile'> = {
 		log.debug('Extracting metadata file metadata...')
 
 		const found = await findMetadataFile(context.path)
-		if (!found) return {}
+		if (!found) return undefined
 
-		return parse(found.content, found.format) ?? {}
+		const data = parse(found.content, found.format)
+		if (!data) return undefined
+		return { data, source: found.filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		return (await findMetadataFile(context.path)) !== undefined

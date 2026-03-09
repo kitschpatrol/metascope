@@ -3,10 +3,10 @@
 import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type PythonPypiRegistryData = {
+export type PythonPypiRegistryInfo = {
 	/** Total downloads over the last 180 days. */
 	downloads180Days?: number
 	/** Downloads in the last day. */
@@ -30,6 +30,8 @@ export type PythonPypiRegistryData = {
 	/** Reason the version was yanked, if provided. */
 	yankedReason?: string
 }
+
+export type PythonPypiRegistryData = SourceRecord<PythonPypiRegistryInfo> | undefined
 
 const pypiResponseSchema = z.object({
 	info: z.object({
@@ -89,7 +91,7 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 	async extract(context: SourceContext): Promise<PythonPypiRegistryData> {
 		log.debug('Extracting PyPI metadata...')
 		const name = await getPackageName(context)
-		if (!name) return {}
+		if (!name) return undefined
 
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
 			fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
@@ -112,7 +114,7 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 				.catch((): undefined => undefined),
 		])
 
-		if (!pypiResult) return {}
+		if (!pypiResult) return undefined
 
 		// Find latest release upload time from urls
 		const latestUploadTime = pypiResult.urls[0]?.upload_time_iso_8601
@@ -120,7 +122,7 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 		// Find size from latest release
 		const sizeBytes = pypiResult.urls[0]?.size
 
-		const data: PythonPypiRegistryData = {
+		const info: PythonPypiRegistryInfo = {
 			publishDateLatest: latestUploadTime,
 			releaseCount: Object.keys(pypiResult.releases).length,
 			sizeBytes,
@@ -130,24 +132,27 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 
 		// Only include yanked fields when true
 		if (pypiResult.info.yanked) {
-			data.yanked = true
+			info.yanked = true
 			if (pypiResult.info.yanked_reason) {
-				data.yankedReason = pypiResult.info.yanked_reason
+				info.yankedReason = pypiResult.info.yanked_reason
 			}
 		}
 
 		if (pypistatsRecentResult) {
-			data.downloadsDaily = pypistatsRecentResult.data.last_day
-			data.downloadsMonthly = pypistatsRecentResult.data.last_month
-			data.downloadsWeekly = pypistatsRecentResult.data.last_week
+			info.downloadsDaily = pypistatsRecentResult.data.last_day
+			info.downloadsMonthly = pypistatsRecentResult.data.last_month
+			info.downloadsWeekly = pypistatsRecentResult.data.last_week
 		}
 
 		if (pypistatsOverallResult) {
-			data.downloads180Days =
+			info.downloads180Days =
 				pypistatsOverallResult.data.reduce((sum, entry) => sum + entry.downloads, 0) || undefined
 		}
 
-		return data
+		return {
+			data: info,
+			source: `https://pypi.org/project/${encodeURIComponent(name)}/`,
+		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

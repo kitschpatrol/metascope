@@ -10,10 +10,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 // eslint-disable-next-line depend/ban-dependencies
 import { parsePackage } from 'read-pkg'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type NodePackageJsonData = Partial<NormalizedPackageJson>
+export type NodePackageJsonData = SourceRecord<NormalizedPackageJson> | undefined
 
 /**
  * Parse package.json content and return structured metadata.
@@ -35,8 +35,9 @@ export const nodePackageJsonSource: MetadataSource<'nodePackageJson'> = {
 	async extract(context: SourceContext): Promise<NodePackageJsonData> {
 		log.debug('Extracting package.json metadata...')
 		const content = await readPackageJsonFile(context.path)
-		if (!content) return {}
-		return parse(content)
+		if (!content) return undefined
+		const filePath = resolve(context.path, 'package.json')
+		return { data: parse(content), source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const content = await readPackageJsonFile(context.path)

@@ -5,12 +5,10 @@ import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { readGitConfig } from 'pkg-types'
 import { simpleGit } from 'simple-git'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type { GitConfig } from 'pkg-types'
-
-export type GitData = {
+export type GitInfo = {
 	/** Total number of local branches. */
 	branchCount?: number
 	/** Name of the currently checked-out branch. */
@@ -62,6 +60,8 @@ export type GitData = {
 	/** Number of files with staged or unstaged changes. */
 	uncommittedFileCount?: number
 }
+
+export type GitData = SourceRecord<GitInfo> | undefined
 
 export const gitSource: MetadataSource<'git'> = {
 	async extract(context: SourceContext): Promise<GitData> {
@@ -193,31 +193,34 @@ export const gitSource: MetadataSource<'git'> = {
 				: undefined
 
 		return {
-			branchCount: branchResult.all.length,
-			branchCurrent: branchResult.current,
-			commitCount: logResult.total,
-			commitDateFirst,
-			commitDateLast: logResult.latest?.date ?? undefined,
-			config,
-			contributorCount: contributors.size,
-			hasLfs,
-			isClean: statusResult.isClean(),
-			isDirty: !statusResult.isClean(),
-			isRemoteAhead: Object.values(remoteStatus).some((s) => s.behind > 0) || undefined,
-			remoteCount: remotes.length,
-			remoteStatus: Object.keys(remoteStatus).length > 0 ? remoteStatus : undefined,
-			submoduleCount,
-			tagCount: tagResult.all.length,
-			tagDateLatest,
-			tagNameLatest,
-			tagReleaseCount,
-			tagVersionDateLatest,
-			tagVersionLatest,
-			totalAhead,
-			totalBehind,
-			trackedFileCount: trackedFiles.length,
-			trackedSizeBytes,
-			uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
+			data: {
+				branchCount: branchResult.all.length,
+				branchCurrent: branchResult.current,
+				commitCount: logResult.total,
+				commitDateFirst,
+				commitDateLast: logResult.latest?.date ?? undefined,
+				config,
+				contributorCount: contributors.size,
+				hasLfs,
+				isClean: statusResult.isClean(),
+				isDirty: !statusResult.isClean(),
+				isRemoteAhead: Object.values(remoteStatus).some((s) => s.behind > 0) || undefined,
+				remoteCount: remotes.length,
+				remoteStatus: Object.keys(remoteStatus).length > 0 ? remoteStatus : undefined,
+				submoduleCount,
+				tagCount: tagResult.all.length,
+				tagDateLatest,
+				tagNameLatest,
+				tagReleaseCount,
+				tagVersionDateLatest,
+				tagVersionLatest,
+				totalAhead,
+				totalBehind,
+				trackedFileCount: trackedFiles.length,
+				trackedSizeBytes,
+				uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
+			},
+			source: join(context.path, '.git'),
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

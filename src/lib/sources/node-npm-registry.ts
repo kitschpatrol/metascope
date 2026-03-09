@@ -3,11 +3,11 @@ import { access, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseJsonRecord } from '../utilities/schema-primitives'
 
-export type NodeNpmRegistryData = {
+export type NodeNpmRegistryInfo = {
 	/** Deprecation message, if the package is deprecated. */
 	deprecated?: string
 	/** Downloads in the last month. */
@@ -31,6 +31,8 @@ export type NodeNpmRegistryData = {
 	/** Latest published version string. */
 	versionLatest?: string
 }
+
+export type NodeNpmRegistryData = SourceRecord<NodeNpmRegistryInfo> | undefined
 
 const npmDownloadsSchema = z.object({
 	downloads: z.number(),
@@ -63,7 +65,7 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 	async extract(context: SourceContext): Promise<NodeNpmRegistryData> {
 		log.debug('Extracting npm metadata...')
 		const name = await getPackageName(context)
-		if (!name) return {}
+		if (!name) return undefined
 
 		const [metadata, downloadsWeekly, downloadsMonthly, downloadsYearly, downloadsTotal] =
 			await Promise.all([
@@ -78,7 +80,7 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 				fetchDownloads(name, '2005-01-01:3000-01-01'),
 			])
 
-		if (!metadata) return {}
+		if (!metadata) return undefined
 
 		// Check for TypeScript types
 		const hasTypes = Boolean(
@@ -91,19 +93,22 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 		const time = is.plainObject(metadata.time) ? metadata.time : undefined
 
 		return {
-			deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
-			downloadsMonthly,
-			// eslint-disable-next-line ts/prefer-nullish-coalescing
-			downloadsTotal: downloadsTotal || undefined,
-			downloadsWeekly,
-			downloadsYearly,
-			fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,
-			hasTypes,
-			publishDateLatest: typeof time?.modified === 'string' ? time.modified : undefined,
-			unpackedSizeBytes:
-				typeof distribution?.unpackedSize === 'number' ? distribution.unpackedSize : undefined,
-			url: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
-			versionLatest: metadata.version,
+			data: {
+				deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
+				downloadsMonthly,
+				// eslint-disable-next-line ts/prefer-nullish-coalescing
+				downloadsTotal: downloadsTotal || undefined,
+				downloadsWeekly,
+				downloadsYearly,
+				fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,
+				hasTypes,
+				publishDateLatest: typeof time?.modified === 'string' ? time.modified : undefined,
+				unpackedSizeBytes:
+					typeof distribution?.unpackedSize === 'number' ? distribution.unpackedSize : undefined,
+				url: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
+				versionLatest: metadata.version,
+			},
+			source: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
 		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {

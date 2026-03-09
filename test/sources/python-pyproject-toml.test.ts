@@ -31,9 +31,11 @@ describe('pythonPyprojectToml source', () => {
 		}
 		const result = await pythonPyprojectTomlSource.extract(context)
 
-		expect(result.project?.name).toBe('codemetapy')
-		expect(result.project?.version).toBe('2.5.3')
-		expect(result.project?.dependencies).toContain('rdflib>=6.0.0')
+		expect(result).toBeDefined()
+		expect(result!.source).toBe(resolve(fixturesDirectory, 'proycon-codemetapy/pyproject.toml'))
+		expect(result!.data.project?.name).toBe('codemetapy')
+		expect(result!.data.project?.version).toBe('2.5.3')
+		expect(result!.data.project?.dependencies).toContain('rdflib>=6.0.0')
 	})
 })
 

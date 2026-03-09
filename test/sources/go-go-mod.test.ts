@@ -30,10 +30,11 @@ describe('goGoMod source', () => {
 		}
 		const result = await goGoModSource.extract(context)
 
-		expect(result.module).toBe('github.com/caddyserver/certmagic')
-		expect(result.go_version).toBe('1.24.0')
-		expect(result.repository_url).toBe('https://github.com/caddyserver/certmagic')
-		expect(result.dependencies?.length).toBeGreaterThan(5)
+		expect(result).toBeDefined()
+		expect(result!.data.module).toBe('github.com/caddyserver/certmagic')
+		expect(result!.data.go_version).toBe('1.24.0')
+		expect(result!.data.repository_url).toBe('https://github.com/caddyserver/certmagic')
+		expect(result!.data.dependencies.length).toBeGreaterThan(5)
 	})
 })
 

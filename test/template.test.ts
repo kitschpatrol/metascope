@@ -3,90 +3,116 @@ import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
 import { defineTemplate } from '../src/lib/metadata-types'
 
 const mockContext: MetadataContext = {
-	arduinoLibraryProperties: {},
-	cinderCinderblockXml: {},
+	arduinoLibraryProperties: undefined,
+	cinderCinderblockXml: undefined,
 	codemetaJson: {
-		author: [
-			{
-				familyName: 'Doe',
-				givenName: 'John',
-				type: 'Person',
-			},
-		],
-		description: 'A test package',
-		name: 'test-package',
-		version: '1.2.3',
+		data: {
+			author: [
+				{
+					familyName: 'Doe',
+					givenName: 'John',
+					type: 'Person',
+				},
+			],
+			description: 'A test package',
+			name: 'test-package',
+			version: '1.2.3',
+		},
+		source: '/test/project/codemeta.json',
 	},
 	codeStatistics: {
-		breakdown: [
-			{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
-		],
-		total: {
-			blanks: 100,
-			code: 500,
-			comments: 50,
-			files: 10,
-			languages: ['TypeScript'],
-			lines: 650,
+		data: {
+			breakdown: [
+				{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
+			],
 		},
+		extra: {
+			total: {
+				blanks: 100,
+				code: 500,
+				comments: 50,
+				files: 10,
+				languages: ['TypeScript'],
+				lines: 650,
+			},
+		},
+		source: 'test',
 	},
-	dependencyUpdates: {},
+	dependencyUpdates: undefined,
 	filesystem: {
-		totalDirectoryCount: 20,
-		totalFileCount: 150,
-		totalSizeBytes: 1_048_576,
+		data: {
+			totalDirectoryCount: 20,
+			totalFileCount: 150,
+			totalSizeBytes: 1_048_576,
+		},
+		source: 'test',
 	},
 	git: {
-		branchCurrent: 'main',
-		commitCount: 42,
-		config: {},
-		isClean: true,
-		isDirty: false,
+		data: {
+			branchCurrent: 'main',
+			commitCount: 42,
+			config: {},
+			isClean: true,
+			isDirty: false,
+		},
+		source: 'test',
 	},
 	github: {
-		forkCount: 10,
-		issueCountClosed: 3,
-		issueCountOpen: 5,
-		stargazerCount: 100,
+		data: {
+			forkCount: 10,
+			issueCountClosed: 3,
+			issueCountOpen: 5,
+			stargazerCount: 100,
+		},
+		source: 'test',
 	},
-	goGoMod: {},
-	goGoreleaserYaml: {},
-	javaPomXml: {},
-	licenseFiles: {},
-	metadataFile: {},
+	goGoMod: undefined,
+	goGoreleaserYaml: undefined,
+	javaPomXml: undefined,
+	licenseFiles: [],
+	metadataFile: undefined,
 	metascope: {
-		path: '/test/project',
-		scannedAt: '2026-01-01T00:00:00.000Z',
-		version: '0.0.0',
+		data: {
+			path: '/test/project',
+			scannedAt: '2026-01-01T00:00:00.000Z',
+			version: '0.0.0',
+		},
+		source: 'test',
 	},
 	nodeNpmRegistry: {
-		downloadsWeekly: 1000,
+		data: {
+			downloadsWeekly: 1000,
+		},
+		source: 'test',
 	},
 	nodePackageJson: {
-		// eslint-disable-next-line ts/naming-convention
-		_id: 'test-package@1.2.3',
-		name: 'test-package',
-		readme: '',
-		version: '1.2.3',
+		data: {
+			// eslint-disable-next-line ts/naming-convention
+			_id: 'test-package@1.2.3',
+			name: 'test-package',
+			readme: '',
+			version: '1.2.3',
+		},
+		source: '/test/project/package.json',
 	},
-	obsidianManifestJson: {},
-	openframeworksAddonConfigMk: {},
-	openframeworksInstallXml: {},
-	processingLibraryProperties: {},
-	publiccodeYaml: {},
-	pythonPkgInfo: {},
-	pythonPypiRegistry: {},
-	pythonPyprojectToml: {},
-	pythonSetupCfg: {},
-	pythonSetupPy: {},
-	readmeFile: {},
-	rubyGemspec: {},
-	rustCargoToml: {},
-	xcodeInfoPlist: {},
-	xcodeProjectPbxproj: {},
+	obsidianManifestJson: undefined,
+	openframeworksAddonConfigMk: undefined,
+	openframeworksInstallXml: undefined,
+	processingLibraryProperties: undefined,
+	publiccodeYaml: undefined,
+	pythonPkgInfo: undefined,
+	pythonPypiRegistry: undefined,
+	pythonPyprojectToml: undefined,
+	pythonSetupCfg: undefined,
+	pythonSetupPy: undefined,
+	readmeFile: undefined,
+	rubyGemspec: undefined,
+	rustCargoToml: undefined,
+	xcodeInfoPlist: undefined,
+	xcodeProjectPbxproj: undefined,
 }
 
-const identityFunction = (context: MetadataContext) => ({ name: context.codemetaJson.name })
+const identityFunction = (context: MetadataContext) => ({ name: context.codemetaJson?.data.name })
 
 describe('defineTemplate', () => {
 	it('should be an identity function', () => {
@@ -96,8 +122,8 @@ describe('defineTemplate', () => {
 
 	it('should produce the expected output shape', () => {
 		const template = defineTemplate(({ codemetaJson, github }) => ({
-			name: codemetaJson.name,
-			stars: github.stargazerCount,
+			name: codemetaJson?.data.name,
+			stars: github?.data.stargazerCount,
 		}))
 
 		const result = template(mockContext, {})
@@ -109,7 +135,7 @@ describe('defineTemplate', () => {
 
 	it('should support string interpolation', () => {
 		const template = defineTemplate(({ codemetaJson }) => {
-			const firstAuthor = codemetaJson.author?.[0]
+			const firstAuthor = codemetaJson?.data.author?.[0]
 			return {
 				author: `${firstAuthor?.givenName ?? ''} ${firstAuthor?.familyName ?? ''}`.trim(),
 			}
@@ -121,7 +147,7 @@ describe('defineTemplate', () => {
 
 	it('should support computed values', () => {
 		const template = defineTemplate(({ github }) => ({
-			popularity: (github.stargazerCount ?? 0) + (github.forkCount ?? 0),
+			popularity: (github?.data.stargazerCount ?? 0) + (github?.data.forkCount ?? 0),
 		}))
 
 		const result = template(mockContext, {})
@@ -130,8 +156,8 @@ describe('defineTemplate', () => {
 
 	it('should handle missing optional fields gracefully', () => {
 		const template = defineTemplate(({ github }) => ({
-			hasWikiEnabled: github.hasWikiEnabled,
-			homepageUrl: github.homepageUrl,
+			hasWikiEnabled: github?.data.hasWikiEnabled,
+			homepageUrl: github?.data.homepageUrl,
 		}))
 
 		const result = template(mockContext, {})
@@ -165,7 +191,7 @@ describe('defineTemplate', () => {
 		// JS allows calling a function with more args than declared
 		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const singleArgumentTemplate = (context: MetadataContext) => ({
-			name: context.codemetaJson.name,
+			name: context.codemetaJson?.data.name,
 		})
 		const template = defineTemplate(singleArgumentTemplate)
 

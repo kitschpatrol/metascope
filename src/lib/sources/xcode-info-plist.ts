@@ -16,7 +16,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import plist from 'plist'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
@@ -51,7 +51,7 @@ const infoPlistSchema = z.object({
 
 export type InfoPlist = z.infer<typeof infoPlistSchema>
 
-export type XcodeInfoPlistData = Partial<InfoPlist>
+export type XcodeInfoPlistData = SourceRecord<InfoPlist> | undefined
 
 type PlistDict = Record<string, unknown>
 
@@ -290,8 +290,11 @@ export const xcodeInfoPlistSource: MetadataSource<'xcodeInfoPlist'> = {
 	async extract(context: SourceContext): Promise<XcodeInfoPlistData> {
 		log.debug('Extracting Info.plist metadata...')
 
-		const content = await readFile(resolve(context.path, 'Info.plist'), 'utf8')
-		return parse(content) ?? {}
+		const filePath = resolve(context.path, 'Info.plist')
+		const content = await readFile(filePath, 'utf8')
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

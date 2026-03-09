@@ -33,11 +33,13 @@ describe('openframeworksAddonConfigMk source', () => {
 		}
 		const result = await openframeworksAddonConfigMkSource.extract(context)
 
-		expect(result.name).toBe('ofxGStreamer')
-		expect(result.author).toBe('Arturo Castro')
-		expect(result.tags).toEqual(['GStreamer', 'video', 'audio', 'network'])
-		expect(result.platformSections).toContain('osx')
-		expect(result.platformSections).toContain('vs')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('ofxGStreamer')
+		expect(result!.data.author).toBe('Arturo Castro')
+		expect(result!.data.tags).toEqual(['GStreamer', 'video', 'audio', 'network'])
+		expect(result!.data.platformSections).toContain('osx')
+		expect(result!.data.platformSections).toContain('vs')
+		expect(result!.source).toContain('addon_config.mk')
 	})
 })
 

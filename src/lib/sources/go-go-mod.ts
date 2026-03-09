@@ -3,7 +3,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseGoMod } from '../parsers/go-mod-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -31,7 +31,7 @@ export function parse(content: string): GoMod {
 	return goModDataSchema.parse(parseGoMod(content))
 }
 
-export type GoGoModData = Partial<GoMod>
+export type GoGoModData = SourceRecord<GoMod> | undefined
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
@@ -53,10 +53,10 @@ export const goGoModSource: MetadataSource<'goGoMod'> = {
 		log.debug('Extracting go.mod metadata...')
 
 		const filePath = await findGoModFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content)
+		return { data: parse(content), source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findGoModFile(context.path)

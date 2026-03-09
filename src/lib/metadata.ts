@@ -205,37 +205,37 @@ export async function getMetadata<T>(
 
 	// Assemble context
 	const context: MetadataContext = {
-		arduinoLibraryProperties: {},
-		cinderCinderblockXml: {},
-		codemetaJson: {},
-		codeStatistics: {},
-		dependencyUpdates: {},
-		filesystem: {},
-		git: {},
-		github: {},
-		goGoMod: {},
-		goGoreleaserYaml: {},
-		javaPomXml: {},
-		licenseFiles: {},
-		metadataFile: {},
-		metascope: {},
-		nodeNpmRegistry: {},
-		nodePackageJson: {},
-		obsidianManifestJson: {},
-		openframeworksAddonConfigMk: {},
-		openframeworksInstallXml: {},
-		processingLibraryProperties: {},
-		publiccodeYaml: {},
-		pythonPkgInfo: {},
-		pythonPypiRegistry: {},
-		pythonPyprojectToml: {},
-		pythonSetupCfg: {},
-		pythonSetupPy: {},
-		readmeFile: {},
-		rubyGemspec: {},
-		rustCargoToml: {},
-		xcodeInfoPlist: {},
-		xcodeProjectPbxproj: {},
+		arduinoLibraryProperties: undefined,
+		cinderCinderblockXml: undefined,
+		codemetaJson: undefined,
+		codeStatistics: undefined,
+		dependencyUpdates: undefined,
+		filesystem: undefined,
+		git: undefined,
+		github: undefined,
+		goGoMod: undefined,
+		goGoreleaserYaml: undefined,
+		javaPomXml: undefined,
+		licenseFiles: [],
+		metadataFile: undefined,
+		metascope: undefined,
+		nodeNpmRegistry: undefined,
+		nodePackageJson: undefined,
+		obsidianManifestJson: undefined,
+		openframeworksAddonConfigMk: undefined,
+		openframeworksInstallXml: undefined,
+		processingLibraryProperties: undefined,
+		publiccodeYaml: undefined,
+		pythonPkgInfo: undefined,
+		pythonPypiRegistry: undefined,
+		pythonPyprojectToml: undefined,
+		pythonSetupCfg: undefined,
+		pythonSetupPy: undefined,
+		readmeFile: undefined,
+		rubyGemspec: undefined,
+		rustCargoToml: undefined,
+		xcodeInfoPlist: undefined,
+		xcodeProjectPbxproj: undefined,
 	}
 
 	for (const result of extractResults) {
@@ -244,7 +244,9 @@ export async function getMetadata<T>(
 	}
 
 	// Inject total scan duration into metascope data
-	context.metascope.durationMs = Math.round(performance.now() - startTime)
+	if (context.metascope) {
+		context.metascope.data.durationMs = Math.round(performance.now() - startTime)
+	}
 
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {

@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseLibraryProperties } from '../parsers/library-properties-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
@@ -79,7 +79,7 @@ type ArduinoLibraryPropertiesCategory = NonNullable<ArduinoLibraryProperties['ca
 type ArduinoLibraryPropertiesPersonEntry = ArduinoLibraryProperties['authors'][number]
 type ArduinoLibraryPropertiesDependencyEntry = ArduinoLibraryProperties['depends'][number]
 
-export type ArduinoLibraryPropertiesData = Partial<ArduinoLibraryProperties>
+export type ArduinoLibraryPropertiesData = SourceRecord<ArduinoLibraryProperties> | undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 
@@ -269,8 +269,9 @@ export const arduinoLibraryPropertiesSource: MetadataSource<'arduinoLibraryPrope
 	async extract(context: SourceContext): Promise<ArduinoLibraryPropertiesData> {
 		log.debug('Extracting Arduino library.properties metadata...')
 
-		const content = await readFile(resolve(context.path, 'library.properties'), 'utf8')
-		return parse(content)
+		const filePath = resolve(context.path, 'library.properties')
+		const content = await readFile(filePath, 'utf8')
+		return { data: parse(content), source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

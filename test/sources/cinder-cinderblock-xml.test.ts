@@ -33,10 +33,12 @@ describe('cinderCinderblockXml source', () => {
 		}
 		const result = await cinderCinderblockXmlSource.extract(context)
 
-		expect(result.name).toBe('Syphon')
-		expect(result.author).toBe('Anthony Stellato')
-		expect(result.supports).toEqual(['macOS'])
-		expect(result.git).toBe('https://github.com/astellato/Cinder-Syphon.git')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Syphon')
+		expect(result!.data.author).toBe('Anthony Stellato')
+		expect(result!.data.supports).toEqual(['macOS'])
+		expect(result!.data.git).toBe('https://github.com/astellato/Cinder-Syphon.git')
+		expect(result!.source).toContain('cinderblock.xml')
 	})
 })
 

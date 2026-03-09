@@ -30,9 +30,10 @@ describe('xcodeProjectPbxproj source', () => {
 		}
 		const result = await xcodeProjectPbxprojSource.extract(context)
 
-		expect(result.version).toBe('0.1')
-		expect(result.identifier).toBe('com.kidastudios.aioEntertainment')
-		expect(result.programmingLanguage).toBe('Swift')
+		expect(result).toBeDefined()
+		expect(result!.data.version).toBe('0.1')
+		expect(result!.data.identifier).toBe('com.kidastudios.aioEntertainment')
+		expect(result!.data.programmingLanguage).toBe('Swift')
 	})
 })
 

@@ -6,7 +6,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
@@ -26,7 +26,7 @@ const goreleaserDataSchema = z.object({
 /** Parsed goreleaser metadata */
 export type Goreleaser = z.infer<typeof goreleaserDataSchema>
 
-export type GoGoreleaserYamlData = Partial<Goreleaser>
+export type GoGoreleaserYamlData = SourceRecord<Goreleaser> | undefined
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -231,10 +231,12 @@ export const goGoreleaserYamlSource: MetadataSource<'goGoreleaserYaml'> = {
 		log.debug('Extracting goreleaser metadata...')
 
 		const filePath = await findGoreleaserFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content) ?? {}
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findGoreleaserFile(context.path)

@@ -16,7 +16,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 
@@ -116,7 +116,7 @@ const publiccodeSchema = z.object({
 
 export type Publiccode = z.infer<typeof publiccodeSchema>
 
-export type PubliccodeYamlData = Partial<Publiccode>
+export type PubliccodeYamlData = SourceRecord<Publiccode> | undefined
 
 type PubliccodeContactEntry = Publiccode['contacts'][number]
 type PubliccodeContractorEntry = Publiccode['contractors'][number]
@@ -361,10 +361,14 @@ export function parse(content: string): Publiccode | undefined {
 // ─── Source ──────────────────────────────────────────────────────────
 
 /** Try to read publiccode.yml or publiccode.yaml from a directory. */
-async function readPubliccodeFile(directoryPath: string): Promise<string | undefined> {
+async function readPubliccodeFile(
+	directoryPath: string,
+): Promise<undefined | { content: string; filePath: string }> {
 	for (const filename of ['publiccode.yml', 'publiccode.yaml']) {
 		try {
-			return await readFile(resolve(directoryPath, filename), 'utf8')
+			const filePath = resolve(directoryPath, filename)
+			const content = await readFile(filePath, 'utf8')
+			return { content, filePath }
 		} catch {
 			// Try next filename
 		}
@@ -377,13 +381,15 @@ export const publiccodeYamlSource: MetadataSource<'publiccodeYaml'> = {
 	async extract(context: SourceContext): Promise<PubliccodeYamlData> {
 		log.debug('Extracting publiccode metadata...')
 
-		const content = await readPubliccodeFile(context.path)
-		if (!content) return {}
-		return parse(content) ?? {}
+		const result = await readPubliccodeFile(context.path)
+		if (!result) return undefined
+		const data = parse(result.content)
+		if (!data) return undefined
+		return { data, source: result.filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
-		const content = await readPubliccodeFile(context.path)
-		return content !== undefined
+		const result = await readPubliccodeFile(context.path)
+		return result !== undefined
 	},
 	key: 'publiccodeYaml',
 }

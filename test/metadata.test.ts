@@ -10,11 +10,11 @@ describe('getMetadata', () => {
 
 		// Should have package.json data
 		expect(result.nodePackageJson).toBeDefined()
-		expect(result.nodePackageJson.name).toBe('metascope')
+		expect(result.nodePackageJson!.data.name).toBe('metascope')
 
 		// Should have git data
 		expect(result.git).toBeDefined()
-		expect(result.git.branchCurrent).toBe('main')
+		expect(result.git!.data.branchCurrent).toBe('main')
 	})
 
 	it('should not contain undefined values in output', async () => {
@@ -36,8 +36,8 @@ describe('getMetadata', () => {
 
 	it('should apply a template function', async () => {
 		const template = defineTemplate(({ git, nodePackageJson }) => ({
-			branch: git.branchCurrent,
-			name: nodePackageJson.name,
+			branch: git?.data.branchCurrent,
+			name: nodePackageJson?.data.name,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
@@ -49,7 +49,7 @@ describe('getMetadata', () => {
 
 	it('should strip undefined from template output', async () => {
 		const template = defineTemplate(({ obsidianManifestJson }) => ({
-			downloads: obsidianManifestJson.downloadCount,
+			downloads: obsidianManifestJson?.extra?.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })

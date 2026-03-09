@@ -33,14 +33,16 @@ describe('arduinoLibraryProperties source', () => {
 		}
 		const result = await arduinoLibraryPropertiesSource.extract(context)
 
-		expect(result.name).toBe('Adafruit CCS811 Library')
-		expect(result.version).toBe('1.1.3')
-		expect(result.category).toBe('Sensors')
-		expect(result.depends).toEqual([
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Adafruit CCS811 Library')
+		expect(result!.data.version).toBe('1.1.3')
+		expect(result!.data.category).toBe('Sensors')
+		expect(result!.data.depends).toEqual([
 			{ name: 'Adafruit SSD1306', versionConstraint: undefined },
 			{ name: 'Adafruit GFX Library', versionConstraint: undefined },
 			{ name: 'Adafruit BusIO', versionConstraint: undefined },
 		])
+		expect(result!.source).toContain('library.properties')
 	})
 })
 

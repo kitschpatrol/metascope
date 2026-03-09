@@ -23,9 +23,10 @@ describe('pythonPypiRegistry source', () => {
 		}
 		const result = await pythonPypiRegistrySource.extract(context)
 
-		expect(result.versionLatest).toBeDefined()
-		expect(typeof result.versionLatest).toBe('string')
-		expect(result.releaseCount).toBeGreaterThan(0)
+		expect(result).toBeDefined()
+		expect(result!.data.versionLatest).toBeDefined()
+		expect(typeof result!.data.versionLatest).toBe('string')
+		expect(result!.data.releaseCount).toBeGreaterThan(0)
 		// Download fields depend on pypistats API which may be rate-limited
 		const downloadFields = [
 			'downloads180Days',
@@ -34,15 +35,17 @@ describe('pythonPypiRegistry source', () => {
 			'downloadsMonthly',
 		] as const
 		for (const field of downloadFields) {
-			expect(result[field] === undefined || typeof result[field] === 'number').toBe(true)
+			expect(result!.data[field] === undefined || typeof result!.data[field] === 'number').toBe(
+				true,
+			)
 		}
 
-		if (downloadFields.some((field) => result[field] === undefined)) {
+		if (downloadFields.some((field) => result!.data[field] === undefined)) {
 			console.warn('Warning: some pypistats download fields are undefined, likely rate-limited')
 		}
 	})
 
-	it('should return empty object for nonexistent package', async () => {
+	it('should return undefined for nonexistent package', async () => {
 		// Create a temp directory with a fake pyproject.toml
 
 		const temporaryDirectory = mkdtempSync(join('/tmp', 'pypi-test-'))
@@ -55,15 +58,15 @@ describe('pythonPypiRegistry source', () => {
 			path: temporaryDirectory,
 		}
 		const result = await pythonPypiRegistrySource.extract(context)
-		expect(result).toEqual({})
+		expect(result).toBeUndefined()
 	})
 
-	it('should return empty object when no package name found', async () => {
+	it('should return undefined when no package name found', async () => {
 		const context: SourceContext = {
 			credentials: {},
 			path: resolve('.'),
 		}
 		const result = await pythonPypiRegistrySource.extract(context)
-		expect(result).toEqual({})
+		expect(result).toBeUndefined()
 	})
 })

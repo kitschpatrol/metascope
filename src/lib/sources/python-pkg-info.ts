@@ -3,7 +3,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import {
 	extractRfc822Body,
@@ -40,7 +40,7 @@ const pkgInfoDataSchema = z.object({
 
 export type PkgInfo = z.infer<typeof pkgInfoDataSchema>
 
-export type PythonPkgInfoData = Partial<PkgInfo>
+export type PythonPkgInfoData = SourceRecord<PkgInfo> | undefined
 
 // ─── Header-to-field mapping ─────────────────────────────────────────────────
 
@@ -166,10 +166,11 @@ export const pythonPkgInfoSource: MetadataSource<'pythonPkgInfo'> = {
 		log.debug('Extracting PKG-INFO metadata...')
 
 		const filePath = await findPkgInfoFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content)
+		const data = parse(content)
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findPkgInfoFile(context.path)

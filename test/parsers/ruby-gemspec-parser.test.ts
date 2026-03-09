@@ -24,7 +24,12 @@ describe('parseGemspec', () => {
 		expect(result.dependencies).toBeDefined()
 		expect(result.dependencies).toEqual(
 			// eslint-disable-next-line ts/no-unsafe-assignment
-			expect.arrayContaining([expect.objectContaining({ name: expect.stringContaining(''), type: expect.stringContaining('') })]),
+			expect.arrayContaining([
+				expect.objectContaining({
+					name: expect.stringContaining(''),
+					type: expect.stringContaining(''),
+				}),
+			]),
 		)
 	})
 

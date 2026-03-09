@@ -1,7 +1,7 @@
 // ─── Header parser ──────────────────────────────────────────────────────────
 
 /** Multi-value headers that can appear multiple times. */
-export const MULTI_VALUE_HEADERS = new Set([
+const MULTI_VALUE_HEADERS = new Set([
 	'Classifier',
 	'Platform',
 	'Project-URL',

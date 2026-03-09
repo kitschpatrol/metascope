@@ -30,10 +30,12 @@ describe('pythonPkgInfo source', () => {
 		}
 		const result = await pythonPkgInfoSource.extract(context)
 
-		expect(result.name).toBe('example-package')
-		expect(result.version).toBe('1.2.3')
-		expect(result.license).toBe('MIT')
-		expect(result.requires_dist).toContain('requests>=2.25.0')
+		expect(result).toBeDefined()
+		expect(result!.source).toBe(resolve(fixturesDirectory, 'basic/PKG-INFO'))
+		expect(result!.data.name).toBe('example-package')
+		expect(result!.data.version).toBe('1.2.3')
+		expect(result!.data.license).toBe('MIT')
+		expect(result!.data.requires_dist).toContain('requests>=2.25.0')
 	})
 })
 

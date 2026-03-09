@@ -17,7 +17,7 @@ import is from '@sindresorhus/is'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, parseJsonRecord } from '../utilities/schema-primitives'
 
@@ -268,7 +268,9 @@ const codeMetaJsonDataSchema = z.object({
 	version: codeMetaString,
 })
 
-export type CodeMetaJsonData = z.infer<typeof codeMetaJsonDataSchema>
+export type CodeMetaJson = z.infer<typeof codeMetaJsonDataSchema>
+
+export type CodeMetaJsonData = SourceRecord<CodeMetaJson> | undefined
 
 // ─── V1 property name mapping ────────────────────────────────────────
 
@@ -286,7 +288,7 @@ const v1PropertyMap: Record<string, string> = {
 /**
  * Parse a codemeta.json file, normalizing v1/v2/v3 into a consistent shape.
  */
-export function parse(content: string): CodeMetaJsonData | undefined {
+export function parse(content: string): CodeMetaJson | undefined {
 	const raw = parseJsonRecord(content)
 	if (!raw) return undefined
 
@@ -333,8 +335,11 @@ export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 	async extract(context: SourceContext): Promise<CodeMetaJsonData> {
 		log.debug('Extracting codemeta.json metadata...')
 		const content = await readCodemetaJsonFile(context.path)
-		if (!content) return {}
-		return parse(content) ?? {}
+		if (!content) return undefined
+		const data = parse(content)
+		if (!data) return undefined
+		const filePath = resolve(context.path, 'codemeta.json')
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const content = await readCodemetaJsonFile(context.path)

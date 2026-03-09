@@ -1,9 +1,9 @@
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type FilesystemData = {
+export type Filesystem = {
 	/** Total number of directories (recursive). */
 	totalDirectoryCount?: number
 	/** Total number of files (recursive). */
@@ -11,6 +11,8 @@ export type FilesystemData = {
 	/** Total size of all files in bytes. */
 	totalSizeBytes?: number
 }
+
+export type FilesystemData = SourceRecord<Filesystem> | undefined
 
 export const filesystemSource: MetadataSource<'filesystem'> = {
 	async extract(context: SourceContext): Promise<FilesystemData> {
@@ -36,9 +38,12 @@ export const filesystemSource: MetadataSource<'filesystem'> = {
 		const totalSizeBytes = sizes.reduce((sum, size) => sum + size, 0)
 
 		return {
-			totalDirectoryCount: directories.length,
-			totalFileCount: files.length,
-			totalSizeBytes,
+			data: {
+				totalDirectoryCount: directories.length,
+				totalFileCount: files.length,
+				totalSizeBytes,
+			},
+			source: context.path,
 		}
 	},
 	// eslint-disable-next-line ts/require-await

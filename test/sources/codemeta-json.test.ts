@@ -31,10 +31,11 @@ describe('codemeta-json source', () => {
 		}
 		const result = await codemetaJsonSource.extract(context)
 
-		expect(result.name).toBe('InvenioRDM GitHub Archiver (IGA)')
-		expect(result.version).toBe('1.3.5')
-		expect(result.author).toBeDefined()
-		expect(result.author!.length).toBe(2)
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('InvenioRDM GitHub Archiver (IGA)')
+		expect(result!.data.version).toBe('1.3.5')
+		expect(result!.data.author).toBeDefined()
+		expect(result!.data.author!.length).toBe(2)
 	})
 })
 

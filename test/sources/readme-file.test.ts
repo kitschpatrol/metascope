@@ -31,17 +31,19 @@ describe('readmeFile source', () => {
 		}
 		const result = await readmeFileSource.extract(context)
 
-		expect(result.name).toBe('Hyperspeed SDK V1.0.0')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Hyperspeed SDK V1.0.0')
+		expect(result!.source).toContain('README.md')
 	})
 
-	it('should return empty object for a fixture without an H1', async () => {
+	it('should return undefined for a fixture without an H1', async () => {
 		const context: SourceContext = {
 			credentials: {},
 			path: resolve(fixturesDirectory, 'next-hat-nanocl'),
 		}
 		const result = await readmeFileSource.extract(context)
 
-		expect(result.name).toBeUndefined()
+		expect(result).toBeUndefined()
 	})
 })
 

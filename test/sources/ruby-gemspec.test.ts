@@ -30,10 +30,12 @@ describe('rubyGemspec source', () => {
 		}
 		const result = await rubyGemspecSource.extract(context)
 
-		expect(result.name).toBe('blazer')
-		expect(result.license).toBe('MIT')
-		expect(result.homepage).toBe('https://github.com/ankane/blazer')
-		expect(result.dependencies?.length).toBeGreaterThanOrEqual(4)
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('blazer')
+		expect(result!.data.license).toBe('MIT')
+		expect(result!.data.homepage).toBe('https://github.com/ankane/blazer')
+		expect(result!.data.dependencies.length).toBeGreaterThanOrEqual(4)
+		expect(result!.source).toContain('.gemspec')
 	})
 })
 

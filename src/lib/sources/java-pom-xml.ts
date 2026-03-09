@@ -14,7 +14,7 @@ import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 
@@ -314,14 +314,17 @@ function parseJavaVersion(project: Record<string, unknown>): string | undefined 
 
 // ─── Source ─────────────────────────────────────────────────────────
 
-export type JavaPomXmlData = Partial<PomXml>
+export type JavaPomXmlData = SourceRecord<PomXml> | undefined
 
 export const javaPomXmlSource: MetadataSource<'javaPomXml'> = {
 	async extract(context: SourceContext): Promise<JavaPomXmlData> {
 		log.debug('Extracting Maven pom.xml metadata...')
 
-		const content = await readFile(resolve(context.path, 'pom.xml'), 'utf8')
-		return parse(content) ?? {}
+		const filePath = resolve(context.path, 'pom.xml')
+		const content = await readFile(filePath, 'utf8')
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

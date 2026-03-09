@@ -33,9 +33,11 @@ describe('openframeworksInstallXml source', () => {
 		}
 		const result = await openframeworksInstallXmlSource.extract(context)
 
-		expect(result.name).toBe('ofxGraycode')
-		expect(result.version).toBe('0.01')
-		expect(result.author).toBe('Elliot Woods')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('ofxGraycode')
+		expect(result!.data.version).toBe('0.01')
+		expect(result!.data.author).toBe('Elliot Woods')
+		expect(result!.source).toContain('install.xml')
 	})
 })
 

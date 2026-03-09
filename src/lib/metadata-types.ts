@@ -27,6 +27,7 @@ export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeFileData } from './sources/readme-file'
 export type { RubyGemspecData } from './sources/ruby-gemspec'
 export type { RustCargoTomlData } from './sources/rust-cargo-toml'
+export type { SourceRecord } from './sources/source'
 export type { XcodeInfoPlistData } from './sources/xcode-info-plist'
 export type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 
@@ -133,8 +134,8 @@ export type Template<T> = (context: MetadataContext, templateData: TemplateData)
  * import { defineTemplate } from 'metascope'
  *
  * export default defineTemplate(({ codemetaJson, github }) => ({
- *   name: codemetaJson.name,
- *   stars: github.stargazerCount,
+ *   name: codemetaJson?.data.name,
+ *   stars: github?.data.stargazerCount,
  * }))
  * ```
  */

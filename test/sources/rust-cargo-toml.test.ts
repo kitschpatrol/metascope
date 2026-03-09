@@ -30,10 +30,11 @@ describe('rustCargoToml source', () => {
 		}
 		const result = await rustCargoTomlSource.extract(context)
 
-		expect(result.name).toBe('eml-parser')
-		expect(result.version).toBe('0.1.5')
-		expect(result.authors).toEqual([{ email: 'adam@shirey.ch', name: 'Adam Shirey' }])
-		expect(result.repository).toBe('https://github.com/aeshirey/EmlParser/')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('eml-parser')
+		expect(result!.data.version).toBe('0.1.5')
+		expect(result!.data.authors).toEqual([{ email: 'adam@shirey.ch', name: 'Adam Shirey' }])
+		expect(result!.data.repository).toBe('https://github.com/aeshirey/EmlParser/')
 	})
 })
 

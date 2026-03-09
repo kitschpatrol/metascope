@@ -38,9 +38,11 @@ describe('metadataFile source', () => {
 		}
 		const result = await metadataFileSource.extract(context)
 
-		expect(result.description).toBe('Testing metadata.json with git URL normalization')
-		expect(result.repository).toBe('https://github.com/test/metadata-git-url')
-		expect(result.keywords).toEqual(['metadata', 'git-url', 'testing'])
+		expect(result).toBeDefined()
+		expect(result!.source).toBe(resolve(fixturesDirectory, 'git-url/metadata.json'))
+		expect(result!.data.description).toBe('Testing metadata.json with git URL normalization')
+		expect(result!.data.repository).toBe('https://github.com/test/metadata-git-url')
+		expect(result!.data.keywords).toEqual(['metadata', 'git-url', 'testing'])
 	})
 
 	it('should prefer metadata.json over metadata.yaml', async () => {
@@ -50,8 +52,9 @@ describe('metadataFile source', () => {
 		}
 		const result = await metadataFileSource.extract(context)
 
+		expect(result).toBeDefined()
 		// The basic/ directory has all three formats; JSON should be preferred
-		expect(result.description).toBe('JSON metadata file for testing')
+		expect(result!.data.description).toBe('JSON metadata file for testing')
 	})
 })
 

@@ -30,11 +30,12 @@ describe('javaPomXml source', () => {
 		}
 		const result = await javaPomXmlSource.extract(context)
 
-		expect(result.name).toBe('HaloDB')
-		expect(result.groupId).toBe('com.oath.halodb')
-		expect(result.artifactId).toBe('halodb')
-		expect(result.developers).toHaveLength(1)
-		expect(result.developers![0].name).toBe('Arjun Mannaly')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('HaloDB')
+		expect(result!.data.groupId).toBe('com.oath.halodb')
+		expect(result!.data.artifactId).toBe('halodb')
+		expect(result!.data.developers).toHaveLength(1)
+		expect(result!.data.developers[0].name).toBe('Arjun Mannaly')
 	})
 })
 

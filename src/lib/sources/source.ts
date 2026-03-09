@@ -11,6 +11,23 @@ export type SourceContext = {
 }
 
 /**
+ * A unified record returned by every metadata source.
+ * @template D The shape of the primary data extracted from the source.
+ * @template E The shape of any additional computed/derived fields.
+ */
+export type SourceRecord<
+	D extends Record<string, unknown> = Record<string, unknown>,
+	E extends Record<string, unknown> = Record<string, unknown>,
+> = {
+	/** Primary structured data from this source. */
+	data: D
+	/** Additional computed or derived fields not present in the raw source. */
+	extra?: E
+	/** The file path or URL from which the data was derived. */
+	source: string
+}
+
+/**
  * Interface for a metadata source module.
  * Each source populates a specific top-level key in MetadataContext.
  */

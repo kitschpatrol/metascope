@@ -12,7 +12,7 @@ import { resolve } from 'node:path'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
 // ─── Schema ─────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ const readmeSchema = z.object({
 
 export type Readme = z.infer<typeof readmeSchema>
 
-export type ReadmeFileData = Partial<Readme>
+export type ReadmeFileData = SourceRecord<Readme> | undefined
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
@@ -94,10 +94,12 @@ export const readmeFileSource: MetadataSource<'readmeFile'> = {
 		log.debug('Extracting README metadata...')
 
 		const filePath = await findReadmeFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content) ?? {}
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findReadmeFile(context.path)

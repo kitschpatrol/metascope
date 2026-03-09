@@ -2,14 +2,14 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseConfigparser, splitMultiline } from '../parsers/configparser-parser.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export const setupCfgDataSchema = z.object({
+const setupCfgDataSchema = z.object({
 	author: nonEmptyString,
 	author_email: nonEmptyString,
 	classifiers: stringArray,
@@ -32,7 +32,7 @@ export const setupCfgDataSchema = z.object({
 /** Parsed setup.cfg metadata */
 export type SetupCfg = z.infer<typeof setupCfgDataSchema>
 
-export type PythonSetupCfgData = Partial<SetupCfg>
+export type PythonSetupCfgData = SourceRecord<SetupCfg> | undefined
 
 // ─── Parser ──────────────────────────────────────────────────────────────────
 
@@ -158,10 +158,11 @@ export const pythonSetupCfgSource: MetadataSource<'pythonSetupCfg'> = {
 		log.debug('Extracting setup.cfg metadata...')
 
 		const filePath = await findSetupCfgFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content)
+		const data = parse(content)
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findSetupCfgFile(context.path)

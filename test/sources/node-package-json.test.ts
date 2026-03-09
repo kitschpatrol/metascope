@@ -31,9 +31,10 @@ describe('nodePackageJson source', () => {
 		}
 		const result = await nodePackageJsonSource.extract(context)
 
-		expect(result.name).toBe('roku-client')
-		expect(result.version).toBe('5.2.0')
-		expect(result.dependencies).toHaveProperty('xml2js')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('roku-client')
+		expect(result!.data.version).toBe('5.2.0')
+		expect(result!.data.dependencies).toHaveProperty('xml2js')
 	})
 })
 

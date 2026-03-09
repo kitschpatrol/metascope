@@ -1,18 +1,23 @@
 import type { Language, LanguageInfo } from '@kitschpatrol/tokei'
 import { tokei } from '@kitschpatrol/tokei'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
+type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
 	languages: Language[]
 }
 
-export type CodeStatisticsData = {
+export type CodeStatisticsFields = {
 	/** Per-language line count breakdown, sorted by lines of code descending. */
 	breakdown?: LanguageInfo[]
+}
+
+export type CodeStatisticsExtra = {
 	/** Aggregate line counts across all languages. */
 	total?: CodeStatisticsTotals
 }
+
+export type CodeStatisticsData = SourceRecord<CodeStatisticsFields, CodeStatisticsExtra> | undefined
 
 export const codeStatisticsSource: MetadataSource<'codeStatistics'> = {
 	async extract(context: SourceContext): Promise<CodeStatisticsData> {
@@ -31,7 +36,11 @@ export const codeStatisticsSource: MetadataSource<'codeStatistics'> = {
 			lines: breakdown.reduce((sum, entry) => sum + entry.lines, 0),
 		}
 
-		return { breakdown, total }
+		return {
+			data: { breakdown },
+			extra: { total },
+			source: context.path,
+		}
 	},
 	// eslint-disable-next-line ts/require-await -- interface requires async
 	async isAvailable(): Promise<boolean> {

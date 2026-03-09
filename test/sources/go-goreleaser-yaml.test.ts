@@ -34,10 +34,11 @@ describe('goGoreleaserYaml source', () => {
 		}
 		const result = await goGoreleaserYamlSource.extract(context)
 
-		expect(result.project_name).toBe('Aenthill')
-		expect(result.homepage).toBe('https://aenthill.github.io/')
-		expect(result.license).toBe('MIT')
-		expect(result.operating_systems).toContain('Linux')
+		expect(result).toBeDefined()
+		expect(result!.data.project_name).toBe('Aenthill')
+		expect(result!.data.homepage).toBe('https://aenthill.github.io/')
+		expect(result!.data.license).toBe('MIT')
+		expect(result!.data.operating_systems).toContain('Linux')
 	})
 })
 

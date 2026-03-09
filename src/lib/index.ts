@@ -38,6 +38,7 @@ export type {
 	RubyGemspecData,
 	RustCargoTomlData,
 	SourceName,
+	SourceRecord,
 	Template,
 	TemplateData,
 	XcodeInfoPlistData,

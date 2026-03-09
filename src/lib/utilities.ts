@@ -8,9 +8,9 @@ import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
 import type { NodePackageJsonData } from './metadata-types'
-import type { CodeMetaJsonData } from './sources/codemeta-json'
+import type { CodeMetaJson, CodeMetaJsonData } from './sources/codemeta-json'
 
-type CodeMetaPersonOrOrg = NonNullable<CodeMetaJsonData['author']>[number]
+type CodeMetaPersonOrOrg = NonNullable<CodeMetaJson['author']>[number]
 
 const casePoliceDict: Record<string, string> = {
 	...abbreviates,
@@ -217,20 +217,22 @@ export function toBasicLicenses(
  * TODO
  */
 export function usesSharedConfig(codemeta: CodeMetaJsonData): boolean {
-	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta)
+	if (!codemeta) return false
+	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta.data)
 }
 
 /**
  * TODO
  */
 export function usesPnpm(packageJson: NodePackageJsonData): boolean {
+	if (!packageJson) return false
 	return (
-		packageJson.packageManager?.toLowerCase().startsWith('pnpm') ??
-		Object.hasOwn(packageJson.engines ?? {}, 'pnpm')
+		packageJson.data.packageManager?.toLowerCase().startsWith('pnpm') ??
+		Object.hasOwn(packageJson.data.engines ?? {}, 'pnpm')
 	)
 }
 
-function hasDependencyWithId(id: string, codemeta: CodeMetaJsonData): boolean {
+function hasDependencyWithId(id: string, codemeta: CodeMetaJson): boolean {
 	return [...(codemeta.softwareSuggestions ?? []), ...(codemeta.softwareRequirements ?? [])].some(
 		({ identifier }) => identifier === id,
 	)
@@ -271,13 +273,13 @@ export function isAuthoredBy(
 	codemeta?: CodeMetaJsonData,
 	authorName?: string | string[],
 ): boolean | undefined {
-	if (codemeta === undefined || authorName === undefined || codemeta.author === undefined) {
+	if (codemeta === undefined || authorName === undefined || codemeta.data.author === undefined) {
 		return undefined
 	}
 
 	const authors = new Set(ensureArray(authorName).map((name) => name.toLocaleLowerCase().trim()))
 
-	const basicNamesArray = basicNames(codemeta.author)?.map((name) =>
+	const basicNamesArray = basicNames(codemeta.data.author)?.map((name) =>
 		name.toLocaleLowerCase().trim(),
 	)
 
@@ -293,12 +295,12 @@ export function isOnGithubAccountOf(
 	if (
 		codemeta === undefined ||
 		githubUserName === undefined ||
-		codemeta.codeRepository === undefined
+		codemeta.data.codeRepository === undefined
 	) {
 		return undefined
 	}
 
-	const cleanRepo = codemeta.codeRepository.toLocaleLowerCase().trim()
+	const cleanRepo = codemeta.data.codeRepository.toLocaleLowerCase().trim()
 
 	if (!cleanRepo.includes('github.com/')) {
 		return false

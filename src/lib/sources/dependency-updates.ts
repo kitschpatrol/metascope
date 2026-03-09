@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { coerce, diff } from 'semver'
 import { exec } from 'tinyexec'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
 export type DependencyUpdatesPackage = {
@@ -19,18 +19,25 @@ export type DependencyUpdatesPackage = {
 	old: string
 }
 
-export type DependencyUpdatesData = {
-	/** Total dependency staleness in libyears. */
-	libyears?: number
+export type DependencyUpdatesFields = {
 	/** Packages with available major version updates. */
 	major?: DependencyUpdatesPackage[]
 	/** Packages with available minor version updates. */
 	minor?: DependencyUpdatesPackage[]
 	/** Packages with available patch version updates. */
 	patch?: DependencyUpdatesPackage[]
+}
+
+export type DependencyUpdatesExtra = {
+	/** Total dependency staleness in libyears. */
+	libyears?: number
 	/** Total number of outdated packages. */
 	total?: number
 }
+
+export type DependencyUpdatesData =
+	| SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>
+	| undefined
 
 const depSchema = z.object({
 	age: z.string().optional(),
@@ -147,7 +154,7 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 			parsed = updatesOutputSchema.parse(JSON.parse(result.stdout))
 		} catch {
 			log.debug('No dependency files found for updates analysis.')
-			return {}
+			return undefined
 		}
 
 		const major: DependencyUpdatesPackage[] = []
@@ -195,11 +202,16 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 		}
 
 		return {
-			libyears: Math.round(libyears * 10) / 10,
-			major,
-			minor,
-			patch,
-			total: major.length + minor.length + patch.length,
+			data: {
+				major,
+				minor,
+				patch,
+			},
+			extra: {
+				libyears: Math.round(libyears * 10) / 10,
+				total: major.length + minor.length + patch.length,
+			},
+			source: context.path,
 		}
 	},
 	// eslint-disable-next-line ts/require-await -- Synchronous check wrapped in async interface

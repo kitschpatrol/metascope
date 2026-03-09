@@ -2,10 +2,10 @@ import gitUrlParse from 'git-url-parse'
 import { Octokit } from 'octokit'
 import git from 'simple-git'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
-export type GitHubData = {
+export type GitHubInfo = {
 	/** ISO 8601 date when the repo was archived, if applicable. */
 	archivedAt?: string
 	/** Name of the repository's code of conduct. */
@@ -170,6 +170,8 @@ export type GitHubData = {
 	/** Number of watchers. */
 	watcherCount?: number
 }
+
+export type GitHubData = SourceRecord<GitHubInfo> | undefined
 
 const gitHubRepoSchema = z.object({
 	repository: z.object({
@@ -500,7 +502,7 @@ function extractLanguages(data: GitHubRepoData): Record<string, number> {
 function mapRepoData(
 	data: GitHubRepoData,
 	extras: { commitsAheadUpstream?: number; commitsBehindUpstream?: number; hasPages: boolean },
-): GitHubData {
+): GitHubInfo {
 	const releaseDownloadCount =
 		(data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
 			0) ||
@@ -599,7 +601,7 @@ export const githubSource: MetadataSource<'github'> = {
 	async extract(context: SourceContext): Promise<GitHubData> {
 		log.debug('Extracting GitHub metadata...')
 		const remote = await getGitHubRemote(context.path)
-		if (!remote) return {}
+		if (!remote) return undefined
 
 		const { owner, repo } = remote
 
@@ -630,7 +632,10 @@ export const githubSource: MetadataSource<'github'> = {
 			commitsBehindUpstream = comparison?.behind
 		}
 
-		return mapRepoData(data, { commitsAheadUpstream, commitsBehindUpstream, hasPages })
+		return {
+			data: mapRepoData(data, { commitsAheadUpstream, commitsBehindUpstream, hasPages }),
+			source: `https://github.com/${owner}/${repo}`,
+		}
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const remote = await getGitHubRemote(context.path)

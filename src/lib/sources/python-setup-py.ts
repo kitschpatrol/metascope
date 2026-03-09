@@ -3,7 +3,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseSetupPy } from '../parsers/setup-py-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
@@ -34,7 +34,7 @@ const setupPyDataSchema = z.object({
 
 export type SetupPyData = z.infer<typeof setupPyDataSchema>
 
-export type PythonSetupPyData = Partial<SetupPyData>
+export type PythonSetupPyData = SourceRecord<SetupPyData> | undefined
 
 // ─── Parse ───────────────────────────────────────────────────────────────────
 
@@ -64,10 +64,11 @@ export const pythonSetupPySource: MetadataSource<'pythonSetupPy'> = {
 		log.debug('Extracting Python setup.py metadata...')
 
 		const filePath = await findSetupPyFile(context.path)
-		if (!filePath) return {}
+		if (!filePath) return undefined
 
 		const content = await readFile(filePath, 'utf8')
-		return parse(content)
+		const data = await parse(content)
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filePath = await findSetupPyFile(context.path)

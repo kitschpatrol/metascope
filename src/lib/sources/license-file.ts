@@ -1,6 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import {
 	identifyLicense,
@@ -10,12 +10,19 @@ import {
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-export type LicenseFiles = {
-	/** SPDX license URLs identified from license file contents. */
-	spdxUrls: string[]
+export type LicenseMatch = {
+	/** Match confidence between 0 and 1. */
+	confidence: number
+	/** SPDX license identifier (e.g. "MIT"). */
+	spdxId: string
 }
 
-export type LicenseFilesData = Partial<LicenseFiles>
+export type LicenseMatchExtra = {
+	/** SPDX license URL. */
+	spdxUrl: string
+}
+
+export type LicenseFilesData = Array<SourceRecord<LicenseMatch, LicenseMatchExtra>>
 
 /**
  * Find all license-like filenames in a directory.
@@ -36,14 +43,18 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 		log.debug('Extracting license file metadata...')
 
 		const filenames = await findLicenseFiles(context.path)
-		const spdxUrls = new Set<string>()
+		const results: LicenseFilesData = []
 
 		for (const filename of filenames) {
 			try {
 				const content = await readFile(resolve(context.path, filename), 'utf8')
 				const match = identifyLicense(content)
 				if (match) {
-					spdxUrls.add(spdxIdToUrl(match.spdxId))
+					results.push({
+						data: { confidence: match.confidence, spdxId: match.spdxId },
+						extra: { spdxUrl: spdxIdToUrl(match.spdxId) },
+						source: resolve(context.path, filename),
+					})
 					log.debug(
 						`License file "${filename}": ${match.spdxId} (confidence: ${match.confidence.toFixed(2)})`,
 					)
@@ -57,11 +68,7 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 			}
 		}
 
-		if (spdxUrls.size === 0) return {}
-
-		return {
-			spdxUrls: [...spdxUrls].toSorted(),
-		}
+		return results
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		const filenames = await findLicenseFiles(context.path)

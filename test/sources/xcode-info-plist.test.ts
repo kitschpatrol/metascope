@@ -30,10 +30,11 @@ describe('xcodeInfoPlist source', () => {
 		}
 		const result = await xcodeInfoPlistSource.extract(context)
 
-		expect(result.name).toBe('Lorem Ipsum')
-		expect(result.author).toBe('Alex Chan')
-		expect(result.version).toBe('4.0.3')
-		expect(result.identifier).toBe('com.alexchantastic.loremipsum')
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Lorem Ipsum')
+		expect(result!.data.author).toBe('Alex Chan')
+		expect(result!.data.version).toBe('4.0.3')
+		expect(result!.data.identifier).toBe('com.alexchantastic.loremipsum')
 	})
 })
 

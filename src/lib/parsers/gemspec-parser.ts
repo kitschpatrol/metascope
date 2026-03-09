@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'

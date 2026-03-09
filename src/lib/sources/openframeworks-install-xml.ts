@@ -18,7 +18,7 @@ import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext } from './source'
+import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
@@ -49,7 +49,7 @@ const openframeworksInstallXmlSchema = z.object({
 
 export type OpenframeworksInstallXml = z.infer<typeof openframeworksInstallXmlSchema>
 
-export type OpenframeworksInstallXmlData = Partial<OpenframeworksInstallXml>
+export type OpenframeworksInstallXmlData = SourceRecord<OpenframeworksInstallXml> | undefined
 
 /**
  * Map `<lib os="...">` attribute values to human-readable OS names.
@@ -196,8 +196,11 @@ export const openframeworksInstallXmlSource: MetadataSource<'openframeworksInsta
 	async extract(context: SourceContext): Promise<OpenframeworksInstallXmlData> {
 		log.debug('Extracting openFrameworks install.xml metadata...')
 
-		const content = await readFile(resolve(context.path, 'install.xml'), 'utf8')
-		return parse(content) ?? {}
+		const filePath = resolve(context.path, 'install.xml')
+		const content = await readFile(filePath, 'utf8')
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: filePath }
 	},
 	async isAvailable(context: SourceContext): Promise<boolean> {
 		try {

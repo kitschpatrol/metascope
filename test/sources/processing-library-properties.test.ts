@@ -41,11 +41,13 @@ describe('processingLibraryProperties source', () => {
 		}
 		const result = await processingLibraryPropertiesSource.extract(context)
 
-		expect(result.name).toBe('Camera 3D')
-		expect(result.authors).toEqual([{ name: 'Jim Schmitz', url: 'https://ixora.io/' }])
-		expect(result.categories).toEqual(['3D'])
-		expect(result.version).toBe(8)
-		expect(result.minRevision).toBe(233)
+		expect(result).toBeDefined()
+		expect(result!.data.name).toBe('Camera 3D')
+		expect(result!.data.authors).toEqual([{ name: 'Jim Schmitz', url: 'https://ixora.io/' }])
+		expect(result!.data.categories).toEqual(['3D'])
+		expect(result!.data.version).toBe(8)
+		expect(result!.data.minRevision).toBe(233)
+		expect(result!.source).toContain('library.properties')
 	})
 })
 
