@@ -1,9 +1,9 @@
 /* eslint-disable ts/naming-convention */
 
-import { readdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import {
 	extractRfc822Body,
@@ -11,6 +11,7 @@ import {
 	splitMultiValues,
 } from '../parsers/rfc822-header-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { matchFiles } from './source'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -40,7 +41,7 @@ const pkgInfoDataSchema = z.object({
 
 export type PkgInfo = z.infer<typeof pkgInfoDataSchema>
 
-export type PythonPkgInfoData = SourceRecord<PkgInfo> | undefined
+export type PythonPkgInfoData = OneOrMany<SourceRecord<PkgInfo>> | undefined
 
 // ─── Header-to-field mapping ─────────────────────────────────────────────────
 
@@ -148,29 +149,28 @@ export function parse(source: string): PkgInfo {
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-/** Find a `PKG-INFO` file in a directory. */
-async function findPkgInfoFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		const entries = await readdir(directoryPath)
-		const pkgInfo = entries.find((entry) => entry === 'PKG-INFO')
-		if (pkgInfo) return resolve(directoryPath, pkgInfo)
-	} catch {
-		// Directory doesn't exist or can't be read
-	}
-
-	return undefined
-}
-
 export const pythonPkgInfoSource: MetadataSource<'pythonPkgInfo'> = {
 	async extract(context: SourceContext): Promise<PythonPkgInfoData> {
+		const files = matchFiles(context.fileTree, ['**/PKG-INFO'])
+		if (files.length === 0) return undefined
+
 		log.debug('Extracting PKG-INFO metadata...')
+		const results: Array<SourceRecord<PkgInfo>> = []
 
-		const filePath = await findPkgInfoFile(context.path)
-		if (!filePath) return undefined
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
 
-		const content = await readFile(filePath, 'utf8')
-		const data = parse(content)
-		return { data, source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'pythonPkgInfo',
-	phase: 1,}
+	phase: 1,
+}

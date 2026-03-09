@@ -103,15 +103,17 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option               | Description                                                                                        | Type      |
-| -------------------- | -------------------------------------------------------------------------------------------------- | --------- |
-| `--template`<br>`-t` | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js) | `string`  |
-| `--github-token`     | GitHub API token (or set $GITHUB_TOKEN)                                                            | `string`  |
-| `--author-name`      | Optional author name(s) for ownership checks in templates                                          | `array`   |
-| `--github-account`   | Optional GitHub account name(s) for ownership checks in templates                                  | `array`   |
-| `--verbose`          | Run with verbose logging                                                                           | `boolean` |
-| `--help`<br>`-h`     | Show help                                                                                          | `boolean` |
-| `--version`<br>`-v`  | Show version number                                                                                | `boolean` |
+| Option                | Description                                                                                        | Type      |
+| --------------------- | -------------------------------------------------------------------------------------------------- | --------- |
+| `--template`<br>`-t`  | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js) | `string`  |
+| `--github-token`      | GitHub API token (or set $GITHUB_TOKEN)                                                            | `string`  |
+| `--author-name`       | Optional author name(s) for ownership checks in templates                                          | `array`   |
+| `--github-account`    | Optional GitHub account name(s) for ownership checks in templates                                  | `array`   |
+| `--offline`           | Skip network requests (web-based sources will return only locally-available data)                  | `boolean` |
+| `--recursive`<br>`-r` | Search for metadata files recursively in subdirectories                                            | `boolean` |
+| `--verbose`           | Run with verbose logging                                                                           | `boolean` |
+| `--help`<br>`-h`      | Show help                                                                                          | `boolean` |
+| `--version`<br>`-v`   | Show version number                                                                                | `boolean` |
 
 <!-- /cli-help -->
 
@@ -394,8 +396,8 @@ Parsed `.git/config` file contents via [pkg-types](https://github.com/unjs/pkg-t
 
 Available when the project directory contains a `.git/config` file.
 
-| Field    | Type        | Description              |
-| -------- | ----------- | ------------------------ |
+| Field    | Type        | Description                 |
+| -------- | ----------- | --------------------------- |
 | `config` | `GitConfig` | Parsed .git/config contents |
 
 ### gitStatistics

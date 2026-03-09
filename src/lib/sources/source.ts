@@ -1,3 +1,4 @@
+import picomatch from 'picomatch'
 import type { Credentials, MetadataContext, SourceName } from '../metadata-types'
 
 /**
@@ -8,10 +9,37 @@ export type SourceContext = {
 	context: Partial<MetadataContext>
 	/** API credentials for remote sources. */
 	credentials: Credentials
+	/** Pre-built file tree of relative POSIX paths, respecting .gitignore. */
+	fileTree: string[]
 	/** When true, sources should skip network requests and return only locally-available data. */
 	offline: boolean
 	/** Absolute path to the project directory. */
 	path: string
+}
+
+/**
+ * A value that is either a single item or an array of items.
+ */
+export type OneOrMany<T> = T | T[]
+
+/**
+ * Filter a file tree by glob patterns, returning matching relative paths.
+ */
+export function matchFiles(
+	fileTree: string[],
+	patterns: string[],
+	options?: picomatch.PicomatchOptions,
+): string[] {
+	const isMatch = picomatch(patterns, options)
+	return fileTree.filter((filePath) => isMatch(filePath))
+}
+
+/**
+ * Extract the first element from a `OneOrMany` value.
+ */
+export function firstOf<T>(value: OneOrMany<T> | undefined): T | undefined {
+	if (value === undefined) return undefined
+	return Array.isArray(value) ? value[0] : value
 }
 
 /**

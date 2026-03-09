@@ -8,10 +8,11 @@ import type { PyprojectData } from 'read-pyproject'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parsePyproject } from 'read-pyproject'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
+import { matchFiles } from './source'
 
-export type PythonPyprojectTomlData = SourceRecord<PyprojectData> | undefined
+export type PythonPyprojectTomlData = OneOrMany<SourceRecord<PyprojectData>> | undefined
 
 /**
  * Parse pyproject.toml content and return structured metadata.
@@ -23,24 +24,28 @@ export function parse(content: string): PyprojectData {
 	})
 }
 
-/** Try to read pyproject.toml from a directory. */
-async function readPyprojectFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		return await readFile(resolve(directoryPath, 'pyproject.toml'), 'utf8')
-	} catch {
-		return undefined
-	}
-}
-
 export const pythonPyprojectTomlSource: MetadataSource<'pythonPyprojectToml'> = {
 	async extract(context: SourceContext): Promise<PythonPyprojectTomlData> {
-		log.debug('Extracting pyproject.toml metadata...')
+		const files = matchFiles(context.fileTree, ['**/pyproject.toml'])
+		if (files.length === 0) return undefined
 
-		const filePath = resolve(context.path, 'pyproject.toml')
-		const content = await readPyprojectFile(context.path)
-		if (!content) return undefined
-		const data = parse(content)
-		return { data, source: filePath }
+		log.debug('Extracting pyproject.toml metadata...')
+		const results: Array<SourceRecord<PyprojectData>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'pythonPyprojectToml',
-	phase: 1,}
+	phase: 1,
+}

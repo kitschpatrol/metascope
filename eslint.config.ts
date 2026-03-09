@@ -4,6 +4,12 @@ export default eslintConfig({
 	ignores: ['test/fixtures/*', '.claude/*', '.agents/*'],
 	ts: {
 		overrides: {
+			'depend/ban-dependencies': [
+				'error',
+				{
+					allowed: ['globby'],
+				},
+			],
 			'unicorn/prevent-abbreviations': [
 				'error',
 				{

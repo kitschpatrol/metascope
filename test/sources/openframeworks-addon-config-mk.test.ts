@@ -6,13 +6,17 @@ import {
 	openframeworksAddonConfigMkSource,
 	parse,
 } from '../../src/lib/sources/openframeworks-addon-config-mk'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/openframeworks-addon-config-mk')
 
 describe('openframeworksAddonConfigMk source', () => {
 	it('should be available in a directory with addon_config.mk', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['addon_config.mk'],
+			offline: false,
 			path: resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer'),
 		}
 		expect(await openframeworksAddonConfigMkSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('openframeworksAddonConfigMk source', () => {
 
 	it('should not be available in a directory without addon_config.mk', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await openframeworksAddonConfigMkSource.extract(context)).toBeUndefined()
@@ -28,10 +35,13 @@ describe('openframeworksAddonConfigMk source', () => {
 
 	it('should extract parsed addon config data', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['addon_config.mk'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'arturoc-ofxgstreamer'),
 		}
-		const result = await openframeworksAddonConfigMkSource.extract(context)
+		const result = firstOf(await openframeworksAddonConfigMkSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('ofxGStreamer')

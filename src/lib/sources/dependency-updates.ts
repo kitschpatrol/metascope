@@ -215,4 +215,5 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 		}
 	},
 	key: 'dependencyUpdates',
-	phase: 2,}
+	phase: 2,
+}

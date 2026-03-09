@@ -7,6 +7,7 @@ export default cspellConfig({
 		'abelectronicsuk',
 		'aenthill',
 		'aeshirey',
+		'nocase',
 		'alexchantastic',
 		'ameli',
 		'amey',

@@ -224,4 +224,5 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 		}
 	},
 	key: 'gitStatistics',
-	phase: 2,}
+	phase: 2,
+}

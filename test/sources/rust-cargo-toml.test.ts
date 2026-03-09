@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse as parseCargoToml, rustCargoTomlSource } from '../../src/lib/sources/rust-cargo-toml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/rust-cargo-toml')
 
 describe('rustCargoToml source', () => {
 	it('should be available in a directory with Cargo.toml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['Cargo.toml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
 		expect(await rustCargoTomlSource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('rustCargoToml source', () => {
 
 	it('should not be available in a directory without Cargo.toml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await rustCargoTomlSource.extract(context)).toBeUndefined()
@@ -25,10 +32,13 @@ describe('rustCargoToml source', () => {
 
 	it('should extract parsed Cargo.toml data', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['Cargo.toml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'aeshirey-emlparser'),
 		}
-		const result = await rustCargoTomlSource.extract(context)
+		const result = firstOf(await rustCargoTomlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('eml-parser')

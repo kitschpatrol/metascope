@@ -4,13 +4,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { nodePackageJsonSource, parse } from '../../src/lib/sources/node-package-json'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/node-package-json')
 
 describe('nodePackageJson source', () => {
 	it('should be available in a directory with a package.json file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['package.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'bschlenk-node-roku-client'),
 		}
 		expect(await nodePackageJsonSource.extract(context)).toBeDefined()
@@ -18,7 +22,10 @@ describe('nodePackageJson source', () => {
 
 	it('should not be available in a directory without package.json', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await nodePackageJsonSource.extract(context)).toBeUndefined()
@@ -26,10 +33,13 @@ describe('nodePackageJson source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['package.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'bschlenk-node-roku-client'),
 		}
-		const result = await nodePackageJsonSource.extract(context)
+		const result = firstOf(await nodePackageJsonSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('roku-client')

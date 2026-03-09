@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
 import { defineTemplate } from '../src/lib/metadata-types'
+import { firstOf } from '../src/lib/sources/source'
 
 const mockContext: MetadataContext = {
 	arduinoLibraryProperties: undefined,
@@ -117,7 +118,9 @@ const mockContext: MetadataContext = {
 	xcodeProjectPbxproj: undefined,
 }
 
-const identityFunction = (context: MetadataContext) => ({ name: context.codemetaJson?.data.name })
+const identityFunction = (context: MetadataContext) => ({
+	name: firstOf(context.codemetaJson)?.data.name,
+})
 
 describe('defineTemplate', () => {
 	it('should be an identity function', () => {
@@ -127,7 +130,7 @@ describe('defineTemplate', () => {
 
 	it('should produce the expected output shape', () => {
 		const template = defineTemplate(({ codemetaJson, github }) => ({
-			name: codemetaJson?.data.name,
+			name: firstOf(codemetaJson)?.data.name,
 			stars: github?.data.stargazerCount,
 		}))
 
@@ -140,7 +143,7 @@ describe('defineTemplate', () => {
 
 	it('should support string interpolation', () => {
 		const template = defineTemplate(({ codemetaJson }) => {
-			const firstAuthor = codemetaJson?.data.author?.[0]
+			const firstAuthor = firstOf(codemetaJson)?.data.author?.[0]
 			return {
 				author: `${firstAuthor?.givenName ?? ''} ${firstAuthor?.familyName ?? ''}`.trim(),
 			}
@@ -196,7 +199,7 @@ describe('defineTemplate', () => {
 		// JS allows calling a function with more args than declared
 		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const singleArgumentTemplate = (context: MetadataContext) => ({
-			name: context.codemetaJson?.data.name,
+			name: firstOf(context.codemetaJson)?.data.name,
 		})
 		const template = defineTemplate(singleArgumentTemplate)
 

@@ -1,5 +1,5 @@
-import { readdir, stat } from 'node:fs/promises'
-import { join } from 'node:path'
+import { stat } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 import type { MetadataSource, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 
@@ -18,16 +18,23 @@ export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
 	async extract(context: SourceContext): Promise<FileStatisticsData> {
 		log.debug('Extracting file statistics metadata...')
 
-		const entries = await readdir(context.path, { recursive: true, withFileTypes: true })
+		const { fileTree } = context
+		const totalFileCount = fileTree.length
 
-		const files = entries.filter((entry) => entry.isFile())
-		const directories = entries.filter((entry) => entry.isDirectory())
+		const uniqueDirectories = new Set<string>()
+		for (const file of fileTree) {
+			const directory = dirname(file)
+			if (directory !== '.') {
+				uniqueDirectories.add(directory)
+			}
+		}
+
+		const totalDirectoryCount = uniqueDirectories.size
 
 		const sizes = await Promise.all(
-			files.map(async (entry) => {
+			fileTree.map(async (file) => {
 				try {
-					const filePath = join(entry.parentPath, entry.name)
-					const fileStat = await stat(filePath)
+					const fileStat = await stat(resolve(context.path, file))
 					return fileStat.size
 				} catch {
 					return 0
@@ -39,12 +46,13 @@ export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
 
 		return {
 			data: {
-				totalDirectoryCount: directories.length,
-				totalFileCount: files.length,
+				totalDirectoryCount,
+				totalFileCount,
 				totalSizeBytes,
 			},
 			source: context.path,
 		}
 	},
 	key: 'fileStatistics',
-	phase: 2,}
+	phase: 2,
+}

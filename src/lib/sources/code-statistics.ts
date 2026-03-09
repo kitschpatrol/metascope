@@ -43,4 +43,5 @@ export const codeStatisticsSource: MetadataSource<'codeStatistics'> = {
 		}
 	},
 	key: 'codeStatistics',
-	phase: 2,}
+	phase: 2,
+}

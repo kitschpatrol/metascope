@@ -4,13 +4,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse, publiccodeYamlSource } from '../../src/lib/sources/publiccode-yaml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/publiccode-yaml')
 
 describe('publiccodeYaml source', () => {
 	it('should be available in a directory with publiccode.yml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['publiccode.yml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'cisofy-lynis'),
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeDefined()
@@ -18,7 +22,10 @@ describe('publiccodeYaml source', () => {
 
 	it('should be available in a directory with publiccode.yaml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['publiccode.yaml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeDefined()
@@ -26,7 +33,10 @@ describe('publiccodeYaml source', () => {
 
 	it('should not be available in a directory without publiccode files', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeUndefined()
@@ -34,10 +44,13 @@ describe('publiccodeYaml source', () => {
 
 	it('should extract parsed metadata from a .yml fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['publiccode.yml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'cisofy-lynis'),
 		}
-		const result = await publiccodeYamlSource.extract(context)
+		const result = firstOf(await publiccodeYamlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Lynis')
@@ -48,10 +61,13 @@ describe('publiccodeYaml source', () => {
 
 	it('should extract parsed metadata from a .yaml fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['publiccode.yaml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
 		}
-		const result = await publiccodeYamlSource.extract(context)
+		const result = firstOf(await publiccodeYamlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('CoreBundle')

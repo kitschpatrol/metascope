@@ -14,12 +14,12 @@
 
 import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
 import is from '@sindresorhus/is'
-import { readdir, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ const pbxprojSchema = z.object({
 
 export type Pbxproj = z.infer<typeof pbxprojSchema>
 
-export type XcodeProjectPbxprojData = SourceRecord<Pbxproj> | undefined
+export type XcodeProjectPbxprojData = OneOrMany<SourceRecord<Pbxproj>> | undefined
 
 type PbxprojDependency = Pbxproj['dependencies'][number]
 
@@ -328,41 +328,30 @@ function parseDependencies(
 
 // ─── Source ──────────────────────────────────────────────────────────
 
-/**
- * Find the first `*.xcodeproj/project.pbxproj` file in a directory.
- * Returns the full path or undefined if not found.
- */
-async function findPbxprojFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		const entries = await readdir(directoryPath, { withFileTypes: true })
-		for (const entry of entries) {
-			if (entry.isDirectory() && entry.name.endsWith('.xcodeproj')) {
-				const pbxprojPath = resolve(directoryPath, entry.name, 'project.pbxproj')
-				try {
-					await stat(pbxprojPath)
-					return pbxprojPath
-				} catch {
-					// Project.pbxproj doesn't exist inside this .xcodeproj
-				}
+export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = {
+	// eslint-disable-next-line ts/require-await
+	async extract(context: SourceContext): Promise<XcodeProjectPbxprojData> {
+		const files = matchFiles(context.fileTree, ['**/*.xcodeproj/project.pbxproj'])
+		if (files.length === 0) return undefined
+
+		log.debug('Extracting pbxproj metadata...')
+		const results: Array<SourceRecord<Pbxproj>> = []
+
+		for (const file of files) {
+			try {
+				const data = parse(resolve(context.path, file))
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
 			}
 		}
-	} catch {
-		// Directory doesn't exist or can't be read
-	}
 
-	return undefined
-}
-
-export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = {
-	async extract(context: SourceContext): Promise<XcodeProjectPbxprojData> {
-		log.debug('Extracting pbxproj metadata...')
-
-		const filePath = await findPbxprojFile(context.path)
-		if (!filePath) return undefined
-
-		const data = parse(filePath)
-		if (!data) return undefined
-		return { data, source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'xcodeProjectPbxproj',
-	phase: 1,}
+	phase: 1,
+}

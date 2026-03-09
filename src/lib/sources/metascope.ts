@@ -45,4 +45,5 @@ export const metascopeSource: MetadataSource<'metascope'> = {
 		}
 	},
 	key: 'metascope',
-	phase: 1,}
+	phase: 1,
+}

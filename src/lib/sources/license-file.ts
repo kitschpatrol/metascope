@@ -1,12 +1,9 @@
-import { readdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
-import {
-	identifyLicense,
-	isLicenseFilename,
-	spdxIdToUrl,
-} from '../utilities/license-identification'
+import { identifyLicense, spdxIdToUrl } from '../utilities/license-identification'
+import { matchFiles } from './source'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -22,54 +19,46 @@ export type LicenseMatchExtra = {
 	spdxUrl: string
 }
 
-export type LicenseFilesData = Array<SourceRecord<LicenseMatch, LicenseMatchExtra>>
-
-/**
- * Find all license-like filenames in a directory.
- */
-async function findLicenseFiles(directoryPath: string): Promise<string[]> {
-	try {
-		const entries = await readdir(directoryPath, { withFileTypes: true })
-		return entries
-			.filter((entry) => entry.isFile() && isLicenseFilename(entry.name))
-			.map((entry) => entry.name)
-	} catch {
-		return []
-	}
-}
+export type LicenseFilesData = OneOrMany<SourceRecord<LicenseMatch, LicenseMatchExtra>> | undefined
 
 export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 	async extract(context: SourceContext): Promise<LicenseFilesData> {
-		const filenames = await findLicenseFiles(context.path)
-		if (filenames.length === 0) return []
+		const files = matchFiles(
+			context.fileTree,
+			['**/{,un}licen{c,s}e{,.*}', '**/copying{,.lesser}{,.*}'],
+			{ nocase: true },
+		)
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting license file metadata...')
-		const results: LicenseFilesData = []
+		const results: Array<SourceRecord<LicenseMatch, LicenseMatchExtra>> = []
 
-		for (const filename of filenames) {
+		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, filename), 'utf8')
+				const content = await readFile(resolve(context.path, file), 'utf8')
 				const match = identifyLicense(content)
 				if (match) {
 					results.push({
 						data: { confidence: match.confidence, spdxId: match.spdxId },
 						extra: { spdxUrl: spdxIdToUrl(match.spdxId) },
-						source: resolve(context.path, filename),
+						source: file,
 					})
 					log.debug(
-						`License file "${filename}": ${match.spdxId} (confidence: ${match.confidence.toFixed(2)})`,
+						`License file "${file}": ${match.spdxId} (confidence: ${match.confidence.toFixed(2)})`,
 					)
 				} else {
-					log.debug(`License file "${filename}": no SPDX match`)
+					log.debug(`License file "${file}": no SPDX match`)
 				}
 			} catch (error) {
 				log.warn(
-					`Failed to read license file "${filename}": ${error instanceof Error ? error.message : String(error)}`,
+					`Failed to read license file "${file}": ${error instanceof Error ? error.message : String(error)}`,
 				)
 			}
 		}
 
-		return results
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'licenseFiles',
-	phase: 1,}
+	phase: 1,
+}

@@ -16,9 +16,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import plist from 'plist'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -51,7 +52,7 @@ const infoPlistSchema = z.object({
 
 export type InfoPlist = z.infer<typeof infoPlistSchema>
 
-export type XcodeInfoPlistData = SourceRecord<InfoPlist> | undefined
+export type XcodeInfoPlistData = OneOrMany<SourceRecord<InfoPlist>> | undefined
 
 type PlistDict = Record<string, unknown>
 
@@ -288,18 +289,28 @@ function parseProcessorRequirements(data: PlistDict): string[] {
 
 export const xcodeInfoPlistSource: MetadataSource<'xcodeInfoPlist'> = {
 	async extract(context: SourceContext): Promise<XcodeInfoPlistData> {
-		const filePath = resolve(context.path, 'Info.plist')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
-		}
+		const files = matchFiles(context.fileTree, ['**/Info.plist'])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting Info.plist metadata...')
-		const data = parse(content)
-		if (!data) return undefined
-		return { data, source: filePath }
+		const results: Array<SourceRecord<InfoPlist>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				const data = parse(content)
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'xcodeInfoPlist',
-	phase: 1,}
+	phase: 1,
+}

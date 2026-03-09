@@ -1,11 +1,12 @@
 /* eslint-disable ts/naming-convention */
-import { readdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseConfigparser, splitMultiline } from '../parsers/configparser-parser.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { matchFiles } from './source'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -32,7 +33,7 @@ const setupCfgDataSchema = z.object({
 /** Parsed setup.cfg metadata */
 export type SetupCfg = z.infer<typeof setupCfgDataSchema>
 
-export type PythonSetupCfgData = SourceRecord<SetupCfg> | undefined
+export type PythonSetupCfgData = OneOrMany<SourceRecord<SetupCfg>> | undefined
 
 // ─── Parser ──────────────────────────────────────────────────────────────────
 
@@ -140,29 +141,28 @@ export function parse(source: string): SetupCfg {
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-/** Find a `setup.cfg` file in a directory. */
-async function findSetupCfgFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		const entries = await readdir(directoryPath)
-		const setupCfg = entries.find((entry) => entry === 'setup.cfg')
-		if (setupCfg) return resolve(directoryPath, setupCfg)
-	} catch {
-		// Directory doesn't exist or can't be read
-	}
-
-	return undefined
-}
-
 export const pythonSetupCfgSource: MetadataSource<'pythonSetupCfg'> = {
 	async extract(context: SourceContext): Promise<PythonSetupCfgData> {
+		const files = matchFiles(context.fileTree, ['**/setup.cfg'])
+		if (files.length === 0) return undefined
+
 		log.debug('Extracting setup.cfg metadata...')
+		const results: Array<SourceRecord<SetupCfg>> = []
 
-		const filePath = await findSetupCfgFile(context.path)
-		if (!filePath) return undefined
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
 
-		const content = await readFile(filePath, 'utf8')
-		const data = parse(content)
-		return { data, source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'pythonSetupCfg',
-	phase: 1,}
+	phase: 1,
+}

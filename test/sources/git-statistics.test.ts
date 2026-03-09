@@ -4,7 +4,10 @@ import type { SourceContext } from '../../src/lib/sources/source'
 import { gitStatisticsSource } from '../../src/lib/sources/git-statistics'
 
 const context: SourceContext = {
-	context: {}, credentials: {}, offline: false,
+	context: {},
+	credentials: {},
+	fileTree: [],
+	offline: false,
 	path: resolve('.'),
 }
 
@@ -15,7 +18,10 @@ describe('git statistics source', () => {
 
 	it('should not be available in a non-git directory', async () => {
 		const nonGitContext: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await gitStatisticsSource.extract(nonGitContext)).toBeUndefined()

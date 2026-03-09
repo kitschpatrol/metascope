@@ -6,13 +6,17 @@ import {
 	arduinoLibraryPropertiesSource,
 	parse,
 } from '../../src/lib/sources/arduino-library-properties'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 
 describe('arduinoLibraryProperties source', () => {
 	it('should be available in a directory with library.properties', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['library.properties'],
+			offline: false,
 			path: resolve(fixturesDirectory, '0xpit-esparklines'),
 		}
 		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('arduinoLibraryProperties source', () => {
 
 	it('should not be available in a directory without library.properties', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeUndefined()
@@ -28,10 +35,13 @@ describe('arduinoLibraryProperties source', () => {
 
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['library.properties'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811'),
 		}
-		const result = await arduinoLibraryPropertiesSource.extract(context)
+		const result = firstOf(await arduinoLibraryPropertiesSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Adafruit CCS811 Library')

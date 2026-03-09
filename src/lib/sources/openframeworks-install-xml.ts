@@ -18,9 +18,10 @@ import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -49,7 +50,9 @@ const openframeworksInstallXmlSchema = z.object({
 
 export type OpenframeworksInstallXml = z.infer<typeof openframeworksInstallXmlSchema>
 
-export type OpenframeworksInstallXmlData = SourceRecord<OpenframeworksInstallXml> | undefined
+export type OpenframeworksInstallXmlData =
+	| OneOrMany<SourceRecord<OpenframeworksInstallXml>>
+	| undefined
 
 /**
  * Map `<lib os="...">` attribute values to human-readable OS names.
@@ -194,19 +197,28 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 
 export const openframeworksInstallXmlSource: MetadataSource<'openframeworksInstallXml'> = {
 	async extract(context: SourceContext): Promise<OpenframeworksInstallXmlData> {
-		log.debug('Extracting openFrameworks install.xml metadata...')
+		const files = matchFiles(context.fileTree, ['**/install.xml'])
+		if (files.length === 0) return undefined
 
-		const filePath = resolve(context.path, 'install.xml')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
+		log.debug('Extracting openFrameworks install.xml metadata...')
+		const results: Array<SourceRecord<OpenframeworksInstallXml>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				const data = parse(content)
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
 		}
 
-		const data = parse(content)
-		if (!data) return undefined
-		return { data, source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'openframeworksInstallXml',
-	phase: 1,}
+	phase: 1,
+}

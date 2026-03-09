@@ -2,13 +2,14 @@
 /* eslint-disable ts/naming-convention */
 
 import is from '@sindresorhus/is'
-import { readdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@ const goreleaserDataSchema = z.object({
 /** Parsed goreleaser metadata */
 export type Goreleaser = z.infer<typeof goreleaserDataSchema>
 
-export type GoGoreleaserYamlData = SourceRecord<Goreleaser> | undefined
+export type GoGoreleaserYamlData = OneOrMany<SourceRecord<Goreleaser>> | undefined
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -209,33 +210,30 @@ export function parse(source: string): Goreleaser | undefined {
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-/** Goreleaser config filenames in priority order. */
-const GORELEASER_FILENAMES = ['.goreleaser.yaml', '.goreleaser.yml']
-
-/** Find a goreleaser config file in a directory. */
-async function findGoreleaserFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		const entries = await readdir(directoryPath)
-		for (const filename of GORELEASER_FILENAMES) {
-			if (entries.includes(filename)) return resolve(directoryPath, filename)
-		}
-	} catch {
-		// Directory doesn't exist or can't be read
-	}
-
-	return undefined
-}
-
 export const goGoreleaserYamlSource: MetadataSource<'goGoreleaserYaml'> = {
 	async extract(context: SourceContext): Promise<GoGoreleaserYamlData> {
-		const filePath = await findGoreleaserFile(context.path)
-		if (!filePath) return undefined
+		const files = matchFiles(context.fileTree, ['**/.goreleaser.yml', '**/.goreleaser.yaml'])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting goreleaser metadata...')
-		const content = await readFile(filePath, 'utf8')
-		const data = parse(content)
-		if (!data) return undefined
-		return { data, source: filePath }
+		const results: Array<SourceRecord<Goreleaser>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				const data = parse(content)
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'goGoreleaserYaml',
-	phase: 1,}
+	phase: 1,
+}

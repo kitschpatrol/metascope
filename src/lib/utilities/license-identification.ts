@@ -30,24 +30,7 @@ const SPDX_BASE_URL = 'https://spdx.org/licenses/'
 /** Minimum similarity score to consider a match. */
 const CONFIDENCE_THRESHOLD = 0.75
 
-/**
- * Filename patterns that indicate a license file.
- * Matches: LICENSE, LICENCE, COPYING (with optional extensions like .md, .txt),
- * plus COPYING.LESSER variants. Case-insensitive.
- */
-const LICENSE_FILE_PATTERNS: RegExp[] = [
-	/^(?:un)?licen[cs]e(?:\.\w+)?$/i,
-	/^copying(?:\.lesser)?(?:\.\w+)?$/i,
-]
-
 // ─── Public API ─────────────────────────────────────────────────────
-
-/**
- * Check whether a filename looks like a license file.
- */
-export function isLicenseFilename(filename: string): boolean {
-	return LICENSE_FILE_PATTERNS.some((pattern) => pattern.test(filename))
-}
 
 /**
  * Identify the SPDX license that best matches the given text.

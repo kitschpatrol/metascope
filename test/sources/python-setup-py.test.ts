@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse, pythonSetupPySource } from '../../src/lib/sources/python-setup-py'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-setup-py')
 
 describe('python-setup-py source', () => {
 	it('should be available in a directory with a setup.py file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['setup.py'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		expect(await pythonSetupPySource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('python-setup-py source', () => {
 
 	it('should not be available in a directory without setup.py', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await pythonSetupPySource.extract(context)).toBeUndefined()
@@ -25,13 +32,16 @@ describe('python-setup-py source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['setup.py'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		const result = await pythonSetupPySource.extract(context)
+		const result = firstOf(await pythonSetupPySource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.source).toBe(resolve(fixturesDirectory, 'basic/setup.py'))
+		expect(result!.source).toBe('setup.py')
 		expect(result!.data.name).toBe('example-package')
 		expect(result!.data.version).toBe('1.2.3')
 		expect(result!.data.license).toBe('MIT')

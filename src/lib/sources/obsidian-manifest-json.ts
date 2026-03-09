@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseJsonRecord } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 export type ObsidianManifest = {
 	/** Plugin author name. */
@@ -34,7 +35,7 @@ export type ObsidianManifestJsonExtra = {
 }
 
 export type ObsidianManifestJsonData =
-	| SourceRecord<ObsidianManifest, ObsidianManifestJsonExtra>
+	| OneOrMany<SourceRecord<ObsidianManifest, ObsidianManifestJsonExtra>>
 	| undefined
 
 const communityPluginsUrl =
@@ -54,54 +55,56 @@ const manifestSchema = z.object({
 	version: z.string().optional(),
 })
 
-async function readManifest(path: string): Promise<ObsidianManifest | undefined> {
-	try {
-		const content = await readFile(resolve(path, 'manifest.json'), 'utf8')
-		return manifestSchema.parse(JSON.parse(content))
-	} catch {
-		return undefined
-	}
-}
-
-async function isObsidianPlugin(path: string): Promise<boolean> {
-	try {
-		const content = await readFile(resolve(path, 'manifest.json'), 'utf8')
-		const json = parseJsonRecord(content)
-		return json !== undefined && 'id' in json && 'minAppVersion' in json
-	} catch {
-		return false
-	}
+function isObsidianManifest(content: string): boolean {
+	const json = parseJsonRecord(content)
+	return json !== undefined && 'id' in json && 'minAppVersion' in json
 }
 
 export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> = {
 	async extract(context: SourceContext): Promise<ObsidianManifestJsonData> {
+		const files = matchFiles(context.fileTree, ['**/manifest.json'])
+		if (files.length === 0) return undefined
+
 		log.debug('Extracting Obsidian metadata...')
+		const results: Array<SourceRecord<ObsidianManifest, ObsidianManifestJsonExtra>> = []
 
-		if (!(await isObsidianPlugin(context.path))) return undefined
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				if (!isObsidianManifest(content)) continue
 
-		const manifest = await readManifest(context.path)
-		if (!manifest) return undefined
+				const manifest = manifestSchema.parse(JSON.parse(content))
+				const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
 
-		const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
-		const manifestSource = resolve(context.path, 'manifest.json')
+				try {
+					const response = await fetch(communityPluginsUrl)
+					if (!response.ok) {
+						results.push({ data: manifest, extra: { url }, source: file })
+						continue
+					}
 
-		try {
-			const response = await fetch(communityPluginsUrl)
-			if (!response.ok) return { data: manifest, extra: { url }, source: manifestSource }
+					const stats = pluginStatsSchema.parse(await response.json())
+					if (!(manifest.id in stats)) {
+						results.push({ data: manifest, extra: { url }, source: file })
+						continue
+					}
 
-			const stats = pluginStatsSchema.parse(await response.json())
-			if (!(manifest.id in stats)) return { data: manifest, extra: { url }, source: manifestSource }
-			const pluginStats = stats[manifest.id]
-			const downloadCount = pluginStats.downloads || undefined
-
-			return {
-				data: manifest,
-				extra: { downloadCount, url },
-				source: manifestSource,
+					const pluginStats = stats[manifest.id]
+					const downloadCount = pluginStats.downloads || undefined
+					results.push({ data: manifest, extra: { downloadCount, url }, source: file })
+				} catch {
+					results.push({ data: manifest, extra: { url }, source: file })
+				}
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
 			}
-		} catch {
-			return { data: manifest, extra: { url }, source: manifestSource }
 		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'obsidianManifestJson',
-	phase: 1,}
+	phase: 1,
+}

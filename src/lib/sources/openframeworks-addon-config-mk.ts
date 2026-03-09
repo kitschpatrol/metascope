@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseMakefileConfig } from '../parsers/makefile-config-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -27,7 +28,9 @@ const openframeworksAddonConfigSchema = z.object({
 
 export type OpenframeworksAddonConfig = z.infer<typeof openframeworksAddonConfigSchema>
 
-export type OpenframeworksAddonConfigMkData = SourceRecord<OpenframeworksAddonConfig> | undefined
+export type OpenframeworksAddonConfigMkData =
+	| OneOrMany<SourceRecord<OpenframeworksAddonConfig>>
+	| undefined
 
 /**
  * Parse an `addon_config.mk` file and return validated metadata.
@@ -39,17 +42,26 @@ export function parse(content: string): OpenframeworksAddonConfig {
 
 export const openframeworksAddonConfigMkSource: MetadataSource<'openframeworksAddonConfigMk'> = {
 	async extract(context: SourceContext): Promise<OpenframeworksAddonConfigMkData> {
-		log.debug('Extracting openFrameworks addon config metadata...')
+		const files = matchFiles(context.fileTree, ['**/addon_config.mk'])
+		if (files.length === 0) return undefined
 
-		const filePath = resolve(context.path, 'addon_config.mk')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
+		log.debug('Extracting openFrameworks addon config metadata...')
+		const results: Array<SourceRecord<OpenframeworksAddonConfig>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
 		}
 
-		return { data: parse(content), source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'openframeworksAddonConfigMk',
-	phase: 1,}
+	phase: 1,
+}

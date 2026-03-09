@@ -3,18 +3,18 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { licenseFileSource } from '../../src/lib/sources/license-file'
-import {
-	identifyLicense,
-	isLicenseFilename,
-	spdxIdToUrl,
-} from '../../src/lib/utilities/license-identification'
+import { firstOf } from '../../src/lib/sources/source'
+import { identifyLicense, spdxIdToUrl } from '../../src/lib/utilities/license-identification'
 
 const fixturesDirectory = resolve('test/fixtures/license-file')
 
 describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENSE file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['LICENSE'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
@@ -22,7 +22,10 @@ describe('licenseFiles source', () => {
 
 	it('should be available in a directory with a COPYING file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['COPYING'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask-1'),
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
@@ -30,81 +33,54 @@ describe('licenseFiles source', () => {
 
 	it('should be available in a directory with a LICENCE file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['LICENCE'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'ashuk032-8secread'),
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
-	it('should return empty array in a directory without license files', async () => {
+	it('should return undefined in a directory without license files', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
-		expect(await licenseFileSource.extract(context)).toEqual([])
+		expect(await licenseFileSource.extract(context)).toBeUndefined()
 	})
 
-	it('should extract license records from a single license file', async () => {
+	it('should extract a license record from a single license file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['LICENSE'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'pallets-flask'),
 		}
-		const result = await licenseFileSource.extract(context)
+		const result = firstOf(await licenseFileSource.extract(context))
 
-		expect(result.length).toBeGreaterThanOrEqual(1)
-		expect(result.some((r) => r.data.spdxId.includes('BSD'))).toBe(true)
-		expect(result[0].extra?.spdxUrl).toBeDefined()
-		expect(result[0].source).toBeDefined()
+		expect(result).toBeDefined()
+		expect(result!.data.spdxId).toContain('BSD')
+		expect(result!.extra?.spdxUrl).toBeDefined()
+		expect(result!.source).toBeDefined()
 	})
 
 	it('should return multiple records from multiple license files', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['COPYING.md', 'LICENSE'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'multi'),
 		}
 		const result = await licenseFileSource.extract(context)
 
-		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have at least 2
-		expect(result.length).toBeGreaterThanOrEqual(2)
-	})
-})
-
-describe('isLicenseFilename', () => {
-	it('should match LICENSE variants', () => {
-		expect(isLicenseFilename('LICENSE')).toBe(true)
-		expect(isLicenseFilename('LICENSE.md')).toBe(true)
-		expect(isLicenseFilename('LICENSE.txt')).toBe(true)
-		expect(isLicenseFilename('license')).toBe(true)
-		expect(isLicenseFilename('License.md')).toBe(true)
-	})
-
-	it('should match LICENCE (British spelling)', () => {
-		expect(isLicenseFilename('LICENCE')).toBe(true)
-		expect(isLicenseFilename('LICENCE.md')).toBe(true)
-		expect(isLicenseFilename('licence')).toBe(true)
-	})
-
-	it('should match COPYING variants', () => {
-		expect(isLicenseFilename('COPYING')).toBe(true)
-		expect(isLicenseFilename('COPYING.md')).toBe(true)
-		expect(isLicenseFilename('COPYING.txt')).toBe(true)
-		expect(isLicenseFilename('copying')).toBe(true)
-	})
-
-	it('should match COPYING.LESSER variants', () => {
-		expect(isLicenseFilename('COPYING.LESSER')).toBe(true)
-		expect(isLicenseFilename('COPYING.LESSER.txt')).toBe(true)
-	})
-
-	it('should match UNLICENSE variants', () => {
-		expect(isLicenseFilename('UNLICENSE')).toBe(true)
-		expect(isLicenseFilename('unlicense')).toBe(true)
-		expect(isLicenseFilename('UNLICENSE.md')).toBe(true)
-	})
-
-	it('should not match unrelated files', () => {
-		expect(isLicenseFilename('README.md')).toBe(false)
-		expect(isLicenseFilename('package.json')).toBe(false)
+		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have 2
+		expect(Array.isArray(result)).toBe(true)
 	})
 })
 

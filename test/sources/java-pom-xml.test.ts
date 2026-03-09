@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { javaPomXmlSource, parse as parsePomXml } from '../../src/lib/sources/java-pom-xml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/java-pom-xml')
 
 describe('javaPomXml source', () => {
 	it('should be available in a directory with pom.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['pom.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'yahoo-halodb'),
 		}
 		expect(await javaPomXmlSource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('javaPomXml source', () => {
 
 	it('should not be available in a directory without pom.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await javaPomXmlSource.extract(context)).toBeUndefined()
@@ -25,10 +32,13 @@ describe('javaPomXml source', () => {
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['pom.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'yahoo-halodb'),
 		}
-		const result = await javaPomXmlSource.extract(context)
+		const result = firstOf(await javaPomXmlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('HaloDB')

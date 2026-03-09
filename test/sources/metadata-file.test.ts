@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { metadataFileSource, parse as parseMetadata } from '../../src/lib/sources/metadata-file'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/metadata-file')
 
 describe('metadataFile source', () => {
 	it('should be available in a directory with metadata.json', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['metadata.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'git-url'),
 		}
 		expect(await metadataFileSource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('metadataFile source', () => {
 
 	it('should be available in a directory with metadata.yaml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		expect(await metadataFileSource.extract(context)).toBeDefined()
@@ -25,7 +32,10 @@ describe('metadataFile source', () => {
 
 	it('should not be available in a directory without metadata files', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await metadataFileSource.extract(context)).toBeUndefined()
@@ -33,28 +43,36 @@ describe('metadataFile source', () => {
 
 	it('should extract parsed metadata from JSON', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['metadata.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'git-url'),
 		}
-		const result = await metadataFileSource.extract(context)
+		const result = firstOf(await metadataFileSource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.source).toBe(resolve(fixturesDirectory, 'git-url/metadata.json'))
+		expect(result!.source).toBe('metadata.json')
 		expect(result!.data.description).toBe('Testing metadata.json with git URL normalization')
 		expect(result!.data.repository).toBe('https://github.com/test/metadata-git-url')
 		expect(result!.data.keywords).toEqual(['metadata', 'git-url', 'testing'])
 	})
 
-	it('should prefer metadata.json over metadata.yaml', async () => {
+	it('should return all metadata files when multiple exist', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		const result = await metadataFileSource.extract(context)
 
 		expect(result).toBeDefined()
-		// The basic/ directory has all three formats; JSON should be preferred
-		expect(result!.data.description).toBe('JSON metadata file for testing')
+		// The basic/ directory has all three formats; all should be returned
+		const first = firstOf(result)
+		expect(first).toBeDefined()
+		expect(first!.data.description).toBe('JSON metadata file for testing')
 	})
 })
 

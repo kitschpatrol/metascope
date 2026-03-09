@@ -6,13 +6,17 @@ import {
 	openframeworksInstallXmlSource,
 	parse,
 } from '../../src/lib/sources/openframeworks-install-xml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/openframeworks-install-xml')
 
 describe('openframeworksInstallXml source', () => {
 	it('should be available in a directory with install.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['install.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
 		expect(await openframeworksInstallXmlSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('openframeworksInstallXml source', () => {
 
 	it('should not be available in a directory without install.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await openframeworksInstallXmlSource.extract(context)).toBeUndefined()
@@ -28,10 +35,13 @@ describe('openframeworksInstallXml source', () => {
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['install.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode'),
 		}
-		const result = await openframeworksInstallXmlSource.extract(context)
+		const result = firstOf(await openframeworksInstallXmlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('ofxGraycode')

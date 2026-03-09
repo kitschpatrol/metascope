@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseLibraryProperties } from '../parsers/library-properties-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -79,7 +80,9 @@ type ArduinoLibraryPropertiesCategory = NonNullable<ArduinoLibraryProperties['ca
 type ArduinoLibraryPropertiesPersonEntry = ArduinoLibraryProperties['authors'][number]
 type ArduinoLibraryPropertiesDependencyEntry = ArduinoLibraryProperties['depends'][number]
 
-export type ArduinoLibraryPropertiesData = SourceRecord<ArduinoLibraryProperties> | undefined
+export type ArduinoLibraryPropertiesData =
+	| OneOrMany<SourceRecord<ArduinoLibraryProperties>>
+	| undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 
@@ -267,18 +270,27 @@ function isArduinoLibraryProperties(content: string): boolean {
 
 export const arduinoLibraryPropertiesSource: MetadataSource<'arduinoLibraryProperties'> = {
 	async extract(context: SourceContext): Promise<ArduinoLibraryPropertiesData> {
-		const filePath = resolve(context.path, 'library.properties')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
-		}
-
-		if (!isArduinoLibraryProperties(content)) return undefined
+		const files = matchFiles(context.fileTree, ['**/library.properties'])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting Arduino library.properties metadata...')
-		return { data: parse(content), source: filePath }
+		const results: Array<SourceRecord<ArduinoLibraryProperties>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				if (!isArduinoLibraryProperties(content)) continue
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'arduinoLibraryProperties',
-	phase: 1,}
+	phase: 1,
+}

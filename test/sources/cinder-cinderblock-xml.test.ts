@@ -6,13 +6,17 @@ import {
 	cinderCinderblockXmlSource,
 	parse as parseCinderCinderblock,
 } from '../../src/lib/sources/cinder-cinderblock-xml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock-xml')
 
 describe('cinderCinderblockXml source', () => {
 	it('should be available in a directory with cinderblock.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['cinderblock.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
 		expect(await cinderCinderblockXmlSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('cinderCinderblockXml source', () => {
 
 	it('should not be available in a directory without cinderblock.xml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await cinderCinderblockXmlSource.extract(context)).toBeUndefined()
@@ -28,10 +35,13 @@ describe('cinderCinderblockXml source', () => {
 
 	it('should extract parsed cinderblock data', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['cinderblock.xml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
 		}
-		const result = await cinderCinderblockXmlSource.extract(context)
+		const result = firstOf(await cinderCinderblockXmlSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Syphon')

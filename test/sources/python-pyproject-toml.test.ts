@@ -4,13 +4,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse, pythonPyprojectTomlSource } from '../../src/lib/sources/python-pyproject-toml'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 
 describe('pythonPyprojectToml source', () => {
 	it('should be available in a directory with a pyproject.toml file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['pyproject.toml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'proycon-codemetapy'),
 		}
 		expect(await pythonPyprojectTomlSource.extract(context)).toBeDefined()
@@ -18,7 +22,10 @@ describe('pythonPyprojectToml source', () => {
 
 	it('should not be available in a directory without pyproject.toml', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await pythonPyprojectTomlSource.extract(context)).toBeUndefined()
@@ -26,13 +33,16 @@ describe('pythonPyprojectToml source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['pyproject.toml'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'proycon-codemetapy'),
 		}
-		const result = await pythonPyprojectTomlSource.extract(context)
+		const result = firstOf(await pythonPyprojectTomlSource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.source).toBe(resolve(fixturesDirectory, 'proycon-codemetapy/pyproject.toml'))
+		expect(result!.source).toBe('pyproject.toml')
 		expect(result!.data.project?.name).toBe('codemetapy')
 		expect(result!.data.project?.version).toBe('2.5.3')
 		expect(result!.data.project?.dependencies).toContain('rdflib>=6.0.0')

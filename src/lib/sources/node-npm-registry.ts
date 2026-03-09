@@ -112,4 +112,5 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 		}
 	},
 	key: 'nodeNpmRegistry',
-	phase: 2,}
+	phase: 2,
+}

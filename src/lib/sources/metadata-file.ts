@@ -16,7 +16,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import {
 	nonEmptyString,
@@ -24,6 +24,7 @@ import {
 	parseJsonRecord,
 	stringArray,
 } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -40,7 +41,7 @@ const metadataSchema = z.object({
 
 export type Metadata = z.infer<typeof metadataSchema>
 
-export type MetadataFileData = SourceRecord<Metadata> | undefined
+export type MetadataFileData = OneOrMany<SourceRecord<Metadata>> | undefined
 
 // ─── Core parser ────────────────────────────────────────────────────
 
@@ -128,42 +129,43 @@ function parseKeywords(value: unknown): string[] | undefined {
 
 // ─── Source ─────────────────────────────────────────────────────────
 
-/** Supported metadata file names in priority order. */
-const METADATA_FILES: ReadonlyArray<{ format: 'json' | 'yaml'; name: string }> = [
-	{ format: 'json', name: 'metadata.json' },
-	{ format: 'yaml', name: 'metadata.yaml' },
-	{ format: 'yaml', name: 'metadata.yml' },
-]
-
-/**
- * Try to read and identify which metadata file exists in the directory.
- * Returns the content and format of the first found file, or undefined.
- */
-async function findMetadataFile(
-	directoryPath: string,
-): Promise<undefined | { content: string; filePath: string; format: 'json' | 'yaml' }> {
-	for (const { format, name } of METADATA_FILES) {
-		try {
-			const filePath = resolve(directoryPath, name)
-			const content = await readFile(filePath, 'utf8')
-			return { content, filePath, format }
-		} catch {
-			// File doesn't exist, try next
-		}
-	}
-
+/** Determine the format of a metadata file by its extension. */
+function getFormat(file: string): 'json' | 'yaml' | undefined {
+	if (file.endsWith('.json')) return 'json'
+	if (file.endsWith('.yaml') || file.endsWith('.yml')) return 'yaml'
 	return undefined
 }
 
 export const metadataFileSource: MetadataSource<'metadataFile'> = {
 	async extract(context: SourceContext): Promise<MetadataFileData> {
-		const found = await findMetadataFile(context.path)
-		if (!found) return undefined
+		const files = matchFiles(context.fileTree, [
+			'**/metadata.json',
+			'**/metadata.yaml',
+			'**/metadata.yml',
+		])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting metadata file metadata...')
-		const data = parse(found.content, found.format)
-		if (!data) return undefined
-		return { data, source: found.filePath }
+		const results: Array<SourceRecord<Metadata>> = []
+
+		for (const file of files) {
+			try {
+				const format = getFormat(file)
+				if (!format) continue
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				const data = parse(content, format)
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'metadataFile',
-	phase: 1,}
+	phase: 1,
+}

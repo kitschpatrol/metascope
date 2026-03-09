@@ -4,7 +4,10 @@ import type { SourceContext } from '../../src/lib/sources/source'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
 
 const context: SourceContext = {
-	context: {}, credentials: {}, offline: false,
+	context: {},
+	credentials: {},
+	fileTree: [],
+	offline: false,
 	path: resolve('.'),
 }
 
@@ -15,7 +18,10 @@ describe('git config source', () => {
 
 	it('should not be available in a non-git directory', async () => {
 		const nonGitContext: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await gitConfigSource.extract(nonGitContext)).toBeUndefined()

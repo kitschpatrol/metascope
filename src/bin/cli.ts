@@ -44,7 +44,13 @@ await yargsInstance
 					array: true,
 				})
 				.option('offline', {
-					description: 'Skip network requests (web-based sources will return only locally-available data)',
+					description:
+						'Skip network requests (web-based sources will return only locally-available data)',
+					type: 'boolean',
+				})
+				.option('recursive', {
+					alias: 'r',
+					description: 'Search for metadata files recursively in subdirectories',
 					type: 'boolean',
 				})
 				.option('verbose', {
@@ -105,9 +111,17 @@ await yargsInstance
 					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
 				}
 				const offline = argv.offline ?? false
+				const recursive = argv.recursive ?? false
 				const result = template
-					? await getMetadata({ credentials, offline, path: argv.path, template, templateData })
-					: await getMetadata({ credentials, offline, path: argv.path, templateData })
+					? await getMetadata({
+							credentials,
+							offline,
+							path: argv.path,
+							recursive,
+							template,
+							templateData,
+						})
+					: await getMetadata({ credentials, offline, path: argv.path, recursive, templateData })
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

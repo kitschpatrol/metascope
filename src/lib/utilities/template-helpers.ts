@@ -1,5 +1,6 @@
 import type { NodePackageJsonData } from '../metadata-types'
 import type { CodeMetaJson, CodeMetaJsonData } from '../sources/codemeta-json'
+import { firstOf } from '../sources/source'
 import { toDelimitedString } from './formatting'
 
 type CodeMetaPersonOrOrg = NonNullable<CodeMetaJson['author']>[number]
@@ -33,7 +34,8 @@ export function toBasicLicenses(
 /**
  * TODO
  */
-export function usesSharedConfig(codemeta: CodeMetaJsonData): boolean {
+export function usesSharedConfig(codemetaRaw: CodeMetaJsonData): boolean {
+	const codemeta = firstOf(codemetaRaw)
 	if (!codemeta) return false
 	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta.data)
 }
@@ -42,10 +44,11 @@ export function usesSharedConfig(codemeta: CodeMetaJsonData): boolean {
  * TODO
  */
 export function usesPnpm(packageJson: NodePackageJsonData): boolean {
-	if (!packageJson) return false
+	const first = firstOf(packageJson)
+	if (!first) return false
 	return (
-		packageJson.data.packageManager?.toLowerCase().startsWith('pnpm') ??
-		Object.hasOwn(packageJson.data.engines ?? {}, 'pnpm')
+		first.data.packageManager?.toLowerCase().startsWith('pnpm') ??
+		Object.hasOwn(first.data.engines ?? {}, 'pnpm')
 	)
 }
 
@@ -87,9 +90,10 @@ export function basicNames(source: CodeMetaPersonOrOrg[] | undefined): string[] 
  * True if project was authored by specific person(s)
  */
 export function isAuthoredBy(
-	codemeta?: CodeMetaJsonData,
+	codemetaRaw?: CodeMetaJsonData,
 	authorName?: string | string[],
 ): boolean | undefined {
+	const codemeta = firstOf(codemetaRaw)
 	if (codemeta === undefined || authorName === undefined || codemeta.data.author === undefined) {
 		return undefined
 	}
@@ -107,9 +111,10 @@ export function isAuthoredBy(
  * True if project is on a specific github account(s)
  */
 export function isOnGithubAccountOf(
-	codemeta?: CodeMetaJsonData,
+	codemetaRaw?: CodeMetaJsonData,
 	githubUserName?: string | string[],
 ): boolean | undefined {
+	const codemeta = firstOf(codemetaRaw)
 	if (
 		codemeta === undefined ||
 		githubUserName === undefined ||

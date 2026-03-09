@@ -155,4 +155,5 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 		}
 	},
 	key: 'pythonPypiRegistry',
-	phase: 2,}
+	phase: 2,
+}

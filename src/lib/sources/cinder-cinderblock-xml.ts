@@ -15,9 +15,10 @@ import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ const cinderCinderblockSchema = z.object({
 
 export type CinderCinderblock = z.infer<typeof cinderCinderblockSchema>
 
-export type CinderCinderblockXmlData = SourceRecord<CinderCinderblock> | undefined
+export type CinderCinderblockXmlData = OneOrMany<SourceRecord<CinderCinderblock>> | undefined
 
 /**
  * Map CinderBlock OS identifiers to human-readable OS names.
@@ -166,18 +167,28 @@ function parseDependencies(block: Record<string, unknown>): string[] {
 
 export const cinderCinderblockXmlSource: MetadataSource<'cinderCinderblockXml'> = {
 	async extract(context: SourceContext): Promise<CinderCinderblockXmlData> {
-		const filePath = resolve(context.path, 'cinderblock.xml')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
-		}
+		const files = matchFiles(context.fileTree, ['**/cinderblock.xml'])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting Cinder cinderblock.xml metadata...')
-		const data = parse(content)
-		if (!data) return undefined
-		return { data, source: filePath }
+		const results: Array<SourceRecord<CinderCinderblock>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				const data = parse(content)
+				if (!data) continue
+				results.push({ data, source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'cinderCinderblockXml',
-	phase: 1,}
+	phase: 1,
+}

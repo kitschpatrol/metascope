@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse, pythonPkgInfoSource } from '../../src/lib/sources/python-pkg-info'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-pkg-info')
 
 describe('pythonPkgInfo source', () => {
 	it('should be available in a directory with a PKG-INFO file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['PKG-INFO'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		expect(await pythonPkgInfoSource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('pythonPkgInfo source', () => {
 
 	it('should not be available in a directory without PKG-INFO', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await pythonPkgInfoSource.extract(context)).toBeUndefined()
@@ -25,13 +32,16 @@ describe('pythonPkgInfo source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['PKG-INFO'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		const result = await pythonPkgInfoSource.extract(context)
+		const result = firstOf(await pythonPkgInfoSource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.source).toBe(resolve(fixturesDirectory, 'basic/PKG-INFO'))
+		expect(result!.source).toBe('PKG-INFO')
 		expect(result!.data.name).toBe('example-package')
 		expect(result!.data.version).toBe('1.2.3')
 		expect(result!.data.license).toBe('MIT')

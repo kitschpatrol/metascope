@@ -1,12 +1,13 @@
 /* eslint-disable ts/naming-convention */
 
-import { readdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseGoMod } from '../parsers/go-mod-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema & Types ──────────────────────────────────────────────────────────
 
@@ -31,31 +32,32 @@ export function parse(content: string): GoMod {
 	return goModDataSchema.parse(parseGoMod(content))
 }
 
-export type GoGoModData = SourceRecord<GoMod> | undefined
+export type GoGoModData = OneOrMany<SourceRecord<GoMod>> | undefined
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-/** Find a `go.mod` file in a directory. */
-async function findGoModFile(directoryPath: string): Promise<string | undefined> {
-	try {
-		const entries = await readdir(directoryPath)
-		const goMod = entries.find((entry) => entry === 'go.mod')
-		if (goMod) return resolve(directoryPath, goMod)
-	} catch {
-		// Directory doesn't exist or can't be read
-	}
-
-	return undefined
-}
-
 export const goGoModSource: MetadataSource<'goGoMod'> = {
 	async extract(context: SourceContext): Promise<GoGoModData> {
-		const filePath = await findGoModFile(context.path)
-		if (!filePath) return undefined
+		const files = matchFiles(context.fileTree, ['**/go.mod'])
+		if (files.length === 0) return undefined
 
 		log.debug('Extracting go.mod metadata...')
-		const content = await readFile(filePath, 'utf8')
-		return { data: parse(content), source: filePath }
+		const results: Array<SourceRecord<GoMod>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
+		}
+
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'goGoMod',
-	phase: 1,}
+	phase: 1,
+}

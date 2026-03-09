@@ -3,13 +3,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { goGoModSource, parse } from '../../src/lib/sources/go-go-mod'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/go-go-mod')
 
 describe('goGoMod source', () => {
 	it('should be available in a directory with a go.mod file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['go.mod'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'caddyserver-certmagic'),
 		}
 		expect(await goGoModSource.extract(context)).toBeDefined()
@@ -17,7 +21,10 @@ describe('goGoMod source', () => {
 
 	it('should not be available in a directory without go.mod', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await goGoModSource.extract(context)).toBeUndefined()
@@ -25,10 +32,13 @@ describe('goGoMod source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['go.mod'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'caddyserver-certmagic'),
 		}
-		const result = await goGoModSource.extract(context)
+		const result = firstOf(await goGoModSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.module).toBe('github.com/caddyserver/certmagic')

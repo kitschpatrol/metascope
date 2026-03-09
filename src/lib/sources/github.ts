@@ -638,4 +638,5 @@ export const githubSource: MetadataSource<'github'> = {
 		}
 	},
 	key: 'github',
-	phase: 2,}
+	phase: 2,
+}

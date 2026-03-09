@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getMetadata } from '../src/lib/metadata'
 import { defineTemplate } from '../src/lib/metadata-types'
+import { firstOf } from '../src/lib/sources/source'
 
 // @case-police-ignore github
 
@@ -10,7 +11,7 @@ describe('getMetadata', () => {
 
 		// Should have package.json data
 		expect(result.nodePackageJson).toBeDefined()
-		expect(result.nodePackageJson!.data.name).toBe('metascope')
+		expect(firstOf(result.nodePackageJson)!.data.name).toBe('metascope')
 
 		// Should have git statistics data
 		expect(result.gitStatistics).toBeDefined()
@@ -27,8 +28,9 @@ describe('getMetadata', () => {
 	it('should not include empty source objects', async () => {
 		const result = await getMetadata({ path: '.' })
 		// Sources that aren't available should not appear as empty objects
+		// (arrays like licenseFiles may legitimately be empty)
 		for (const [, value] of Object.entries(result)) {
-			if (typeof value === 'object') {
+			if (typeof value === 'object' && !Array.isArray(value)) {
 				expect(Object.keys(value).length).toBeGreaterThan(0)
 			}
 		}
@@ -37,7 +39,7 @@ describe('getMetadata', () => {
 	it('should apply a template function', async () => {
 		const template = defineTemplate(({ gitStatistics, nodePackageJson }) => ({
 			branch: gitStatistics?.data.branchCurrent,
-			name: nodePackageJson?.data.name,
+			name: firstOf(nodePackageJson)?.data.name,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
@@ -49,7 +51,7 @@ describe('getMetadata', () => {
 
 	it('should strip undefined from template output', async () => {
 		const template = defineTemplate(({ obsidianManifestJson }) => ({
-			downloads: obsidianManifestJson?.extra?.downloadCount,
+			downloads: firstOf(obsidianManifestJson)?.extra?.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })

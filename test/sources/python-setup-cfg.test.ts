@@ -6,13 +6,17 @@ import {
 	parse as parseSetupCfg,
 	pythonSetupCfgSource,
 } from '../../src/lib/sources/python-setup-cfg'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-setup-cfg')
 
 describe('pythonSetupCfg source', () => {
 	it('should be available in a directory with a setup.cfg file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['setup.cfg'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
 		expect(await pythonSetupCfgSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('pythonSetupCfg source', () => {
 
 	it('should not be available in a directory without setup.cfg', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await pythonSetupCfgSource.extract(context)).toBeUndefined()
@@ -28,13 +35,16 @@ describe('pythonSetupCfg source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['setup.cfg'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'basic'),
 		}
-		const result = await pythonSetupCfgSource.extract(context)
+		const result = firstOf(await pythonSetupCfgSource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.source).toBe(resolve(fixturesDirectory, 'basic/setup.cfg'))
+		expect(result!.source).toBe('setup.cfg')
 		expect(result!.data.name).toBe('example-package')
 		expect(result!.data.version).toBe('1.2.3')
 		expect(result!.data.license).toBe('MIT')

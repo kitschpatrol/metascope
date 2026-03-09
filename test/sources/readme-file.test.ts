@@ -4,13 +4,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { parse, readmeFileSource, readmePattern } from '../../src/lib/sources/readme-file'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/readme-file')
 
 describe('readmeFile source', () => {
 	it('should be available in a directory with a README.md', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['README.md'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
 		expect(await readmeFileSource.extract(context)).toBeDefined()
@@ -18,7 +22,10 @@ describe('readmeFile source', () => {
 
 	it('should not be available in a directory without README files', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await readmeFileSource.extract(context)).toBeUndefined()
@@ -26,10 +33,13 @@ describe('readmeFile source', () => {
 
 	it('should extract name from a fixture with an H1', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['README.md'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk'),
 		}
-		const result = await readmeFileSource.extract(context)
+		const result = firstOf(await readmeFileSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Hyperspeed SDK V1.0.0')
@@ -38,7 +48,10 @@ describe('readmeFile source', () => {
 
 	it('should return undefined for a fixture without an H1', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['README.md'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'next-hat-nanocl'),
 		}
 		const result = await readmeFileSource.extract(context)

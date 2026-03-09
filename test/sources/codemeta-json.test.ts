@@ -4,13 +4,17 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { SourceContext } from '../../src/lib/sources/source'
 import { codemetaJsonSource, parse as parseCodemetaJson } from '../../src/lib/sources/codemeta-json'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/codemeta-json')
 
 describe('codemeta-json source', () => {
 	it('should be available in a directory with a codemeta.json file', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['codemeta.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'caltechlibrary-iga'),
 		}
 		expect(await codemetaJsonSource.extract(context)).toBeDefined()
@@ -18,7 +22,10 @@ describe('codemeta-json source', () => {
 
 	it('should not be available in a directory without codemeta.json', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await codemetaJsonSource.extract(context)).toBeUndefined()
@@ -26,10 +33,13 @@ describe('codemeta-json source', () => {
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['codemeta.json'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'caltechlibrary-iga'),
 		}
-		const result = await codemetaJsonSource.extract(context)
+		const result = firstOf(await codemetaJsonSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('InvenioRDM GitHub Archiver (IGA)')

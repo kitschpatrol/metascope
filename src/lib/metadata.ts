@@ -1,3 +1,4 @@
+import { globby } from 'globby'
 import { execFile } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
@@ -202,6 +203,17 @@ export async function getMetadata<T>(
 
 	const credentials = await resolveCredentials(options.credentials)
 	const offline = options.offline ?? false
+	const recursive = options.recursive ?? false
+
+	// Build file tree once with globby (respects .gitignore)
+	log.debug(`Building file tree (recursive: ${recursive})...`)
+	const fileTree = await globby('**', {
+		cwd: absolutePath,
+		deep: recursive ? Infinity : 1,
+		dot: true,
+		gitignore: true,
+	})
+	log.debug(`File tree contains ${fileTree.length} entries`)
 
 	// Assemble context with defaults
 	const context: MetadataContext = {
@@ -212,12 +224,12 @@ export async function getMetadata<T>(
 		dependencyUpdates: undefined,
 		fileStatistics: undefined,
 		gitConfig: undefined,
-		gitStatistics: undefined,
 		github: undefined,
+		gitStatistics: undefined,
 		goGoMod: undefined,
 		goGoreleaserYaml: undefined,
 		javaPomXml: undefined,
-		licenseFiles: [],
+		licenseFiles: undefined,
 		metadataFile: undefined,
 		metascope: undefined,
 		nodeNpmRegistry: undefined,
@@ -243,12 +255,13 @@ export async function getMetadata<T>(
 	// Within a phase, all sources run in parallel.
 	// Each phase receives the accumulated context from all previous phases.
 	const phases = new Set(sources.map((s) => s.phase))
-	for (const phase of [...phases].sort((a, b) => a - b)) {
+	for (const phase of [...phases].toSorted((a, b) => a - b)) {
 		const phaseSources = sources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
 			context: { ...context },
 			credentials,
+			fileTree,
 			offline,
 			path: absolutePath,
 		}

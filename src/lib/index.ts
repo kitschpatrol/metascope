@@ -26,6 +26,7 @@ export type {
 	NodePackageJsonData,
 	ObsidianManifest,
 	ObsidianManifestJsonData,
+	OneOrMany,
 	OpenframeworksAddonConfigMkData,
 	OpenframeworksInstallXmlData,
 	ProcessingLibraryPropertiesData,
@@ -45,6 +46,7 @@ export type {
 	XcodeInfoPlistData,
 	XcodeProjectPbxprojData,
 } from './metadata-types'
+export { firstOf, matchFiles } from './sources/source'
 export { templates } from './templates/index'
 export type { TemplateMap, TemplateName } from './templates/index'
 export type { LanguageInfo } from '@kitschpatrol/tokei'

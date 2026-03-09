@@ -6,13 +6,17 @@ import {
 	parse,
 	processingLibraryPropertiesSource,
 } from '../../src/lib/sources/processing-library-properties'
+import { firstOf } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 
 describe('processingLibraryProperties source', () => {
 	it('should be available in a directory with Processing library.properties', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['library.properties'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
 		expect(await processingLibraryPropertiesSource.extract(context)).toBeDefined()
@@ -20,7 +24,10 @@ describe('processingLibraryProperties source', () => {
 
 	it('should not be available in a directory without library.properties', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: [],
+			offline: false,
 			path: '/tmp',
 		}
 		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
@@ -28,7 +35,10 @@ describe('processingLibraryProperties source', () => {
 
 	it('should not be available for Arduino library.properties', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['library.properties'],
+			offline: false,
 			path: resolve('test/fixtures/arduino-library-properties/0xpit-esparklines'),
 		}
 		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
@@ -36,10 +46,13 @@ describe('processingLibraryProperties source', () => {
 
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
-			context: {}, credentials: {}, offline: false,
+			context: {},
+			credentials: {},
+			fileTree: ['library.properties'],
+			offline: false,
 			path: resolve(fixturesDirectory, 'hx2a-camera3d'),
 		}
-		const result = await processingLibraryPropertiesSource.extract(context)
+		const result = firstOf(await processingLibraryPropertiesSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Camera 3D')

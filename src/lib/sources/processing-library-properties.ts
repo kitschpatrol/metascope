@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseLibraryProperties } from '../parsers/library-properties-parser'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
+import { matchFiles } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -77,7 +78,9 @@ export type ProcessingLibraryProperties = z.infer<typeof processingLibraryProper
 type ProcessingLibraryPropertiesAuthorEntry = ProcessingLibraryProperties['authors'][number]
 type ProcessingLibraryPropertiesCategory = ProcessingLibraryProperties['categories'][number]
 
-export type ProcessingLibraryPropertiesData = SourceRecord<ProcessingLibraryProperties> | undefined
+export type ProcessingLibraryPropertiesData =
+	| OneOrMany<SourceRecord<ProcessingLibraryProperties>>
+	| undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 
@@ -302,19 +305,27 @@ function isProcessingLibraryProperties(content: string): boolean {
 
 export const processingLibraryPropertiesSource: MetadataSource<'processingLibraryProperties'> = {
 	async extract(context: SourceContext): Promise<ProcessingLibraryPropertiesData> {
-		log.debug('Extracting Processing library.properties metadata...')
+		const files = matchFiles(context.fileTree, ['**/library.properties'])
+		if (files.length === 0) return undefined
 
-		const filePath = resolve(context.path, 'library.properties')
-		let content: string
-		try {
-			content = await readFile(filePath, 'utf8')
-		} catch {
-			return undefined
+		log.debug('Extracting Processing library.properties metadata...')
+		const results: Array<SourceRecord<ProcessingLibraryProperties>> = []
+
+		for (const file of files) {
+			try {
+				const content = await readFile(resolve(context.path, file), 'utf8')
+				if (!isProcessingLibraryProperties(content)) continue
+				results.push({ data: parse(content), source: file })
+			} catch (error) {
+				log.warn(
+					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
+				)
+			}
 		}
 
-		if (!isProcessingLibraryProperties(content)) return undefined
-
-		return { data: parse(content), source: filePath }
+		if (results.length === 0) return undefined
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'processingLibraryProperties',
-	phase: 1,}
+	phase: 1,
+}

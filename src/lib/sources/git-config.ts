@@ -28,4 +28,5 @@ export const gitConfigSource: MetadataSource<'gitConfig'> = {
 		}
 	},
 	key: 'gitConfig',
-	phase: 1,}
+	phase: 1,
+}

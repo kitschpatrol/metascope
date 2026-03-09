@@ -28,7 +28,7 @@ export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeFileData } from './sources/readme-file'
 export type { RubyGemspecData } from './sources/ruby-gemspec'
 export type { RustCargoTomlData } from './sources/rust-cargo-toml'
-export type { SourceRecord } from './sources/source'
+export type { OneOrMany, SourceRecord } from './sources/source'
 export type { XcodeInfoPlistData } from './sources/xcode-info-plist'
 export type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 
@@ -167,6 +167,8 @@ export type GetMetadataOptions = {
 	offline?: boolean
 	/** Project directory path. */
 	path: string
+	/** Search for metadata files recursively in subdirectories. Defaults to false. */
+	recursive?: boolean
 	/** Built-in template name or omit for full output. */
 	template?: 'frontmatter' | 'project' | (string & {})
 	/** User-supplied data passed to templates. */
@@ -183,6 +185,8 @@ export type GetMetadataTemplateOptions<T> = {
 	offline?: boolean
 	/** Project directory path. */
 	path: string
+	/** Search for metadata files recursively in subdirectories. Defaults to false. */
+	recursive?: boolean
 	/** Template function that transforms MetadataContext into a custom shape. */
 	template: Template<T>
 	/** User-supplied data passed to templates. */
