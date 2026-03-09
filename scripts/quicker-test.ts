@@ -2,8 +2,8 @@ import { getMetadata } from '../src/lib'
 
 const metadata = await getMetadata({
 	offline: true,
-	path: '/Users/mika/Code/shared-config',
+	path: '/Users/mika/Code/Cinder-Test',
 	recursive: true,
 })
 
-console.log(metadata.codeStatistics)
+console.log(metadata.cinderCinderblockXml)

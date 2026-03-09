@@ -305,7 +305,10 @@ function isProcessingLibraryProperties(content: string): boolean {
 
 export const processingLibraryPropertiesSource: MetadataSource<'processingLibraryProperties'> = {
 	async extract(context: SourceContext): Promise<ProcessingLibraryPropertiesData> {
-		const files = matchFiles(context.fileTree, ['**/library.properties'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/library.properties'] : ['library.properties'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Processing library.properties metadata...')

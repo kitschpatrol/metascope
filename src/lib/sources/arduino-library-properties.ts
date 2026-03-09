@@ -270,7 +270,10 @@ function isArduinoLibraryProperties(content: string): boolean {
 
 export const arduinoLibraryPropertiesSource: MetadataSource<'arduinoLibraryProperties'> = {
 	async extract(context: SourceContext): Promise<ArduinoLibraryPropertiesData> {
-		const files = matchFiles(context.fileTree, ['**/library.properties'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/library.properties'] : ['library.properties'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Arduino library.properties metadata...')
