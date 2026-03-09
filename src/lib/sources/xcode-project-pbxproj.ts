@@ -331,7 +331,12 @@ function parseDependencies(
 export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = {
 	// eslint-disable-next-line ts/require-await
 	async extract(context: SourceContext): Promise<XcodeProjectPbxprojData> {
-		const files = matchFiles(context.fileTree, ['**/*.xcodeproj/project.pbxproj'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive
+				? ['**/*.xcodeproj/project.pbxproj']
+				: ['*.xcodeproj/project.pbxproj'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting pbxproj metadata...')

@@ -42,7 +42,10 @@ export function parse(content: string): OpenframeworksAddonConfig {
 
 export const openframeworksAddonConfigMkSource: MetadataSource<'openframeworksAddonConfigMk'> = {
 	async extract(context: SourceContext): Promise<OpenframeworksAddonConfigMkData> {
-		const files = matchFiles(context.fileTree, ['**/addon_config.mk'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/addon_config.mk'] : ['addon_config.mk'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting openFrameworks addon config metadata...')

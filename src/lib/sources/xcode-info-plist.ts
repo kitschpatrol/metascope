@@ -289,7 +289,10 @@ function parseProcessorRequirements(data: PlistDict): string[] {
 
 export const xcodeInfoPlistSource: MetadataSource<'xcodeInfoPlist'> = {
 	async extract(context: SourceContext): Promise<XcodeInfoPlistData> {
-		const files = matchFiles(context.fileTree, ['**/Info.plist'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/Info.plist'] : ['Info.plist'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Info.plist metadata...')

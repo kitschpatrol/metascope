@@ -138,11 +138,12 @@ function getFormat(file: string): 'json' | 'yaml' | undefined {
 
 export const metadataFileSource: MetadataSource<'metadataFile'> = {
 	async extract(context: SourceContext): Promise<MetadataFileData> {
-		const files = matchFiles(context.fileTree, [
-			'**/metadata.json',
-			'**/metadata.yaml',
-			'**/metadata.yml',
-		])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive
+				? ['**/metadata.json', '**/metadata.yaml', '**/metadata.yml']
+				: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting metadata file metadata...')

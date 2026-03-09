@@ -38,7 +38,10 @@ export type GoGoModData = OneOrMany<SourceRecord<GoMod>> | undefined
 
 export const goGoModSource: MetadataSource<'goGoMod'> = {
 	async extract(context: SourceContext): Promise<GoGoModData> {
-		const files = matchFiles(context.fileTree, ['**/go.mod'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/go.mod'] : ['go.mod'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting go.mod metadata...')

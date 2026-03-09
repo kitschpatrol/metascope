@@ -26,7 +26,10 @@ export function parse(content: string): PyprojectData {
 
 export const pythonPyprojectTomlSource: MetadataSource<'pythonPyprojectToml'> = {
 	async extract(context: SourceContext): Promise<PythonPyprojectTomlData> {
-		const files = matchFiles(context.fileTree, ['**/pyproject.toml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/pyproject.toml'] : ['pyproject.toml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting pyproject.toml metadata...')

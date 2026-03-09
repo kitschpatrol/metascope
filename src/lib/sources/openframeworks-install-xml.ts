@@ -197,7 +197,10 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 
 export const openframeworksInstallXmlSource: MetadataSource<'openframeworksInstallXml'> = {
 	async extract(context: SourceContext): Promise<OpenframeworksInstallXmlData> {
-		const files = matchFiles(context.fileTree, ['**/install.xml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/install.xml'] : ['install.xml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting openFrameworks install.xml metadata...')

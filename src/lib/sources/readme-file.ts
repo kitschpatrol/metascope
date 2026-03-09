@@ -81,7 +81,10 @@ export function parse(content: string): Readme | undefined {
 
 export const readmeFileSource: MetadataSource<'readmeFile'> = {
 	async extract(context: SourceContext): Promise<ReadmeFileData> {
-		const files = matchFiles(context.fileTree, ['**/README', '**/README.*'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/README', '**/README.*'] : ['README', 'README.*'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting README metadata...')

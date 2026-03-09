@@ -363,7 +363,12 @@ export function parse(content: string): Publiccode | undefined {
 
 export const publiccodeYamlSource: MetadataSource<'publiccodeYaml'> = {
 	async extract(context: SourceContext): Promise<PubliccodeYamlData> {
-		const files = matchFiles(context.fileTree, ['**/publiccode.yml', '**/publiccode.yaml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive
+				? ['**/publiccode.yml', '**/publiccode.yaml']
+				: ['publiccode.yml', 'publiccode.yaml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting publiccode metadata...')

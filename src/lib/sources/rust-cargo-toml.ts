@@ -192,7 +192,10 @@ export type RustCargoTomlData = OneOrMany<SourceRecord<CargoToml>> | undefined
 
 export const rustCargoTomlSource: MetadataSource<'rustCargoToml'> = {
 	async extract(context: SourceContext): Promise<RustCargoTomlData> {
-		const files = matchFiles(context.fileTree, ['**/Cargo.toml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/Cargo.toml'] : ['Cargo.toml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Cargo.toml metadata...')

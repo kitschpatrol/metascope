@@ -151,7 +151,10 @@ export function parse(source: string): PkgInfo {
 
 export const pythonPkgInfoSource: MetadataSource<'pythonPkgInfo'> = {
 	async extract(context: SourceContext): Promise<PythonPkgInfoData> {
-		const files = matchFiles(context.fileTree, ['**/PKG-INFO'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/PKG-INFO'] : ['PKG-INFO'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting PKG-INFO metadata...')

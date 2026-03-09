@@ -212,7 +212,12 @@ export function parse(source: string): Goreleaser | undefined {
 
 export const goGoreleaserYamlSource: MetadataSource<'goGoreleaserYaml'> = {
 	async extract(context: SourceContext): Promise<GoGoreleaserYamlData> {
-		const files = matchFiles(context.fileTree, ['**/.goreleaser.yml', '**/.goreleaser.yaml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive
+				? ['**/.goreleaser.yml', '**/.goreleaser.yaml']
+				: ['.goreleaser.yml', '.goreleaser.yaml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting goreleaser metadata...')

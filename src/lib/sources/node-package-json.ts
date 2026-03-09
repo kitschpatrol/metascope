@@ -25,7 +25,10 @@ export function parse(content: string): NormalizedPackageJson {
 
 export const nodePackageJsonSource: MetadataSource<'nodePackageJson'> = {
 	async extract(context: SourceContext): Promise<NodePackageJsonData> {
-		const files = matchFiles(context.fileTree, ['**/package.json'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/package.json'] : ['package.json'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting package.json metadata...')

@@ -49,7 +49,10 @@ export async function parse(content: string): Promise<SetupPyData> {
 
 export const pythonSetupPySource: MetadataSource<'pythonSetupPy'> = {
 	async extract(context: SourceContext): Promise<PythonSetupPyData> {
-		const files = matchFiles(context.fileTree, ['**/setup.py'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/setup.py'] : ['setup.py'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Python setup.py metadata...')

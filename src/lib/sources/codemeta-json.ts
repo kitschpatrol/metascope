@@ -325,7 +325,10 @@ function migrateV1Properties(raw: Record<string, unknown>): Record<string, unkno
 
 export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 	async extract(context: SourceContext): Promise<CodeMetaJsonData> {
-		const files = matchFiles(context.fileTree, ['**/codemeta.json'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/codemeta.json'] : ['codemeta.json'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting codemeta.json metadata...')

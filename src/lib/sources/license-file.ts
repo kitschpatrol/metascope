@@ -25,8 +25,9 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 	async extract(context: SourceContext): Promise<LicenseFilesData> {
 		const files = matchFiles(
 			context.fileTree,
-			['**/{,un}licen{c,s}e{,.*}', '**/copying{,.lesser}{,.*}'],
-			{ nocase: true },
+			context.options.recursive
+				? ['**/{,un}licen{c,s}e{,.*}', '**/copying{,.lesser}{,.*}']
+				: ['{,un}licen{c,s}e{,.*}', 'copying{,.lesser}{,.*}'],
 		)
 		if (files.length === 0) return undefined
 

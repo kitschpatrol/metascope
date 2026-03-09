@@ -62,7 +62,10 @@ function isObsidianManifest(content: string): boolean {
 
 export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> = {
 	async extract(context: SourceContext): Promise<ObsidianManifestJsonData> {
-		const files = matchFiles(context.fileTree, ['**/manifest.json'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/manifest.json'] : ['manifest.json'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Obsidian metadata...')

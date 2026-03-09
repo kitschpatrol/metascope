@@ -143,7 +143,10 @@ export function parse(source: string): SetupCfg {
 
 export const pythonSetupCfgSource: MetadataSource<'pythonSetupCfg'> = {
 	async extract(context: SourceContext): Promise<PythonSetupCfgData> {
-		const files = matchFiles(context.fileTree, ['**/setup.cfg'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/setup.cfg'] : ['setup.cfg'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting setup.cfg metadata...')

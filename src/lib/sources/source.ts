@@ -32,7 +32,7 @@ export function matchFiles(
 	patterns: string[],
 	options?: picomatch.PicomatchOptions,
 ): string[] {
-	const isMatch = picomatch(patterns, options)
+	const isMatch = picomatch(patterns, { nocase: true, ...options })
 	return fileTree.filter((filePath) => isMatch(filePath))
 }
 

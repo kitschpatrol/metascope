@@ -319,7 +319,10 @@ export type JavaPomXmlData = OneOrMany<SourceRecord<PomXml>> | undefined
 
 export const javaPomXmlSource: MetadataSource<'javaPomXml'> = {
 	async extract(context: SourceContext): Promise<JavaPomXmlData> {
-		const files = matchFiles(context.fileTree, ['**/pom.xml'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/pom.xml'] : ['pom.xml'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting Maven pom.xml metadata...')

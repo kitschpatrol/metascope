@@ -64,7 +64,10 @@ export type RubyGemspecData = OneOrMany<SourceRecord<GemSpec>> | undefined
 
 export const rubyGemspecSource: MetadataSource<'rubyGemspec'> = {
 	async extract(context: SourceContext): Promise<RubyGemspecData> {
-		const files = matchFiles(context.fileTree, ['**/*.gemspec'])
+		const files = matchFiles(
+			context.fileTree,
+			context.options.recursive ? ['**/*.gemspec'] : ['*.gemspec'],
+		)
 		if (files.length === 0) return undefined
 
 		log.debug('Extracting gemspec metadata...')
