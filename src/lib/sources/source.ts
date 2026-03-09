@@ -2,7 +2,7 @@ import is from '@sindresorhus/is'
 import { findWorkspaces } from 'find-workspaces'
 import { globby } from 'globby'
 import { existsSync } from 'node:fs'
-import { isAbsolute, resolve } from 'node:path'
+import { isAbsolute, relative, resolve } from 'node:path'
 import picomatch from 'picomatch'
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from '../metadata-types'
 import { log } from '../log'
@@ -114,7 +114,10 @@ export function resetMatchCache(): void {
 	workspaceCache.clear()
 }
 
-type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respectIgnored'>
+type MatchOptions = Pick<
+	GetMetadataBaseOptions,
+	'path' | 'recursive' | 'respectIgnored' | 'workspaces'
+>
 
 /**
  * Find files matching glob patterns in a directory's file tree.
@@ -122,7 +125,10 @@ type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respect
  * - Memoizes the file tree internally (keyed by path + respectIgnored)
  * - Auto-prepends `**\/` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
- * @param options - Must include `path`; optionally `recursive` and `respectIgnored`
+ * - When `options.workspaces` is set, also matches files in workspace directories.
+ *   Workspace matches are returned with paths relative to the root `options.path`
+ *   (e.g. `packages/foo/package.json`). Workspace trees are individually memoized.
+ * @param options - Must include `path`; optionally `recursive`, `respectIgnored`, and `workspaces`
  * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
  * @param patternsRecursive - Optionally explicitly specify recursive pattern
  * variation, otherwise  `**\/` is prepended automatically
@@ -140,7 +146,36 @@ export async function getMatches(
 			patterns
 
 	const isMatch = picomatch(effectivePatterns, { nocase: true })
-	return tree.filter((filePath) => isMatch(filePath))
+	const seen = new Set<string>()
+	const results: string[] = []
+
+	for (const filePath of tree) {
+		if (isMatch(filePath) && !seen.has(filePath)) {
+			seen.add(filePath)
+			results.push(filePath)
+		}
+	}
+
+	// Also match in workspace directories
+	if (options.workspaces) {
+		const workspacePaths = getWorkspaces(options.path, options.workspaces)
+		for (const workspace of workspacePaths) {
+			const workspaceTree = await getTree(workspace, options.respectIgnored ?? true)
+			const prefix = relative(options.path, workspace)
+			for (const filePath of workspaceTree) {
+				if (isMatch(filePath)) {
+					const fullPath = `${prefix}/${filePath}`
+					if (!seen.has(fullPath)) {
+						seen.add(fullPath)
+						results.push(fullPath)
+					}
+				}
+			}
+		}
+	}
+
+	// Sort alphabetically first, then by depth (shallowest first)
+	return results.sort((a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length)
 }
 
 // ─── Source Records ─────────────────────────────────────────────────

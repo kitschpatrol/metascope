@@ -28,8 +28,14 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 		log.debug('Extracting file statistics metadata...')
 
 		const allFiles = await getMatches(
-			{ ...context.options, path: input, recursive: true },
-			['**'],
+			{
+				...context.options,
+				path: input,
+				// Managed below...
+				recursive: false,
+				// Turn off workspaces, we're passing them in ourselves above
+				workspaces: false,
+			},
 			['**'],
 		)
 
