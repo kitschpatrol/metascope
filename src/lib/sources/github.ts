@@ -600,13 +600,13 @@ function mapRepoData(
 export const githubSource: MetadataSource<'github'> = {
 	async extract(context: SourceContext): Promise<GitHubData> {
 		log.debug('Extracting GitHub metadata...')
-		const remote = await getGitHubRemote(context.path)
+		const remote = await getGitHubRemote(context.options.path)
 		if (!remote) return undefined
 
 		const { owner, repo } = remote
 
 		const octokit = new Octokit(
-			context.credentials.githubToken ? { auth: context.credentials.githubToken } : undefined,
+			context.options.credentials?.githubToken ? { auth: context.options.credentials.githubToken } : undefined,
 		)
 
 		const [graphqlResult, hasPages] = await Promise.all([

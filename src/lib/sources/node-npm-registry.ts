@@ -40,7 +40,7 @@ const npmDownloadsSchema = z.object({
 
 async function getPackageName(context: SourceContext): Promise<string | undefined> {
 	try {
-		const content = await readFile(resolve(context.path, 'package.json'), 'utf8')
+		const content = await readFile(resolve(context.options.path, 'package.json'), 'utf8')
 		const packageContent = parseJsonRecord(content)
 		return typeof packageContent?.name === 'string' ? packageContent.name : undefined
 	} catch {

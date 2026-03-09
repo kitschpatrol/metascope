@@ -10,33 +10,27 @@ const fixturesDirectory = resolve('test/fixtures/python-setup-py')
 describe('python-setup-py source', () => {
 	it('should be available in a directory with a setup.py file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['setup.py'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'basic'),
+			options: { path: resolve(fixturesDirectory, 'basic') },
 		}
 		expect(await pythonSetupPySource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without setup.py', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await pythonSetupPySource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['setup.py'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'basic'),
+			options: { path: resolve(fixturesDirectory, 'basic') },
 		}
 		const result = firstOf(await pythonSetupPySource.extract(context))
 

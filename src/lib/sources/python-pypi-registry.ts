@@ -68,7 +68,7 @@ const pypistatsOverallSchema = z.object({
 async function getPackageName(context: SourceContext): Promise<string | undefined> {
 	// Try pyproject.toml [project].name
 	try {
-		const content = await readFile(resolve(context.path, 'pyproject.toml'), 'utf8')
+		const content = await readFile(resolve(context.options.path, 'pyproject.toml'), 'utf8')
 		const nameMatch = /^\s*name\s*=\s*"([^"]+)"/m.exec(content)
 		if (nameMatch?.[1]) return nameMatch[1]
 	} catch {
@@ -77,7 +77,7 @@ async function getPackageName(context: SourceContext): Promise<string | undefine
 
 	// Try setup.cfg [metadata].name
 	try {
-		const content = await readFile(resolve(context.path, 'setup.cfg'), 'utf8')
+		const content = await readFile(resolve(context.options.path, 'setup.cfg'), 'utf8')
 		const nameMatch = /^\s*name\s*=\s*(\S+)$/m.exec(content)
 		if (nameMatch?.[1]?.trim()) return nameMatch[1].trim()
 	} catch {

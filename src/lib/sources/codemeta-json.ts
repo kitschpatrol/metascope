@@ -333,7 +333,7 @@ export const codemetaJsonSource: MetadataSource<'codemetaJson'> = {
 
 		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				const data = parse(content)
 				if (!data) continue
 				results.push({ data, source: file })

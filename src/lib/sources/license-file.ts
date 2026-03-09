@@ -35,7 +35,7 @@ export const licenseFileSource: MetadataSource<'licenseFiles'> = {
 
 		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				const match = identifyLicense(content)
 				if (match) {
 					results.push({

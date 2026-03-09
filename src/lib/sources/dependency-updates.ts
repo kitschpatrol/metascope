@@ -147,7 +147,7 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 		log.debug('Extracting dependency update information via updates...')
 
 		const updatesBinary = resolveUpdatesBinary()
-		const result = await exec('node', [updatesBinary, '--file', context.path, '--json'])
+		const result = await exec('node', [updatesBinary, '--file', context.options.path, '--json'])
 
 		let parsed: z.infer<typeof updatesOutputSchema>
 		try {
@@ -211,7 +211,7 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 				libyears: Math.round(libyears * 10) / 10,
 				total: major.length + minor.length + patch.length,
 			},
-			source: context.path,
+			source: context.options.path,
 		}
 	},
 	key: 'dependencyUpdates',

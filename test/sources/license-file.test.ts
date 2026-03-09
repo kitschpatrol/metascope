@@ -11,55 +11,45 @@ const fixturesDirectory = resolve('test/fixtures/license-file')
 describe('licenseFiles source', () => {
 	it('should be available in a directory with a LICENSE file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['LICENSE'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'pallets-flask'),
+			options: { path: resolve(fixturesDirectory, 'pallets-flask') },
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with a COPYING file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['COPYING'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'pallets-flask-1'),
+			options: { path: resolve(fixturesDirectory, 'pallets-flask-1') },
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with a LICENCE file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['LICENCE'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'ashuk032-8secread'),
+			options: { path: resolve(fixturesDirectory, 'ashuk032-8secread') },
 		}
 		expect(await licenseFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should return undefined in a directory without license files', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await licenseFileSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract a license record from a single license file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['LICENSE'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'pallets-flask'),
+			options: { path: resolve(fixturesDirectory, 'pallets-flask') },
 		}
 		const result = firstOf(await licenseFileSource.extract(context))
 
@@ -71,11 +61,9 @@ describe('licenseFiles source', () => {
 
 	it('should return multiple records from multiple license files', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['COPYING.md', 'LICENSE'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'multi'),
+			options: { path: resolve(fixturesDirectory, 'multi') },
 		}
 		const result = await licenseFileSource.extract(context)
 

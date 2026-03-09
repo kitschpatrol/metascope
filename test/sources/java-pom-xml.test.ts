@@ -10,33 +10,27 @@ const fixturesDirectory = resolve('test/fixtures/java-pom-xml')
 describe('javaPomXml source', () => {
 	it('should be available in a directory with pom.xml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['pom.xml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'yahoo-halodb'),
+			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
 		}
 		expect(await javaPomXmlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without pom.xml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await javaPomXmlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['pom.xml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'yahoo-halodb'),
+			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
 		}
 		const result = firstOf(await javaPomXmlSource.extract(context))
 

@@ -10,6 +10,7 @@ export type {
 	DependencyUpdatesData,
 	DependencyUpdatesPackage,
 	FileStatisticsData,
+	GetMetadataBaseOptions,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	GitConfigData,

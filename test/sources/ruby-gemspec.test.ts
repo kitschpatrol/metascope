@@ -10,33 +10,27 @@ const fixturesDirectory = resolve('test/fixtures/ruby-gemspec')
 describe('rubyGemspec source', () => {
 	it('should be available in a directory with a .gemspec file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['blazer.gemspec'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'ankane-blazer'),
+			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
 		}
 		expect(await rubyGemspecSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without .gemspec files', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await rubyGemspecSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['blazer.gemspec'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'ankane-blazer'),
+			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
 		}
 		const result = firstOf(await rubyGemspecSource.extract(context))
 

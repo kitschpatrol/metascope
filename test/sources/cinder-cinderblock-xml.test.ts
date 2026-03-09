@@ -13,33 +13,27 @@ const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock-xml')
 describe('cinderCinderblockXml source', () => {
 	it('should be available in a directory with cinderblock.xml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['cinderblock.xml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
+			options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
 		}
 		expect(await cinderCinderblockXmlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without cinderblock.xml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await cinderCinderblockXmlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed cinderblock data', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['cinderblock.xml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'astellato-cinder-syphon'),
+			options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
 		}
 		const result = firstOf(await cinderCinderblockXmlSource.extract(context))
 

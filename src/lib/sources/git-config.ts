@@ -15,16 +15,16 @@ export type GitConfigData = SourceRecord<GitConfigInfo> | undefined
 export const gitConfigSource: MetadataSource<'gitConfig'> = {
 	async extract(context: SourceContext): Promise<GitConfigData> {
 		try {
-			await access(join(context.path, '.git', 'config'))
+			await access(join(context.options.path, '.git', 'config'))
 		} catch {
 			return undefined
 		}
 
 		log.debug('Extracting git config metadata...')
-		const config = await readGitConfig(context.path)
+		const config = await readGitConfig(context.options.path)
 		return {
 			data: { config },
-			source: join(context.path, '.git', 'config'),
+			source: join(context.options.path, '.git', 'config'),
 		}
 	},
 	key: 'gitConfig',

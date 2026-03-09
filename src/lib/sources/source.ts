@@ -1,20 +1,16 @@
 import picomatch from 'picomatch'
-import type { Credentials, MetadataContext, SourceName } from '../metadata-types'
+import type { GetMetadataBaseOptions, MetadataContext, SourceName } from '../metadata-types'
 
 /**
- * Context provided to each metadata source during availability checks and extraction.
+ * Context provided to each metadata source during extraction.
  */
 export type SourceContext = {
-	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
-	context: Partial<MetadataContext>
-	/** API credentials for remote sources. */
-	credentials: Credentials
 	/** Pre-built file tree of relative POSIX paths, respecting .gitignore. */
 	fileTree: string[]
-	/** When true, sources should skip network requests and return only locally-available data. */
-	offline: boolean
-	/** Absolute path to the project directory. */
-	path: string
+	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
+	metadata: Partial<MetadataContext>
+	/** The resolved options passed to `getMetadata`. */
+	options: GetMetadataBaseOptions
 }
 
 /**

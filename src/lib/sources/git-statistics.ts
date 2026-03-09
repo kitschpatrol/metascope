@@ -64,12 +64,12 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 		log.debug('Extracting git statistics metadata...')
 
 		try {
-			await access(join(context.path, '.git'))
+			await access(join(context.options.path, '.git'))
 		} catch {
 			return undefined
 		}
 
-		const git = simpleGit(context.path)
+		const git = simpleGit(context.options.path)
 
 		const [
 			statusResult,
@@ -113,7 +113,7 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 			await Promise.all(
 				trackedFiles.map(async (file) => {
 					try {
-						const fileStat = await stat(join(context.path, file))
+						const fileStat = await stat(join(context.options.path, file))
 						return fileStat.size
 					} catch {
 						return 0
@@ -220,7 +220,7 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 				trackedSizeBytes,
 				uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
 			},
-			source: join(context.path, '.git'),
+			source: join(context.options.path, '.git'),
 		}
 	},
 	key: 'gitStatistics',

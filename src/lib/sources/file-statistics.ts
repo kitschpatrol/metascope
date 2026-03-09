@@ -34,7 +34,7 @@ export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
 		const sizes = await Promise.all(
 			fileTree.map(async (file) => {
 				try {
-					const fileStat = await stat(resolve(context.path, file))
+					const fileStat = await stat(resolve(context.options.path, file))
 					return fileStat.size
 				} catch {
 					return 0
@@ -50,7 +50,7 @@ export const fileStatisticsSource: MetadataSource<'fileStatistics'> = {
 				totalFileCount,
 				totalSizeBytes,
 			},
-			source: context.path,
+			source: context.options.path,
 		}
 	},
 	key: 'fileStatistics',

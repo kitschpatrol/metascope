@@ -70,7 +70,7 @@ export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> 
 
 		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				if (!isObsidianManifest(content)) continue
 
 				const manifest = manifestSchema.parse(JSON.parse(content))

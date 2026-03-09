@@ -339,7 +339,7 @@ export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = 
 
 		for (const file of files) {
 			try {
-				const data = parse(resolve(context.path, file))
+				const data = parse(resolve(context.options.path, file))
 				if (!data) continue
 				results.push({ data, source: file })
 			} catch (error) {

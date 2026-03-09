@@ -158,9 +158,9 @@ export type Credentials = {
 // ── Options ────────────────────────────────────────────
 
 /**
- * Options for `getMetadata` without a template (returns full `MetadataContext`).
+ * Base options shared by all `getMetadata` overloads.
  */
-export type GetMetadataOptions = {
+export type GetMetadataBaseOptions = {
 	/** API credentials for remote sources. */
 	credentials?: Credentials
 	/** Include files ignored by .gitignore in the file tree. Defaults to false. */
@@ -171,28 +171,22 @@ export type GetMetadataOptions = {
 	path: string
 	/** Search for metadata files recursively in subdirectories. Defaults to false. */
 	recursive?: boolean
-	/** Built-in template name or omit for full output. */
-	template?: 'frontmatter' | 'project' | (string & {})
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
 }
 
 /**
+ * Options for `getMetadata` without a template (returns full `MetadataContext`).
+ */
+export type GetMetadataOptions = GetMetadataBaseOptions & {
+	/** Built-in template name or omit for full output. */
+	template?: 'frontmatter' | 'project' | (string & {})
+}
+
+/**
  * Options for `getMetadata` with a template function (returns the template's return type).
  */
-export type GetMetadataTemplateOptions<T> = {
-	/** API credentials for remote sources. */
-	credentials?: Credentials
-	/** Include files ignored by .gitignore in the file tree. Defaults to false. */
-	noIgnore?: boolean
-	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
-	offline?: boolean
-	/** Project directory path. */
-	path: string
-	/** Search for metadata files recursively in subdirectories. Defaults to false. */
-	recursive?: boolean
+export type GetMetadataTemplateOptions<T> = GetMetadataBaseOptions & {
 	/** Template function that transforms MetadataContext into a custom shape. */
 	template: Template<T>
-	/** User-supplied data passed to templates. */
-	templateData?: TemplateData
 }

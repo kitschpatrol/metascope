@@ -152,7 +152,7 @@ export const metadataFileSource: MetadataSource<'metadataFile'> = {
 			try {
 				const format = getFormat(file)
 				if (!format) continue
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				const data = parse(content, format)
 				if (!data) continue
 				results.push({ data, source: file })

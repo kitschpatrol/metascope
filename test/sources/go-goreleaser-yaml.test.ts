@@ -14,33 +14,27 @@ const fixturesDirectory = resolve('test/fixtures/go-goreleaser-yaml')
 describe('goGoreleaserYaml source', () => {
 	it('should be available in a directory with a .goreleaser.yml file', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['.goreleaser.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'aenthill-aenthill'),
+			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
 		}
 		expect(await goGoreleaserYamlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without goreleaser config', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await goGoreleaserYamlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['.goreleaser.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'aenthill-aenthill'),
+			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
 		}
 		const result = firstOf(await goGoreleaserYamlSource.extract(context))
 

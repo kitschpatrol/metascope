@@ -57,7 +57,7 @@ export const pythonSetupPySource: MetadataSource<'pythonSetupPy'> = {
 
 		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				const data = await parse(content)
 				results.push({ data, source: file })
 			} catch (error) {

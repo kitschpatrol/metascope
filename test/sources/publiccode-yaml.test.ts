@@ -11,44 +11,36 @@ const fixturesDirectory = resolve('test/fixtures/publiccode-yaml')
 describe('publiccodeYaml source', () => {
 	it('should be available in a directory with publiccode.yml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['publiccode.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'cisofy-lynis'),
+			options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with publiccode.yaml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['publiccode.yaml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
+			options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without publiccode files', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await publiccodeYamlSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from a .yml fixture', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['publiccode.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'cisofy-lynis'),
+			options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
 		}
 		const result = firstOf(await publiccodeYamlSource.extract(context))
 
@@ -61,11 +53,9 @@ describe('publiccodeYaml source', () => {
 
 	it('should extract parsed metadata from a .yaml fixture', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['publiccode.yaml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'commongateway-corebundle'),
+			options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
 		}
 		const result = firstOf(await publiccodeYamlSource.extract(context))
 

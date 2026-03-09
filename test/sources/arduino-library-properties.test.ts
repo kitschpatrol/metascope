@@ -13,33 +13,27 @@ const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 describe('arduinoLibraryProperties source', () => {
 	it('should be available in a directory with library.properties', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['library.properties'],
-			offline: false,
-			path: resolve(fixturesDirectory, '0xpit-esparklines'),
+			options: { path: resolve(fixturesDirectory, '0xpit-esparklines') },
 		}
 		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed library properties data', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['library.properties'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811'),
+			options: { path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811') },
 		}
 		const result = firstOf(await arduinoLibraryPropertiesSource.extract(context))
 

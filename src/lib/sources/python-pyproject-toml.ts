@@ -34,7 +34,7 @@ export const pythonPyprojectTomlSource: MetadataSource<'pythonPyprojectToml'> = 
 
 		for (const file of files) {
 			try {
-				const content = await readFile(resolve(context.path, file), 'utf8')
+				const content = await readFile(resolve(context.options.path, file), 'utf8')
 				results.push({ data: parse(content), source: file })
 			} catch (error) {
 				log.warn(

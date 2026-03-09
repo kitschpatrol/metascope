@@ -10,44 +10,36 @@ const fixturesDirectory = resolve('test/fixtures/metadata-file')
 describe('metadataFile source', () => {
 	it('should be available in a directory with metadata.json', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['metadata.json'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'git-url'),
+			options: { path: resolve(fixturesDirectory, 'git-url') },
 		}
 		expect(await metadataFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should be available in a directory with metadata.yaml', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'basic'),
+			options: { path: resolve(fixturesDirectory, 'basic') },
 		}
 		expect(await metadataFileSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a directory without metadata files', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: [],
-			offline: false,
-			path: '/tmp',
+			options: { path: '/tmp' },
 		}
 		expect(await metadataFileSource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract parsed metadata from JSON', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['metadata.json'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'git-url'),
+			options: { path: resolve(fixturesDirectory, 'git-url') },
 		}
 		const result = firstOf(await metadataFileSource.extract(context))
 
@@ -60,11 +52,9 @@ describe('metadataFile source', () => {
 
 	it('should return all metadata files when multiple exist', async () => {
 		const context: SourceContext = {
-			context: {},
-			credentials: {},
+			metadata: {},
 			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
-			offline: false,
-			path: resolve(fixturesDirectory, 'basic'),
+			options: { path: resolve(fixturesDirectory, 'basic') },
 		}
 		const result = await metadataFileSource.extract(context)
 

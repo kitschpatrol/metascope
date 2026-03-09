@@ -210,7 +210,6 @@ export async function getMetadata<T>(
 	log.debug(`Building file tree (recursive: ${recursive}, noIgnore: ${noIgnore})...`)
 	const fileTree = await globby('**', {
 		cwd: absolutePath,
-		deep: recursive ? Infinity : 1,
 		dot: true,
 		gitignore: !noIgnore,
 	})
@@ -260,11 +259,16 @@ export async function getMetadata<T>(
 		const phaseSources = sources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
-			context: { ...context },
-			credentials,
 			fileTree,
-			offline,
-			path: absolutePath,
+			metadata: { ...context },
+			options: {
+				credentials,
+				noIgnore,
+				offline,
+				path: absolutePath,
+				recursive,
+				templateData: options.templateData,
+			},
 		}
 		await runSources(phaseSources, sourceContext, context)
 	}

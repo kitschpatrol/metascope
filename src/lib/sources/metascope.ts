@@ -37,11 +37,11 @@ export const metascopeSource: MetadataSource<'metascope'> = {
 	async extract(context: SourceContext): Promise<MetascopeData> {
 		return {
 			data: {
-				path: context.path,
+				path: context.options.path,
 				scannedAt: new Date().toISOString(),
 				version: getVersion(),
 			},
-			source: context.path,
+			source: context.options.path,
 		}
 	},
 	key: 'metascope',
