@@ -120,14 +120,21 @@ await yargsInstance
 				const result = template
 					? await getMetadata({
 							credentials,
-							noIgnore,
+							respectIgnored: !noIgnore,
 							offline,
 							path: argv.path,
 							recursive,
 							template,
 							templateData,
 						})
-					: await getMetadata({ credentials, noIgnore, offline, path: argv.path, recursive, templateData })
+					: await getMetadata({
+							credentials,
+							respectIgnored: !noIgnore,
+							offline,
+							path: argv.path,
+							recursive,
+							templateData,
+						})
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

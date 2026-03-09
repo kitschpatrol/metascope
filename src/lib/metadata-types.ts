@@ -163,14 +163,14 @@ export type Credentials = {
 export type GetMetadataBaseOptions = {
 	/** API credentials for remote sources. */
 	credentials?: Credentials
-	/** Include files ignored by .gitignore in the file tree. Defaults to false. */
-	noIgnore?: boolean
 	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
 	offline?: boolean
 	/** Project directory path. */
 	path: string
 	/** Search for metadata files recursively in subdirectories. Defaults to false. */
 	recursive?: boolean
+	/** Ignore files specified .gitignore in the file tree. Defaults to true. */
+	respectIgnored?: boolean
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
 }
