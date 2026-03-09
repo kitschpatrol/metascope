@@ -204,14 +204,15 @@ export async function getMetadata<T>(
 	const credentials = await resolveCredentials(options.credentials)
 	const offline = options.offline ?? false
 	const recursive = options.recursive ?? false
+	const noIgnore = options.noIgnore ?? false
 
-	// Build file tree once with globby (respects .gitignore)
-	log.debug(`Building file tree (recursive: ${recursive})...`)
+	// Build file tree once with globby (respects .gitignore by default)
+	log.debug(`Building file tree (recursive: ${recursive}, noIgnore: ${noIgnore})...`)
 	const fileTree = await globby('**', {
 		cwd: absolutePath,
 		deep: recursive ? Infinity : 1,
 		dot: true,
-		gitignore: true,
+		gitignore: !noIgnore,
 	})
 	log.debug(`File tree contains ${fileTree.length} entries`)
 

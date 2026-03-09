@@ -48,6 +48,10 @@ await yargsInstance
 						'Skip network requests (web-based sources will return only locally-available data)',
 					type: 'boolean',
 				})
+				.option('no-ignore', {
+					description: 'Include files ignored by .gitignore in the file tree',
+					type: 'boolean',
+				})
 				.option('recursive', {
 					alias: 'r',
 					description: 'Search for metadata files recursively in subdirectories',
@@ -110,18 +114,20 @@ await yargsInstance
 					...(argv.authorName ? { authorName: argv.authorName } : {}),
 					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
 				}
+				const noIgnore = argv.noIgnore ?? false
 				const offline = argv.offline ?? false
 				const recursive = argv.recursive ?? false
 				const result = template
 					? await getMetadata({
 							credentials,
+							noIgnore,
 							offline,
 							path: argv.path,
 							recursive,
 							template,
 							templateData,
 						})
-					: await getMetadata({ credentials, offline, path: argv.path, recursive, templateData })
+					: await getMetadata({ credentials, noIgnore, offline, path: argv.path, recursive, templateData })
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY
