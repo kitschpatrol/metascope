@@ -43,9 +43,9 @@ import { pythonSetupPySource } from './sources/python-setup-py'
 import { readmeFileSource } from './sources/readme-file'
 import { rubyGemspecSource } from './sources/ruby-gemspec'
 import { rustCargoTomlSource } from './sources/rust-cargo-toml'
+import { getMatches, resetMatchCache } from './sources/source'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
-import { getMatches, resetMatchCache } from './sources/source'
 import { stripUndefined } from './utilities/formatting'
 
 const execFileAsync = promisify(execFile)

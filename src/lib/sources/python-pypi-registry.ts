@@ -120,7 +120,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 				.catch((): undefined => undefined),
 		])
 
-		if (!pypiResult) return undefined
+		if (!pypiResult) return
 
 		// Find latest release upload time from urls
 		const latestUploadTime = pypiResult.urls[0]?.upload_time_iso_8601

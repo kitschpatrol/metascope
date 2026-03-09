@@ -23,11 +23,9 @@ const mockContext: MetadataContext = {
 	},
 	codeStatistics: {
 		data: {
-			breakdown: [
+			perLanguage: [
 				{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
 			],
-		},
-		extra: {
 			total: {
 				blanks: 100,
 				code: 500,

@@ -24,11 +24,9 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 	async parseInput(_input, context) {
 		log.debug('Extracting file statistics metadata...')
 
-		const allFiles = await getMatches(
-			{ ...context.options, recursive: true },
-			['**'],
-			{ rawPatterns: true },
-		)
+		const allFiles = await getMatches({ ...context.options, recursive: true }, ['**'], {
+			rawPatterns: true,
+		})
 		const totalFileCount = allFiles.length
 
 		const uniqueDirectories = new Set<string>()

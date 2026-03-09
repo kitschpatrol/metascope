@@ -62,7 +62,9 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 		}
 	}
 
-	if (!data) return undefined
+	if (data === undefined) {
+		return undefined
+	}
 
 	const repository = isString(data.repository) ? normalizeRepoUrl(data.repository) : undefined
 
@@ -142,11 +144,13 @@ export const metadataFileSource = defineSource<'metadataFile'>({
 	key: 'metadataFile',
 	async parseInput(input, context) {
 		const format = getFormat(input)
-		if (!format) return undefined
-		const content = await readFile(resolve(context.options.path, input), 'utf8')
-		const data = parse(content, format)
-		if (!data) return undefined
-		return { data, source: input }
+		if (format !== undefined) {
+			const content = await readFile(resolve(context.options.path, input), 'utf8')
+			const data = parse(content, format)
+			if (data !== undefined) {
+				return { data, source: input }
+			}
+		}
 	},
 	phase: 1,
 })

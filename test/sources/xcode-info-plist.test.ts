@@ -12,17 +12,21 @@ describe('xcodeInfoPlist source', () => {
 	})
 
 	it('should be available in a directory with Info.plist', async () => {
-		expect(await xcodeInfoPlistSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
-		})).not.toHaveLength(0)
+		expect(
+			await xcodeInfoPlistSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Info.plist', async () => {
-		expect(await xcodeInfoPlistSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await xcodeInfoPlistSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {

@@ -66,7 +66,7 @@ export const obsidianManifestJsonSource = defineSource<'obsidianManifestJson'>({
 	key: 'obsidianManifestJson',
 	async parseInput(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
-		if (!isObsidianManifest(content)) return undefined
+		if (!isObsidianManifest(content)) return
 
 		const manifest = manifestSchema.parse(JSON.parse(content))
 		const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`

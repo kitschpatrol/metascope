@@ -1,4 +1,3 @@
-// Esm
 import { findWorkspaces } from 'find-workspaces'
 
 const workspaces = findWorkspaces()

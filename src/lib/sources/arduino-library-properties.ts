@@ -274,8 +274,9 @@ export const arduinoLibraryPropertiesSource = defineSource<'arduinoLibraryProper
 	key: 'arduinoLibraryProperties',
 	async parseInput(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
-		if (!isArduinoLibraryProperties(content)) return undefined
-		return { data: parse(content), source: input }
+		if (isArduinoLibraryProperties(content)) {
+			return { data: parse(content), source: input }
+		}
 	},
 	phase: 1,
 })

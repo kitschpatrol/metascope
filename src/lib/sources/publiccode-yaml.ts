@@ -368,8 +368,9 @@ export const publiccodeYamlSource = defineSource<'publiccodeYaml'>({
 	async parseInput(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (!data) return undefined
-		return { data, source: input }
+		if (data !== undefined) {
+			return { data, source: input }
+		}
 	},
 	phase: 1,
 })

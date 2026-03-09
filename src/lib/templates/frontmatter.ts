@@ -128,7 +128,7 @@ export const frontmatter = defineTemplate(
 			'Vulnerability Alerts': github?.data.vulnerabilityAlertCount ?? null,
 
 			// ── Codebase ──────────────────────────────────────────
-			'Lines of Code': loc?.extra?.total?.code ?? null,
+			'Lines of Code': firstOf(loc)?.data.total?.code ?? null,
 			'Total Files': filesystem?.data.totalFileCount ?? null,
 			// 'Total Directories': filesystem?.data.totalDirectoryCount ?? null,
 			'Total Size MB': toMb(filesystem?.data.totalSizeBytes) ?? null,

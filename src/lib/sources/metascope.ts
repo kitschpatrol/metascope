@@ -55,7 +55,7 @@ export const metascopeSource = defineSource<'metascope'>({
 			data: {
 				durationMs: 0, // Injected later!
 				offline: context.options.offline,
-				path: input,
+				path: context.options.path,
 				recursive: context.options.recursive,
 				respectIgnored: context.options.respectIgnored,
 				scannedAt: new Date().toISOString(),

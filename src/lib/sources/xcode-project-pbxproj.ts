@@ -335,8 +335,9 @@ export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
 	// eslint-disable-next-line ts/require-await
 	async parseInput(input, context) {
 		const data = parse(resolve(context.options.path, input))
-		if (!data) return undefined
-		return { data, source: input }
+		if (data !== undefined) {
+			return { data, source: input }
+		}
 	},
 	phase: 1,
 })

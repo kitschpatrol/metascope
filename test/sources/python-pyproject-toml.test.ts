@@ -13,17 +13,21 @@ describe('pythonPyprojectToml source', () => {
 	})
 
 	it('should be available in a directory with a pyproject.toml file', async () => {
-		expect(await pythonPyprojectTomlSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
-		})).not.toHaveLength(0)
+		expect(
+			await pythonPyprojectTomlSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without pyproject.toml', async () => {
-		expect(await pythonPyprojectTomlSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await pythonPyprojectTomlSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
@@ -34,10 +38,9 @@ describe('pythonPyprojectToml source', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('pyproject.toml')
-		const data = result!.data as Record<string, any>
-		expect(data.project?.name).toBe('codemetapy')
-		expect(data.project?.version).toBe('2.5.3')
-		expect(data.project?.dependencies).toContain('rdflib>=6.0.0')
+		expect(result!.data.project?.name).toBe('codemetapy')
+		expect(result!.data.project?.version).toBe('2.5.3')
+		expect(result!.data.project?.dependencies).toContain('rdflib>=6.0.0')
 	})
 })
 

@@ -12,17 +12,21 @@ describe('pythonPkgInfo source', () => {
 	})
 
 	it('should be available in a directory with a PKG-INFO file', async () => {
-		expect(await pythonPkgInfoSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'basic') },
-		})).not.toHaveLength(0)
+		expect(
+			await pythonPkgInfoSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'basic') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without PKG-INFO', async () => {
-		expect(await pythonPkgInfoSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await pythonPkgInfoSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {

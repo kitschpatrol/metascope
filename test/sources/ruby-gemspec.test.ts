@@ -12,17 +12,21 @@ describe('rubyGemspec source', () => {
 	})
 
 	it('should be available in a directory with a .gemspec file', async () => {
-		expect(await rubyGemspecSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
-		})).not.toHaveLength(0)
+		expect(
+			await rubyGemspecSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without .gemspec files', async () => {
-		expect(await rubyGemspecSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await rubyGemspecSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
@@ -32,11 +36,10 @@ describe('rubyGemspec source', () => {
 		})
 
 		expect(result).toBeDefined()
-		const data = result!.data as Record<string, any>
-		expect(data.name).toBe('blazer')
-		expect(data.license).toBe('MIT')
-		expect(data.homepage).toBe('https://github.com/ankane/blazer')
-		expect(data.dependencies.length).toBeGreaterThanOrEqual(4)
+		expect(result!.data.name).toBe('blazer')
+		expect(result!.data.license).toBe('MIT')
+		expect(result!.data.homepage).toBe('https://github.com/ankane/blazer')
+		expect(result!.data.dependencies.length).toBeGreaterThanOrEqual(4)
 		expect(result!.source).toContain('.gemspec')
 	})
 })

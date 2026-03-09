@@ -13,24 +13,30 @@ describe('publiccodeYaml source', () => {
 	})
 
 	it('should be available in a directory with publiccode.yml', async () => {
-		expect(await publiccodeYamlSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
-		})).not.toHaveLength(0)
+		expect(
+			await publiccodeYamlSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with publiccode.yaml', async () => {
-		expect(await publiccodeYamlSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
-		})).not.toHaveLength(0)
+		expect(
+			await publiccodeYamlSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without publiccode files', async () => {
-		expect(await publiccodeYamlSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await publiccodeYamlSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a .yml fixture', async () => {
@@ -53,10 +59,9 @@ describe('publiccodeYaml source', () => {
 		})
 
 		expect(result).toBeDefined()
-		const data = result!.data as Record<string, any>
-		expect(data.name).toBe('CoreBundle')
-		expect(data.license).toBe('EUPL-1.2-or-later')
-		expect(data.dependencies).toHaveLength(1)
+		expect(result!.data.name).toBe('CoreBundle')
+		expect(result!.data.license).toBe('EUPL-1.2-or-later')
+		expect(result!.data.dependencies).toHaveLength(1)
 		expect(result!.source).toContain('publiccode.yaml')
 	})
 })

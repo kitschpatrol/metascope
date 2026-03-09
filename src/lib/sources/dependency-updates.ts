@@ -160,7 +160,7 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 			parsed = updatesOutputSchema.parse(JSON.parse(result.stdout))
 		} catch {
 			log.debug('No dependency files found for updates analysis.')
-			return undefined
+			return
 		}
 
 		const major: DependencyUpdatesPackage[] = []

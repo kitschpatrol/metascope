@@ -12,17 +12,21 @@ describe('rustCargoToml source', () => {
 	})
 
 	it('should be available in a directory with Cargo.toml', async () => {
-		expect(await rustCargoTomlSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
-		})).not.toHaveLength(0)
+		expect(
+			await rustCargoTomlSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Cargo.toml', async () => {
-		expect(await rustCargoTomlSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await rustCargoTomlSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed Cargo.toml data', async () => {

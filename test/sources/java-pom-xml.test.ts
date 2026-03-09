@@ -12,17 +12,21 @@ describe('javaPomXml source', () => {
 	})
 
 	it('should be available in a directory with pom.xml', async () => {
-		expect(await javaPomXmlSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
-		})).not.toHaveLength(0)
+		expect(
+			await javaPomXmlSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without pom.xml', async () => {
-		expect(await javaPomXmlSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await javaPomXmlSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
@@ -32,12 +36,11 @@ describe('javaPomXml source', () => {
 		})
 
 		expect(result).toBeDefined()
-		const data = result!.data as Record<string, any>
-		expect(data.name).toBe('HaloDB')
-		expect(data.groupId).toBe('com.oath.halodb')
-		expect(data.artifactId).toBe('halodb')
-		expect(data.developers).toHaveLength(1)
-		expect(data.developers[0].name).toBe('Arjun Mannaly')
+		expect(result!.data.name).toBe('HaloDB')
+		expect(result!.data.groupId).toBe('com.oath.halodb')
+		expect(result!.data.artifactId).toBe('halodb')
+		expect(result!.data.developers).toHaveLength(1)
+		expect(result!.data.developers[0].name).toBe('Arjun Mannaly')
 	})
 })
 

@@ -86,7 +86,7 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 				fetchDownloads(name, '2005-01-01:3000-01-01'),
 			])
 
-		if (!metadata) return undefined
+		if (!metadata) return
 
 		// Check for TypeScript types
 		const hasTypes = Boolean(

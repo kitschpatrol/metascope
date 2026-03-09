@@ -15,17 +15,21 @@ describe('processingLibraryProperties source', () => {
 	})
 
 	it('should be available in a directory with Processing library.properties', async () => {
-		expect(await processingLibraryPropertiesSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
-		})).not.toHaveLength(0)
+		expect(
+			await processingLibraryPropertiesSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
-		expect(await processingLibraryPropertiesSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await processingLibraryPropertiesSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should not be available for Arduino library.properties', async () => {

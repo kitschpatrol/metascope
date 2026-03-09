@@ -59,21 +59,18 @@ type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respect
  * - Memoizes the file tree internally (keyed by path + respectIgnored)
  * - Auto-prepends `** /` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
- *
  * @param options - Must include `path`; optionally `recursive` and `respectIgnored`
  * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
- * @param opts - Set `rawPatterns: true` to skip auto-prepending `** /` when recursive
+ * @param options_ - Set `rawPatterns: true` to skip auto-prepending `** /` when recursive
  */
 export async function getMatches(
 	options: MatchOptions,
 	patterns: string[],
-	opts?: { rawPatterns?: boolean },
+	options_?: { rawPatterns?: boolean },
 ): Promise<string[]> {
 	const tree = await getTree(options.path, options.respectIgnored ?? true)
 	const effectivePatterns =
-		options.recursive && !opts?.rawPatterns
-			? patterns.map((p) => `**/${p}`)
-			: patterns
+		options.recursive && !options_?.rawPatterns ? patterns.map((p) => `**/${p}`) : patterns
 	const isMatch = picomatch(effectivePatterns, { nocase: true })
 	return tree.filter((filePath) => isMatch(filePath))
 }
@@ -105,6 +102,20 @@ export type SourceRecord<
 	source: string
 }
 
+// ─── Source Record Extraction ────────────────────────────────────────
+
+/**
+ * Extract the concrete `SourceRecord<D, E>` from a `MetadataContext[K]` value type.
+ * Unwraps `OneOrMany<SourceRecord<D, E>> | undefined` → `SourceRecord<D, E>`.
+ */
+type SourceRecordOf<K extends SourceName> = [MetadataContext[K]] extends [
+	OneOrMany<infer R> | undefined,
+]
+	? R extends SourceRecord<infer D, infer E>
+		? SourceRecord<D, E>
+		: SourceRecord
+	: SourceRecord
+
 // ─── Source Interface ───────────────────────────────────────────────
 
 /**
@@ -124,7 +135,7 @@ export type MetadataSource<K extends SourceName = SourceName> = {
 	/** Discover inputs for this source. Returns file paths, URLs, or identifiers. */
 	getInputs?(context: SourceContext): Promise<string[]>
 	/** Parse a single input and return a single result, or undefined to skip. */
-	parseInput?(input: string, context: SourceContext): Promise<SourceRecord | undefined>
+	parseInput?(input: string, context: SourceContext): Promise<SourceRecordOf<K> | undefined>
 	/** Extract metadata from this source. Returns undefined if the source is not available. */
 	extract(context: SourceContext): Promise<MetadataContext[K]>
 }
@@ -135,7 +146,7 @@ export type MetadataSource<K extends SourceName = SourceName> = {
 type SourceConfig<K extends SourceName> = {
 	getInputs: (context: SourceContext) => Promise<string[]>
 	key: K
-	parseInput: (input: string, context: SourceContext) => Promise<SourceRecord | undefined>
+	parseInput: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
 	phase: number
 }
 
@@ -151,7 +162,7 @@ export function defineSource<K extends SourceName>(
 	config: SourceConfig<K>,
 ): MetadataSource<K> & {
 	getInputs: (context: SourceContext) => Promise<string[]>
-	parseInput: (input: string, context: SourceContext) => Promise<SourceRecord | undefined>
+	parseInput: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
 } {
 	return {
 		...config,

@@ -47,6 +47,7 @@ async function getStatistics(
 }
 
 export const codeStatisticsSource = defineSource<'codeStatistics'>({
+	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
 		if (context.options.recursive && (context.workspaces?.length ?? 0) > 1) {
 			return context.workspaces!

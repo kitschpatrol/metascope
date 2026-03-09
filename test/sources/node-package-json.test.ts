@@ -13,17 +13,21 @@ describe('nodePackageJson source', () => {
 	})
 
 	it('should be available in a directory with a package.json file', async () => {
-		expect(await nodePackageJsonSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
-		})).not.toHaveLength(0)
+		expect(
+			await nodePackageJsonSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without package.json', async () => {
-		expect(await nodePackageJsonSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await nodePackageJsonSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {

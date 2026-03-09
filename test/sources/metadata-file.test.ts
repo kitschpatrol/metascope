@@ -12,24 +12,30 @@ describe('metadataFile source', () => {
 	})
 
 	it('should be available in a directory with metadata.json', async () => {
-		expect(await metadataFileSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'git-url') },
-		})).not.toHaveLength(0)
+		expect(
+			await metadataFileSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'git-url') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with metadata.yaml', async () => {
-		expect(await metadataFileSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'basic') },
-		})).not.toHaveLength(0)
+		expect(
+			await metadataFileSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'basic') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without metadata files', async () => {
-		expect(await metadataFileSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await metadataFileSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from JSON', async () => {

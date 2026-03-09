@@ -13,17 +13,21 @@ describe('codemeta-json source', () => {
 	})
 
 	it('should be available in a directory with a codemeta.json file', async () => {
-		expect(await codemetaJsonSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
-		})).not.toHaveLength(0)
+		expect(
+			await codemetaJsonSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without codemeta.json', async () => {
-		expect(await codemetaJsonSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await codemetaJsonSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
@@ -33,11 +37,10 @@ describe('codemeta-json source', () => {
 		})
 
 		expect(result).toBeDefined()
-		const data = result!.data as Record<string, any>
-		expect(data.name).toBe('InvenioRDM GitHub Archiver (IGA)')
-		expect(data.version).toBe('1.3.5')
-		expect(data.author).toBeDefined()
-		expect(data.author).toHaveLength(2)
+		expect(result!.data.name).toBe('InvenioRDM GitHub Archiver (IGA)')
+		expect(result!.data.version).toBe('1.3.5')
+		expect(result!.data.author).toBeDefined()
+		expect(result!.data.author).toHaveLength(2)
 	})
 })
 

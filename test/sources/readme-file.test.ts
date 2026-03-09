@@ -13,17 +13,21 @@ describe('readmeFile source', () => {
 	})
 
 	it('should be available in a directory with a README.md', async () => {
-		expect(await readmeFileSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
-		})).not.toHaveLength(0)
+		expect(
+			await readmeFileSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without README files', async () => {
-		expect(await readmeFileSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await readmeFileSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract name from a fixture with an H1', async () => {

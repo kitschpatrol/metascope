@@ -610,7 +610,9 @@ export const githubSource = defineSource<'github'>({
 		const [owner, repo] = input.split('/')
 
 		const octokit = new Octokit(
-			context.options.credentials?.githubToken ? { auth: context.options.credentials.githubToken } : undefined,
+			context.options.credentials?.githubToken
+				? { auth: context.options.credentials.githubToken }
+				: undefined,
 		)
 
 		const [graphqlResult, hasPages] = await Promise.all([

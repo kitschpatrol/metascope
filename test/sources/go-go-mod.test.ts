@@ -12,17 +12,21 @@ describe('goGoMod source', () => {
 	})
 
 	it('should be available in a directory with a go.mod file', async () => {
-		expect(await goGoModSource.getInputs({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
-		})).not.toHaveLength(0)
+		expect(
+			await goGoModSource.getInputs({
+				metadata: {},
+				options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
+			}),
+		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without go.mod', async () => {
-		expect(await goGoModSource.getInputs({
-			metadata: {},
-			options: { path: resolve('test/fixtures/_empty') },
-		})).toHaveLength(0)
+		expect(
+			await goGoModSource.getInputs({
+				metadata: {},
+				options: { path: resolve('test/fixtures/_empty') },
+			}),
+		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
@@ -32,11 +36,10 @@ describe('goGoMod source', () => {
 		})
 
 		expect(result).toBeDefined()
-		const data = result!.data as Record<string, any>
-		expect(data.module).toBe('github.com/caddyserver/certmagic')
-		expect(data.go_version).toBe('1.24.0')
-		expect(data.repository_url).toBe('https://github.com/caddyserver/certmagic')
-		expect(data.dependencies.length).toBeGreaterThan(5)
+		expect(result!.data.module).toBe('github.com/caddyserver/certmagic')
+		expect(result!.data.go_version).toBe('1.24.0')
+		expect(result!.data.repository_url).toBe('https://github.com/caddyserver/certmagic')
+		expect(result!.data.dependencies.length).toBeGreaterThan(5)
 	})
 })
 
