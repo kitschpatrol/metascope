@@ -1,5 +1,4 @@
 import { findWorkspaces } from 'find-workspaces'
-import { globby } from 'globby'
 import { execFile } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
@@ -46,6 +45,7 @@ import { rubyGemspecSource } from './sources/ruby-gemspec'
 import { rustCargoTomlSource } from './sources/rust-cargo-toml'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
+import { getMatches, resetMatchCache } from './sources/source'
 import { stripUndefined } from './utilities/formatting'
 
 const execFileAsync = promisify(execFile)
@@ -207,14 +207,17 @@ export async function getMetadata<T>(
 	const recursive = options.recursive ?? false
 	const respectIgnored = options.respectIgnored ?? true
 
-	// Build file tree once with globby (respects .gitignore by default)
+	// Reset match cache to ensure fresh results for each getMetadata call
+	resetMatchCache()
+
+	// Pre-populate the memoized file tree (sources access it via getMatches)
 	log.debug(`Building file tree (recursive: ${recursive}, respectIgnored: ${respectIgnored})...`)
-	const fileTree = await globby('**', {
-		cwd: absolutePath,
-		dot: true,
-		gitignore: respectIgnored,
-	})
-	log.debug(`File tree contains ${fileTree.length} entries`)
+	const allFiles = await getMatches(
+		{ path: absolutePath, recursive: true, respectIgnored },
+		['**'],
+		{ rawPatterns: true },
+	)
+	log.debug(`File tree contains ${allFiles.length} entries`)
 
 	const workspaces = findWorkspaces(absolutePath)?.map((value) => value.location) ?? []
 	// Always include the root of the repo
@@ -266,7 +269,6 @@ export async function getMetadata<T>(
 		const phaseSources = sources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
-			fileTree,
 			metadata: { ...context },
 			options: {
 				credentials,

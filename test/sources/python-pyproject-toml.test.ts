@@ -1,45 +1,43 @@
 import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse, pythonPyprojectTomlSource } from '../../src/lib/sources/python-pyproject-toml'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 
 describe('pythonPyprojectToml source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a pyproject.toml file', async () => {
-		const context: SourceContext = {
+		expect(await pythonPyprojectTomlSource.getInputs({
 			metadata: {},
-			fileTree: ['pyproject.toml'],
 			options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
-		}
-		expect(await pythonPyprojectTomlSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without pyproject.toml', async () => {
-		const context: SourceContext = {
+		expect(await pythonPyprojectTomlSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await pythonPyprojectTomlSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await pythonPyprojectTomlSource.parseInput('pyproject.toml', {
 			metadata: {},
-			fileTree: ['pyproject.toml'],
 			options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
-		}
-		const result = firstOf(await pythonPyprojectTomlSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('pyproject.toml')
-		expect(result!.data.project?.name).toBe('codemetapy')
-		expect(result!.data.project?.version).toBe('2.5.3')
-		expect(result!.data.project?.dependencies).toContain('rdflib>=6.0.0')
+		const data = result!.data as Record<string, any>
+		expect(data.project?.name).toBe('codemetapy')
+		expect(data.project?.version).toBe('2.5.3')
+		expect(data.project?.dependencies).toContain('rdflib>=6.0.0')
 	})
 })
 

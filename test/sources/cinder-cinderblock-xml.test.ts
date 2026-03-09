@@ -1,41 +1,38 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	cinderCinderblockXmlSource,
 	parse as parseCinderCinderblock,
 } from '../../src/lib/sources/cinder-cinderblock-xml'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/cinder-cinderblock-xml')
 
 describe('cinderCinderblockXml source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with cinderblock.xml', async () => {
-		const context: SourceContext = {
+		expect(await cinderCinderblockXmlSource.getInputs({
 			metadata: {},
-			fileTree: ['cinderblock.xml'],
 			options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
-		}
-		expect(await cinderCinderblockXmlSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without cinderblock.xml', async () => {
-		const context: SourceContext = {
+		expect(await cinderCinderblockXmlSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await cinderCinderblockXmlSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed cinderblock data', async () => {
-		const context: SourceContext = {
+		const result = await cinderCinderblockXmlSource.parseInput('cinderblock.xml', {
 			metadata: {},
-			fileTree: ['cinderblock.xml'],
 			options: { path: resolve(fixturesDirectory, 'astellato-cinder-syphon') },
-		}
-		const result = firstOf(await cinderCinderblockXmlSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Syphon')

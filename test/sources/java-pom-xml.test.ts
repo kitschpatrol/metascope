@@ -1,45 +1,43 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { javaPomXmlSource, parse as parsePomXml } from '../../src/lib/sources/java-pom-xml'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/java-pom-xml')
 
 describe('javaPomXml source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with pom.xml', async () => {
-		const context: SourceContext = {
+		expect(await javaPomXmlSource.getInputs({
 			metadata: {},
-			fileTree: ['pom.xml'],
 			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
-		}
-		expect(await javaPomXmlSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without pom.xml', async () => {
-		const context: SourceContext = {
+		expect(await javaPomXmlSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await javaPomXmlSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const context: SourceContext = {
+		const result = await javaPomXmlSource.parseInput('pom.xml', {
 			metadata: {},
-			fileTree: ['pom.xml'],
 			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
-		}
-		const result = firstOf(await javaPomXmlSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
-		expect(result!.data.name).toBe('HaloDB')
-		expect(result!.data.groupId).toBe('com.oath.halodb')
-		expect(result!.data.artifactId).toBe('halodb')
-		expect(result!.data.developers).toHaveLength(1)
-		expect(result!.data.developers[0].name).toBe('Arjun Mannaly')
+		const data = result!.data as Record<string, any>
+		expect(data.name).toBe('HaloDB')
+		expect(data.groupId).toBe('com.oath.halodb')
+		expect(data.artifactId).toBe('halodb')
+		expect(data.developers).toHaveLength(1)
+		expect(data.developers[0].name).toBe('Arjun Mannaly')
 	})
 })
 

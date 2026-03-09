@@ -3,8 +3,9 @@ import { dirname, join } from 'node:path'
 import { coerce, diff } from 'semver'
 import { exec } from 'tinyexec'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 export type DependencyUpdatesPackage = {
 	/** Human-readable age of the update (e.g. "3 months"). */
@@ -142,12 +143,17 @@ function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor'
 	return 'patch'
 }
 
-export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
-	async extract(context: SourceContext): Promise<DependencyUpdatesData> {
+export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
+	// eslint-disable-next-line ts/require-await
+	async getInputs(context) {
+		return [context.options.path]
+	},
+	key: 'dependencyUpdates',
+	async parseInput(input) {
 		log.debug('Extracting dependency update information via updates...')
 
 		const updatesBinary = resolveUpdatesBinary()
-		const result = await exec('node', [updatesBinary, '--file', context.options.path, '--json'])
+		const result = await exec('node', [updatesBinary, '--file', input, '--json'])
 
 		let parsed: z.infer<typeof updatesOutputSchema>
 		try {
@@ -211,9 +217,8 @@ export const dependencyUpdatesSource: MetadataSource<'dependencyUpdates'> = {
 				libyears: Math.round(libyears * 10) / 10,
 				total: major.length + minor.length + patch.length,
 			},
-			source: context.options.path,
+			source: input,
 		}
 	},
-	key: 'dependencyUpdates',
 	phase: 2,
-}
+})

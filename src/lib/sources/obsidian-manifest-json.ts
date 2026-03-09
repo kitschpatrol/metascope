@@ -1,10 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
+import type { OneOrMany, SourceRecord } from './source'
 import { parseJsonRecord } from '../utilities/schema-primitives'
-import { matchFiles } from './source'
+import { defineSource, getMatches } from './source'
 
 export type ObsidianManifest = {
 	/** Plugin author name. */
@@ -60,54 +59,35 @@ function isObsidianManifest(content: string): boolean {
 	return json !== undefined && 'id' in json && 'minAppVersion' in json
 }
 
-export const obsidianManifestJsonSource: MetadataSource<'obsidianManifestJson'> = {
-	async extract(context: SourceContext): Promise<ObsidianManifestJsonData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive ? ['**/manifest.json'] : ['manifest.json'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting Obsidian metadata...')
-		const results: Array<SourceRecord<ObsidianManifest, ObsidianManifestJsonExtra>> = []
-
-		for (const file of files) {
-			try {
-				const content = await readFile(resolve(context.options.path, file), 'utf8')
-				if (!isObsidianManifest(content)) continue
-
-				const manifest = manifestSchema.parse(JSON.parse(content))
-				const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
-
-				try {
-					const response = await fetch(communityPluginsUrl)
-					if (!response.ok) {
-						results.push({ data: manifest, extra: { url }, source: file })
-						continue
-					}
-
-					const stats = pluginStatsSchema.parse(await response.json())
-					if (!(manifest.id in stats)) {
-						results.push({ data: manifest, extra: { url }, source: file })
-						continue
-					}
-
-					const pluginStats = stats[manifest.id]
-					const downloadCount = pluginStats.downloads || undefined
-					results.push({ data: manifest, extra: { downloadCount, url }, source: file })
-				} catch {
-					results.push({ data: manifest, extra: { url }, source: file })
-				}
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const obsidianManifestJsonSource = defineSource<'obsidianManifestJson'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['manifest.json'])
 	},
 	key: 'obsidianManifestJson',
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		if (!isObsidianManifest(content)) return undefined
+
+		const manifest = manifestSchema.parse(JSON.parse(content))
+		const url = `https://obsidian.md/plugins?id=${encodeURIComponent(manifest.id)}`
+
+		try {
+			const response = await fetch(communityPluginsUrl)
+			if (!response.ok) {
+				return { data: manifest, extra: { url }, source: input }
+			}
+
+			const stats = pluginStatsSchema.parse(await response.json())
+			if (!(manifest.id in stats)) {
+				return { data: manifest, extra: { url }, source: input }
+			}
+
+			const pluginStats = stats[manifest.id]
+			const downloadCount = pluginStats.downloads || undefined
+			return { data: manifest, extra: { downloadCount, url }, source: input }
+		} catch {
+			return { data: manifest, extra: { url }, source: input }
+		}
+	},
 	phase: 1,
-}
+})

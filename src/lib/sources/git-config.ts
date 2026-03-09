@@ -2,8 +2,9 @@ import type { GitConfig } from 'pkg-types'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { readGitConfig } from 'pkg-types'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 export type GitConfigInfo = {
 	/** Parsed .git/config contents. */
@@ -12,21 +13,23 @@ export type GitConfigInfo = {
 
 export type GitConfigData = SourceRecord<GitConfigInfo> | undefined
 
-export const gitConfigSource: MetadataSource<'gitConfig'> = {
-	async extract(context: SourceContext): Promise<GitConfigData> {
+export const gitConfigSource = defineSource<'gitConfig'>({
+	async getInputs(context) {
 		try {
 			await access(join(context.options.path, '.git', 'config'))
+			return [join(context.options.path, '.git', 'config')]
 		} catch {
-			return undefined
+			return []
 		}
-
+	},
+	key: 'gitConfig',
+	async parseInput(input, context) {
 		log.debug('Extracting git config metadata...')
 		const config = await readGitConfig(context.options.path)
 		return {
 			data: { config },
-			source: join(context.options.path, '.git', 'config'),
+			source: input,
 		}
 	},
-	key: 'gitConfig',
 	phase: 1,
-}
+})

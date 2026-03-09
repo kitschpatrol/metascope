@@ -1,38 +1,35 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse, pythonSetupPySource } from '../../src/lib/sources/python-setup-py'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-setup-py')
 
 describe('python-setup-py source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a setup.py file', async () => {
-		const context: SourceContext = {
+		expect(await pythonSetupPySource.getInputs({
 			metadata: {},
-			fileTree: ['setup.py'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		expect(await pythonSetupPySource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without setup.py', async () => {
-		const context: SourceContext = {
+		expect(await pythonSetupPySource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await pythonSetupPySource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await pythonSetupPySource.parseInput('setup.py', {
 			metadata: {},
-			fileTree: ['setup.py'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		const result = firstOf(await pythonSetupPySource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('setup.py')

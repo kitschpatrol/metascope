@@ -1,41 +1,38 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	parse as parseSetupCfg,
 	pythonSetupCfgSource,
 } from '../../src/lib/sources/python-setup-cfg'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-setup-cfg')
 
 describe('pythonSetupCfg source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a setup.cfg file', async () => {
-		const context: SourceContext = {
+		expect(await pythonSetupCfgSource.getInputs({
 			metadata: {},
-			fileTree: ['setup.cfg'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		expect(await pythonSetupCfgSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without setup.cfg', async () => {
-		const context: SourceContext = {
+		expect(await pythonSetupCfgSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await pythonSetupCfgSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await pythonSetupCfgSource.parseInput('setup.cfg', {
 			metadata: {},
-			fileTree: ['setup.cfg'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		const result = firstOf(await pythonSetupCfgSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('setup.cfg')

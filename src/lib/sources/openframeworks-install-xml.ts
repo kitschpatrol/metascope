@@ -18,10 +18,9 @@ import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
+import type { OneOrMany, SourceRecord } from './source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-import { matchFiles } from './source'
+import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -195,33 +194,16 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 
 // ─── Source ──────────────────────────────────────────────────────────
 
-export const openframeworksInstallXmlSource: MetadataSource<'openframeworksInstallXml'> = {
-	async extract(context: SourceContext): Promise<OpenframeworksInstallXmlData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive ? ['**/install.xml'] : ['install.xml'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting openFrameworks install.xml metadata...')
-		const results: Array<SourceRecord<OpenframeworksInstallXml>> = []
-
-		for (const file of files) {
-			try {
-				const content = await readFile(resolve(context.options.path, file), 'utf8')
-				const data = parse(content)
-				if (!data) continue
-				results.push({ data, source: file })
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const openframeworksInstallXmlSource = defineSource<'openframeworksInstallXml'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['install.xml'])
 	},
 	key: 'openframeworksInstallXml',
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: input }
+	},
 	phase: 1,
-}
+})

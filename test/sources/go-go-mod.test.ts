@@ -1,44 +1,42 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { goGoModSource, parse } from '../../src/lib/sources/go-go-mod'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/go-go-mod')
 
 describe('goGoMod source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a go.mod file', async () => {
-		const context: SourceContext = {
+		expect(await goGoModSource.getInputs({
 			metadata: {},
-			fileTree: ['go.mod'],
 			options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
-		}
-		expect(await goGoModSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without go.mod', async () => {
-		const context: SourceContext = {
+		expect(await goGoModSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await goGoModSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await goGoModSource.parseInput('go.mod', {
 			metadata: {},
-			fileTree: ['go.mod'],
 			options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
-		}
-		const result = firstOf(await goGoModSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
-		expect(result!.data.module).toBe('github.com/caddyserver/certmagic')
-		expect(result!.data.go_version).toBe('1.24.0')
-		expect(result!.data.repository_url).toBe('https://github.com/caddyserver/certmagic')
-		expect(result!.data.dependencies.length).toBeGreaterThan(5)
+		const data = result!.data as Record<string, any>
+		expect(data.module).toBe('github.com/caddyserver/certmagic')
+		expect(data.go_version).toBe('1.24.0')
+		expect(data.repository_url).toBe('https://github.com/caddyserver/certmagic')
+		expect(data.dependencies.length).toBeGreaterThan(5)
 	})
 })
 

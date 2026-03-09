@@ -1,39 +1,36 @@
 import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse, readmeFileSource, readmePattern } from '../../src/lib/sources/readme-file'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/readme-file')
 
 describe('readmeFile source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a README.md', async () => {
-		const context: SourceContext = {
+		expect(await readmeFileSource.getInputs({
 			metadata: {},
-			fileTree: ['README.md'],
 			options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
-		}
-		expect(await readmeFileSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without README files', async () => {
-		const context: SourceContext = {
+		expect(await readmeFileSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await readmeFileSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract name from a fixture with an H1', async () => {
-		const context: SourceContext = {
+		const result = await readmeFileSource.parseInput('README.md', {
 			metadata: {},
-			fileTree: ['README.md'],
 			options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
-		}
-		const result = firstOf(await readmeFileSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Hyperspeed SDK V1.0.0')
@@ -41,12 +38,10 @@ describe('readmeFile source', () => {
 	})
 
 	it('should return undefined for a fixture without an H1', async () => {
-		const context: SourceContext = {
+		const result = await readmeFileSource.parseInput('README.md', {
 			metadata: {},
-			fileTree: ['README.md'],
 			options: { path: resolve(fixturesDirectory, 'next-hat-nanocl') },
-		}
-		const result = await readmeFileSource.extract(context)
+		})
 
 		expect(result).toBeUndefined()
 	})

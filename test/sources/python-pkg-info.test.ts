@@ -1,38 +1,35 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse, pythonPkgInfoSource } from '../../src/lib/sources/python-pkg-info'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-pkg-info')
 
 describe('pythonPkgInfo source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a PKG-INFO file', async () => {
-		const context: SourceContext = {
+		expect(await pythonPkgInfoSource.getInputs({
 			metadata: {},
-			fileTree: ['PKG-INFO'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		expect(await pythonPkgInfoSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without PKG-INFO', async () => {
-		const context: SourceContext = {
+		expect(await pythonPkgInfoSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await pythonPkgInfoSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await pythonPkgInfoSource.parseInput('PKG-INFO', {
 			metadata: {},
-			fileTree: ['PKG-INFO'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		const result = firstOf(await pythonPkgInfoSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('PKG-INFO')

@@ -1,39 +1,36 @@
 import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { nodePackageJsonSource, parse } from '../../src/lib/sources/node-package-json'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/node-package-json')
 
 describe('nodePackageJson source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a package.json file', async () => {
-		const context: SourceContext = {
+		expect(await nodePackageJsonSource.getInputs({
 			metadata: {},
-			fileTree: ['package.json'],
 			options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
-		}
-		expect(await nodePackageJsonSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without package.json', async () => {
-		const context: SourceContext = {
+		expect(await nodePackageJsonSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await nodePackageJsonSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await nodePackageJsonSource.parseInput('package.json', {
 			metadata: {},
-			fileTree: ['package.json'],
 			options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
-		}
-		const result = firstOf(await nodePackageJsonSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('roku-client')

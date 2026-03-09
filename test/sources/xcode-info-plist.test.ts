@@ -1,38 +1,35 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
-import { firstOf } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/sources/source'
 import { parse, xcodeInfoPlistSource } from '../../src/lib/sources/xcode-info-plist'
 
 const fixturesDirectory = resolve('test/fixtures/xcode-info-plist')
 
 describe('xcodeInfoPlist source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with Info.plist', async () => {
-		const context: SourceContext = {
+		expect(await xcodeInfoPlistSource.getInputs({
 			metadata: {},
-			fileTree: ['Info.plist'],
 			options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
-		}
-		expect(await xcodeInfoPlistSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Info.plist', async () => {
-		const context: SourceContext = {
+		expect(await xcodeInfoPlistSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await xcodeInfoPlistSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const context: SourceContext = {
+		const result = await xcodeInfoPlistSource.parseInput('Info.plist', {
 			metadata: {},
-			fileTree: ['Info.plist'],
 			options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
-		}
-		const result = firstOf(await xcodeInfoPlistSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Lorem Ipsum')

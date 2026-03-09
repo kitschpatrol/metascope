@@ -1,38 +1,35 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse as parseCargoToml, rustCargoTomlSource } from '../../src/lib/sources/rust-cargo-toml'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/rust-cargo-toml')
 
 describe('rustCargoToml source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with Cargo.toml', async () => {
-		const context: SourceContext = {
+		expect(await rustCargoTomlSource.getInputs({
 			metadata: {},
-			fileTree: ['Cargo.toml'],
 			options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
-		}
-		expect(await rustCargoTomlSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Cargo.toml', async () => {
-		const context: SourceContext = {
+		expect(await rustCargoTomlSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await rustCargoTomlSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed Cargo.toml data', async () => {
-		const context: SourceContext = {
+		const result = await rustCargoTomlSource.parseInput('Cargo.toml', {
 			metadata: {},
-			fileTree: ['Cargo.toml'],
 			options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
-		}
-		const result = firstOf(await rustCargoTomlSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('eml-parser')

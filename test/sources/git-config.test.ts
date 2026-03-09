@@ -1,13 +1,8 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
 
-const context: SourceContext = {
-	metadata: {},
-	fileTree: [],
-	options: { path: resolve('.') },
-}
+const context = { metadata: {}, options: { path: resolve('.') } }
 
 describe('git config source', () => {
 	it('should be available in a git repo', async () => {
@@ -15,11 +10,7 @@ describe('git config source', () => {
 	})
 
 	it('should not be available in a non-git directory', async () => {
-		const nonGitContext: SourceContext = {
-			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
+		const nonGitContext = { metadata: {}, options: { path: '/tmp' } }
 		expect(await gitConfigSource.extract(nonGitContext)).toBeUndefined()
 	})
 

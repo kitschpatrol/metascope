@@ -1,47 +1,42 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { metadataFileSource, parse as parseMetadata } from '../../src/lib/sources/metadata-file'
-import { firstOf } from '../../src/lib/sources/source'
+import { firstOf, resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/metadata-file')
 
 describe('metadataFile source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with metadata.json', async () => {
-		const context: SourceContext = {
+		expect(await metadataFileSource.getInputs({
 			metadata: {},
-			fileTree: ['metadata.json'],
 			options: { path: resolve(fixturesDirectory, 'git-url') },
-		}
-		expect(await metadataFileSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with metadata.yaml', async () => {
-		const context: SourceContext = {
+		expect(await metadataFileSource.getInputs({
 			metadata: {},
-			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		expect(await metadataFileSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without metadata files', async () => {
-		const context: SourceContext = {
+		expect(await metadataFileSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await metadataFileSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from JSON', async () => {
-		const context: SourceContext = {
+		const result = await metadataFileSource.parseInput('metadata.json', {
 			metadata: {},
-			fileTree: ['metadata.json'],
 			options: { path: resolve(fixturesDirectory, 'git-url') },
-		}
-		const result = firstOf(await metadataFileSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('metadata.json')
@@ -51,12 +46,10 @@ describe('metadataFile source', () => {
 	})
 
 	it('should return all metadata files when multiple exist', async () => {
-		const context: SourceContext = {
+		const result = await metadataFileSource.extract({
 			metadata: {},
-			fileTree: ['metadata.json', 'metadata.yaml', 'metadata.yml'],
 			options: { path: resolve(fixturesDirectory, 'basic') },
-		}
-		const result = await metadataFileSource.extract(context)
+		})
 
 		expect(result).toBeDefined()
 		// The basic/ directory has all three formats; all should be returned

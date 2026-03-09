@@ -1,44 +1,42 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { parse, rubyGemspecSource } from '../../src/lib/sources/ruby-gemspec'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/ruby-gemspec')
 
 describe('rubyGemspec source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a .gemspec file', async () => {
-		const context: SourceContext = {
+		expect(await rubyGemspecSource.getInputs({
 			metadata: {},
-			fileTree: ['blazer.gemspec'],
 			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
-		}
-		expect(await rubyGemspecSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without .gemspec files', async () => {
-		const context: SourceContext = {
+		expect(await rubyGemspecSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await rubyGemspecSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await rubyGemspecSource.parseInput('blazer.gemspec', {
 			metadata: {},
-			fileTree: ['blazer.gemspec'],
 			options: { path: resolve(fixturesDirectory, 'ankane-blazer') },
-		}
-		const result = firstOf(await rubyGemspecSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
-		expect(result!.data.name).toBe('blazer')
-		expect(result!.data.license).toBe('MIT')
-		expect(result!.data.homepage).toBe('https://github.com/ankane/blazer')
-		expect(result!.data.dependencies.length).toBeGreaterThanOrEqual(4)
+		const data = result!.data as Record<string, any>
+		expect(data.name).toBe('blazer')
+		expect(data.license).toBe('MIT')
+		expect(data.homepage).toBe('https://github.com/ankane/blazer')
+		expect(data.dependencies.length).toBeGreaterThanOrEqual(4)
 		expect(result!.source).toContain('.gemspec')
 	})
 })

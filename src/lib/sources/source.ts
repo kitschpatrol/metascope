@@ -1,12 +1,12 @@
+import { globby } from 'globby'
 import picomatch from 'picomatch'
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from '../metadata-types'
+import { log } from '../log'
 
 /**
  * Context provided to each metadata source during extraction.
  */
 export type SourceContext = {
-	/** Pre-built file tree of relative POSIX paths, respecting .gitignore. */
-	fileTree: string[]
 	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
 	metadata: Partial<MetadataContext>
 	/** The resolved options passed to `getMetadata`. */
@@ -16,7 +16,7 @@ export type SourceContext = {
 	 * Always includes at least root path if no "real" workspaces are found, and always includes root path
 	 * even if technically not a workspace
 	 */
-	workspaces: string[]
+	workspaces?: string[]
 }
 
 /**
@@ -24,17 +24,61 @@ export type SourceContext = {
  */
 export type OneOrMany<T> = T | T[]
 
+// ─── File Matching ──────────────────────────────────────────────────
+
+const matchCache = new Map<string, string[]>()
+
 /**
- * Filter a file tree by glob patterns, returning matching relative paths.
+ * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
+ * Returns relative POSIX paths.
  */
-export function matchFiles(
-	fileTree: string[],
-	patterns: string[],
-	options?: picomatch.PicomatchOptions,
-): string[] {
-	const isMatch = picomatch(patterns, { nocase: true, ...options })
-	return fileTree.filter((filePath) => isMatch(filePath))
+async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
+	const key = `${path}\0${respectIgnored ? '1' : '0'}`
+	let tree = matchCache.get(key)
+	if (!tree) {
+		tree = await globby('**', { cwd: path, dot: true, gitignore: respectIgnored })
+		matchCache.set(key, tree)
+	}
+
+	return tree
 }
+
+/**
+ * Clear the memoized file tree cache. Call between test runs or when
+ * the same path needs to be re-scanned.
+ */
+export function resetMatchCache(): void {
+	matchCache.clear()
+}
+
+type MatchOptions = Pick<GetMetadataBaseOptions, 'path' | 'recursive' | 'respectIgnored'>
+
+/**
+ * Find files matching glob patterns in a directory's file tree.
+ *
+ * - Memoizes the file tree internally (keyed by path + respectIgnored)
+ * - Auto-prepends `** /` to patterns when `options.recursive` is true
+ * - Always uses case-insensitive matching
+ *
+ * @param options - Must include `path`; optionally `recursive` and `respectIgnored`
+ * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
+ * @param opts - Set `rawPatterns: true` to skip auto-prepending `** /` when recursive
+ */
+export async function getMatches(
+	options: MatchOptions,
+	patterns: string[],
+	opts?: { rawPatterns?: boolean },
+): Promise<string[]> {
+	const tree = await getTree(options.path, options.respectIgnored ?? true)
+	const effectivePatterns =
+		options.recursive && !opts?.rawPatterns
+			? patterns.map((p) => `**/${p}`)
+			: patterns
+	const isMatch = picomatch(effectivePatterns, { nocase: true })
+	return tree.filter((filePath) => isMatch(filePath))
+}
+
+// ─── Source Records ─────────────────────────────────────────────────
 
 /**
  * Extract the first element from a `OneOrMany` value.
@@ -61,9 +105,15 @@ export type SourceRecord<
 	source: string
 }
 
+// ─── Source Interface ───────────────────────────────────────────────
+
 /**
  * Interface for a metadata source module.
  * Each source populates a specific top-level key in MetadataContext.
+ *
+ * Sources that use `defineSource` get `getInputs` and `parseInput` wired
+ * into `extract` automatically. Sources with custom extraction logic can
+ * implement `extract` directly.
  */
 /* eslint-disable perfectionist/sort-object-types -- ts/member-ordering requires properties before methods */
 export type MetadataSource<K extends SourceName = SourceName> = {
@@ -71,7 +121,58 @@ export type MetadataSource<K extends SourceName = SourceName> = {
 	key: K
 	/** The execution phase. Sources with the same phase run in parallel. Lower phases run first. */
 	phase: number
+	/** Discover inputs for this source. Returns file paths, URLs, or identifiers. */
+	getInputs?(context: SourceContext): Promise<string[]>
+	/** Parse a single input and return a single result, or undefined to skip. */
+	parseInput?(input: string, context: SourceContext): Promise<SourceRecord | undefined>
 	/** Extract metadata from this source. Returns undefined if the source is not available. */
 	extract(context: SourceContext): Promise<MetadataContext[K]>
 }
 /* eslint-enable perfectionist/sort-object-types */
+
+// ─── Source Factory ─────────────────────────────────────────────────
+
+type SourceConfig<K extends SourceName> = {
+	getInputs: (context: SourceContext) => Promise<string[]>
+	key: K
+	parseInput: (input: string, context: SourceContext) => Promise<SourceRecord | undefined>
+	phase: number
+}
+
+/**
+ * Define a metadata source with `getInputs` + `parseInput`.
+ * Automatically wires them into an `extract` implementation that handles:
+ * - Empty input check (returns undefined)
+ * - Per-input try/catch with log.warn
+ * - Filtering undefined results from parseInput
+ * - OneOrMany wrapping (single result unwrapped, multiple as array)
+ */
+export function defineSource<K extends SourceName>(
+	config: SourceConfig<K>,
+): MetadataSource<K> & {
+	getInputs: (context: SourceContext) => Promise<string[]>
+	parseInput: (input: string, context: SourceContext) => Promise<SourceRecord | undefined>
+} {
+	return {
+		...config,
+		async extract(context: SourceContext): Promise<MetadataContext[K]> {
+			const inputs = await config.getInputs(context)
+			if (inputs.length === 0) return undefined as MetadataContext[K]
+
+			const results: SourceRecord[] = []
+			for (const input of inputs) {
+				try {
+					const result = await config.parseInput(input, context)
+					if (result) results.push(result)
+				} catch (error) {
+					log.warn(
+						`Failed to process "${input}": ${error instanceof Error ? error.message : String(error)}`,
+					)
+				}
+			}
+
+			if (results.length === 0) return undefined as MetadataContext[K]
+			return (results.length === 1 ? results[0] : results) as MetadataContext[K]
+		},
+	}
+}

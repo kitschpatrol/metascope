@@ -2,8 +2,9 @@ import gitUrlParse from 'git-url-parse'
 import { Octokit } from 'octokit'
 import git from 'simple-git'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 export type GitHubInfo = {
 	/** ISO 8601 date when the repo was archived, if applicable. */
@@ -597,13 +598,16 @@ function mapRepoData(
 	}
 }
 
-export const githubSource: MetadataSource<'github'> = {
-	async extract(context: SourceContext): Promise<GitHubData> {
-		log.debug('Extracting GitHub metadata...')
+export const githubSource = defineSource<'github'>({
+	async getInputs(context) {
 		const remote = await getGitHubRemote(context.options.path)
-		if (!remote) return undefined
-
-		const { owner, repo } = remote
+		if (!remote) return []
+		return [`${remote.owner}/${remote.repo}`]
+	},
+	key: 'github',
+	async parseInput(input, context) {
+		log.debug('Extracting GitHub metadata...')
+		const [owner, repo] = input.split('/')
 
 		const octokit = new Octokit(
 			context.options.credentials?.githubToken ? { auth: context.options.credentials.githubToken } : undefined,
@@ -637,6 +641,5 @@ export const githubSource: MetadataSource<'github'> = {
 			source: `https://github.com/${owner}/${repo}`,
 		}
 	},
-	key: 'github',
 	phase: 2,
-}
+})

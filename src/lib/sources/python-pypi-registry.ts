@@ -3,8 +3,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceContext, SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 export type PythonPypiRegistryInfo = {
 	/** Total downloads over the last 180 days. */
@@ -87,11 +88,16 @@ async function getPackageName(context: SourceContext): Promise<string | undefine
 	return undefined
 }
 
-export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
-	async extract(context: SourceContext): Promise<PythonPypiRegistryData> {
-		log.debug('Extracting PyPI metadata...')
+export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
+	async getInputs(context) {
 		const name = await getPackageName(context)
-		if (!name) return undefined
+		if (!name) return []
+		return [name]
+	},
+	key: 'pythonPypiRegistry',
+	async parseInput(input) {
+		log.debug('Extracting PyPI metadata...')
+		const name = input
 
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
 			fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
@@ -154,6 +160,5 @@ export const pythonPypiRegistrySource: MetadataSource<'pythonPypiRegistry'> = {
 			source: `https://pypi.org/project/${encodeURIComponent(name)}/`,
 		}
 	},
-	key: 'pythonPypiRegistry',
 	phase: 2,
-}
+})

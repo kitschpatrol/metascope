@@ -2,11 +2,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
+import type { OneOrMany, SourceRecord } from './source'
 import { parseConfigparser, splitMultiline } from '../parsers/configparser-parser.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
-import { matchFiles } from './source'
+import { defineSource, getMatches } from './source'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -141,31 +140,14 @@ export function parse(source: string): SetupCfg {
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-export const pythonSetupCfgSource: MetadataSource<'pythonSetupCfg'> = {
-	async extract(context: SourceContext): Promise<PythonSetupCfgData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive ? ['**/setup.cfg'] : ['setup.cfg'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting setup.cfg metadata...')
-		const results: Array<SourceRecord<SetupCfg>> = []
-
-		for (const file of files) {
-			try {
-				const content = await readFile(resolve(context.options.path, file), 'utf8')
-				results.push({ data: parse(content), source: file })
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const pythonSetupCfgSource = defineSource<'pythonSetupCfg'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['setup.cfg'])
 	},
 	key: 'pythonSetupCfg',
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		return { data: parse(content), source: input }
+	},
 	phase: 1,
-}
+})

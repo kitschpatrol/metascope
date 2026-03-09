@@ -16,10 +16,9 @@ import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@b
 import is from '@sindresorhus/is'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
+import type { OneOrMany, SourceRecord } from './source'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
-import { matchFiles } from './source'
+import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -328,35 +327,16 @@ function parseDependencies(
 
 // ─── Source ──────────────────────────────────────────────────────────
 
-export const xcodeProjectPbxprojSource: MetadataSource<'xcodeProjectPbxproj'> = {
-	// eslint-disable-next-line ts/require-await
-	async extract(context: SourceContext): Promise<XcodeProjectPbxprojData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive
-				? ['**/*.xcodeproj/project.pbxproj']
-				: ['*.xcodeproj/project.pbxproj'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting pbxproj metadata...')
-		const results: Array<SourceRecord<Pbxproj>> = []
-
-		for (const file of files) {
-			try {
-				const data = parse(resolve(context.options.path, file))
-				if (!data) continue
-				results.push({ data, source: file })
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['*.xcodeproj/project.pbxproj'], { rawPatterns: true })
 	},
 	key: 'xcodeProjectPbxproj',
+	// eslint-disable-next-line ts/require-await
+	async parseInput(input, context) {
+		const data = parse(resolve(context.options.path, input))
+		if (!data) return undefined
+		return { data, source: input }
+	},
 	phase: 1,
-}
+})

@@ -1,45 +1,43 @@
 import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { codemetaJsonSource, parse as parseCodemetaJson } from '../../src/lib/sources/codemeta-json'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/codemeta-json')
 
 describe('codemeta-json source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a codemeta.json file', async () => {
-		const context: SourceContext = {
+		expect(await codemetaJsonSource.getInputs({
 			metadata: {},
-			fileTree: ['codemeta.json'],
 			options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
-		}
-		expect(await codemetaJsonSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without codemeta.json', async () => {
-		const context: SourceContext = {
+		expect(await codemetaJsonSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await codemetaJsonSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await codemetaJsonSource.parseInput('codemeta.json', {
 			metadata: {},
-			fileTree: ['codemeta.json'],
 			options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
-		}
-		const result = firstOf(await codemetaJsonSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
-		expect(result!.data.name).toBe('InvenioRDM GitHub Archiver (IGA)')
-		expect(result!.data.version).toBe('1.3.5')
-		expect(result!.data.author).toBeDefined()
-		expect(result!.data.author!.length).toBe(2)
+		const data = result!.data as Record<string, any>
+		expect(data.name).toBe('InvenioRDM GitHub Archiver (IGA)')
+		expect(data.version).toBe('1.3.5')
+		expect(data.author).toBeDefined()
+		expect(data.author).toHaveLength(2)
 	})
 })
 

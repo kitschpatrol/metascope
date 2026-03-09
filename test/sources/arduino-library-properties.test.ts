@@ -1,41 +1,38 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	arduinoLibraryPropertiesSource,
 	parse,
 } from '../../src/lib/sources/arduino-library-properties'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 
 describe('arduinoLibraryProperties source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with library.properties', async () => {
-		const context: SourceContext = {
+		expect(await arduinoLibraryPropertiesSource.getInputs({
 			metadata: {},
-			fileTree: ['library.properties'],
 			options: { path: resolve(fixturesDirectory, '0xpit-esparklines') },
-		}
-		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
-		const context: SourceContext = {
+		expect(await arduinoLibraryPropertiesSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await arduinoLibraryPropertiesSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed library properties data', async () => {
-		const context: SourceContext = {
+		const result = await arduinoLibraryPropertiesSource.parseInput('library.properties', {
 			metadata: {},
-			fileTree: ['library.properties'],
 			options: { path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811') },
-		}
-		const result = firstOf(await arduinoLibraryPropertiesSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Adafruit CCS811 Library')

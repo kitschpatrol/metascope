@@ -1,8 +1,9 @@
 import type { Language, LanguageInfo } from '@kitschpatrol/tokei'
 import { tokei } from '@kitschpatrol/tokei'
 import path from 'node:path'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
+import type { OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
 	languages: Language[]
@@ -45,20 +46,18 @@ async function getStatistics(
 	}
 }
 
-export const codeStatisticsSource: MetadataSource<'codeStatistics'> = {
-	async extract(context: SourceContext): Promise<CodeStatisticsData> {
-		log.debug('Extracting lines of code via tokei...')
-
-		if (context.options.recursive && context.workspaces.length > 1) {
-			return Promise.all(
-				context.workspaces.map(async (workspaceDirectory) =>
-					getStatistics(workspaceDirectory, context.options),
-				),
-			)
+export const codeStatisticsSource = defineSource<'codeStatistics'>({
+	async getInputs(context) {
+		if (context.options.recursive && (context.workspaces?.length ?? 0) > 1) {
+			return context.workspaces!
 		}
 
-		return getStatistics(context.options.path, context.options)
+		return [context.options.path]
 	},
 	key: 'codeStatistics',
+	async parseInput(input, context) {
+		log.debug('Extracting lines of code via tokei...')
+		return getStatistics(input, context.options)
+	},
 	phase: 1,
-}
+})

@@ -1,42 +1,39 @@
 import { readFileSync } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	goGoreleaserYamlSource,
 	parse as parseGoreleaser,
 } from '../../src/lib/sources/go-goreleaser-yaml'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/go-goreleaser-yaml')
 
 describe('goGoreleaserYaml source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a .goreleaser.yml file', async () => {
-		const context: SourceContext = {
+		expect(await goGoreleaserYamlSource.getInputs({
 			metadata: {},
-			fileTree: ['.goreleaser.yml'],
 			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
-		}
-		expect(await goGoreleaserYamlSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without goreleaser config', async () => {
-		const context: SourceContext = {
+		expect(await goGoreleaserYamlSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await goGoreleaserYamlSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const context: SourceContext = {
+		const result = await goGoreleaserYamlSource.parseInput('.goreleaser.yml', {
 			metadata: {},
-			fileTree: ['.goreleaser.yml'],
 			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
-		}
-		const result = firstOf(await goGoreleaserYamlSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.project_name).toBe('Aenthill')

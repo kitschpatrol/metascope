@@ -3,8 +3,9 @@
 import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { simpleGit } from 'simple-git'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
+import { defineSource } from './source'
 
 export type GitStatisticsInfo = {
 	/** Total number of local branches. */
@@ -59,15 +60,18 @@ export type GitStatisticsInfo = {
 
 export type GitStatisticsData = SourceRecord<GitStatisticsInfo> | undefined
 
-export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
-	async extract(context: SourceContext): Promise<GitStatisticsData> {
-		log.debug('Extracting git statistics metadata...')
-
+export const gitStatisticsSource = defineSource<'gitStatistics'>({
+	async getInputs(context) {
 		try {
 			await access(join(context.options.path, '.git'))
+			return [join(context.options.path, '.git')]
 		} catch {
-			return undefined
+			return []
 		}
+	},
+	key: 'gitStatistics',
+	async parseInput(input, context) {
+		log.debug('Extracting git statistics metadata...')
 
 		const git = simpleGit(context.options.path)
 
@@ -220,9 +224,8 @@ export const gitStatisticsSource: MetadataSource<'gitStatistics'> = {
 				trackedSizeBytes,
 				uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
 			},
-			source: join(context.options.path, '.git'),
+			source: input,
 		}
 	},
-	key: 'gitStatistics',
 	phase: 2,
-}
+})

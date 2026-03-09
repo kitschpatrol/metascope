@@ -12,9 +12,8 @@ import { resolve } from 'node:path'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
-import { matchFiles } from './source'
+import type { OneOrMany, SourceRecord } from './source'
+import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -79,33 +78,16 @@ export function parse(content: string): Readme | undefined {
 
 // ─── Source ──────────────────────────────────────────────────────────
 
-export const readmeFileSource: MetadataSource<'readmeFile'> = {
-	async extract(context: SourceContext): Promise<ReadmeFileData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive ? ['**/README', '**/README.*'] : ['README', 'README.*'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting README metadata...')
-		const results: Array<SourceRecord<Readme>> = []
-
-		for (const file of files) {
-			try {
-				const content = await readFile(resolve(context.options.path, file), 'utf8')
-				const data = parse(content)
-				if (!data) continue
-				results.push({ data, source: file })
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const readmeFileSource = defineSource<'readmeFile'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['README', 'README.*'])
 	},
 	key: 'readmeFile',
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		const data = parse(content)
+		if (!data) return undefined
+		return { data, source: input }
+	},
 	phase: 1,
-}
+})

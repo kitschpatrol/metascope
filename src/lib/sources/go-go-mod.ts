@@ -3,11 +3,10 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from './source'
-import { log } from '../log'
+import type { OneOrMany, SourceRecord } from './source'
 import { parseGoMod } from '../parsers/go-mod-parser'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-import { matchFiles } from './source'
+import { defineSource, getMatches } from './source'
 
 // ─── Schema & Types ──────────────────────────────────────────────────────────
 
@@ -36,31 +35,14 @@ export type GoGoModData = OneOrMany<SourceRecord<GoMod>> | undefined
 
 // ─── Source ──────────────────────────────────────────────────────────────────
 
-export const goGoModSource: MetadataSource<'goGoMod'> = {
-	async extract(context: SourceContext): Promise<GoGoModData> {
-		const files = matchFiles(
-			context.fileTree,
-			context.options.recursive ? ['**/go.mod'] : ['go.mod'],
-		)
-		if (files.length === 0) return undefined
-
-		log.debug('Extracting go.mod metadata...')
-		const results: Array<SourceRecord<GoMod>> = []
-
-		for (const file of files) {
-			try {
-				const content = await readFile(resolve(context.options.path, file), 'utf8')
-				results.push({ data: parse(content), source: file })
-			} catch (error) {
-				log.warn(
-					`Failed to read "${file}": ${error instanceof Error ? error.message : String(error)}`,
-				)
-			}
-		}
-
-		if (results.length === 0) return undefined
-		return results.length === 1 ? results[0] : results
+export const goGoModSource = defineSource<'goGoMod'>({
+	async getInputs(context) {
+		return getMatches(context.options, ['go.mod'])
 	},
 	key: 'goGoMod',
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		return { data: parse(content), source: input }
+	},
 	phase: 1,
-}
+})

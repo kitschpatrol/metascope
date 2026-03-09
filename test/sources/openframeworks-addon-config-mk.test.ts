@@ -1,41 +1,38 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	openframeworksAddonConfigMkSource,
 	parse,
 } from '../../src/lib/sources/openframeworks-addon-config-mk'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/openframeworks-addon-config-mk')
 
 describe('openframeworksAddonConfigMk source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with addon_config.mk', async () => {
-		const context: SourceContext = {
+		expect(await openframeworksAddonConfigMkSource.getInputs({
 			metadata: {},
-			fileTree: ['addon_config.mk'],
 			options: { path: resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer') },
-		}
-		expect(await openframeworksAddonConfigMkSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without addon_config.mk', async () => {
-		const context: SourceContext = {
+		expect(await openframeworksAddonConfigMkSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await openframeworksAddonConfigMkSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed addon config data', async () => {
-		const context: SourceContext = {
+		const result = await openframeworksAddonConfigMkSource.parseInput('addon_config.mk', {
 			metadata: {},
-			fileTree: ['addon_config.mk'],
 			options: { path: resolve(fixturesDirectory, 'arturoc-ofxgstreamer') },
-		}
-		const result = firstOf(await openframeworksAddonConfigMkSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('ofxGStreamer')

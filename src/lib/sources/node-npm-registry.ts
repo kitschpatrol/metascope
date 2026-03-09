@@ -3,9 +3,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
-import type { MetadataSource, SourceContext, SourceRecord } from './source'
+import type { SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { parseJsonRecord } from '../utilities/schema-primitives'
+import { defineSource } from './source'
 
 export type NodeNpmRegistryInfo = {
 	/** Deprecation message, if the package is deprecated. */
@@ -61,11 +62,16 @@ async function fetchDownloads(packageName: string, period: string): Promise<numb
 	}
 }
 
-export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
-	async extract(context: SourceContext): Promise<NodeNpmRegistryData> {
-		log.debug('Extracting npm metadata...')
+export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
+	async getInputs(context) {
 		const name = await getPackageName(context)
-		if (!name) return undefined
+		if (!name) return []
+		return [name]
+	},
+	key: 'nodeNpmRegistry',
+	async parseInput(input) {
+		log.debug('Extracting npm metadata...')
+		const name = input
 
 		const [metadata, downloadsWeekly, downloadsMonthly, downloadsYearly, downloadsTotal] =
 			await Promise.all([
@@ -111,6 +117,5 @@ export const nodeNpmRegistrySource: MetadataSource<'nodeNpmRegistry'> = {
 			source: `https://www.npmjs.com/package/${encodeURIComponent(name)}`,
 		}
 	},
-	key: 'nodeNpmRegistry',
 	phase: 2,
-}
+})

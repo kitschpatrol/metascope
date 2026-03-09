@@ -1,50 +1,46 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
 	parse,
 	processingLibraryPropertiesSource,
 } from '../../src/lib/sources/processing-library-properties'
-import { firstOf } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 
 describe('processingLibraryProperties source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with Processing library.properties', async () => {
-		const context: SourceContext = {
+		expect(await processingLibraryPropertiesSource.getInputs({
 			metadata: {},
-			fileTree: ['library.properties'],
 			options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
-		}
-		expect(await processingLibraryPropertiesSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without library.properties', async () => {
-		const context: SourceContext = {
+		expect(await processingLibraryPropertiesSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should not be available for Arduino library.properties', async () => {
-		const context: SourceContext = {
+		const result = await processingLibraryPropertiesSource.parseInput('library.properties', {
 			metadata: {},
-			fileTree: ['library.properties'],
 			options: { path: resolve('test/fixtures/arduino-library-properties/0xpit-esparklines') },
-		}
-		expect(await processingLibraryPropertiesSource.extract(context)).toBeUndefined()
+		})
+		expect(result).toBeUndefined()
 	})
 
 	it('should extract parsed library properties data', async () => {
-		const context: SourceContext = {
+		const result = await processingLibraryPropertiesSource.parseInput('library.properties', {
 			metadata: {},
-			fileTree: ['library.properties'],
 			options: { path: resolve(fixturesDirectory, 'hx2a-camera3d') },
-		}
-		const result = firstOf(await processingLibraryPropertiesSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Camera 3D')

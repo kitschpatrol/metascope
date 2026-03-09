@@ -1,38 +1,35 @@
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import type { SourceContext } from '../../src/lib/sources/source'
-import { firstOf } from '../../src/lib/sources/source'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/sources/source'
 import { parse, xcodeProjectPbxprojSource } from '../../src/lib/sources/xcode-project-pbxproj'
 
 const fixturesDirectory = resolve('test/fixtures/xcode-project-pbxproj')
 
 describe('xcodeProjectPbxproj source', () => {
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
 	it('should be available in a directory with a .xcodeproj', async () => {
-		const context: SourceContext = {
+		expect(await xcodeProjectPbxprojSource.getInputs({
 			metadata: {},
-			fileTree: ['c2p-cmd-jokeapi.xcodeproj/project.pbxproj'],
 			options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') },
-		}
-		expect(await xcodeProjectPbxprojSource.extract(context)).toBeDefined()
+		})).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without .xcodeproj', async () => {
-		const context: SourceContext = {
+		expect(await xcodeProjectPbxprojSource.getInputs({
 			metadata: {},
-			fileTree: [],
-			options: { path: '/tmp' },
-		}
-		expect(await xcodeProjectPbxprojSource.extract(context)).toBeUndefined()
+			options: { path: resolve('test/fixtures/_empty') },
+		})).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const context: SourceContext = {
+		const result = await xcodeProjectPbxprojSource.parseInput('c2p-cmd-jokeapi.xcodeproj/project.pbxproj', {
 			metadata: {},
-			fileTree: ['c2p-cmd-jokeapi.xcodeproj/project.pbxproj'],
 			options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') },
-		}
-		const result = firstOf(await xcodeProjectPbxprojSource.extract(context))
+		})
 
 		expect(result).toBeDefined()
 		expect(result!.data.version).toBe('0.1')
