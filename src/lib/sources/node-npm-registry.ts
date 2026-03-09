@@ -1,11 +1,10 @@
 import is from '@sindresorhus/is'
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
 import packageJson from 'package-json'
 import { z } from 'zod'
-import type { SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
-import { parseJsonRecord } from '../utilities/schema-primitives'
+import { ensureArray } from '../utilities/formatting'
+import { nodePackageJsonSource } from './node-package-json'
 import { defineSource } from './source'
 
 export type NodeNpmRegistryInfo = {
@@ -35,38 +34,22 @@ export type NodeNpmRegistryInfo = {
 
 export type NodeNpmRegistryData = SourceRecord<NodeNpmRegistryInfo> | undefined
 
-const npmDownloadsSchema = z.object({
-	downloads: z.number(),
-})
-
-async function getPackageName(context: SourceContext): Promise<string | undefined> {
-	try {
-		const content = await readFile(resolve(context.options.path, 'package.json'), 'utf8')
-		const packageContent = parseJsonRecord(content)
-		return typeof packageContent?.name === 'string' ? packageContent.name : undefined
-	} catch {
-		return undefined
-	}
-}
-
-async function fetchDownloads(packageName: string, period: string): Promise<number | undefined> {
-	try {
-		const response = await fetch(
-			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
-		)
-		if (!response.ok) return undefined
-		const data = npmDownloadsSchema.parse(await response.json())
-		return data.downloads
-	} catch {
-		return undefined
-	}
-}
-
 export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 	async getInputs(context) {
-		const name = await getPackageName(context)
-		if (!name) return []
-		return [name]
+		// Try to get package name from context
+		let packageNames = ensureArray(context.metadata?.nodePackageJson)
+			.map((value) => value?.data.name)
+			.filter((value) => value !== undefined)
+
+		// Try to get it ourselves if missing
+		if (packageNames.length === 0) {
+			const nodePackageJson = await nodePackageJsonSource.extract(context)
+			packageNames = ensureArray(nodePackageJson)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		return packageNames
 	},
 	key: 'nodeNpmRegistry',
 	async parseInput(input) {
@@ -119,3 +102,22 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 	},
 	phase: 2,
 })
+
+// Helpers -----------------------
+
+const npmDownloadsSchema = z.object({
+	downloads: z.number(),
+})
+
+async function fetchDownloads(packageName: string, period: string): Promise<number | undefined> {
+	try {
+		const response = await fetch(
+			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
+		)
+		if (!response.ok) return undefined
+		const data = npmDownloadsSchema.parse(await response.json())
+		return data.downloads
+	} catch {
+		return undefined
+	}
+}

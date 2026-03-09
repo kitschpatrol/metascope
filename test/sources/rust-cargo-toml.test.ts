@@ -13,27 +13,18 @@ describe('rustCargoToml source', () => {
 
 	it('should be available in a directory with Cargo.toml', async () => {
 		expect(
-			await rustCargoTomlSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
-			}),
+			await rustCargoTomlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Cargo.toml', async () => {
 		expect(
-			await rustCargoTomlSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await rustCargoTomlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed Cargo.toml data', async () => {
-		const result = await rustCargoTomlSource.parseInput('Cargo.toml', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') },
-		})
+		const result = await rustCargoTomlSource.parseInput('Cargo.toml', { options: { path: resolve(fixturesDirectory, 'aeshirey-emlparser') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('eml-parser')

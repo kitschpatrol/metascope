@@ -14,27 +14,18 @@ describe('nodePackageJson source', () => {
 
 	it('should be available in a directory with a package.json file', async () => {
 		expect(
-			await nodePackageJsonSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
-			}),
+			await nodePackageJsonSource.getInputs({ options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without package.json', async () => {
 		expect(
-			await nodePackageJsonSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await nodePackageJsonSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await nodePackageJsonSource.parseInput('package.json', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
-		})
+		const result = await nodePackageJsonSource.parseInput('package.json', { options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('roku-client')

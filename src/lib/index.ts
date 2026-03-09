@@ -1,6 +1,6 @@
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
-export { defineTemplate } from './metadata-types'
+export { DEFAULT_GET_METADATA_OPTIONS, defineTemplate } from './metadata-types'
 export type {
 	ArduinoLibraryPropertiesData,
 	CinderCinderblockXmlData,

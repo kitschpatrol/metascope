@@ -14,27 +14,18 @@ describe('codemeta-json source', () => {
 
 	it('should be available in a directory with a codemeta.json file', async () => {
 		expect(
-			await codemetaJsonSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
-			}),
+			await codemetaJsonSource.getInputs({ options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without codemeta.json', async () => {
 		expect(
-			await codemetaJsonSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await codemetaJsonSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await codemetaJsonSource.parseInput('codemeta.json', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
-		})
+		const result = await codemetaJsonSource.parseInput('codemeta.json', { options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('InvenioRDM GitHub Archiver (IGA)')

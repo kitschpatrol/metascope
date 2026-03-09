@@ -7,19 +7,13 @@ const fixturesDirectory = resolve('test/fixtures/pyproject')
 
 describe('pythonPypiRegistry source', () => {
 	it('should not be available without pyproject.toml', async () => {
-		const context = {
-			metadata: {},
-			options: { path: '/tmp' },
-		}
+		const context = { options: { path: '/tmp' } }
 		expect(await pythonPypiRegistrySource.extract(context)).toBeUndefined()
 	})
 
 	it('should extract data for a known package', async () => {
 		// Use a fixture with a pyproject.toml containing a known PyPI package
-		const context = {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
-		}
+		const context = { options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') } }
 		const result = await pythonPypiRegistrySource.extract(context)
 
 		expect(result).toBeDefined()
@@ -52,19 +46,13 @@ describe('pythonPypiRegistry source', () => {
 			join(temporaryDirectory, 'pyproject.toml'),
 			'[project]\nname = "this-package-definitely-does-not-exist-on-pypi-12345"',
 		)
-		const context = {
-			metadata: {},
-			options: { path: temporaryDirectory },
-		}
+		const context = { options: { path: temporaryDirectory } }
 		const result = await pythonPypiRegistrySource.extract(context)
 		expect(result).toBeUndefined()
 	})
 
 	it('should return undefined when no package name found', async () => {
-		const context = {
-			metadata: {},
-			options: { path: resolve('.') },
-		}
+		const context = { options: { path: resolve('.') } }
 		const result = await pythonPypiRegistrySource.extract(context)
 		expect(result).toBeUndefined()
 	})

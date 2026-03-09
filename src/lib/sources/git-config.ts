@@ -16,9 +16,7 @@ export const gitConfigSource = defineSource<'gitConfig'>({
 		return getMatches(context.options, ['.git/config'])
 	},
 	key: 'gitConfig',
-	async parseInput(input, context) {
-		console.log('----------------------------------')
-		console.log(input)
+	async parseInput(input) {
 		log.debug('Extracting git config metadata...')
 		const config = await readGitConfig(input)
 		return {

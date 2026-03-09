@@ -1,7 +1,9 @@
+import { defu } from 'defu'
 import type { GetMetadataBaseOptions } from '../metadata-types'
 import type { SourceRecord } from './source'
 import { version } from '../../../package.json'
-import { defineSource, getWorkspaces } from './source'
+import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
+import { defineSource, formatPath, getWorkspaces } from './source'
 
 export type MetascopeInfo = {
 	/** Total scan duration in milliseconds. */
@@ -21,25 +23,38 @@ export type MetascopeData = SourceRecord<MetascopeInfo> | undefined
 export const metascopeSource = defineSource<'metascope'>({
 	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
+		// Always just the root
 		return [context.options.path]
 	},
 	key: 'metascope',
 	// eslint-disable-next-line ts/require-await
 	async parseInput(input, context) {
+		const {
+			absolute,
+			offline,
+			path: basePath,
+			recursive,
+			respectIgnored,
+			templateData,
+			workspaces,
+		} = defu(context.options, DEFAULT_GET_METADATA_OPTIONS)
 		return {
 			data: {
 				durationMs: 0, // Injected later!
 				options: {
-					offline: context.options.offline ?? false,
-					path: context.options.path,
-					recursive: context.options.recursive ?? false,
-					respectIgnored: context.options.respectIgnored ?? true,
-					templateData: context.options.templateData,
-					workspaces: context.options.workspaces,
+					absolute,
+					offline,
+					path: formatPath(basePath, basePath, absolute),
+					recursive,
+					respectIgnored,
+					templateData,
+					workspaces,
 				},
 				scannedAt: new Date().toISOString(),
 				version,
-				workspaceDirectories: getWorkspaces(context.options.path, context.options.workspaces),
+				workspaceDirectories: getWorkspaces(basePath, workspaces).map((directory) =>
+					formatPath(directory, basePath, absolute),
+				),
 			},
 			source: input,
 		}

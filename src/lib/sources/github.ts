@@ -1,9 +1,10 @@
 import gitUrlParse from 'git-url-parse'
 import { Octokit } from 'octokit'
-import git from 'simple-git'
 import { z } from 'zod'
 import type { SourceRecord } from './source'
 import { log } from '../log'
+import { ensureArray } from '../utilities/formatting'
+import { gitConfigSource } from './git-config'
 import { defineSource } from './source'
 
 export type GitHubInfo = {
@@ -305,37 +306,33 @@ const gitHubRepoSchema = z.object({
 	}),
 })
 
-type ParsedRemote = {
-	owner: string
-	repo: string
-}
+/**
+ * Extract a GitHub owner/repo from git config remote URLs.
+ * Prefers the "origin" remote, falls back to the first GitHub remote found.
+ */
+function getGitHubRemoteFromConfig(
+	remotes: Record<string, { url?: string }> | undefined,
+): undefined | { owner: string; repo: string } {
+	if (!remotes) return undefined
 
-async function getGitHubRemote(path: string): Promise<ParsedRemote | undefined> {
-	try {
-		const repo = git(path)
-		const remotes = await repo.getRemotes(true)
+	// Prefer "origin" remote, fall back to first GitHub remote
+	const sorted = Object.entries(remotes).toSorted(([a], [b]) => {
+		if (a === 'origin') return -1
+		if (b === 'origin') return 1
+		return 0
+	})
 
-		// Prefer "origin" remote, fall back to first GitHub remote
-		const sorted = [...remotes].toSorted((a, b) => {
-			if (a.name === 'origin') return -1
-			if (b.name === 'origin') return 1
-			return 0
-		})
-
-		for (const remote of sorted) {
-			const url = remote.refs.fetch || remote.refs.push
-			if (!url) continue
-			try {
-				const parsed = gitUrlParse(url)
-				if (parsed.source === 'github.com' && parsed.owner && parsed.name) {
-					return { owner: parsed.owner, repo: parsed.name }
-				}
-			} catch {
-				// Skip unparsable URLs
+	for (const [, remote] of sorted) {
+		const { url } = remote
+		if (!url) continue
+		try {
+			const parsed = gitUrlParse(url)
+			if (parsed.source === 'github.com' && parsed.owner && parsed.name) {
+				return { owner: parsed.owner, repo: parsed.name }
 			}
+		} catch {
+			// Skip unparsable URLs
 		}
-	} catch {
-		// Not a git repo or no remotes
 	}
 
 	return undefined
@@ -600,9 +597,24 @@ function mapRepoData(
 
 export const githubSource = defineSource<'github'>({
 	async getInputs(context) {
-		const remote = await getGitHubRemote(context.options.path)
-		if (!remote) return []
-		return [`${remote.owner}/${remote.repo}`]
+		let gitRemotes = ensureArray(context.metadata?.gitConfig)
+			.map((config) => config?.data.config?.remote)
+			.filter((remote) => remote !== undefined)
+
+		// Load manually if not in context
+		if (gitRemotes.length === 0) {
+			const extraction = await gitConfigSource.extract(context)
+			gitRemotes = ensureArray(extraction)
+				.map((config) => config?.data.config?.remote)
+				.filter((remote) => remote !== undefined)
+		}
+
+		const ownerRepos = gitRemotes
+			.map((config) => getGitHubRemoteFromConfig(config))
+			.filter((remote) => remote !== undefined)
+			.map((remote) => `${remote.owner}/${remote.repo}`)
+
+		return ownerRepos
 	},
 	key: 'github',
 	async parseInput(input, context) {

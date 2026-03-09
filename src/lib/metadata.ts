@@ -2,12 +2,15 @@ import { execFile } from 'node:child_process'
 import { stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
-import type {
-	Credentials,
-	GetMetadataOptions,
-	GetMetadataTemplateOptions,
-	MetadataContext,
-	Template,
+import { defu } from 'defu'
+import prettyMs from 'pretty-ms'
+import {
+	DEFAULT_GET_METADATA_OPTIONS,
+	type Credentials,
+	type GetMetadataOptions,
+	type GetMetadataTemplateOptions,
+	type MetadataContext,
+	type Template,
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './sources/source'
 import type { TemplateMap, TemplateName } from './templates/index.js'
@@ -169,22 +172,26 @@ async function runSources(
 	}
 }
 
+type PartialPath<T> = Omit<T, 'path'> & { path?: string }
+
 // Overload: built-in template name → mapped return type
 export async function getMetadata<K extends TemplateName>(
-	options: Omit<GetMetadataOptions, 'template'> & { template: K },
+	options: PartialPath<Omit<GetMetadataOptions, 'template'> & { template: K }>,
 ): Promise<TemplateMap[K]>
 // Overload: template function → inferred return type
-export async function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
+export async function getMetadata<T>(options: PartialPath<GetMetadataTemplateOptions<T>>): Promise<T>
 // Overload: no template → full context
-export async function getMetadata(options: GetMetadataOptions): Promise<MetadataContext>
+export async function getMetadata(options?: PartialPath<GetMetadataOptions>): Promise<MetadataContext>
 /**
  * Extract metadata from a project directory.
  */
 export async function getMetadata<T>(
-	options: GetMetadataOptions | GetMetadataTemplateOptions<T>,
+	options?: PartialPath<GetMetadataOptions> | PartialPath<GetMetadataTemplateOptions<T>>,
 ): Promise<MetadataContext | T> {
 	const startTime = performance.now()
-	const absolutePath = resolve(options.path)
+
+	const resolvedOptions = defu(options ?? {}, DEFAULT_GET_METADATA_OPTIONS)
+	const absolutePath = resolve(resolvedOptions.path)
 
 	// Validate that the target directory exists
 	let stats: Awaited<ReturnType<typeof stat>>
@@ -199,21 +206,17 @@ export async function getMetadata<T>(
 	}
 
 	// Resolve template from options (built-in name or function)
-	const template = await resolveTemplate(options.template)
+	const template = await resolveTemplate(resolvedOptions.template)
 
-	const credentials = await resolveCredentials(options.credentials)
-	const offline = options.offline ?? false
-	const recursive = options.recursive ?? false
-	const respectIgnored = options.respectIgnored ?? true
-	const workspaces = options.workspaces ?? true
+	const credentials = await resolveCredentials(resolvedOptions.credentials)
 
 	// Reset match cache to ensure fresh results for each getMetadata call
 	resetMatchCache()
 
 	// Pre-populate the memoized file tree (sources access it via getMatches)
-	log.debug(`Building file tree (recursive: ${recursive}, respectIgnored: ${respectIgnored})...`)
+	log.debug(`Building file tree (recursive: ${resolvedOptions.recursive}, respectIgnored: ${resolvedOptions.respectIgnored})...`)
 	const allFiles = await getMatches(
-		{ path: absolutePath, recursive: true, respectIgnored },
+		{ path: absolutePath, recursive: true, respectIgnored: resolvedOptions.respectIgnored },
 		['**'],
 		['**'],
 	)
@@ -265,29 +268,35 @@ export async function getMetadata<T>(
 		const sourceContext: SourceContext = {
 			metadata: { ...context },
 			options: {
+				...resolvedOptions,
 				credentials,
-				offline,
 				path: absolutePath,
-				recursive,
-				respectIgnored,
-				templateData: options.templateData,
-				workspaces,
 			},
 		}
 		await runSources(phaseSources, sourceContext, context)
 	}
 
-	// Inject total scan duration into metascope data
+	const metadataDuration = performance.now() - startTime
 	if (context.metascope) {
-		context.metascope.data.durationMs = Math.round(performance.now() - startTime)
+		context.metascope.data.durationMs = Math.round(metadataDuration)
 	}
+
+	log.warn(`Metadata duration: ${prettyMs(metadataDuration)}`)
 
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
+		const templateStartTime = performance.now()
 		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Template return type T is guaranteed by the overload signatures
-		return (stripUndefined(template(context, options.templateData ?? {})) ?? {}) as unknown as T
+		const finalTemplateResult = (stripUndefined(template(context, resolvedOptions.templateData ?? {})) ??
+			{}) as unknown as T
+		const templateDuration = performance.now() - templateStartTime
+		log.warn(`Template duration: ${prettyMs(templateDuration)}`)
+		log.warn(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+		return finalTemplateResult
 	}
 
 	// Strip undefined values and empty source objects from raw output
-	return stripUndefined(context)
+	const finalResult = stripUndefined(context)
+	log.warn(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+	return finalResult
 }

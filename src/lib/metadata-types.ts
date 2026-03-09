@@ -161,11 +161,13 @@ export type Credentials = {
  * Base options shared by all `getMetadata` overloads.
  */
 export type GetMetadataBaseOptions = {
+	/** When true (the default), all paths in the output (source, workspaceDirectories, etc.) are absolute. When false, paths are relative to the project directory. */
+	absolute?: boolean
 	/** API credentials for remote sources. */
 	credentials?: Credentials
 	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
 	offline?: boolean
-	/** Project directory path. */
+	/** Project directory path. Defaults to `'.'` (resolved to `process.cwd()` via `path.resolve`). */
 	path: string
 	/** Search for metadata files recursively in subdirectories. Defaults to false. */
 	recursive?: boolean
@@ -179,6 +181,28 @@ export type GetMetadataBaseOptions = {
 	 * False is disable, true is auto-discover which turns into string[], string[] is manual list relative to the project directory path...
 	 */
 	workspaces?: boolean | string[]
+}
+
+/** The keys of `GetMetadataBaseOptions` that have defaults. */
+type DefaultedOptionKeys = keyof typeof DEFAULT_GET_METADATA_OPTIONS
+
+/**
+ * Resolved options after applying defaults. Fields with defaults are required;
+ * fields without defaults (`credentials`, `templateData`) remain optional.
+ */
+export type ResolvedGetMetadataOptions = Required<Pick<GetMetadataBaseOptions, DefaultedOptionKeys>> &
+	Omit<GetMetadataBaseOptions, DefaultedOptionKeys>
+
+/**
+ * Default values for optional fields in `GetMetadataBaseOptions`.
+ */
+export const DEFAULT_GET_METADATA_OPTIONS: Required<Omit<GetMetadataBaseOptions, 'credentials' | 'templateData'>> = {
+	absolute: true,
+	offline: false,
+	path: '.',
+	recursive: false,
+	respectIgnored: true,
+	workspaces: true,
 }
 
 /**

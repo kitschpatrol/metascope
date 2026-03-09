@@ -43,6 +43,11 @@ await yargsInstance
 					type: 'string',
 					array: true,
 				})
+				.option('absolute', {
+					description:
+					'Output absolute paths (default: true). Use --no-absolute for relative paths.',
+					type: 'boolean',
+				})
 				.option('offline', {
 					description:
 						'Skip network requests (web-based sources will return only locally-available data)',
@@ -125,30 +130,19 @@ await yargsInstance
 					...(argv.authorName ? { authorName: argv.authorName } : {}),
 					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
 				}
-				const noIgnore = argv.noIgnore ?? false
-				const offline = argv.offline ?? false
-				const recursive = argv.recursive ?? false
-				const workspaces = argv.workspaces as boolean | string[] | undefined
+				const sharedOptions = {
+					absolute: argv.absolute,
+					credentials,
+					offline: argv.offline,
+					path: argv.path,
+					recursive: argv.recursive,
+					respectIgnored: argv.noIgnore ? false : undefined,
+					templateData,
+					workspaces: argv.workspaces as boolean | string[] | undefined,
+				}
 				const result = template
-					? await getMetadata({
-							credentials,
-							respectIgnored: !noIgnore,
-							offline,
-							path: argv.path,
-							recursive,
-							template,
-							templateData,
-							workspaces,
-						})
-					: await getMetadata({
-							credentials,
-							respectIgnored: !noIgnore,
-							offline,
-							path: argv.path,
-							recursive,
-							templateData,
-							workspaces,
-						})
+					? await getMetadata({ ...sharedOptions, template })
+					: await getMetadata(sharedOptions)
 
 				// JSON output: pretty when TTY, compact when piped
 				const json = process.stdout.isTTY

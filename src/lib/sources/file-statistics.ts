@@ -1,5 +1,5 @@
 import { stat } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { dirname } from 'node:path'
 import type { SourceRecord } from './source'
 import { log } from '../log'
 import { defineSource, getMatches, getWorkspaces } from './source'
@@ -44,7 +44,7 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 		const uniqueDirectories = new Set<string>()
 		for (const file of allFiles) {
 			const directory = dirname(file)
-			if (directory !== '.') {
+			if (directory !== input) {
 				uniqueDirectories.add(directory)
 			}
 		}
@@ -54,7 +54,7 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 		const sizes = await Promise.all(
 			allFiles.map(async (file) => {
 				try {
-					const fileStat = await stat(resolve(input, file))
+					const fileStat = await stat(file)
 					return fileStat.size
 				} catch {
 					return 0

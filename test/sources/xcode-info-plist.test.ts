@@ -13,27 +13,18 @@ describe('xcodeInfoPlist source', () => {
 
 	it('should be available in a directory with Info.plist', async () => {
 		expect(
-			await xcodeInfoPlistSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
-			}),
+			await xcodeInfoPlistSource.getInputs({ options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without Info.plist', async () => {
 		expect(
-			await xcodeInfoPlistSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await xcodeInfoPlistSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const result = await xcodeInfoPlistSource.parseInput('Info.plist', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') },
-		})
+		const result = await xcodeInfoPlistSource.parseInput('Info.plist', { options: { path: resolve(fixturesDirectory, 'alexchantastic-alfred-lipsum-workflow') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Lorem Ipsum')

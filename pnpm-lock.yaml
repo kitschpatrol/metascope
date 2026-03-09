@@ -32,6 +32,9 @@ importers:
       case-police:
         specifier: ^2.2.0
         version: 2.2.0
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
       fast-xml-parser:
         specifier: ^5.4.2
         version: 5.4.2
@@ -65,6 +68,9 @@ importers:
       plist:
         specifier: ^3.1.0
         version: 3.1.0
+      pretty-ms:
+        specifier: ^9.3.0
+        version: 9.3.0
       read-pkg:
         specifier: ^10.1.0
         version: 10.1.0

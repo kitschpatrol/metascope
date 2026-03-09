@@ -1,10 +1,13 @@
 /* eslint-disable ts/naming-convention */
 
-import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { SourceContext, SourceRecord } from './source'
+import type { SourceRecord } from './source'
 import { log } from '../log'
+import { ensureArray } from '../utilities/formatting'
+import { pythonPkgInfoSource } from './python-pkg-info'
+import { pythonPyprojectTomlSource } from './python-pyproject-toml'
+import { pythonSetupCfgSource } from './python-setup-cfg'
+import { pythonSetupPySource } from './python-setup-py'
 import { defineSource } from './source'
 
 export type PythonPypiRegistryInfo = {
@@ -66,33 +69,71 @@ const pypistatsOverallSchema = z.object({
 	),
 })
 
-async function getPackageName(context: SourceContext): Promise<string | undefined> {
-	// Try pyproject.toml [project].name
-	try {
-		const content = await readFile(resolve(context.options.path, 'pyproject.toml'), 'utf8')
-		const nameMatch = /^\s*name\s*=\s*"([^"]+)"/m.exec(content)
-		if (nameMatch?.[1]) return nameMatch[1]
-	} catch {
-		// No pyproject.toml
-	}
-
-	// Try setup.cfg [metadata].name
-	try {
-		const content = await readFile(resolve(context.options.path, 'setup.cfg'), 'utf8')
-		const nameMatch = /^\s*name\s*=\s*(\S+)$/m.exec(content)
-		if (nameMatch?.[1]?.trim()) return nameMatch[1].trim()
-	} catch {
-		// No setup.cfg
-	}
-
-	return undefined
-}
-
 export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 	async getInputs(context) {
-		const name = await getPackageName(context)
-		if (!name) return []
-		return [name]
+		let packageNames = []
+
+		// Try to get package name from pyproject.toml context
+		packageNames = ensureArray(context.metadata?.pythonPyprojectToml)
+			.map((value) => value?.data.project?.name)
+			.filter((value) => value !== undefined)
+
+		// Try to get package name from setup.cfg context
+		if (packageNames.length === 0) {
+			packageNames = ensureArray(context.metadata?.pythonSetupCfg)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get package name from setup.py context
+		if (packageNames.length === 0) {
+			packageNames = ensureArray(context.metadata?.pythonSetupPy)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get package name from pkg-info context
+		if (packageNames.length === 0) {
+			packageNames = ensureArray(context.metadata?.pythonPkgInfo)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get it ourselves if missing...
+
+		// Try to get package name from pyproject.toml source
+		if (packageNames.length === 0) {
+			const extraction = await pythonPyprojectTomlSource.extract(context)
+			packageNames = ensureArray(extraction)
+				.map((value) => value?.data.project?.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get package name from setup.cfg source
+		if (packageNames.length === 0) {
+			const extraction = await pythonSetupCfgSource.extract(context)
+			packageNames = ensureArray(extraction)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get package name from setup.py source
+		if (packageNames.length === 0) {
+			const extraction = await pythonSetupPySource.extract(context)
+			packageNames = ensureArray(extraction)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		// Try to get package name from pkg-info source
+		if (packageNames.length === 0) {
+			const extraction = await pythonPkgInfoSource.extract(context)
+			packageNames = ensureArray(extraction)
+				.map((value) => value?.data.name)
+				.filter((value) => value !== undefined)
+		}
+
+		return packageNames
 	},
 	key: 'pythonPypiRegistry',
 	async parseInput(input) {

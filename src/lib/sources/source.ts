@@ -1,19 +1,23 @@
+/* eslint-disable max-depth */
 import is from '@sindresorhus/is'
+import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
 import { globby } from 'globby'
 import { existsSync } from 'node:fs'
-import { isAbsolute, relative, resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import picomatch from 'picomatch'
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from '../metadata-types'
 import { log } from '../log'
+import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 
 /**
  * Context provided to each metadata source during extraction.
+ * Options may be partial — `defineSource` resolves defaults internally.
  */
 export type SourceContext = {
 	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
-	metadata: Partial<MetadataContext>
-	/** The resolved options passed to `getMetadata`. */
+	metadata?: Partial<MetadataContext>
+	/** Options passed to `getMetadata`. May be partial; defaults are resolved by `defineSource`. */
 	options: GetMetadataBaseOptions
 }
 
@@ -29,7 +33,7 @@ const workspaceCache = new Map<string, string[]>()
 
 /**
  * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
- * Returns relative POSIX paths.
+ * Returns relative POSIX paths (internal to globby; callers receive absolute paths via getMatches).
  */
 async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
@@ -42,9 +46,46 @@ async function getTree(path: string, respectIgnored: boolean): Promise<string[]>
 	return tree
 }
 
+function validateWorkspaces(directory: string, workspaces: unknown[]): string[] {
+	const seen = new Set<string>()
+	const validated: string[] = []
+
+	for (const workspace of workspaces) {
+		if (!is.nonEmptyString(workspace)) {
+			log.warn(`Skipping invalid workspace: expected non-empty string, got ${is(workspace)}`)
+			continue
+		}
+
+		const absolute = resolve(directory, workspace)
+		if (absolute === directory) {
+			continue
+		}
+
+		if (!absolute.startsWith(directory)) {
+			log.warn(`Skipping workspace "${workspace}": must be a child of "${directory}"`)
+			continue
+		}
+
+		if (!existsSync(absolute)) {
+			log.warn(`Skipping workspace "${workspace}": path does not exist`)
+			continue
+		}
+
+		if (seen.has(absolute)) {
+			log.warn(`Skipping workspace "${workspace}": duplicate entry`)
+			continue
+		}
+
+		seen.add(absolute)
+		validated.push(absolute)
+	}
+
+	return validated
+}
+
 /**
  * Get workspace locations for a directory, memoized by directory path.
- * Returns all found workspace location paths, relative to the directory.
+ * Returns all found workspace location paths as absolute paths.
  *
  * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment.
  * Never includes the root path!
@@ -52,53 +93,17 @@ async function getTree(path: string, respectIgnored: boolean): Promise<string[]>
  * @param workspaces - `false` to disable, `true` to auto-discover, `string[]` for a manual list
  */
 export function getWorkspaces(directory: string, workspaces: boolean | string[] = true): string[] {
+	// User opts out
 	if (workspaces === false) return []
-
-	if (Array.isArray(workspaces)) {
-		const seen = new Set<string>()
-		const validated: string[] = []
-
-		for (const workspace of workspaces) {
-			if (!is.nonEmptyString(workspace)) {
-				log.warn(`Skipping invalid workspace: expected non-empty string, got ${is(workspace)}`)
-				continue
-			}
-
-			// Hmm...
-			// if (isAbsolute(workspace)) {
-			// 	log.warn(`Skipping workspace "${workspace}": must be a relative path`)
-			// 	continue
-			// }
-
-			const absolute = resolve(directory, workspace)
-			if (!absolute.startsWith(directory)) {
-				log.warn(`Skipping workspace "${workspace}": must be a child of "${directory}"`)
-				continue
-			}
-
-			if (!existsSync(absolute)) {
-				log.warn(`Skipping workspace "${workspace}": path does not exist`)
-				continue
-			}
-
-			if (seen.has(absolute)) {
-				log.warn(`Skipping workspace "${workspace}": duplicate entry`)
-				continue
-			}
-
-			seen.add(absolute)
-			validated.push(workspace)
-		}
-
-		return validated
-	}
 
 	let locations = workspaceCache.get(directory)
 	if (!locations) {
-		locations =
-			findWorkspaces(directory)
-				?.map((value) => value.location)
-				.filter((value) => value !== directory) ?? []
+		locations = validateWorkspaces(
+			directory,
+			workspaces === true
+				? (findWorkspaces(directory)?.map((value) => value.location) ?? [])
+				: workspaces,
+		)
 		workspaceCache.set(directory, locations)
 	}
 
@@ -114,6 +119,18 @@ export function resetMatchCache(): void {
 	workspaceCache.clear()
 }
 
+// ─── Path Formatting ────────────────────────────────────────────────
+
+/**
+ * Format an absolute path as either absolute or relative, based on the `absolute` option.
+ * When relative, paths identical to `basePath` are returned as `'.'`.
+ */
+export function formatPath(absolutePath: string, basePath: string, absolute = DEFAULT_GET_METADATA_OPTIONS.absolute): string {
+	if (absolute) return absolutePath
+	const relativePath = relative(basePath, absolutePath)
+	return relativePath === '' ? '.' : relativePath
+}
+
 type MatchOptions = Pick<
 	GetMetadataBaseOptions,
 	'path' | 'recursive' | 'respectIgnored' | 'workspaces'
@@ -126,8 +143,7 @@ type MatchOptions = Pick<
  * - Auto-prepends `**\/` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
  * - When `options.workspaces` is set, also matches files in workspace directories.
- *   Workspace matches are returned with paths relative to the root `options.path`
- *   (e.g. `packages/foo/package.json`). Workspace trees are individually memoized.
+ *   Workspace matches are returned as absolute paths. Workspace trees are individually memoized.
  * @param options - Must include `path`; optionally `recursive`, `respectIgnored`, and `workspaces`
  * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
  * @param patternsRecursive - Optionally explicitly specify recursive pattern
@@ -138,8 +154,9 @@ export async function getMatches(
 	patterns: string[],
 	patternsRecursive?: string[],
 ): Promise<string[]> {
-	const tree = await getTree(options.path, options.respectIgnored ?? true)
-	const effectivePatterns = options.recursive
+	const resolved = defu(options, DEFAULT_GET_METADATA_OPTIONS)
+	const tree = await getTree(resolved.path, resolved.respectIgnored)
+	const effectivePatterns = resolved.recursive
 		? // Recursive... use explicit if available, otherwise fall back to implicit
 			(patternsRecursive ?? patterns.map((p) => `**/${p}`))
 		: // Non-recursive...
@@ -150,24 +167,24 @@ export async function getMatches(
 	const results: string[] = []
 
 	for (const filePath of tree) {
-		if (isMatch(filePath) && !seen.has(filePath)) {
-			seen.add(filePath)
-			results.push(filePath)
+		const absolutePath = resolve(resolved.path, filePath)
+		if (isMatch(filePath) && !seen.has(absolutePath)) {
+			seen.add(absolutePath)
+			results.push(absolutePath)
 		}
 	}
 
 	// Also match in workspace directories
-	if (options.workspaces) {
-		const workspacePaths = getWorkspaces(options.path, options.workspaces)
+	if (resolved.workspaces) {
+		const workspacePaths = getWorkspaces(resolved.path, resolved.workspaces)
 		for (const workspace of workspacePaths) {
-			const workspaceTree = await getTree(workspace, options.respectIgnored ?? true)
-			const prefix = relative(options.path, workspace)
+			const workspaceTree = await getTree(workspace, resolved.respectIgnored)
 			for (const filePath of workspaceTree) {
 				if (isMatch(filePath)) {
-					const fullPath = `${prefix}/${filePath}`
-					if (!seen.has(fullPath)) {
-						seen.add(fullPath)
-						results.push(fullPath)
+					const absolutePath = resolve(workspace, filePath)
+					if (!seen.has(absolutePath)) {
+						seen.add(absolutePath)
+						results.push(absolutePath)
 					}
 				}
 			}
@@ -175,7 +192,7 @@ export async function getMatches(
 	}
 
 	// Sort alphabetically first, then by depth (shallowest first)
-	return results.sort((a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length)
+	return results.toSorted((a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length)
 }
 
 // ─── Source Records ─────────────────────────────────────────────────
@@ -270,14 +287,23 @@ export function defineSource<K extends SourceName>(
 	return {
 		...config,
 		async extract(context: SourceContext): Promise<MetadataContext[K]> {
-			const inputs = await config.getInputs(context)
+			// Resolve defaults so getInputs/parseInput always see complete options
+			const resolved: SourceContext = {
+				...context,
+				options: defu(context.options, DEFAULT_GET_METADATA_OPTIONS),
+			}
+
+			const inputs = await config.getInputs(resolved)
 			if (inputs.length === 0) return undefined as MetadataContext[K]
 
 			const results: SourceRecord[] = []
 			for (const input of inputs) {
 				try {
-					const result = await config.parseInput(input, context)
-					if (result) results.push(result)
+					const result = await config.parseInput(input, resolved)
+					if (result) {
+						result.source = formatPath(result.source, resolved.options.path, resolved.options.absolute)
+						results.push(result)
+					}
 				} catch (error) {
 					log.warn(
 						`Failed to process "${input}": ${error instanceof Error ? error.message : String(error)}`,

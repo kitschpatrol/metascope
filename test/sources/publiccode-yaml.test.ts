@@ -14,36 +14,24 @@ describe('publiccodeYaml source', () => {
 
 	it('should be available in a directory with publiccode.yml', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
-			}),
+			await publiccodeYamlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'cisofy-lynis') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with publiccode.yaml', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
-			}),
+			await publiccodeYamlSource.getInputs({ options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without publiccode files', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await publiccodeYamlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a .yml fixture', async () => {
-		const result = await publiccodeYamlSource.parseInput('publiccode.yml', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
-		})
+		const result = await publiccodeYamlSource.parseInput('publiccode.yml', { options: { path: resolve(fixturesDirectory, 'cisofy-lynis') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Lynis')
@@ -53,10 +41,7 @@ describe('publiccodeYaml source', () => {
 	})
 
 	it('should extract parsed metadata from a .yaml fixture', async () => {
-		const result = await publiccodeYamlSource.parseInput('publiccode.yaml', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
-		})
+		const result = await publiccodeYamlSource.parseInput('publiccode.yaml', { options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('CoreBundle')

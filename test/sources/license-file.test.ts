@@ -14,45 +14,30 @@ describe('licenseFiles source', () => {
 
 	it('should be available in a directory with a LICENSE file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'pallets-flask') },
-			}),
+			await licenseFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'pallets-flask') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with a COPYING file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'pallets-flask-1') },
-			}),
+			await licenseFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'pallets-flask-1') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should be available in a directory with a LICENCE file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'ashuk032-8secread') },
-			}),
+			await licenseFileSource.getInputs({ options: { path: resolve(fixturesDirectory, 'ashuk032-8secread') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should return undefined in a directory without license files', async () => {
 		expect(
-			await licenseFileSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await licenseFileSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract a license record from a single license file', async () => {
-		const result = await licenseFileSource.parseInput('LICENSE', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'pallets-flask') },
-		})
+		const result = await licenseFileSource.parseInput('LICENSE', { options: { path: resolve(fixturesDirectory, 'pallets-flask') } })
 
 		expect(result).toBeDefined()
 		expect(result!.data.spdxId).toContain('BSD')
@@ -61,10 +46,7 @@ describe('licenseFiles source', () => {
 	})
 
 	it('should return multiple records from multiple license files', async () => {
-		const result = await licenseFileSource.extract({
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'multi') },
-		})
+		const result = await licenseFileSource.extract({ options: { path: resolve(fixturesDirectory, 'multi') } })
 
 		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have 2
 		expect(Array.isArray(result)).toBe(true)

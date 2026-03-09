@@ -14,10 +14,11 @@ describe('getWorkspaces', () => {
 		expect(getWorkspaces(fixturesDirectory, false)).toEqual([])
 	})
 
-	it('should auto-discover workspaces when true', () => {
+	it('should auto-discover workspaces as absolute paths', () => {
 		const locations = getWorkspaces(fixturesDirectory, true)
 		expect(locations).toHaveLength(2)
 		for (const location of locations) {
+			expect(isAbsolute(location)).toBe(true)
 			expect(location).toContain('packages/pkg-')
 		}
 	})
@@ -33,9 +34,12 @@ describe('getWorkspaces', () => {
 		expect(first).toBe(second)
 	})
 
-	it('should return validated manual list', () => {
+	it('should return validated manual list as absolute paths', () => {
 		const locations = getWorkspaces(fixturesDirectory, ['packages/pkg-a', 'packages/pkg-b'])
-		expect(locations).toEqual(['packages/pkg-a', 'packages/pkg-b'])
+		expect(locations).toEqual([
+			resolve(fixturesDirectory, 'packages/pkg-a'),
+			resolve(fixturesDirectory, 'packages/pkg-b'),
+		])
 	})
 
 	it('should skip non-existent manual paths', () => {
@@ -43,12 +47,12 @@ describe('getWorkspaces', () => {
 			'packages/pkg-a',
 			'packages/does-not-exist',
 		])
-		expect(locations).toEqual(['packages/pkg-a'])
+		expect(locations).toEqual([resolve(fixturesDirectory, 'packages/pkg-a')])
 	})
 
 	it('should skip duplicate manual paths', () => {
 		const locations = getWorkspaces(fixturesDirectory, ['packages/pkg-a', 'packages/pkg-a'])
-		expect(locations).toEqual(['packages/pkg-a'])
+		expect(locations).toEqual([resolve(fixturesDirectory, 'packages/pkg-a')])
 	})
 
 	it('should skip paths that escape the directory', () => {
@@ -59,7 +63,7 @@ describe('getWorkspaces', () => {
 	it('should skip non-string values', () => {
 		// eslint-disable-next-line ts/no-unsafe-argument, ts/no-explicit-any
 		const locations = getWorkspaces(fixturesDirectory, [42, '', 'packages/pkg-a'] as any)
-		expect(locations).toEqual(['packages/pkg-a'])
+		expect(locations).toEqual([resolve(fixturesDirectory, 'packages/pkg-a')])
 	})
 })
 
@@ -68,14 +72,14 @@ describe('getMatches with workspaces', () => {
 		resetMatchCache()
 	})
 
-	it('should include workspace matches with relative paths', async () => {
+	it('should include workspace matches as absolute paths', async () => {
 		const matches = await getMatches(
 			{ path: fixturesDirectory, workspaces: ['packages/pkg-a', 'packages/pkg-b'] },
 			['package.json'],
 		)
-		expect(matches).toContain('package.json')
-		expect(matches).toContain('packages/pkg-a/package.json')
-		expect(matches).toContain('packages/pkg-b/package.json')
+		expect(matches).toContain(resolve(fixturesDirectory, 'package.json'))
+		expect(matches).toContain(resolve(fixturesDirectory, 'packages/pkg-a/package.json'))
+		expect(matches).toContain(resolve(fixturesDirectory, 'packages/pkg-b/package.json'))
 	})
 
 	it('should not include workspace matches when workspaces is false', async () => {
@@ -83,7 +87,7 @@ describe('getMatches with workspaces', () => {
 			{ path: fixturesDirectory, workspaces: false },
 			['package.json'],
 		)
-		expect(matches).toEqual(['package.json'])
+		expect(matches).toEqual([resolve(fixturesDirectory, 'package.json')])
 	})
 
 	it('should deduplicate results', async () => {
@@ -108,28 +112,28 @@ describe('getMatches with workspaces', () => {
 })
 
 describe('getMetadata with absolute flag', () => {
-	it('should return relative source paths by default', async () => {
+	it('should return absolute source paths by default', async () => {
 		const result = await getMetadata({ path: '.', workspaces: false })
-		const source = firstOf(result.nodePackageJson)?.source
-		expect(source).toBeDefined()
-		expect(isAbsolute(source!)).toBe(false)
-	})
-
-	it('should return absolute source paths when absolute is true', async () => {
-		const result = await getMetadata({ absolute: true, path: '.', workspaces: false })
 		const source = firstOf(result.nodePackageJson)?.source
 		expect(source).toBeDefined()
 		expect(isAbsolute(source!)).toBe(true)
 		expect(source).toContain('package.json')
 	})
 
-	it('should resolve metascope path to absolute', async () => {
-		const result = await getMetadata({ absolute: true, path: '.', workspaces: false })
+	it('should return relative source paths when absolute is false', async () => {
+		const result = await getMetadata({ absolute: false, path: '.', workspaces: false })
+		const source = firstOf(result.nodePackageJson)?.source
+		expect(source).toBeDefined()
+		expect(isAbsolute(source!)).toBe(false)
+	})
+
+	it('should resolve metascope path to absolute by default', async () => {
+		const result = await getMetadata({ path: '.', workspaces: false })
 		expect(result.metascope).toBeDefined()
 		expect(isAbsolute(result.metascope!.data.options.path)).toBe(true)
 	})
 
-	it('should return relative workspace directories by default', async () => {
+	it('should return absolute workspace directories by default', async () => {
 		const result = await getMetadata({
 			path: 'test/fixtures/workspaces',
 			workspaces: true,
@@ -137,19 +141,19 @@ describe('getMetadata with absolute flag', () => {
 		expect(result.metascope).toBeDefined()
 		expect(result.metascope!.data.workspaceDirectories.length).toBeGreaterThan(0)
 		for (const dir of result.metascope!.data.workspaceDirectories) {
-			expect(isAbsolute(dir)).toBe(false)
+			expect(isAbsolute(dir)).toBe(true)
 		}
 	})
 
-	it('should resolve workspace directories to absolute', async () => {
+	it('should return relative workspace directories when absolute is false', async () => {
 		const result = await getMetadata({
-			absolute: true,
+			absolute: false,
 			path: 'test/fixtures/workspaces',
 			workspaces: true,
 		})
 		expect(result.metascope).toBeDefined()
 		for (const dir of result.metascope!.data.workspaceDirectories) {
-			expect(isAbsolute(dir)).toBe(true)
+			expect(isAbsolute(dir)).toBe(false)
 		}
 	})
 })

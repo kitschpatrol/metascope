@@ -16,27 +16,18 @@ describe('pythonSetupCfg source', () => {
 
 	it('should be available in a directory with a setup.cfg file', async () => {
 		expect(
-			await pythonSetupCfgSource.getInputs({
-				metadata: {},
-				options: { path: resolve(fixturesDirectory, 'basic') },
-			}),
+			await pythonSetupCfgSource.getInputs({ options: { path: resolve(fixturesDirectory, 'basic') } }),
 		).not.toHaveLength(0)
 	})
 
 	it('should not be available in a directory without setup.cfg', async () => {
 		expect(
-			await pythonSetupCfgSource.getInputs({
-				metadata: {},
-				options: { path: resolve('test/fixtures/_empty') },
-			}),
+			await pythonSetupCfgSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await pythonSetupCfgSource.parseInput('setup.cfg', {
-			metadata: {},
-			options: { path: resolve(fixturesDirectory, 'basic') },
-		})
+		const result = await pythonSetupCfgSource.parseInput('setup.cfg', { options: { path: resolve(fixturesDirectory, 'basic') } })
 
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('setup.cfg')

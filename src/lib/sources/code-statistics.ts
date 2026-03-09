@@ -1,6 +1,5 @@
 import type { Language, LanguageInfo } from '@kitschpatrol/tokei'
 import { tokei } from '@kitschpatrol/tokei'
-import path from 'node:path'
 import type { OneOrMany, SourceContext, SourceRecord } from './source'
 import { log } from '../log'
 import { defineSource, getWorkspaces } from './source'
@@ -42,7 +41,7 @@ async function getStatistics(
 
 	return {
 		data: { perLanguage, total },
-		source: path.relative(options.path, directory),
+		source: directory,
 	}
 }
 
