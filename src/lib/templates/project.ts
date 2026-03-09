@@ -1,15 +1,8 @@
 /* eslint-disable complexity */
 
 import { defineTemplate } from '../metadata-types'
-import {
-	getStatus,
-	isAuthoredBy,
-	isOnGithubAccountOf,
-	toBasicLicenses,
-	toLocalUrl,
-	usesPnpm,
-	usesSharedConfig,
-} from '../utilities'
+import { toLocalUrl } from '../utilities/formatting'
+import { getStatus, isAuthoredBy, isOnGithubAccountOf, toBasicLicenses, usesPnpm, usesSharedConfig } from '../utilities/template-helpers'
 
 /**
  * Legacy structure used in AllWork desktop app

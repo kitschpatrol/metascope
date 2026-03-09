@@ -3,17 +3,8 @@
 /* eslint-disable ts/naming-convention */
 
 import { defineTemplate } from '../metadata-types'
-import {
-	mixedStringsToArray,
-	REPLACEMENTS,
-	toAlias,
-	toBasicLicenses,
-	basicNames as toBasicNames,
-	toLocalUrl,
-	toMb,
-	getStatus as toStatus,
-	usesSharedConfig,
-} from '../utilities'
+import { REPLACEMENTS, mixedStringsToArray, toAlias, toLocalUrl, toMb } from '../utilities/formatting'
+import { toBasicLicenses, basicNames as toBasicNames, getStatus as toStatus, usesSharedConfig } from '../utilities/template-helpers'
 
 /**
  * A compact, non-nested, polyglot overview of the project.

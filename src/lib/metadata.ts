@@ -43,7 +43,7 @@ import { rubyGemspecSource } from './sources/ruby-gemspec'
 import { rustCargoTomlSource } from './sources/rust-cargo-toml'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
-import { stripUndefined } from './utilities'
+import { stripUndefined } from './utilities/formatting'
 
 const execFileAsync = promisify(execFile)
 
