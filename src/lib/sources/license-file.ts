@@ -14,13 +14,13 @@ export type LicenseMatch = {
 	spdxId: string
 }
 
-export type LicenseFilesData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
+export type LicenseFileData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
 
-export const licenseFileSource = defineSource<'licenseFiles'>({
+export const licenseFileSource = defineSource<'licenseFile'>({
 	async getInputs(context) {
 		return getMatches(context.options, ['{,un}licen{c,s}e{,.*}', 'copying{,.lesser}{,.*}'])
 	},
-	key: 'licenseFiles',
+	key: 'licenseFile',
 	async parseInput(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const match = identifyLicense(content)

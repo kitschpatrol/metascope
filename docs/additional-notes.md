@@ -43,36 +43,36 @@ Not yet implemented, but under consideration:
 
 ## Alternate context keys:
 
-arduinoLibrary  
-cinderCinderblock  
-codemeta  
-codeStats  
-dependencyUpdates  
-fileStats  
-git  
-github  
-gitStats  
-goGoMod  
-goGoreleaser  
-javaPom  
-license  
-metadata  
-nodeNpm  
-nodePackage  
-obsidianPluginManifest  
-obsidianPlugin  
-openframeworksAddonConfig  
-openframeworksInstall  
-processingLibrary  
-processingSketch  
-publiccode  
-pythonPkgInfo  
-pythonPypi  
-pythonPyproject  
-pythonSetupCfg  
-pythonSetupPy  
-readme  
-rubyGemspec  
-rustCargo  
-xcodeInfo  
-xcodeProject
+arduinoLibraryProperties --> arduinoLibrary
+cinderCinderblockXml --> cinderCinderblock
+codemetaJson --> codemeta
+codeStats --> codeStats
+dependencyUpdates --> dependencyUpdates
+fileStats --> fileStats
+gitConfig --> git
+github --> github
+gitStats --> gitStats
+goGoMod --> goGoMod
+goGoreleaserYaml --> goGoreleaser
+javaPomXml --> javaPom
+licenseFile --> license
+metadataFile --> metadata
+nodeNpmRegistry --> nodeNpm
+nodePackageJson --> nodePackage
+obsidianPluginManifestJson --> obsidianPluginManifest
+obsidianPluginRegistry --> obsidianPlugin
+openframeworksAddonConfigMk --> openframeworksAddonConfig
+openframeworksInstallXml --> openframeworksInstall
+processingLibraryProperties --> processingLibrary
+processingSketchProperties --> processingSketch
+publiccodeYaml --> publiccode
+pythonPkgInfo --> pythonPkgInfo
+pythonPypiRegistry --> pythonPypi
+pythonPyprojectToml --> pythonPyproject
+pythonSetupCfg --> pythonSetupCfg
+pythonSetupPy --> pythonSetupPy
+readmeFile --> readme
+rubyGemspec --> rubyGemspec
+rustCargoToml --> rustCargo
+xcodeInfoPlist --> xcodeInfo
+xcodeProjectPbxproj --> xcodeProject

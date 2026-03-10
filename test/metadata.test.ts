@@ -32,7 +32,7 @@ describe('getMetadata', () => {
 	it('should not include empty source objects', async () => {
 		const result = await getMetadata({ path: '.' })
 		// Sources that aren't available should not appear as empty objects
-		// (arrays like licenseFiles may legitimately be empty)
+		// (arrays like licenseFile may legitimately be empty)
 		for (const [, value] of Object.entries(result)) {
 			if (typeof value === 'object' && !Array.isArray(value)) {
 				expect(Object.keys(value).length).toBeGreaterThan(0)

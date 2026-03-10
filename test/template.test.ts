@@ -74,7 +74,7 @@ const mockContext: MetadataContext = {
 	goGoMod: undefined,
 	goGoreleaserYaml: undefined,
 	javaPomXml: undefined,
-	licenseFiles: [],
+	licenseFile: [],
 	metadataFile: undefined,
 	metascope: {
 		data: {
@@ -436,7 +436,7 @@ describe('codemeta template', () => {
 			gitConfig: undefined,
 			github: undefined,
 			gitStats: undefined,
-			licenseFiles: undefined,
+			licenseFile: undefined,
 			metascope: undefined,
 			nodeNpmRegistry: undefined,
 			nodePackageJson: undefined,

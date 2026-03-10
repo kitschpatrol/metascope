@@ -7,7 +7,7 @@ import { identifyLicense, spdxIdToUrl } from '../../src/lib/utilities/license-id
 
 const fixturesDirectory = resolve('test/fixtures/license-file')
 
-describe('licenseFiles source', () => {
+describe('licenseFile source', () => {
 	beforeEach(() => {
 		resetMatchCache()
 	})

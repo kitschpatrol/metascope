@@ -240,7 +240,7 @@ export async function getMetadata<T>(
 		goGoMod: undefined,
 		goGoreleaserYaml: undefined,
 		javaPomXml: undefined,
-		licenseFiles: undefined,
+		licenseFile: undefined,
 		metadataFile: undefined,
 		metascope: undefined,
 		nodeNpmRegistry: undefined,

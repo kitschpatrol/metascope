@@ -10,7 +10,7 @@ import type { GitHubData } from './sources/github'
 import type { GoGoModData } from './sources/go-go-mod'
 import type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
 import type { JavaPomXmlData } from './sources/java-pom-xml'
-import type { LicenseFilesData } from './sources/license-file'
+import type { LicenseFileData } from './sources/license-file'
 import type { MetadataFileData } from './sources/metadata-file'
 import type { MetascopeData } from './sources/metascope'
 import type { NodeNpmRegistryData } from './sources/node-npm-registry'
@@ -52,7 +52,7 @@ export type MetadataContext = {
 	goGoMod: GoGoModData
 	goGoreleaserYaml: GoGoreleaserYamlData
 	javaPomXml: JavaPomXmlData
-	licenseFiles: LicenseFilesData
+	licenseFile: LicenseFileData
 	metadataFile: MetadataFileData
 	metascope: MetascopeData
 	nodeNpmRegistry: NodeNpmRegistryData

@@ -138,12 +138,12 @@ describe('all-sources fixture', () => {
 		expect(data!.ciManagementUrl).toContain('actions')
 	})
 
-	it('should extract licenseFiles', async () => {
+	it('should extract licenseFile', async () => {
 		const result = await resultPromise
-		const records = Array.isArray(result.licenseFiles)
-			? result.licenseFiles
-			: result.licenseFiles
-				? [result.licenseFiles]
+		const records = Array.isArray(result.licenseFile)
+			? result.licenseFile
+			: result.licenseFile
+				? [result.licenseFile]
 				: []
 		expect(records.length).toBeGreaterThan(0)
 		const { data } = records[0]

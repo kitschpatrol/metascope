@@ -66,7 +66,7 @@ export const codemeta = defineTemplate(
 		gitStats: gitRaw,
 		goGoMod,
 		javaPomXml,
-		licenseFiles,
+		licenseFile,
 		metascope,
 		nodeNpmRegistry: npmRaw,
 		nodePackageJson,
@@ -506,7 +506,7 @@ export const codemeta = defineTemplate(
 			cinder?.data.license ??
 			publiccode?.data.license ??
 			github?.data.licenseSpdxId ??
-			collectField(licenseFiles, (d) => d.spdxId)[0] ??
+			collectField(licenseFile, (d) => d.spdxId)[0] ??
 			resolveCmLicense(cm?.data.license)
 
 		const license = is.nonEmptyStringAndNotWhitespace(rawLicense)
