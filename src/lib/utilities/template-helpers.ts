@@ -8,7 +8,7 @@ import products from 'case-police/dict/products.json'
 import softwares from 'case-police/dict/softwares.json'
 import path from 'node:path'
 import { titleCase } from 'scule'
-import type { CodeMetaJson, CodeMetaJsonData } from '../sources/codemeta-json'
+import type { CodeMetaJson } from '../sources/codemeta-json'
 import type { NodePackageJsonData } from '../sources/node-package-json'
 
 const casePoliceDict: Record<string, string> = {
@@ -310,10 +310,8 @@ function hasDependencyWithId(id: string, codemeta: CodeMetaJson): boolean {
 /**
  * Check if the project has `@kitschpatrol/shared-config` as a dependency.
  */
-export function usesSharedConfig(codemetaRaw: CodeMetaJsonData): boolean {
-	const codemeta = firstOf(codemetaRaw)
-	if (!codemeta) return false
-	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta.data)
+export function usesSharedConfig(codemeta: CodeMetaJson): boolean {
+	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta)
 }
 
 /**
@@ -332,17 +330,23 @@ export function usesPnpm(packageJson: NodePackageJsonData): boolean {
  * True if project was authored by specific person(s).
  */
 export function isAuthoredBy(
-	codemetaRaw?: CodeMetaJsonData,
-	authorName?: string | string[],
+	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
+	expectedAuthorName?: string | string[],
 ): boolean | undefined {
-	const codemeta = firstOf(codemetaRaw)
-	if (codemeta === undefined || authorName === undefined || codemeta.data.author === undefined) {
+	if (
+		codemetaAuthorName === undefined ||
+		expectedAuthorName === undefined ||
+		is.emptyArray(codemetaAuthorName) ||
+		is.emptyArray(expectedAuthorName)
+	) {
 		return undefined
 	}
 
-	const authors = new Set(ensureArray(authorName).map((name) => name.toLocaleLowerCase().trim()))
+	const authors = new Set(
+		ensureArray(expectedAuthorName).map((name) => name.toLocaleLowerCase().trim()),
+	)
 
-	const basicNamesArray = toBasicNames(codemeta.data.author)?.map((name) =>
+	const basicNamesArray = toBasicNames(ensureArray(codemetaAuthorName))?.map((name) =>
 		name.toLocaleLowerCase().trim(),
 	)
 
@@ -353,19 +357,14 @@ export function isAuthoredBy(
  * True if project is on a specific GitHub account(s).
  */
 export function isOnGithubAccountOf(
-	codemetaRaw?: CodeMetaJsonData,
+	codeRepository?: string,
 	githubUserName?: string | string[],
 ): boolean | undefined {
-	const codemeta = firstOf(codemetaRaw)
-	if (
-		codemeta === undefined ||
-		githubUserName === undefined ||
-		codemeta.data.codeRepository === undefined
-	) {
+	if (codeRepository === undefined || githubUserName === undefined) {
 		return undefined
 	}
 
-	const cleanRepo = codemeta.data.codeRepository.toLocaleLowerCase().trim()
+	const cleanRepo = codeRepository.toLocaleLowerCase().trim()
 
 	if (!cleanRepo.includes('github.com/')) {
 		return false
@@ -380,7 +379,8 @@ export function isOnGithubAccountOf(
  * Heuristic project status based on authorship and GitHub account.
  */
 export function toStatus(
-	codemeta?: CodeMetaJsonData,
+	codeRepository?: string,
+	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	authorName?: string | string[],
 	githubUserName?: string | string[],
 ):
@@ -392,12 +392,12 @@ export function toStatus(
 			| 'unmaintained'
 	  )
 	| undefined {
-	if (codemeta === undefined || authorName === undefined || githubUserName === undefined) {
+	if (codeRepository === undefined || authorName === undefined || githubUserName === undefined) {
 		return undefined
 	}
 
-	const isAuthoredByAuthorName = isAuthoredBy(codemeta, authorName)
-	const isOnGithub = isOnGithubAccountOf(codemeta, githubUserName)
+	const isAuthoredByAuthorName = isAuthoredBy(codemetaAuthorName, authorName)
+	const isOnGithub = isOnGithubAccountOf(codeRepository, githubUserName)
 
 	if (isAuthoredByAuthorName === undefined || isOnGithub === undefined) {
 		return undefined

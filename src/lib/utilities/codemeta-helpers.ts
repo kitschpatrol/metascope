@@ -20,7 +20,7 @@ export type CodemetaOrganizationLd = {
 /**
  * A Person or Organization node in codemeta JSON-LD.
  */
-export type CodemetaPersonLd = {
+export type CodemetaPersonOrOrgLd = {
 	'@id'?: string
 	'@type': 'Organization' | 'Person'
 	affiliation?: CodemetaOrganizationLd
@@ -51,7 +51,7 @@ export type CodemetaDependencyLd = {
  * Works with person shapes from any metascope source — the caller maps
  * source-specific field names into this common parameter object.
  */
-export function toPersonLd(options: {
+export function toPersonOrOrgLd(options: {
 	affiliation?: string
 	email?: string
 	familyName?: string
@@ -60,7 +60,7 @@ export function toPersonLd(options: {
 	name?: string
 	type?: 'Organization' | 'Person'
 	url?: string
-}): CodemetaPersonLd | undefined {
+}): CodemetaPersonOrOrgLd | undefined {
 	const hasName = is.nonEmptyStringAndNotWhitespace(options.name)
 	const hasGivenName = is.nonEmptyStringAndNotWhitespace(options.givenName)
 	const hasFamilyName = is.nonEmptyStringAndNotWhitespace(options.familyName)
@@ -68,7 +68,7 @@ export function toPersonLd(options: {
 
 	if (!hasName && !hasGivenName && !hasFamilyName && !hasEmail) return undefined
 
-	const person: CodemetaPersonLd = { '@type': options.type ?? 'Person' }
+	const person: CodemetaPersonOrOrgLd = { '@type': options.type ?? 'Person' }
 	if (is.nonEmptyStringAndNotWhitespace(options.id)) person['@id'] = options.id
 	if (hasName) person.name = options.name
 	if (hasGivenName) person.givenName = options.givenName
@@ -87,8 +87,10 @@ export function toPersonLd(options: {
  * Keeps the first occurrence, so callers should place higher-priority sources first.
  * Returns undefined if the result is empty.
  */
-export function deduplicatePersons(persons: CodemetaPersonLd[]): CodemetaPersonLd[] | undefined {
-	const seen = new Map<string, CodemetaPersonLd>()
+export function deduplicatePersonsOrOrgs(
+	persons: CodemetaPersonOrOrgLd[],
+): CodemetaPersonOrOrgLd[] | undefined {
+	const seen = new Map<string, CodemetaPersonOrOrgLd>()
 	for (const person of persons) {
 		const key = (
 			person.name ??

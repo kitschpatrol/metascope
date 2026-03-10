@@ -224,7 +224,7 @@ const codeMetaDependencyArray = z
 
 // ─── Top-level schema ────────────────────────────────────────────────
 
-const codeMetaJsonDataSchema = z.object({
+export const codeMetaJsonDataSchema = z.object({
 	applicationCategory: codeMetaString,
 	applicationSubCategory: codeMetaString,
 	author: codeMetaPersonArray,

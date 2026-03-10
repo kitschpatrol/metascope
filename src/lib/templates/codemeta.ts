@@ -30,13 +30,13 @@
 import is from '@sindresorhus/is'
 import { basename, relative } from 'node:path'
 import type { MetadataContext } from '../metadata-types'
-import type { CodemetaDependencyLd, CodemetaPersonLd } from '../utilities/codemeta-helpers'
+import type { CodemetaDependencyLd, CodemetaPersonOrOrgLd } from '../utilities/codemeta-helpers'
 import { defineTemplate } from '../metadata-types'
 import {
 	deduplicateDependencies,
-	deduplicatePersons,
+	deduplicatePersonsOrOrgs,
 	toDependencyLd,
-	toPersonLd,
+	toPersonOrOrgLd,
 	toSpdxLicenseUrl,
 } from '../utilities/codemeta-helpers'
 import {
@@ -180,11 +180,11 @@ export const codemeta = defineTemplate(
 
 		// ── Author ──────────────────────────────────────────────────
 
-		const ecosystemAuthors: Array<CodemetaPersonLd | undefined> = [
+		const ecosystemAuthors: Array<CodemetaPersonOrOrgLd | undefined> = [
 			// Node package.json
 			...(package_?.data.author
 				? [
-						toPersonLd({
+						toPersonOrOrgLd({
 							email: package_.data.author.email,
 							name: package_.data.author.name,
 							url: package_.data.author.url,
@@ -194,59 +194,63 @@ export const codemeta = defineTemplate(
 
 			// Python pyproject.toml
 			...(pyproject?.data.project?.authors ?? []).map((a) =>
-				is.plainObject(a) ? toPersonLd({ email: a.email, name: a.name }) : toPersonLd({ name: a }),
+				is.plainObject(a)
+					? toPersonOrOrgLd({ email: a.email, name: a.name })
+					: toPersonOrOrgLd({ name: a }),
 			),
 
 			// Python setup.py / setup.cfg
 			...(setupPy?.data.author
-				? [toPersonLd({ email: setupPy.data.author_email, name: setupPy.data.author })]
+				? [toPersonOrOrgLd({ email: setupPy.data.author_email, name: setupPy.data.author })]
 				: []),
 			...(setupCfg?.data.author
-				? [toPersonLd({ email: setupCfg.data.author_email, name: setupCfg.data.author })]
+				? [toPersonOrOrgLd({ email: setupCfg.data.author_email, name: setupCfg.data.author })]
 				: []),
 
 			// Rust Cargo.toml
-			...(cargo?.data.authors ?? []).map((a) => toPersonLd({ email: a.email, name: a.name })),
+			...(cargo?.data.authors ?? []).map((a) => toPersonOrOrgLd({ email: a.email, name: a.name })),
 
 			// Ruby gemspec (authors + email paired by index)
 			...gemspecAuthors(gem),
 
 			// Java POM developers
 			...(pom?.data.developers ?? []).map((d) =>
-				toPersonLd({ affiliation: d.organization, email: d.email, name: d.name, url: d.url }),
+				toPersonOrOrgLd({ affiliation: d.organization, email: d.email, name: d.name, url: d.url }),
 			),
 
 			// Arduino
-			...(arduino?.data.authors ?? []).map((a) => toPersonLd({ email: a.email, name: a.name })),
+			...(arduino?.data.authors ?? []).map((a) =>
+				toPersonOrOrgLd({ email: a.email, name: a.name }),
+			),
 
 			// Processing
-			...(processing?.data.authors ?? []).map((a) => toPersonLd({ name: a.name, url: a.url })),
+			...(processing?.data.authors ?? []).map((a) => toPersonOrOrgLd({ name: a.name, url: a.url })),
 
 			// OpenFrameworks
-			...(ofAddon?.data.author ? [toPersonLd({ name: ofAddon.data.author })] : []),
-			...(ofInstall?.data.author ? [toPersonLd({ name: ofInstall.data.author })] : []),
+			...(ofAddon?.data.author ? [toPersonOrOrgLd({ name: ofAddon.data.author })] : []),
+			...(ofInstall?.data.author ? [toPersonOrOrgLd({ name: ofInstall.data.author })] : []),
 
 			// Cinder
-			...(cinder?.data.author ? [toPersonLd({ name: cinder.data.author })] : []),
+			...(cinder?.data.author ? [toPersonOrOrgLd({ name: cinder.data.author })] : []),
 
 			// Xcode
 			...(xcode?.data.author
-				? [toPersonLd({ email: xcode.data.authorEmail, name: xcode.data.author })]
+				? [toPersonOrOrgLd({ email: xcode.data.authorEmail, name: xcode.data.author })]
 				: []),
 
 			// Obsidian
 			...(obsidian?.data.author
-				? [toPersonLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]
+				? [toPersonOrOrgLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]
 				: []),
 
 			// Publiccode.yml contacts
 			...(publiccode?.data.contacts ?? []).map((c) =>
-				toPersonLd({ affiliation: c.affiliation, email: c.email, name: c.name }),
+				toPersonOrOrgLd({ affiliation: c.affiliation, email: c.email, name: c.name }),
 			),
 		]
 
 		const cmAuthors = cm?.data.author?.map((p) =>
-			toPersonLd({
+			toPersonOrOrgLd({
 				affiliation: p.affiliation,
 				email: p.email,
 				familyName: p.familyName,
@@ -258,28 +262,28 @@ export const codemeta = defineTemplate(
 			}),
 		)
 
-		const author = resolvePersons(ecosystemAuthors, cmAuthors)
+		const author = resolvePersonsOrOrgs(ecosystemAuthors, cmAuthors)
 
 		// ── Contributor ─────────────────────────────────────────────
 
-		const ecosystemContributors: Array<CodemetaPersonLd | undefined> = [
+		const ecosystemContributors: Array<CodemetaPersonOrOrgLd | undefined> = [
 			// Node package.json contributors
 			...collectArrayField(nodePackageJson, (d) =>
 				d.contributors?.map((c) =>
 					is.plainObject(c)
-						? toPersonLd({ email: c.email, name: c.name, url: c.url })
-						: toPersonLd({ name: c }),
+						? toPersonOrOrgLd({ email: c.email, name: c.name, url: c.url })
+						: toPersonOrOrgLd({ name: c }),
 				),
 			),
 
 			// Java POM contributors
 			...(pom?.data.contributors ?? []).map((c) =>
-				toPersonLd({ affiliation: c.organization, email: c.email, name: c.name, url: c.url }),
+				toPersonOrOrgLd({ affiliation: c.organization, email: c.email, name: c.name, url: c.url }),
 			),
 		]
 
 		const cmContributors = cm?.data.contributor?.map((p) =>
-			toPersonLd({
+			toPersonOrOrgLd({
 				affiliation: p.affiliation,
 				email: p.email,
 				familyName: p.familyName,
@@ -291,30 +295,42 @@ export const codemeta = defineTemplate(
 			}),
 		)
 
-		const contributor = resolvePersons(ecosystemContributors, cmContributors)
+		const contributor = resolvePersonsOrOrgs(ecosystemContributors, cmContributors)
 
 		// ── Maintainer ──────────────────────────────────────────────
 
-		const ecosystemMaintainers: Array<CodemetaPersonLd | undefined> = [
+		const ecosystemMaintainers: Array<CodemetaPersonOrOrgLd | undefined> = [
 			...(pyproject?.data.project?.maintainers ?? []).map((m) =>
-				is.plainObject(m) ? toPersonLd({ email: m.email, name: m.name }) : toPersonLd({ name: m }),
+				is.plainObject(m)
+					? toPersonOrOrgLd({ email: m.email, name: m.name })
+					: toPersonOrOrgLd({ name: m }),
 			),
 			...(setupPy?.data.maintainer
-				? [toPersonLd({ email: setupPy.data.maintainer_email, name: setupPy.data.maintainer })]
+				? [toPersonOrOrgLd({ email: setupPy.data.maintainer_email, name: setupPy.data.maintainer })]
 				: []),
 			...(setupCfg?.data.maintainer
-				? [toPersonLd({ email: setupCfg.data.maintainer_email, name: setupCfg.data.maintainer })]
+				? [
+						toPersonOrOrgLd({
+							email: setupCfg.data.maintainer_email,
+							name: setupCfg.data.maintainer,
+						}),
+					]
 				: []),
 			...(pkgInfo?.data.maintainer
-				? [toPersonLd({ email: pkgInfo.data.maintainer_email, name: pkgInfo.data.maintainer })]
+				? [toPersonOrOrgLd({ email: pkgInfo.data.maintainer_email, name: pkgInfo.data.maintainer })]
 				: []),
 			...(arduino?.data.maintainer
-				? [toPersonLd({ email: arduino.data.maintainer.email, name: arduino.data.maintainer.name })]
+				? [
+						toPersonOrOrgLd({
+							email: arduino.data.maintainer.email,
+							name: arduino.data.maintainer.name,
+						}),
+					]
 				: []),
 		]
 
 		const cmMaintainers = cm?.data.maintainer?.map((p) =>
-			toPersonLd({
+			toPersonOrOrgLd({
 				affiliation: p.affiliation,
 				email: p.email,
 				familyName: p.familyName,
@@ -326,19 +342,21 @@ export const codemeta = defineTemplate(
 			}),
 		)
 
-		const maintainer = resolvePersons(ecosystemMaintainers, cmMaintainers)
+		const maintainer = resolvePersonsOrOrgs(ecosystemMaintainers, cmMaintainers)
 
 		// ── Copyright holder ────────────────────────────────────────
 
-		const ecosystemCopyrightHolders: Array<CodemetaPersonLd | undefined> = [
+		const ecosystemCopyrightHolders: Array<CodemetaPersonOrOrgLd | undefined> = [
 			...(publiccode?.data.mainCopyrightOwner
-				? [toPersonLd({ name: publiccode.data.mainCopyrightOwner })]
+				? [toPersonOrOrgLd({ name: publiccode.data.mainCopyrightOwner })]
 				: []),
-			...(xcode?.data.copyrightHolder ? [toPersonLd({ name: xcode.data.copyrightHolder })] : []),
+			...(xcode?.data.copyrightHolder
+				? [toPersonOrOrgLd({ name: xcode.data.copyrightHolder })]
+				: []),
 		]
 
 		const cmCopyrightHolders = cm?.data.copyrightHolder?.map((p) =>
-			toPersonLd({
+			toPersonOrOrgLd({
 				affiliation: p.affiliation,
 				email: p.email,
 				familyName: p.familyName,
@@ -350,14 +368,14 @@ export const codemeta = defineTemplate(
 			}),
 		)
 
-		const copyrightHolder = resolvePersons(ecosystemCopyrightHolders, cmCopyrightHolders)
+		const copyrightHolder = resolvePersonsOrOrgs(ecosystemCopyrightHolders, cmCopyrightHolders)
 
 		// ── Funder ──────────────────────────────────────────────────
 
-		const funder = resolvePersons(
+		const funder = resolvePersonsOrOrgs(
 			[],
 			cm?.data.funder?.map((p) =>
-				toPersonLd({
+				toPersonOrOrgLd({
 					affiliation: p.affiliation,
 					email: p.email,
 					familyName: p.familyName,
@@ -660,7 +678,7 @@ export const codemeta = defineTemplate(
  */
 function gemspecAuthors(
 	gem: ReturnType<typeof firstOf<{ data: { authors: string[]; email?: string | string[] } }>>,
-): Array<CodemetaPersonLd | undefined> {
+): Array<CodemetaPersonOrOrgLd | undefined> {
 	if (gem === undefined) return []
 	const emails =
 		gem.data.email === undefined
@@ -670,7 +688,7 @@ function gemspecAuthors(
 				: [gem.data.email]
 
 	return gem.data.authors.map((authorName, index) =>
-		toPersonLd({ email: emails[index], name: authorName }),
+		toPersonOrOrgLd({ email: emails[index], name: authorName }),
 	)
 }
 
@@ -679,19 +697,21 @@ function gemspecAuthors(
  * Uses ecosystem if any are present, otherwise falls back.
  * Always deduplicates by name.
  */
-function resolvePersons(
-	ecosystemPersons: Array<CodemetaPersonLd | undefined>,
-	fallbackPersons?: Array<CodemetaPersonLd | undefined>,
-): CodemetaPersonLd[] | undefined {
-	const ecosystem = ecosystemPersons.filter((p): p is CodemetaPersonLd => p !== undefined)
+function resolvePersonsOrOrgs(
+	ecosystemPersons: Array<CodemetaPersonOrOrgLd | undefined>,
+	fallbackPersons?: Array<CodemetaPersonOrOrgLd | undefined>,
+): CodemetaPersonOrOrgLd[] | undefined {
+	const ecosystem = ecosystemPersons.filter((p): p is CodemetaPersonOrOrgLd => p !== undefined)
 
 	if (ecosystem.length > 0) {
-		return deduplicatePersons(ecosystem)
+		return deduplicatePersonsOrOrgs(ecosystem)
 	}
 
-	const fallback = (fallbackPersons ?? []).filter((p): p is CodemetaPersonLd => p !== undefined)
+	const fallback = (fallbackPersons ?? []).filter(
+		(p): p is CodemetaPersonOrOrgLd => p !== undefined,
+	)
 
-	return deduplicatePersons(fallback)
+	return deduplicatePersonsOrOrgs(fallback)
 }
 
 // ─── Dependency Helpers ─────────────────────────────────────────────
