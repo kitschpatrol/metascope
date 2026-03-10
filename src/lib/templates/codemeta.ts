@@ -59,12 +59,12 @@ export const codemeta = defineTemplate(
 		arduinoLibraryProperties,
 		cinderCinderblockXml,
 		codemetaJson: codemetaRaw,
-		github,
-		gitStatistics: git,
+		github: githubRaw,
+		gitStatistics: gitRaw,
 		goGoMod,
 		javaPomXml,
 		licenseFiles,
-		nodeNpmRegistry: npm,
+		nodeNpmRegistry: npmRaw,
 		nodePackageJson,
 		obsidianPluginManifestJson,
 		openframeworksAddonConfigMk,
@@ -72,7 +72,8 @@ export const codemeta = defineTemplate(
 		processingLibraryProperties,
 		publiccodeYaml,
 		pythonPkgInfo,
-		pythonPypiRegistry: pypi,
+		pythonPypiRegistry: pypiRaw,
+		readmeFile,
 		pythonPyprojectToml,
 		pythonSetupCfg,
 		pythonSetupPy,
@@ -83,6 +84,10 @@ export const codemeta = defineTemplate(
 		// ── Extract first record from OneOrMany sources ──────────────
 
 		const cm = firstOf(codemetaRaw)
+		const github = firstOf(githubRaw)
+		const git = firstOf(gitRaw)
+		const npm = firstOf(npmRaw)
+		const pypi = firstOf(pypiRaw)
 		const pkg = firstOf(nodePackageJson)
 		const pyproject = firstOf(pythonPyprojectToml)
 		const setupPy = firstOf(pythonSetupPy)
@@ -531,7 +536,7 @@ export const codemeta = defineTemplate(
 
 		const funding = cm?.data.funding
 		const buildInstructions = cm?.data.buildInstructions
-		const readme = cm?.data.readme
+		const readme = readmeUrl(firstOf(readmeFile), codeRepository, github?.data.defaultBranch ?? git?.data.branchCurrent) ?? cm?.data.readme
 		const releaseNotes = cm?.data.releaseNotes
 		const installUrl = cm?.data.installUrl
 		const relatedLink = cm?.data.relatedLink
@@ -942,4 +947,28 @@ function inferTargetProduct(
 	}
 
 	return undefined
+}
+
+/**
+ * Build a URL for the project's README.
+ * Prefers a web URL on the remote service (e.g. GitHub blob link) when a
+ * code repository URL is available, otherwise falls back to the local source path.
+ */
+function readmeUrl(
+	readmeRecord: ReturnType<typeof firstOf<{ source: string }>>,
+	repoUrl: string | undefined,
+	defaultBranch: string | undefined,
+): string | undefined {
+	if (readmeRecord === undefined) return undefined
+	const filename = readmeRecord.source
+
+	// Build a web URL if we have a GitHub-style repo URL
+	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {
+		const branch = defaultBranch ?? 'main'
+		const base = repoUrl.replace(/\.git$/, '')
+		return `${base}/blob/${branch}/${filename}`
+	}
+
+	// Fall back to the source path
+	return filename
 }

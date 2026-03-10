@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
+import { firstOf } from '../../src/lib/utilities/formatting'
 
 const context = { options: { path: resolve('.') } }
 
@@ -18,7 +19,7 @@ describe('git config source', () => {
 	})
 
 	it('should fetch git config metadata', async () => {
-		const result = await gitConfigSource.extract(context)
+		const result = firstOf(await gitConfigSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data).toBeDefined()

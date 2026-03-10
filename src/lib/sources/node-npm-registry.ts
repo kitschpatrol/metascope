@@ -1,7 +1,7 @@
 import is from '@sindresorhus/is'
 import packageJson from 'package-json'
 import { z } from 'zod'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
@@ -32,7 +32,7 @@ export type NodeNpmRegistryInfo = {
 	versionLatest?: string
 }
 
-export type NodeNpmRegistryData = SourceRecord<NodeNpmRegistryInfo> | undefined
+export type NodeNpmRegistryData = OneOrMany<SourceRecord<NodeNpmRegistryInfo>> | undefined
 
 export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 	async getInputs(context) {

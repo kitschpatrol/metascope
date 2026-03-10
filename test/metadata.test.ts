@@ -15,7 +15,7 @@ describe('getMetadata', () => {
 
 		// Should have git statistics data
 		expect(result.gitStatistics).toBeDefined()
-		expect(result.gitStatistics!.data.branchCurrent).toBe('main')
+		expect(firstOf(result.gitStatistics)!.data.branchCurrent).toBe('main')
 	})
 
 	it('should not contain undefined values in output', async () => {
@@ -38,7 +38,7 @@ describe('getMetadata', () => {
 
 	it('should apply a template function', async () => {
 		const template = defineTemplate(({ gitStatistics, nodePackageJson }) => ({
-			branch: gitStatistics?.data.branchCurrent,
+			branch: firstOf(gitStatistics)?.data.branchCurrent,
 			name: firstOf(nodePackageJson)?.data.name,
 		}))
 
@@ -51,7 +51,7 @@ describe('getMetadata', () => {
 
 	it('should strip undefined from template output', async () => {
 		const template = defineTemplate(({ obsidianPluginRegistry }) => ({
-			downloads: obsidianPluginRegistry?.data.downloadCount,
+			downloads: firstOf(obsidianPluginRegistry)?.data.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })

@@ -1,7 +1,7 @@
 /* eslint-disable ts/naming-convention */
 
 import { z } from 'zod'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
@@ -35,7 +35,7 @@ export type PythonPypiRegistryInfo = {
 	yankedReason?: string
 }
 
-export type PythonPypiRegistryData = SourceRecord<PythonPypiRegistryInfo> | undefined
+export type PythonPypiRegistryData = OneOrMany<SourceRecord<PythonPypiRegistryInfo>> | undefined
 
 const pypiResponseSchema = z.object({
 	info: z.object({

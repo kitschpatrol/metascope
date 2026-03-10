@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { gitStatisticsSource } from '../../src/lib/sources/git-statistics'
+import { firstOf } from '../../src/lib/utilities/formatting'
 
 const context = { options: { path: resolve('.') } }
 
@@ -15,7 +16,7 @@ describe('git statistics source', () => {
 	})
 
 	it('should fetch git statistics metadata', async () => {
-		const result = await gitStatisticsSource.extract(context)
+		const result = firstOf(await gitStatisticsSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.branchCurrent).toBe('main')
@@ -29,7 +30,7 @@ describe('git statistics source', () => {
 	})
 
 	it('should return a valid commitDateLast', async () => {
-		const result = await gitStatisticsSource.extract(context)
+		const result = firstOf(await gitStatisticsSource.extract(context))
 		expect(result).toBeDefined()
 		expect(result!.data.commitDateLast).toBeDefined()
 		// Should be a valid date string

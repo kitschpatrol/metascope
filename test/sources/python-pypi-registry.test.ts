@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { pythonPypiRegistrySource } from '../../src/lib/sources/python-pypi-registry'
+import { firstOf } from '../../src/lib/utilities/formatting'
 
 const fixturesDirectory = resolve('test/fixtures/pyproject')
 
@@ -31,9 +32,10 @@ describe('pythonPypiRegistry source', () => {
 			return
 		}
 
-		expect(result.data.versionLatest).toBeDefined()
-		expect(typeof result.data.versionLatest).toBe('string')
-		expect(result.data.releaseCount).toBeGreaterThan(0)
+		const record = firstOf(result)!
+		expect(record.data.versionLatest).toBeDefined()
+		expect(typeof record.data.versionLatest).toBe('string')
+		expect(record.data.releaseCount).toBeGreaterThan(0)
 		// Download fields depend on pypistats API which may be rate-limited
 		const downloadFields = [
 			'downloads180Days',
@@ -42,10 +44,10 @@ describe('pythonPypiRegistry source', () => {
 			'downloadsMonthly',
 		] as const
 		for (const field of downloadFields) {
-			expect(result.data[field] === undefined || typeof result.data[field] === 'number').toBe(true)
+			expect(record.data[field] === undefined || typeof record.data[field] === 'number').toBe(true)
 		}
 
-		if (downloadFields.some((field) => result.data[field] === undefined)) {
+		if (downloadFields.some((field) => record.data[field] === undefined)) {
 			console.warn('Warning: some pypistats download fields are undefined, likely rate-limited')
 		}
 	})

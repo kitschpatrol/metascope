@@ -18,16 +18,20 @@ export const project = defineTemplate(
 	(
 		{
 			codemetaJson: codemetaRaw,
-			dependencyUpdates,
-			github,
-			gitStatistics: git,
+			dependencyUpdates: dependencyUpdatesRaw,
+			github: githubRaw,
+			gitStatistics: gitRaw,
 			metascope,
-			nodeNpmRegistry: npm,
+			nodeNpmRegistry: npmRaw,
 			nodePackageJson: packageJson,
 		},
 		{ authorName, githubAccount },
 	) => {
 		const codemeta = firstOf(codemetaRaw)
+		const dependencyUpdates = firstOf(dependencyUpdatesRaw)
+		const git = firstOf(gitRaw)
+		const github = firstOf(githubRaw)
+		const npm = firstOf(npmRaw)
 		return {
 			description: codemeta?.data.description,
 			firstCommitDate: git?.data.commitDateFirst,

@@ -431,7 +431,7 @@ describe('all-sources fixture', () => {
 
 	it('should extract fileStatistics', async () => {
 		const result = await resultPromise
-		const data = result.fileStatistics?.data
+		const data = firstOf(result.fileStatistics)?.data
 		expect(data).toBeDefined()
 		expect(data!.totalFileCount).toBeGreaterThan(0)
 		expect(data!.totalDirectoryCount).toBeGreaterThanOrEqual(0)

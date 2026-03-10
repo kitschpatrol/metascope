@@ -1,6 +1,6 @@
 import { stat } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches, getWorkspaces } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
@@ -14,7 +14,7 @@ export type FileStatistics = {
 	totalSizeBytes?: number
 }
 
-export type FileStatisticsData = SourceRecord<FileStatistics> | undefined
+export type FileStatisticsData = OneOrMany<SourceRecord<FileStatistics>> | undefined
 
 export const fileStatisticsSource = defineSource<'fileStatistics'>({
 	// eslint-disable-next-line ts/require-await

@@ -136,7 +136,7 @@ describe('defineTemplate', () => {
 	it('should produce the expected output shape', () => {
 		const template = defineTemplate(({ codemetaJson, github }) => ({
 			name: firstOf(codemetaJson)?.data.name,
-			stars: github?.data.stargazerCount,
+			stars: firstOf(github)?.data.stargazerCount,
 		}))
 
 		const result = template(mockContext, {})
@@ -160,7 +160,7 @@ describe('defineTemplate', () => {
 
 	it('should support computed values', () => {
 		const template = defineTemplate(({ github }) => ({
-			popularity: (github?.data.stargazerCount ?? 0) + (github?.data.forkCount ?? 0),
+			popularity: (firstOf(github)?.data.stargazerCount ?? 0) + (firstOf(github)?.data.forkCount ?? 0),
 		}))
 
 		const result = template(mockContext, {})
@@ -169,8 +169,8 @@ describe('defineTemplate', () => {
 
 	it('should handle missing optional fields gracefully', () => {
 		const template = defineTemplate(({ github }) => ({
-			hasWikiEnabled: github?.data.hasWikiEnabled,
-			homepageUrl: github?.data.homepageUrl,
+			hasWikiEnabled: firstOf(github)?.data.hasWikiEnabled,
+			homepageUrl: firstOf(github)?.data.homepageUrl,
 		}))
 
 		const result = template(mockContext, {})

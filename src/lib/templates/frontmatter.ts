@@ -28,20 +28,27 @@ export const frontmatter = defineTemplate(
 		{
 			codemetaJson: codemetaRaw,
 			codeStatistics: loc,
-			dependencyUpdates,
-			fileStatistics: filesystem,
-			github,
-			gitStatistics: git,
+			dependencyUpdates: dependencyUpdatesRaw,
+			fileStatistics: filesystemRaw,
+			github: githubRaw,
+			gitStatistics: gitRaw,
 			metascope,
-			nodeNpmRegistry: npm,
+			nodeNpmRegistry: npmRaw,
 			obsidianPluginManifestJson: obsidianPluginManifestJsonRaw,
-			obsidianPluginRegistry: obsidianRegistry,
-			pythonPypiRegistry: pypi,
+			obsidianPluginRegistry: obsidianRegistryRaw,
+			pythonPypiRegistry: pypiRaw,
 		},
 		{ authorName, githubAccount },
 	) => {
 		const codemeta = firstOf(codemetaRaw)
+		const dependencyUpdates = firstOf(dependencyUpdatesRaw)
+		const filesystem = firstOf(filesystemRaw)
+		const git = firstOf(gitRaw)
+		const github = firstOf(githubRaw)
+		const npm = firstOf(npmRaw)
 		const obsidianPluginManifestJson = firstOf(obsidianPluginManifestJsonRaw)
+		const obsidianRegistry = firstOf(obsidianRegistryRaw)
+		const pypi = firstOf(pypiRaw)
 
 		return {
 			/* eslint-disable perfectionist/sort-objects */

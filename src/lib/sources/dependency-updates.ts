@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { coerce, diff } from 'semver'
 import { exec } from 'tinyexec'
 import { z } from 'zod'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
@@ -37,7 +37,7 @@ export type DependencyUpdatesExtra = {
 }
 
 export type DependencyUpdatesData =
-	| SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>
+	| OneOrMany<SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>>
 	| undefined
 
 const depSchema = z.object({

@@ -1,7 +1,7 @@
 import gitUrlParse from 'git-url-parse'
 import { Octokit } from 'octokit'
 import { z } from 'zod'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
@@ -173,7 +173,7 @@ export type GitHubInfo = {
 	watcherCount?: number
 }
 
-export type GitHubData = SourceRecord<GitHubInfo> | undefined
+export type GitHubData = OneOrMany<SourceRecord<GitHubInfo>> | undefined
 
 const gitHubRepoSchema = z.object({
 	repository: z.object({

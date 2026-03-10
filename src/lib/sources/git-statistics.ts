@@ -3,7 +3,7 @@
 import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { simpleGit } from 'simple-git'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
@@ -58,10 +58,11 @@ export type GitStatisticsInfo = {
 	uncommittedFileCount?: number
 }
 
-export type GitStatisticsData = SourceRecord<GitStatisticsInfo> | undefined
+export type GitStatisticsData = OneOrMany<SourceRecord<GitStatisticsInfo>> | undefined
 
 export const gitStatisticsSource = defineSource<'gitStatistics'>({
 	async getInputs(context) {
+		// TODO what about submodules etc.?
 		try {
 			await access(join(context.options.path, '.git'))
 			return [join(context.options.path, '.git')]

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { SourceRecord } from '../source'
+import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
@@ -12,7 +12,9 @@ export type ObsidianPluginRegistryInfo = {
 	url?: string
 }
 
-export type ObsidianPluginRegistryData = SourceRecord<ObsidianPluginRegistryInfo> | undefined
+export type ObsidianPluginRegistryData =
+	| OneOrMany<SourceRecord<ObsidianPluginRegistryInfo>>
+	| undefined
 
 const communityPluginsUrl =
 	'https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json'
