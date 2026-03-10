@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 
 import { defineTemplate } from '../metadata-types'
-import { firstOf } from '../sources/source'
-import { toLocalUrl } from '../utilities/formatting'
+import { firstOf, toLocalUrl } from '../utilities/formatting'
 import {
 	getStatus,
 	isAuthoredBy,

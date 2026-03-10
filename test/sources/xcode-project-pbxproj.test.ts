@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { resetMatchCache } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import { parse, xcodeProjectPbxprojSource } from '../../src/lib/sources/xcode-project-pbxproj'
 
 const fixturesDirectory = resolve('test/fixtures/xcode-project-pbxproj')

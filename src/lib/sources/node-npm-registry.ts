@@ -1,11 +1,11 @@
 import is from '@sindresorhus/is'
 import packageJson from 'package-json'
 import { z } from 'zod'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
+import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
 import { nodePackageJsonSource } from './node-package-json'
-import { defineSource } from './source'
 
 export type NodeNpmRegistryInfo = {
 	/** Deprecation message, if the package is deprecated. */

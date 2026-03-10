@@ -3,9 +3,9 @@
 import { access, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { simpleGit } from 'simple-git'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
-import { defineSource } from './source'
+import { defineSource } from '../source'
 
 export type GitStatisticsInfo = {
 	/** Total number of local branches. */

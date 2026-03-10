@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
 import { defineTemplate } from '../src/lib/metadata-types'
-import { firstOf } from '../src/lib/sources/source'
+import { firstOf } from '../src/lib/utilities/formatting'
 
 const mockContext: MetadataContext = {
 	arduinoLibraryProperties: undefined,

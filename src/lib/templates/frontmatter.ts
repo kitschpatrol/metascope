@@ -3,8 +3,8 @@
 /* eslint-disable ts/naming-convention */
 
 import { defineTemplate } from '../metadata-types'
-import { firstOf } from '../sources/source'
 import {
+	firstOf,
 	mixedStringsToArray,
 	REPLACEMENTS,
 	toAlias,

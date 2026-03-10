@@ -1,11 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import {
 	openframeworksAddonConfigMkSource,
 	parse,
 } from '../../src/lib/sources/openframeworks-addon-config-mk'
-import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/openframeworks-addon-config-mk')
 

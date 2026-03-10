@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getMetadata } from '../src/lib/metadata'
-import { firstOf } from '../src/lib/sources/source'
+import { firstOf } from '../src/lib/utilities/formatting'
 
 const fixturesDirectory = resolve('test/fixtures/all-sources')
 

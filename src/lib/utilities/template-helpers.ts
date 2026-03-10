@@ -1,7 +1,6 @@
 import type { NodePackageJsonData } from '../metadata-types'
 import type { CodeMetaJson, CodeMetaJsonData } from '../sources/codemeta-json'
-import { firstOf } from '../sources/source'
-import { toDelimitedString } from './formatting'
+import { firstOf, toDelimitedString } from './formatting'
 
 type CodeMetaPersonOrOrg = NonNullable<CodeMetaJson['author']>[number]
 

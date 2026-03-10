@@ -1,8 +1,8 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import { javaPomXmlSource, parse as parsePomXml } from '../../src/lib/sources/java-pom-xml'
-import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/java-pom-xml')
 

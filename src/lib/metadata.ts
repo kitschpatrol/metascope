@@ -11,8 +11,9 @@ import type {
 	MetadataContext,
 	Template,
 } from './metadata-types.js'
-import type { MetadataSource, SourceContext } from './sources/source'
+import type { MetadataSource, SourceContext } from './source.js'
 import type { TemplateMap, TemplateName } from './templates/index.js'
+import { getMatches, resetMatchCache } from './file-matching.js'
 import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
@@ -46,7 +47,6 @@ import { pythonSetupPySource } from './sources/python-setup-py'
 import { readmeFileSource } from './sources/readme-file'
 import { rubyGemspecSource } from './sources/ruby-gemspec'
 import { rustCargoTomlSource } from './sources/rust-cargo-toml'
-import { getMatches, resetMatchCache } from './sources/source'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
 import { stripUndefined } from './utilities/formatting'
@@ -290,7 +290,7 @@ export async function getMetadata<T>(
 		context.metascope.data.durationMs = Math.round(metadataDuration)
 	}
 
-	log.warn(`Metadata duration: ${prettyMs(metadataDuration)}`)
+	log.info(`Metadata duration: ${prettyMs(metadataDuration)}`)
 
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
@@ -300,13 +300,13 @@ export async function getMetadata<T>(
 			template(context, resolvedOptions.templateData ?? {}),
 		) ?? {}) as unknown as T
 		const templateDuration = performance.now() - templateStartTime
-		log.warn(`Template duration: ${prettyMs(templateDuration)}`)
-		log.warn(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+		log.info(`Template duration: ${prettyMs(templateDuration)}`)
+		log.info(`Total duration: ${prettyMs(performance.now() - startTime)}`)
 		return finalTemplateResult
 	}
 
 	// Strip undefined values and empty source objects from raw output
 	const finalResult = stripUndefined(context)
-	log.warn(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+	log.info(`Total duration: ${prettyMs(performance.now() - startTime)}`)
 	return finalResult
 }

@@ -1,8 +1,9 @@
 import { stat } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
+import { getMatches, getWorkspaces } from '../file-matching'
 import { log } from '../log'
-import { defineSource, getMatches, getWorkspaces } from './source'
+import { defineSource } from '../source'
 
 export type FileStatistics = {
 	/** Total number of directories (recursive). */

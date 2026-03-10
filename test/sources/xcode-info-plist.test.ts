@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { resetMatchCache } from '../../src/lib/sources/source'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import { parse, xcodeInfoPlistSource } from '../../src/lib/sources/xcode-info-plist'
 
 const fixturesDirectory = resolve('test/fixtures/xcode-info-plist')

@@ -1,11 +1,11 @@
 import gitUrlParse from 'git-url-parse'
 import { Octokit } from 'octokit'
 import { z } from 'zod'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
+import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
 import { gitConfigSource } from './git-config'
-import { defineSource } from './source'
 
 export type GitHubInfo = {
 	/** ISO 8601 date when the repo was archived, if applicable. */

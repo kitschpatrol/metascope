@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
+import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
 import { obsidianPluginManifestJsonSource } from './obsidian-plugin-manifest-json'
-import { defineSource } from './source'
 
 export type ObsidianPluginRegistryInfo = {
 	/** Total community download count. */

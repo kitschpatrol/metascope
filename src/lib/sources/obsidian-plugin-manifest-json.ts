@@ -1,7 +1,8 @@
 import { readFile } from 'node:fs/promises'
 import { z } from 'zod'
-import type { OneOrMany, SourceRecord } from './source'
-import { defineSource, getMatches } from './source'
+import type { OneOrMany, SourceRecord } from '../source'
+import { getMatches } from '../file-matching'
+import { defineSource } from '../source'
 
 export type ObsidianManifest = {
 	/** Plugin author name. */

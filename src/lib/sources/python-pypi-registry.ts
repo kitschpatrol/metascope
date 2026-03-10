@@ -1,14 +1,14 @@
 /* eslint-disable ts/naming-convention */
 
 import { z } from 'zod'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
+import { defineSource } from '../source'
 import { ensureArray } from '../utilities/formatting'
 import { pythonPkgInfoSource } from './python-pkg-info'
 import { pythonPyprojectTomlSource } from './python-pyproject-toml'
 import { pythonSetupCfgSource } from './python-setup-cfg'
 import { pythonSetupPySource } from './python-setup-py'
-import { defineSource } from './source'
 
 export type PythonPypiRegistryInfo = {
 	/** Total downloads over the last 180 days. */

@@ -1,8 +1,9 @@
 import type { Language, LanguageInfo } from '@kitschpatrol/tokei'
 import { tokei } from '@kitschpatrol/tokei'
-import type { OneOrMany, SourceContext, SourceRecord } from './source'
+import type { OneOrMany, SourceContext, SourceRecord } from '../source'
+import { getWorkspaces } from '../file-matching'
 import { log } from '../log'
-import { defineSource, getWorkspaces } from './source'
+import { defineSource } from '../source'
 
 type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
 	languages: Language[]

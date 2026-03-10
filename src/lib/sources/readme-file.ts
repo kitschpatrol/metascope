@@ -12,8 +12,9 @@ import { resolve } from 'node:path'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { z } from 'zod'
-import type { OneOrMany, SourceRecord } from './source'
-import { defineSource, getMatches } from './source'
+import type { OneOrMany, SourceRecord } from '../source'
+import { getMatches } from '../file-matching'
+import { defineSource } from '../source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

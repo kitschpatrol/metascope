@@ -1,8 +1,9 @@
 import type { GitConfig } from 'pkg-types'
 import { readGitConfig } from 'pkg-types'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
+import { getMatches } from '../file-matching'
 import { log } from '../log'
-import { defineSource, getMatches } from './source'
+import { defineSource } from '../source'
 
 export type GitConfigInfo = {
 	/** Parsed .git/config contents. */

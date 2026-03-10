@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import {
 	parse as parseSetupCfg,
 	pythonSetupCfgSource,
 } from '../../src/lib/sources/python-setup-cfg'
-import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/python-setup-cfg')
 

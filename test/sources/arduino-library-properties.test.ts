@@ -1,11 +1,11 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import {
 	arduinoLibraryPropertiesSource,
 	parse,
 } from '../../src/lib/sources/arduino-library-properties'
-import { resetMatchCache } from '../../src/lib/sources/source'
 
 const fixturesDirectory = resolve('test/fixtures/arduino-library-properties')
 

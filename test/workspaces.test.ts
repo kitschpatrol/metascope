@@ -1,7 +1,8 @@
 import { isAbsolute, resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { getMatches, getWorkspaces, resetMatchCache } from '../src/lib/file-matching'
 import { getMetadata } from '../src/lib/metadata'
-import { firstOf, getMatches, getWorkspaces, resetMatchCache } from '../src/lib/sources/source'
+import { firstOf } from '../src/lib/utilities/formatting'
 
 const fixturesDirectory = resolve('test/fixtures/workspaces')
 

@@ -3,9 +3,9 @@ import { dirname, join } from 'node:path'
 import { coerce, diff } from 'semver'
 import { exec } from 'tinyexec'
 import { z } from 'zod'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { log } from '../log'
-import { defineSource } from './source'
+import { defineSource } from '../source'
 
 export type DependencyUpdatesPackage = {
 	/** Human-readable age of the update (e.g. "3 months"). */

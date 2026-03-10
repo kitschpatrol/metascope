@@ -16,9 +16,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
-import type { OneOrMany, SourceRecord } from './source'
+import type { OneOrMany, SourceRecord } from '../source.js'
+import { getMatches } from '../file-matching.js'
+import { defineSource } from '../source.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
-import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

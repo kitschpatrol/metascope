@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { resetMatchCache } from '../../src/lib/file-matching'
 import { metadataFileSource, parse as parseMetadata } from '../../src/lib/sources/metadata-file'
-import { firstOf, resetMatchCache } from '../../src/lib/sources/source'
+import { firstOf } from '../../src/lib/utilities/formatting'
 
 const fixturesDirectory = resolve('test/fixtures/metadata-file')
 

@@ -5,8 +5,9 @@ import brands from 'case-police/dict/brands.json'
 import general from 'case-police/dict/general.json'
 import products from 'case-police/dict/products.json'
 import softwares from 'case-police/dict/softwares.json'
-import path from 'node:path'
+import path, { relative } from 'node:path'
 import { titleCase } from 'scule'
+import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 
 declare global {
 	// eslint-disable-next-line ts/consistent-type-definitions
@@ -131,6 +132,34 @@ export function mixedStringsToArray(
 
 	return filtered.length > 0 ? filtered : undefined
 }
+
+// ─── Path Formatting ────────────────────────────────────────────────
+
+/**
+ * Format an absolute path as either absolute or relative, based on the `absolute` option.
+ * When relative, paths identical to `basePath` are returned as `'.'`.
+ */
+export function formatPath(
+	absolutePath: string,
+	basePath: string,
+	absolute = DEFAULT_GET_METADATA_OPTIONS.absolute,
+): string {
+	if (absolute) return absolutePath
+	const relativePath = relative(basePath, absolutePath)
+	return relativePath === '' ? '.' : relativePath
+}
+
+// ─── Collection Helpers ─────────────────────────────────────────────
+
+/**
+ * Extract the first element from a `OneOrMany` value.
+ */
+export function firstOf<T>(value: T | T[] | undefined): T | undefined {
+	if (value === undefined) return undefined
+	return Array.isArray(value) ? value[0] : value
+}
+
+// ─── Object Helpers ─────────────────────────────────────────────────
 
 /**
  * Recursively removes `undefined` values and empty objects from an object.

@@ -1,9 +1,11 @@
 import { defu } from 'defu'
 import type { GetMetadataBaseOptions } from '../metadata-types'
-import type { SourceRecord } from './source'
+import type { SourceRecord } from '../source'
 import { version } from '../../../package.json'
+import { getWorkspaces } from '../file-matching'
 import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
-import { defineSource, formatPath, getWorkspaces } from './source'
+import { defineSource } from '../source'
+import { formatPath } from '../utilities/formatting'
 
 export type MetascopeInfo = {
 	/** Total scan duration in milliseconds. */

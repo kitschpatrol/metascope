@@ -1,3 +1,4 @@
+export type { OneOrMany, SourceRecord } from './source'
 export type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
 export type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
 export type { CodeStatisticsData } from './sources/code-statistics'
@@ -32,7 +33,6 @@ export type { PythonSetupPyData } from './sources/python-setup-py'
 export type { ReadmeFileData } from './sources/readme-file'
 export type { RubyGemspecData } from './sources/ruby-gemspec'
 export type { RustCargoTomlData } from './sources/rust-cargo-toml'
-export type { OneOrMany, SourceRecord } from './sources/source'
 export type { XcodeInfoPlistData } from './sources/xcode-info-plist'
 export type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 

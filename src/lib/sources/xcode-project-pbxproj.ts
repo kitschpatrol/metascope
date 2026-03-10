@@ -16,9 +16,10 @@ import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@b
 import is from '@sindresorhus/is'
 import { resolve } from 'node:path'
 import { z } from 'zod'
-import type { OneOrMany, SourceRecord } from './source'
+import type { OneOrMany, SourceRecord } from '../source'
+import { getMatches } from '../file-matching'
+import { defineSource } from '../source'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
-import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

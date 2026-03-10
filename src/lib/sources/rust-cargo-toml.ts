@@ -13,9 +13,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { parse as parseToml } from 'smol-toml'
 import { z } from 'zod'
-import type { OneOrMany, SourceRecord } from './source'
+import type { OneOrMany, SourceRecord } from '../source'
+import { getMatches } from '../file-matching'
+import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-import { defineSource, getMatches } from './source'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
