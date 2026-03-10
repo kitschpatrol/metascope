@@ -1,4 +1,6 @@
-import { resolve } from 'node:path'
+import { mkdtempSync } from 'node:fs'
+import { join, resolve } from 'node:path'
+import { tmpdir } from 'node:os'
 import { describe, expect, it } from 'vitest'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
 
@@ -10,7 +12,8 @@ describe('git config source', () => {
 	})
 
 	it('should not be available in a non-git directory', async () => {
-		const nonGitContext = { options: { path: '/tmp' } }
+		const temporaryDirectory = mkdtempSync(join(tmpdir(), 'git-config-test-'))
+		const nonGitContext = { options: { path: temporaryDirectory } }
 		expect(await gitConfigSource.extract(nonGitContext)).toBeUndefined()
 	})
 

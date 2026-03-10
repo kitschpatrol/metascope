@@ -36,6 +36,11 @@ export type NodeNpmRegistryData = SourceRecord<NodeNpmRegistryInfo> | undefined
 
 export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 	async getInputs(context) {
+		if (context.options.offline) {
+			log.warn("Skipping Node NPM registry data source since we're in offline mode")
+			return []
+		}
+
 		// Try to get package name from context
 		let packageNames = ensureArray(context.metadata?.nodePackageJson)
 			.map((value) => value?.data.name)
