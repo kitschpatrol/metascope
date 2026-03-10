@@ -28,7 +28,7 @@ From there, an (optional) template system lets you refine and transform the outp
 Highlights:
 
 - **A wide net**\
-  Metascope pulls project metadata from many available sources: `package.json`, `pyproject.toml`, NPM, PyPI, GitHub, git, Obsidian, filesystem stats, lines of code, and dependency freshness.
+  Metascope pulls project metadata from many available sources: `package.json`, `pyproject.toml`, NPM, PyPI, GitHub, git, filesystem stats, and [more](#sources).
 
 - **Graceful degradation**\
   Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
@@ -302,9 +302,7 @@ const result = await getMetadata({ path: '.', template: 'frontmatter' })
 
 ## Sources
 
-Metascope extracts data from a wide range of data sources.
-
-The green-checked entries below indicate metadata file formats and sources that `@kitschpatrol/codemeta` can discover and in a given directory:
+Metascope extracts data from a wide range of data sources:
 
 | Ecosystem  | Organization or Registry                                                                                | Metascope Key                 | Source Specifications                                                                               | CodeMeta Crosswalk                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -458,14 +456,10 @@ Metascope was built to support automated generation of project dashboards, badge
 
 Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 
-Some semi-related projects:
-
-- [git-truck](https://github.com/git-truck/git-truck)
-- [codemeta](https://codemeta.github.io/)
-- [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta)
-
 ### Related projects
 
+- [codemeta](https://codemeta.github.io/)\
+  Standard shared metadata vocabulary (JSON-LD)
 - [codemetapy](https://github.com/proycon/codemetapy)\
   Translate software metadata into the CodeMeta vocabulary (Python)
 - [codemeta-harvester](https://github.com/proycon/codemeta-harvester)\
@@ -481,13 +475,15 @@ Some semi-related projects:
 - [GrimoireLab](https://chaoss.github.io/grimoirelab/)\
   Platform for software development analytics and insights (Python)
 - [OSS Review Toolkit](https://oss-review-toolkit.org/ort/)\
-  A suite of CLI tools to automate software compliance checks. (Kotlin)
+  A suite of CLI tools to automate software compliance checks (Kotlin)
+- [Git Truck](https://github.com/git-truck/git-truck)\
+  Repository visualization. (TypeScript)
 
 ## Slop factor
 
 _Medium._
 
-The architecture and non-boilerplate parts of the documentation were human-driven, but the implementation was mostly Claude Code's doing and has been subject to only moderate post-facto human scrutiny.
+The architecture and non-boilerplate parts of the documentation were human-driven, but sizable chunks of the implementation were mostly Claude Code's doing and have been subject to only moderate post-facto human scrutiny.
 
 ## Maintainers
 

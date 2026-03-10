@@ -41,8 +41,11 @@ Not yet implemented, but under consideration:
 | Scholarly       | [Zenodo Metadata](https://zenodo.org/)                                                        | [`*.zenodo.json`](https://zenodo.org/api/doc)                                                                                                                  | [Yes](https://codemeta.github.io/crosswalk/zenodo/ 'Zenodo')                                                            |
 | Space Physics   | [SPASE](https://www.spase-group.org/)                                                         |                                                                                                                                                                |                                                                                                                         |
 
-## Alternate context keys:
+## Shorter context keys
 
+Maybe, but prefer specificity / preservation of origin...
+
+```txt
 arduinoLibraryProperties --> arduinoLibrary
 cinderCinderblockXml --> cinderCinderblock
 codemetaJson --> codemeta
@@ -76,3 +79,4 @@ rubyGemspec --> rubyGemspec
 rustCargoToml --> rustCargo
 xcodeInfoPlist --> xcodeInfo
 xcodeProjectPbxproj --> xcodeProject
+```

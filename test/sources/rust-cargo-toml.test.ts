@@ -94,9 +94,9 @@ describe('parse', () => {
 		expect(parseCargoToml('not valid toml {')).toBeUndefined()
 	})
 
-	// TODO: Revisit these fixtures — they were known to fail with the old
-	// @kitschpatrol/codemeta parser. Our basic parser handles them, but they
-	// may expose edge cases in normalization or downstream consumption.
+	// TODO: Revisit these fixtures — they were known to fail with the old parser
+	// Our basic parser handles them, but they may expose edge cases in
+	// normalization or downstream consumption.
 	it('should parse known-failing fixtures without throwing', async () => {
 		const failingDirectory = resolve('test/fixtures/rust-cargo-toml-failing')
 		const entries = await readdir(failingDirectory, { withFileTypes: true })

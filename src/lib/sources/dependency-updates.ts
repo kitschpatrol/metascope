@@ -7,7 +7,7 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
-export type DependencyUpdatesPackage = {
+type DependencyUpdatesPackage = {
 	/** Human-readable age of the update (e.g. "3 months"). */
 	age?: string
 	/** Additional info about the update (e.g. deprecation notice). */
@@ -20,7 +20,7 @@ export type DependencyUpdatesPackage = {
 	old: string
 }
 
-export type DependencyUpdatesFields = {
+type DependencyUpdatesFields = {
 	/** Packages with available major version updates. */
 	major?: DependencyUpdatesPackage[]
 	/** Packages with available minor version updates. */
@@ -29,7 +29,7 @@ export type DependencyUpdatesFields = {
 	patch?: DependencyUpdatesPackage[]
 }
 
-export type DependencyUpdatesExtra = {
+type DependencyUpdatesExtra = {
 	/** Total dependency staleness in libyears. */
 	libyears?: number
 	/** Total number of outdated packages. */
