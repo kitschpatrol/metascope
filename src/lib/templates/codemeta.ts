@@ -1006,9 +1006,9 @@ function readmeUrl(
 ): string | undefined {
 	if (readmeRecord === undefined) return undefined
 	const repoRelativePath =
-		basePath !== undefined
-			? relative(basePath, readmeRecord.source).replaceAll('\\', '/')
-			: basename(readmeRecord.source)
+		basePath === undefined
+			? basename(readmeRecord.source)
+			: relative(basePath, readmeRecord.source).replaceAll('\\', '/')
 
 	// Build a web URL if we have a GitHub-style repo URL
 	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {

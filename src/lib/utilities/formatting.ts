@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-restricted-types */
 import is from '@sindresorhus/is'
 import { replaceCore } from 'case-police'
 import abbreviates from 'case-police/dict/abbreviates.json'
@@ -101,7 +102,7 @@ export function toDelimitedString(
  * Wrap a value in an array if it isn't one already.
  * Returns an empty array for `undefined` or `null`.
  */
-export function ensureArray<T>(value: T | T[] | undefined | null): T[] {
+export function ensureArray<T>(value: null | T | T[] | undefined): T[] {
 	if (value === undefined || value === null) return []
 	return Array.isArray(value) ? value : [value]
 }

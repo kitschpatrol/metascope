@@ -6,17 +6,21 @@ import { firstOf } from '../src/lib/utilities/formatting'
 // @case-police-ignore github
 
 describe('getMetadata', () => {
-	it('should return metadata with nodePackageJson and git sources', { timeout: 30_000 }, async () => {
-		const result = await getMetadata({ path: '.' })
+	it(
+		'should return metadata with nodePackageJson and git sources',
+		{ timeout: 30_000 },
+		async () => {
+			const result = await getMetadata({ path: '.' })
 
-		// Should have package.json data
-		expect(result.nodePackageJson).toBeDefined()
-		expect(firstOf(result.nodePackageJson)!.data.name).toBe('metascope')
+			// Should have package.json data
+			expect(result.nodePackageJson).toBeDefined()
+			expect(firstOf(result.nodePackageJson)!.data.name).toBe('metascope')
 
-		// Should have git statistics data
-		expect(result.gitStatistics).toBeDefined()
-		expect(firstOf(result.gitStatistics)!.data.branchCurrent).toBe('main')
-	})
+			// Should have git statistics data
+			expect(result.gitStatistics).toBeDefined()
+			expect(firstOf(result.gitStatistics)!.data.branchCurrent).toBe('main')
+		},
+	)
 
 	it('should not contain undefined values in output', async () => {
 		const result = await getMetadata({ path: '.' })

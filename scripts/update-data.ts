@@ -7,8 +7,8 @@ import is from '@sindresorhus/is'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { glob } from 'tinyglobby'
-import { clearCache, customLoader, toCacheKey } from '../src/lib/jsonld-loader.js'
 import { log } from '../src/lib/log.js'
+import { clearCache, customLoader, toCacheKey } from './jsonld-loader.js'
 import {
 	downloadUrlToFile,
 	enforceArray,
@@ -348,4 +348,4 @@ async function downloadData(
 // Change the tag name here to get the latest...
 // Note CSV customizations in updateCrossWalkJson() above
 // Note software-types context additions in softwareTypesTermsMutation() above
-await downloadData('3.1', './src/lib/data', true)
+await downloadData('3.1', './data', true)

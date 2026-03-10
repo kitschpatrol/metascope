@@ -4,8 +4,8 @@
 
 import type { JsonLd, RemoteDocument } from 'jsonld/jsonld-spec'
 import jsonld from 'jsonld'
+import { log } from '../src/lib/log.ts'
 import contextCacheJson from './data/context-cache.json' with { type: 'json' }
-import { log } from './log.js'
 
 /**
  * Clear the loader cache.
