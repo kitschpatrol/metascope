@@ -13,7 +13,7 @@ describe('javaPomXml source', () => {
 
 	it('should be available in a directory with pom.xml', async () => {
 		expect(
-			await javaPomXmlSource.getInputs({
+			await javaPomXmlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
 			}),
 		).not.toHaveLength(0)
@@ -21,12 +21,12 @@ describe('javaPomXml source', () => {
 
 	it('should not be available in a directory without pom.xml', async () => {
 		expect(
-			await javaPomXmlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await javaPomXmlSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const result = await javaPomXmlSource.parseInput('pom.xml', {
+		const result = await javaPomXmlSource.parse('pom.xml', {
 			options: { path: resolve(fixturesDirectory, 'yahoo-halodb') },
 		})
 

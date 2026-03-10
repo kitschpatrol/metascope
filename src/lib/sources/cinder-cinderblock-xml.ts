@@ -159,11 +159,11 @@ function parseDependencies(block: Record<string, unknown>): string[] {
 // ─── Source ─────────────────────────────────────────────────────────
 
 export const cinderCinderblockXmlSource = defineSource<'cinderCinderblockXml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['cinderblock.xml'])
 	},
 	key: 'cinderCinderblockXml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 

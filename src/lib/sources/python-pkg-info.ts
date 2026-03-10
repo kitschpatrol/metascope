@@ -150,11 +150,11 @@ export function parse(source: string): PkgInfo {
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 export const pythonPkgInfoSource = defineSource<'pythonPkgInfo'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['PKG-INFO'])
 	},
 	key: 'pythonPkgInfo',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: parse(content), source: input }
 	},

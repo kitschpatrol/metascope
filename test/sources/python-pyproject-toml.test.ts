@@ -14,7 +14,7 @@ describe('pythonPyprojectToml source', () => {
 
 	it('should be available in a directory with a pyproject.toml file', async () => {
 		expect(
-			await pythonPyprojectTomlSource.getInputs({
+			await pythonPyprojectTomlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
 			}),
 		).not.toHaveLength(0)
@@ -22,14 +22,14 @@ describe('pythonPyprojectToml source', () => {
 
 	it('should not be available in a directory without pyproject.toml', async () => {
 		expect(
-			await pythonPyprojectTomlSource.getInputs({
+			await pythonPyprojectTomlSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await pythonPyprojectTomlSource.parseInput('pyproject.toml', {
+		const result = await pythonPyprojectTomlSource.parse('pyproject.toml', {
 			options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') },
 		})
 

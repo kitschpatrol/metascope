@@ -35,7 +35,7 @@ export type NodeNpmRegistryInfo = {
 export type NodeNpmRegistryData = OneOrMany<SourceRecord<NodeNpmRegistryInfo>> | undefined
 
 export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
-	async getInputs(context) {
+	async discover(context) {
 		if (context.options.offline) {
 			log.warn("Skipping Node NPM registry data source since we're in offline mode")
 			return []
@@ -55,7 +55,7 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 		return packageNames
 	},
 	key: 'nodeNpmRegistry',
-	async parseInput(input) {
+	async parse(input) {
 		log.debug('Extracting npm metadata...')
 		const name = input
 

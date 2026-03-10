@@ -16,7 +16,7 @@ describe('openframeworksAddonConfigMk source', () => {
 
 	it('should be available in a directory with addon_config.mk', async () => {
 		expect(
-			await openframeworksAddonConfigMkSource.getInputs({
+			await openframeworksAddonConfigMkSource.discover({
 				options: { path: resolve(fixturesDirectory, '2bbb-ofxspeechsynthesizer') },
 			}),
 		).not.toHaveLength(0)
@@ -24,14 +24,14 @@ describe('openframeworksAddonConfigMk source', () => {
 
 	it('should not be available in a directory without addon_config.mk', async () => {
 		expect(
-			await openframeworksAddonConfigMkSource.getInputs({
+			await openframeworksAddonConfigMkSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed addon config data', async () => {
-		const result = await openframeworksAddonConfigMkSource.parseInput('addon_config.mk', {
+		const result = await openframeworksAddonConfigMkSource.parse('addon_config.mk', {
 			options: { path: resolve(fixturesDirectory, 'arturoc-ofxgstreamer') },
 		})
 

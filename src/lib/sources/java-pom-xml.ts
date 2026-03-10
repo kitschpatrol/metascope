@@ -311,11 +311,11 @@ function parseJavaVersion(project: Record<string, unknown>): string | undefined 
 export type JavaPomXmlData = OneOrMany<SourceRecord<PomXml>> | undefined
 
 export const javaPomXmlSource = defineSource<'javaPomXml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['pom.xml'])
 	},
 	key: 'javaPomXml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 		if (data !== undefined) {

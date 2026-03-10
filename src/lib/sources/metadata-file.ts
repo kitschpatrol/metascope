@@ -139,11 +139,11 @@ function getFormat(file: string): 'json' | 'yaml' | undefined {
 }
 
 export const metadataFileSource = defineSource<'metadataFile'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['metadata.json', 'metadata.yaml', 'metadata.yml'])
 	},
 	key: 'metadataFile',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const format = getFormat(input)
 		if (format !== undefined) {
 			const content = await readFile(resolve(context.options.path, input), 'utf8')

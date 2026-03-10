@@ -304,11 +304,11 @@ function isProcessingLibraryProperties(content: string): boolean {
 }
 
 export const processingLibraryPropertiesSource = defineSource<'processingLibraryProperties'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['library.properties'])
 	},
 	key: 'processingLibraryProperties',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		if (!isProcessingLibraryProperties(content)) {
 			return

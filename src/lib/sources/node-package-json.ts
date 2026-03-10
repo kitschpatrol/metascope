@@ -24,11 +24,11 @@ export function parse(content: string): NormalizedPackageJson {
 }
 
 export const nodePackageJsonSource = defineSource<'nodePackageJson'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['package.json'])
 	},
 	key: 'nodePackageJson',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return {
 			data: parse(content),

@@ -63,7 +63,7 @@ export type GitStatsInfo = {
 export type GitStatsData = OneOrMany<SourceRecord<GitStatsInfo>> | undefined
 
 export const gitStatsSource = defineSource<'gitStats'>({
-	async getInputs(context) {
+	async discover(context) {
 		// Have to match actual file, not just folder
 		const temporary = await getMatches(context.options, ['.git/config'])
 
@@ -71,7 +71,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 		return temporary.map((value) => resolve(value, '../../'))
 	},
 	key: 'gitStats',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		log.debug('Extracting git statistics metadata...')
 
 		const git = simpleGit(input)

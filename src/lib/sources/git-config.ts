@@ -10,11 +10,11 @@ type GitConfigInfo = GitConfig
 export type GitConfigData = OneOrMany<SourceRecord<GitConfigInfo>> | undefined
 
 export const gitConfigSource = defineSource<'gitConfig'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['.git/config'])
 	},
 	key: 'gitConfig',
-	async parseInput(input) {
+	async parse(input) {
 		log.debug('Extracting git config metadata...')
 		const config = await readGitConfig(input)
 		return {

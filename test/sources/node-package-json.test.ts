@@ -14,7 +14,7 @@ describe('nodePackageJson source', () => {
 
 	it('should be available in a directory with a package.json file', async () => {
 		expect(
-			await nodePackageJsonSource.getInputs({
+			await nodePackageJsonSource.discover({
 				options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
 			}),
 		).not.toHaveLength(0)
@@ -22,12 +22,12 @@ describe('nodePackageJson source', () => {
 
 	it('should not be available in a directory without package.json', async () => {
 		expect(
-			await nodePackageJsonSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await nodePackageJsonSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await nodePackageJsonSource.parseInput('package.json', {
+		const result = await nodePackageJsonSource.parse('package.json', {
 			options: { path: resolve(fixturesDirectory, 'bschlenk-node-roku-client') },
 		})
 

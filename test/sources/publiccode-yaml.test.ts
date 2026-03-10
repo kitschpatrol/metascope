@@ -14,7 +14,7 @@ describe('publiccodeYaml source', () => {
 
 	it('should be available in a directory with publiccode.yml', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({
+			await publiccodeYamlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
 			}),
 		).not.toHaveLength(0)
@@ -22,7 +22,7 @@ describe('publiccodeYaml source', () => {
 
 	it('should be available in a directory with publiccode.yaml', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({
+			await publiccodeYamlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
 			}),
 		).not.toHaveLength(0)
@@ -30,12 +30,12 @@ describe('publiccodeYaml source', () => {
 
 	it('should not be available in a directory without publiccode files', async () => {
 		expect(
-			await publiccodeYamlSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await publiccodeYamlSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a .yml fixture', async () => {
-		const result = await publiccodeYamlSource.parseInput('publiccode.yml', {
+		const result = await publiccodeYamlSource.parse('publiccode.yml', {
 			options: { path: resolve(fixturesDirectory, 'cisofy-lynis') },
 		})
 
@@ -47,7 +47,7 @@ describe('publiccodeYaml source', () => {
 	})
 
 	it('should extract parsed metadata from a .yaml fixture', async () => {
-		const result = await publiccodeYamlSource.parseInput('publiccode.yaml', {
+		const result = await publiccodeYamlSource.parse('publiccode.yaml', {
 			options: { path: resolve(fixturesDirectory, 'commongateway-corebundle') },
 		})
 

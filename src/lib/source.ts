@@ -57,7 +57,7 @@ type SourceRecordOf<K extends SourceName> = [MetadataContext[K]] extends [
  * Interface for a metadata source module.
  * Each source populates a specific top-level key in MetadataContext.
  *
- * Sources that use `defineSource` get `getInputs` and `parseInput` wired
+ * Sources that use `defineSource` get `discover` and `parse` wired
  * into `extract` automatically. Sources with custom extraction logic can
  * implement `extract` directly.
  */
@@ -68,9 +68,9 @@ export type MetadataSource<K extends SourceName = SourceName> = {
 	/** The execution phase. Sources with the same phase run in parallel. Lower phases run first. */
 	phase: number
 	/** Discover inputs for this source. Returns file paths, URLs, or identifiers. */
-	getInputs?(context: SourceContext): Promise<string[]>
+	discover?(context: SourceContext): Promise<string[]>
 	/** Parse a single input and return a single result, or undefined to skip. */
-	parseInput?(input: string, context: SourceContext): Promise<SourceRecordOf<K> | undefined>
+	parse?(input: string, context: SourceContext): Promise<SourceRecordOf<K> | undefined>
 	/** Extract metadata from this source. Returns undefined if the source is not available. */
 	extract(context: SourceContext): Promise<MetadataContext[K]>
 }
@@ -79,36 +79,53 @@ export type MetadataSource<K extends SourceName = SourceName> = {
 // ─── Source Factory ─────────────────────────────────────────────────
 
 type SourceConfig<K extends SourceName> = {
-	getInputs: (context: SourceContext) => Promise<string[]>
+	/**
+	 * Finds and returns one or more file paths, URLs, or other input values that
+	 * will be passed one-by-one to parse.
+	 */
+	discover: (context: SourceContext) => Promise<string[]>
+	/**
+	 * The key used on the aggregated metadata object.
+	 */
 	key: K
-	parseInput: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
+	/**
+	 * Takes one of the string values from `discover` and returns _one_ of the
+	 * source's metadata objects, which are later joined into an array defining
+	 * the final metadata object if more than one inputs are discovered.
+	 */
+	parse: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
+	/**
+	 * Execution group... if `discover` or `parse` benefit from other source's
+	 * metadata, they can run later in the phase for access to these accumulated
+	 * values in the `context.metadata` argument.
+	 */
 	phase: number
 }
 
 /**
- * Define a metadata source with `getInputs` + `parseInput`.
+ * Define a metadata source with `discover` + `parse`.
  * Automatically wires them into an `extract` implementation that handles:
  * - Empty input check (returns undefined)
  * - Per-input try/catch with log.warn
- * - Filtering undefined results from parseInput
+ * - Filtering undefined results from parse
  * - OneOrMany wrapping (single result unwrapped, multiple as array)
  */
 export function defineSource<K extends SourceName>(
 	config: SourceConfig<K>,
 ): MetadataSource<K> & {
-	getInputs: (context: SourceContext) => Promise<string[]>
-	parseInput: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
+	discover: (context: SourceContext) => Promise<string[]>
+	parse: (input: string, context: SourceContext) => Promise<SourceRecordOf<K> | undefined>
 } {
 	return {
 		...config,
 		async extract(context: SourceContext): Promise<MetadataContext[K]> {
-			const inputs = await config.getInputs(context)
+			const inputs = await config.discover(context)
 			if (inputs.length === 0) return undefined as MetadataContext[K]
 
 			const results: SourceRecord[] = []
 			for (const input of inputs) {
 				try {
-					const result = await config.parseInput(input, context)
+					const result = await config.parse(input, context)
 					if (result) {
 						result.source = formatPath(
 							result.source,

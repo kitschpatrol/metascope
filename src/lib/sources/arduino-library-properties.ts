@@ -269,11 +269,11 @@ function isArduinoLibraryProperties(content: string): boolean {
 }
 
 export const arduinoLibraryPropertiesSource = defineSource<'arduinoLibraryProperties'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['library.properties'])
 	},
 	key: 'arduinoLibraryProperties',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		if (isArduinoLibraryProperties(content)) {
 			return { data: parse(content), source: input }

@@ -37,11 +37,11 @@ export type GoGoModData = OneOrMany<SourceRecord<GoMod>> | undefined
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 export const goGoModSource = defineSource<'goGoMod'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['go.mod'])
 	},
 	key: 'goGoMod',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: parse(content), source: input }
 	},

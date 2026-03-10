@@ -14,7 +14,7 @@ describe('licenseFile source', () => {
 
 	it('should be available in a directory with a LICENSE file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
+			await licenseFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'pallets-flask') },
 			}),
 		).not.toHaveLength(0)
@@ -22,7 +22,7 @@ describe('licenseFile source', () => {
 
 	it('should be available in a directory with a COPYING file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
+			await licenseFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'pallets-flask-1') },
 			}),
 		).not.toHaveLength(0)
@@ -30,7 +30,7 @@ describe('licenseFile source', () => {
 
 	it('should be available in a directory with a LICENCE file', async () => {
 		expect(
-			await licenseFileSource.getInputs({
+			await licenseFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'ashuk032-8secread') },
 			}),
 		).not.toHaveLength(0)
@@ -38,12 +38,12 @@ describe('licenseFile source', () => {
 
 	it('should return undefined in a directory without license files', async () => {
 		expect(
-			await licenseFileSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await licenseFileSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract a license record from a single license file', async () => {
-		const result = await licenseFileSource.parseInput('LICENSE', {
+		const result = await licenseFileSource.parse('LICENSE', {
 			options: { path: resolve(fixturesDirectory, 'pallets-flask') },
 		})
 

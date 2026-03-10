@@ -63,11 +63,11 @@ export async function parse(content: string): Promise<GemSpec> {
 export type RubyGemspecData = OneOrMany<SourceRecord<GemSpec>> | undefined
 
 export const rubyGemspecSource = defineSource<'rubyGemspec'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['*.gemspec'])
 	},
 	key: 'rubyGemspec',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: await parse(content), source: input }
 	},

@@ -41,11 +41,11 @@ export function parse(content: string): OpenframeworksAddonConfig {
 }
 
 export const openframeworksAddonConfigMkSource = defineSource<'openframeworksAddonConfigMk'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['addon_config.mk'])
 	},
 	key: 'openframeworksAddonConfigMk',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: parse(content), source: input }
 	},

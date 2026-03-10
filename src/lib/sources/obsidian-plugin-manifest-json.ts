@@ -41,11 +41,11 @@ const manifestSchema = z.object({
 })
 
 export const obsidianPluginManifestJsonSource = defineSource<'obsidianPluginManifestJson'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['manifest.json'])
 	},
 	key: 'obsidianPluginManifestJson',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const parsed = manifestSchema.safeParse(JSON.parse(content))
 		if (parsed.success) {

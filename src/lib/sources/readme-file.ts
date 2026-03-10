@@ -80,11 +80,11 @@ export function parse(content: string): Readme | undefined {
 // ─── Source ──────────────────────────────────────────────────────────
 
 export const readmeFileSource = defineSource<'readmeFile'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['README', 'README.*'])
 	},
 	key: 'readmeFile',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 		if (data !== undefined) {

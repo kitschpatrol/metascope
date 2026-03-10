@@ -325,11 +325,11 @@ function migrateV1Properties(raw: Record<string, unknown>): Record<string, unkno
 // ─── Source ──────────────────────────────────────────────────────────
 
 export const codemetaJsonSource = defineSource<'codemetaJson'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['codemeta.json'])
 	},
 	key: 'codemetaJson',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 		if (data !== undefined) {

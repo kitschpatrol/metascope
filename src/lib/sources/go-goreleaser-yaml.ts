@@ -211,11 +211,11 @@ export function parse(source: string): Goreleaser | undefined {
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 export const goGoreleaserYamlSource = defineSource<'goGoreleaserYaml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['.goreleaser.yml', '.goreleaser.yaml'])
 	},
 	key: 'goGoreleaserYaml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 

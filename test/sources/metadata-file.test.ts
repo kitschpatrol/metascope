@@ -14,7 +14,7 @@ describe('metadataFile source', () => {
 
 	it('should be available in a directory with metadata.json', async () => {
 		expect(
-			await metadataFileSource.getInputs({
+			await metadataFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'git-url') },
 			}),
 		).not.toHaveLength(0)
@@ -22,7 +22,7 @@ describe('metadataFile source', () => {
 
 	it('should be available in a directory with metadata.yaml', async () => {
 		expect(
-			await metadataFileSource.getInputs({
+			await metadataFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'basic') },
 			}),
 		).not.toHaveLength(0)
@@ -30,12 +30,12 @@ describe('metadataFile source', () => {
 
 	it('should not be available in a directory without metadata files', async () => {
 		expect(
-			await metadataFileSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await metadataFileSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from JSON', async () => {
-		const result = await metadataFileSource.parseInput('metadata.json', {
+		const result = await metadataFileSource.parse('metadata.json', {
 			options: { path: resolve(fixturesDirectory, 'git-url') },
 		})
 

@@ -19,14 +19,14 @@ export type FileStatsData = OneOrMany<SourceRecord<FileStats>> | undefined
 
 export const fileStatsSource = defineSource<'fileStats'>({
 	// eslint-disable-next-line ts/require-await
-	async getInputs(context) {
+	async discover(context) {
 		return [
 			context.options.path,
 			...getWorkspaces(context.options.path, context.options.workspaces),
 		]
 	},
 	key: 'fileStats',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		log.debug('Extracting file statistics metadata...')
 
 		const allFiles = await getMatches(

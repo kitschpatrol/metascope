@@ -48,14 +48,14 @@ async function getStatistics(
 
 export const codeStatsSource = defineSource<'codeStats'>({
 	// eslint-disable-next-line ts/require-await
-	async getInputs(context) {
+	async discover(context) {
 		return [
 			context.options.path,
 			...getWorkspaces(context.options.path, context.options.workspaces),
 		]
 	},
 	key: 'codeStats',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		log.debug('Extracting lines of code via tokei...')
 		return getStatistics(input, context.options)
 	},

@@ -145,11 +145,11 @@ function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor'
 
 export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 	// eslint-disable-next-line ts/require-await
-	async getInputs(context) {
+	async discover(context) {
 		return [context.options.path]
 	},
 	key: 'dependencyUpdates',
-	async parseInput(input) {
+	async parse(input) {
 		log.debug('Extracting dependency update information via updates...')
 
 		const updatesBinary = resolveUpdatesBinary()

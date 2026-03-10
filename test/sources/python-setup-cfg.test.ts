@@ -16,7 +16,7 @@ describe('pythonSetupCfg source', () => {
 
 	it('should be available in a directory with a setup.cfg file', async () => {
 		expect(
-			await pythonSetupCfgSource.getInputs({
+			await pythonSetupCfgSource.discover({
 				options: { path: resolve(fixturesDirectory, 'basic') },
 			}),
 		).not.toHaveLength(0)
@@ -24,12 +24,12 @@ describe('pythonSetupCfg source', () => {
 
 	it('should not be available in a directory without setup.cfg', async () => {
 		expect(
-			await pythonSetupCfgSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await pythonSetupCfgSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await pythonSetupCfgSource.parseInput('setup.cfg', {
+		const result = await pythonSetupCfgSource.parse('setup.cfg', {
 			options: { path: resolve(fixturesDirectory, 'basic') },
 		})
 

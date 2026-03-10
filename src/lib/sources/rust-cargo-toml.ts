@@ -191,11 +191,11 @@ function parseDependencies(table: Record<string, unknown>): CargoTomlDependencyE
 export type RustCargoTomlData = OneOrMany<SourceRecord<CargoToml>> | undefined
 
 export const rustCargoTomlSource = defineSource<'rustCargoToml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['Cargo.toml'])
 	},
 	key: 'rustCargoToml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 		if (data !== undefined) {

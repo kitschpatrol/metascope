@@ -13,7 +13,7 @@ describe('goGoMod source', () => {
 
 	it('should be available in a directory with a go.mod file', async () => {
 		expect(
-			await goGoModSource.getInputs({
+			await goGoModSource.discover({
 				options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
 			}),
 		).not.toHaveLength(0)
@@ -21,12 +21,12 @@ describe('goGoMod source', () => {
 
 	it('should not be available in a directory without go.mod', async () => {
 		expect(
-			await goGoModSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await goGoModSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await goGoModSource.parseInput('go.mod', {
+		const result = await goGoModSource.parse('go.mod', {
 			options: { path: resolve(fixturesDirectory, 'caddyserver-certmagic') },
 		})
 

@@ -329,7 +329,7 @@ function parseDependencies(
 // ─── Source ──────────────────────────────────────────────────────────
 
 export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(
 			context.options,
 			['*.xcodeproj/project.pbxproj'],
@@ -338,7 +338,7 @@ export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
 	},
 	key: 'xcodeProjectPbxproj',
 	// eslint-disable-next-line ts/require-await
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const data = parse(resolve(context.options.path, input))
 		if (data !== undefined) {
 			return { data, source: input }

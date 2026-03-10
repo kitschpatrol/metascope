@@ -14,7 +14,7 @@ describe('readmeFile source', () => {
 
 	it('should be available in a directory with a README.md', async () => {
 		expect(
-			await readmeFileSource.getInputs({
+			await readmeFileSource.discover({
 				options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
 			}),
 		).not.toHaveLength(0)
@@ -22,12 +22,12 @@ describe('readmeFile source', () => {
 
 	it('should not be available in a directory without README files', async () => {
 		expect(
-			await readmeFileSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await readmeFileSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract name from a fixture with an H1', async () => {
-		const result = await readmeFileSource.parseInput('README.md', {
+		const result = await readmeFileSource.parse('README.md', {
 			options: { path: resolve(fixturesDirectory, 'modallmedia-hyperspeed-sdk') },
 		})
 
@@ -37,7 +37,7 @@ describe('readmeFile source', () => {
 	})
 
 	it('should return undefined for a fixture without an H1', async () => {
-		const result = await readmeFileSource.parseInput('README.md', {
+		const result = await readmeFileSource.parse('README.md', {
 			options: { path: resolve(fixturesDirectory, 'next-hat-nanocl') },
 		})
 

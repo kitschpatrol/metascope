@@ -596,7 +596,7 @@ function mapRepoData(
 }
 
 export const githubSource = defineSource<'github'>({
-	async getInputs(context) {
+	async discover(context) {
 		let gitRemotes = ensureArray(context.metadata?.gitConfig)
 			.map((config) => config.data.remote)
 			.filter((remote) => remote !== undefined)
@@ -621,7 +621,7 @@ export const githubSource = defineSource<'github'>({
 		return ownerRepos
 	},
 	key: 'github',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		log.debug('Extracting GitHub metadata...')
 		const [owner, repo] = input.split('/')
 

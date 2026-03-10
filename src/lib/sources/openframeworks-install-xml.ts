@@ -189,11 +189,11 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 // ─── Source ──────────────────────────────────────────────────────────
 
 export const openframeworksInstallXmlSource = defineSource<'openframeworksInstallXml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['install.xml'])
 	},
 	key: 'openframeworksInstallXml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 		if (data !== undefined) {

@@ -142,11 +142,11 @@ export function parse(source: string): SetupCfg {
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 export const pythonSetupCfgSource = defineSource<'pythonSetupCfg'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['setup.cfg'])
 	},
 	key: 'pythonSetupCfg',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: parse(content), source: input }
 	},

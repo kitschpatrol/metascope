@@ -70,7 +70,7 @@ const pypistatsOverallSchema = z.object({
 })
 
 export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
-	async getInputs(context) {
+	async discover(context) {
 		let packageNames = []
 
 		// Try to get package name from pyproject.toml context
@@ -136,7 +136,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		return packageNames
 	},
 	key: 'pythonPypiRegistry',
-	async parseInput(input) {
+	async parse(input) {
 		log.debug('Extracting PyPI metadata...')
 		const name = input
 

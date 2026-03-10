@@ -48,11 +48,11 @@ export async function parse(content: string): Promise<SetupPyData> {
 // ─── Source ──────────────────────────────────────────────────────────────────
 
 export const pythonSetupPySource = defineSource<'pythonSetupPy'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['setup.py'])
 	},
 	key: 'pythonSetupPy',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: await parse(content), source: input }
 	},

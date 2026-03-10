@@ -14,7 +14,7 @@ describe('codemeta-json source', () => {
 
 	it('should be available in a directory with a codemeta.json file', async () => {
 		expect(
-			await codemetaJsonSource.getInputs({
+			await codemetaJsonSource.discover({
 				options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
 			}),
 		).not.toHaveLength(0)
@@ -22,12 +22,12 @@ describe('codemeta-json source', () => {
 
 	it('should not be available in a directory without codemeta.json', async () => {
 		expect(
-			await codemetaJsonSource.getInputs({ options: { path: resolve('test/fixtures/_empty') } }),
+			await codemetaJsonSource.discover({ options: { path: resolve('test/fixtures/_empty') } }),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await codemetaJsonSource.parseInput('codemeta.json', {
+		const result = await codemetaJsonSource.parse('codemeta.json', {
 			options: { path: resolve(fixturesDirectory, 'caltechlibrary-iga') },
 		})
 

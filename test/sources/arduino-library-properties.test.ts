@@ -16,7 +16,7 @@ describe('arduinoLibraryProperties source', () => {
 
 	it('should be available in a directory with library.properties', async () => {
 		expect(
-			await arduinoLibraryPropertiesSource.getInputs({
+			await arduinoLibraryPropertiesSource.discover({
 				options: { path: resolve(fixturesDirectory, '0xpit-esparklines') },
 			}),
 		).not.toHaveLength(0)
@@ -24,14 +24,14 @@ describe('arduinoLibraryProperties source', () => {
 
 	it('should not be available in a directory without library.properties', async () => {
 		expect(
-			await arduinoLibraryPropertiesSource.getInputs({
+			await arduinoLibraryPropertiesSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed library properties data', async () => {
-		const result = await arduinoLibraryPropertiesSource.parseInput('library.properties', {
+		const result = await arduinoLibraryPropertiesSource.parse('library.properties', {
 			options: { path: resolve(fixturesDirectory, 'adafruit-adafruit-ccs811') },
 		})
 

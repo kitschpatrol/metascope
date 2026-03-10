@@ -13,7 +13,7 @@ describe('xcodeProjectPbxproj source', () => {
 
 	it('should be available in a directory with a .xcodeproj', async () => {
 		expect(
-			await xcodeProjectPbxprojSource.getInputs({
+			await xcodeProjectPbxprojSource.discover({
 				options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') },
 			}),
 		).not.toHaveLength(0)
@@ -21,14 +21,14 @@ describe('xcodeProjectPbxproj source', () => {
 
 	it('should not be available in a directory without .xcodeproj', async () => {
 		expect(
-			await xcodeProjectPbxprojSource.getInputs({
+			await xcodeProjectPbxprojSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const result = await xcodeProjectPbxprojSource.parseInput(
+		const result = await xcodeProjectPbxprojSource.parse(
 			'c2p-cmd-jokeapi.xcodeproj/project.pbxproj',
 			{ options: { path: resolve(fixturesDirectory, 'c2p-cmd-jokeapi') } },
 		)

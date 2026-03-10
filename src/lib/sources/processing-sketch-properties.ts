@@ -267,11 +267,11 @@ function isProcessingSketchProperties(content: string): boolean {
 }
 
 export const processingSketchPropertiesSource = defineSource<'processingSketchProperties'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['sketch.properties'])
 	},
 	key: 'processingSketchProperties',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		if (!isProcessingSketchProperties(content)) {
 			return

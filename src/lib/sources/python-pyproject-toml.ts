@@ -25,11 +25,11 @@ export function parse(content: string): PyprojectData {
 }
 
 export const pythonPyprojectTomlSource = defineSource<'pythonPyprojectToml'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['pyproject.toml'])
 	},
 	key: 'pythonPyprojectToml',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return { data: parse(content), source: input }
 	},

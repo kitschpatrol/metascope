@@ -16,7 +16,7 @@ describe('openframeworksInstallXml source', () => {
 
 	it('should be available in a directory with install.xml', async () => {
 		expect(
-			await openframeworksInstallXmlSource.getInputs({
+			await openframeworksInstallXmlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode') },
 			}),
 		).not.toHaveLength(0)
@@ -24,14 +24,14 @@ describe('openframeworksInstallXml source', () => {
 
 	it('should not be available in a directory without install.xml', async () => {
 		expect(
-			await openframeworksInstallXmlSource.getInputs({
+			await openframeworksInstallXmlSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture directory', async () => {
-		const result = await openframeworksInstallXmlSource.parseInput('install.xml', {
+		const result = await openframeworksInstallXmlSource.parse('install.xml', {
 			options: { path: resolve(fixturesDirectory, 'elliotwoods-ofxgraycode') },
 		})
 

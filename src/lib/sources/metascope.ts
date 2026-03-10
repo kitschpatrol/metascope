@@ -22,13 +22,13 @@ export type MetascopeData = SourceRecord<MetascopeInfo> | undefined
 
 export const metascopeSource = defineSource<'metascope'>({
 	// eslint-disable-next-line ts/require-await
-	async getInputs(context) {
+	async discover(context) {
 		// Always just the root
 		return [context.options.path]
 	},
 	key: 'metascope',
 	// eslint-disable-next-line ts/require-await
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const {
 			absolute,
 			offline,

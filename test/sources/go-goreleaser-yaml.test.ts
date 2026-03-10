@@ -17,7 +17,7 @@ describe('goGoreleaserYaml source', () => {
 
 	it('should be available in a directory with a .goreleaser.yml file', async () => {
 		expect(
-			await goGoreleaserYamlSource.getInputs({
+			await goGoreleaserYamlSource.discover({
 				options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
 			}),
 		).not.toHaveLength(0)
@@ -25,14 +25,14 @@ describe('goGoreleaserYaml source', () => {
 
 	it('should not be available in a directory without goreleaser config', async () => {
 		expect(
-			await goGoreleaserYamlSource.getInputs({
+			await goGoreleaserYamlSource.discover({
 				options: { path: resolve('test/fixtures/_empty') },
 			}),
 		).toHaveLength(0)
 	})
 
 	it('should extract parsed metadata from a fixture', async () => {
-		const result = await goGoreleaserYamlSource.parseInput('.goreleaser.yml', {
+		const result = await goGoreleaserYamlSource.parse('.goreleaser.yml', {
 			options: { path: resolve(fixturesDirectory, 'aenthill-aenthill') },
 		})
 

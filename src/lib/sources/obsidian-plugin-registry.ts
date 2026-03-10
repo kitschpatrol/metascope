@@ -22,7 +22,7 @@ const communityPluginsUrl =
 const pluginStatsSchema = z.record(z.string(), z.record(z.string(), z.number()))
 
 export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry'>({
-	async getInputs(context) {
+	async discover(context) {
 		if (context.options.offline) {
 			log.warn("Skipping Obsidian plugin registry data source since we're in offline mode")
 			return []
@@ -42,7 +42,7 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 		return pluginIds
 	},
 	key: 'obsidianPluginRegistry',
-	async parseInput(input) {
+	async parse(input) {
 		log.debug('Extracting Obsidian plugin registry metadata...')
 		const pluginId = input
 		const url = `https://obsidian.md/plugins?id=${encodeURIComponent(pluginId)}`

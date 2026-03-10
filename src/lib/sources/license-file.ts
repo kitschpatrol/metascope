@@ -17,11 +17,11 @@ export type LicenseMatch = {
 export type LicenseFileData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
 
 export const licenseFileSource = defineSource<'licenseFile'>({
-	async getInputs(context) {
+	async discover(context) {
 		return getMatches(context.options, ['{,un}licen{c,s}e{,.*}', 'copying{,.lesser}{,.*}'])
 	},
 	key: 'licenseFile',
-	async parseInput(input, context) {
+	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const match = identifyLicense(content)
 		if (!match) return

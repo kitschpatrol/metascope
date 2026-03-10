@@ -181,6 +181,10 @@ export async function batchMap<T, R>(
 
 /**
  * Extract the first element from a `OneOrMany` value.
+ *
+ * Metadata sources may return a single record or an array of records. This
+ * helper normalizes access so you can safely retrieve the first record
+ * regardless of cardinality.
  */
 export function firstOf<T>(value: T | T[] | undefined): T | undefined {
 	if (value === undefined) return undefined
