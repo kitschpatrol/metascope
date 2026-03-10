@@ -1,9 +1,10 @@
 /* eslint-disable unicorn/no-await-expression-member */
 /* eslint-disable unicorn/no-useless-undefined */
 import { access, stat } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { simpleGit } from 'simple-git'
 import type { OneOrMany, SourceRecord } from '../source'
+import { getMatches, getTree } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 
@@ -62,19 +63,17 @@ export type GitStatisticsData = OneOrMany<SourceRecord<GitStatisticsInfo>> | und
 
 export const gitStatisticsSource = defineSource<'gitStatistics'>({
 	async getInputs(context) {
-		// TODO what about submodules etc.?
-		try {
-			await access(join(context.options.path, '.git'))
-			return [join(context.options.path, '.git')]
-		} catch {
-			return []
-		}
+		// Have to match actual file, not just folder
+		const temporary = await getMatches(context.options, ['.git/config'])
+
+		// Then pop up to the directory containing the `.git` folder
+		return temporary.map((value) => resolve(value, '../../'))
 	},
 	key: 'gitStatistics',
 	async parseInput(input, context) {
 		log.debug('Extracting git statistics metadata...')
 
-		const git = simpleGit(context.options.path)
+		const git = simpleGit(input)
 
 		const [
 			statusResult,
@@ -228,5 +227,5 @@ export const gitStatisticsSource = defineSource<'gitStatistics'>({
 			source: input,
 		}
 	},
-	phase: 2,
+	phase: 1,
 })
