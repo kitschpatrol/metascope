@@ -13,7 +13,7 @@ import type {
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './source.js'
 import type { TemplateMap, TemplateName } from './templates/index.js'
-import { getTree, getWorkspaces, resetMatchCache } from './file-matching.js'
+import { getTree, resetMatchCache } from './file-matching.js'
 import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
@@ -224,12 +224,6 @@ export async function getMetadata<T>(
 	log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
 	const rootTree = await getTree(absolutePath, resolvedOptions.respectIgnored)
 	log.debug(`Root file tree contains ${rootTree.length} entries`)
-
-	// Also warm workspace trees so sources don't each trigger their own globby calls
-	const workspacePaths = getWorkspaces(absolutePath, resolvedOptions.workspaces)
-	for (const workspace of workspacePaths) {
-		await getTree(workspace, resolvedOptions.respectIgnored)
-	}
 
 	// Assemble context with defaults
 	const context: MetadataContext = {

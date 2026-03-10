@@ -1,12 +1,12 @@
-import { globby } from 'globby'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { glob } from 'tinyglobby'
 import { getMetadata } from '../src/lib'
 
 const sourceDirectory = '/Users/mika/Code'
 const destinationDirectory = '/Users/mika/Desktop/metascope-test'
 
-const codeFolders = await globby('*', {
+const codeFolders = await glob('*', {
 	cwd: sourceDirectory,
 	onlyDirectories: true,
 })

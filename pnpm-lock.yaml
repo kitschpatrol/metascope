@@ -44,9 +44,6 @@ importers:
       git-url-parse:
         specifier: ^16.1.0
         version: 16.1.0
-      globby:
-        specifier: ^16.1.1
-        version: 16.1.1
       jiti:
         specifier: ^2.6.1
         version: 2.6.1
@@ -98,6 +95,9 @@ importers:
       tinyexec:
         specifier: ^1.0.2
         version: 1.0.2
+      tinyglobby:
+        specifier: ^0.2.15
+        version: 0.2.15
       unified:
         specifier: ^11.0.5
         version: 11.0.5

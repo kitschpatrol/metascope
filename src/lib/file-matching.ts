@@ -1,14 +1,12 @@
-/* eslint-disable max-depth */
 import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
-import { globby } from 'globby'
 import { existsSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import picomatch from 'picomatch'
-import type { GetMetadataBaseOptions } from './metadata-types'
+import { exec } from 'tinyexec'
+import { escapePath, glob } from 'tinyglobby'
 import { log } from './log'
-import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types'
 
 // ─── Caches ─────────────────────────────────────────────────────────
 
@@ -28,13 +26,33 @@ export function resetMatchCache(): void {
 
 /**
  * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
- * Returns relative POSIX paths (internal to globby; callers receive absolute paths via getMatches).
+ * Returns relative POSIX paths (internal to tinyglobby; callers receive absolute paths via getMatches).
  */
 export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
 	let tree = matchCache.get(key)
+
 	if (!tree) {
-		tree = await globby('**', { cwd: path, dot: true, gitignore: respectIgnored })
+		let ignore: string[] = []
+
+		if (respectIgnored) {
+			try {
+				const { stdout } = await exec(
+					'git',
+					['ls-files', '--others', '--ignored', '--exclude-standard', '--directory'],
+					{ nodeOptions: { cwd: path, stdio: ['ignore', 'pipe', 'ignore'] } },
+				)
+
+				ignore = stdout
+					.split('\n')
+					.filter(Boolean)
+					.map((p) => escapePath(p))
+			} catch {
+				// Fallback to empty ignore list if the command fails (e.g., not a git repository)
+			}
+		}
+
+		tree = await glob('**', { cwd: path, dot: true, ignore })
 		matchCache.set(key, tree)
 	}
 
@@ -109,10 +127,19 @@ export function getWorkspaces(directory: string, workspaces: boolean | string[] 
 
 // ─── File Matching ──────────────────────────────────────────────────
 
-type MatchOptions = Pick<
-	GetMetadataBaseOptions,
-	'path' | 'recursive' | 'respectIgnored' | 'workspaces'
->
+type MatchOptions = {
+	path: string
+	recursive?: boolean
+	respectIgnored?: boolean
+	workspaces?: boolean | string[]
+}
+
+const DEFAULT_MATCH_OPTIONS: Required<Omit<MatchOptions, 'path'>> & { path: string } = {
+	path: '.',
+	recursive: false,
+	respectIgnored: true,
+	workspaces: true,
+}
 
 /**
  * Find files matching glob patterns in a directory's file tree.
@@ -120,8 +147,7 @@ type MatchOptions = Pick<
  * - Memoizes the file tree internally (keyed by path + respectIgnored)
  * - Auto-prepends `**\/` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
- * - When `options.workspaces` is set, also matches files in workspace directories.
- *   Workspace matches are returned as absolute paths. Workspace trees are individually memoized.
+ * - When `options.workspaces` is set, also matches files in workspace directories dynamically.
  * @param options - Must include `path`; optionally `recursive`, `respectIgnored`, and `workspaces`
  * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
  * @param patternsRecursive - Optionally explicitly specify recursive pattern
@@ -132,40 +158,36 @@ export async function getMatches(
 	patterns: string[],
 	patternsRecursive?: string[],
 ): Promise<string[]> {
-	const resolved = defu(options, DEFAULT_GET_METADATA_OPTIONS)
+	const resolved = defu(options, DEFAULT_MATCH_OPTIONS)
 	const tree = await getTree(resolved.path, resolved.respectIgnored)
-	const effectivePatterns = resolved.recursive
-		? // Recursive... use explicit if available, otherwise fall back to implicit
-			(patternsRecursive ?? patterns.map((p) => `**/${p}`))
-		: // Non-recursive...
-			patterns
 
-	const isMatch = picomatch(effectivePatterns, { nocase: true })
-	const seen = new Set<string>()
-	const results: string[] = []
+	let effectivePatterns: string[]
 
-	for (const filePath of tree) {
-		const absolutePath = resolve(resolved.path, filePath)
-		if (isMatch(filePath) && !seen.has(absolutePath)) {
-			seen.add(absolutePath)
-			results.push(absolutePath)
+	if (resolved.recursive) {
+		// Recursive: `**/pattern` covers the root and all workspaces automatically.
+		effectivePatterns = patternsRecursive ?? patterns.map((p) => `**/${p}`)
+	} else {
+		// Non-recursive: Start with the root patterns...
+		effectivePatterns = [...patterns]
+
+		// ...and if workspaces are enabled, append patterns for the root of each workspace.
+		if (resolved.workspaces) {
+			const workspacePaths = getWorkspaces(resolved.path, resolved.workspaces)
+			for (const workspace of workspacePaths) {
+				// Convert absolute workspace path to a root-relative POSIX path for picomatch
+				const relativeWorkspace = relative(resolved.path, workspace).replaceAll('\\', '/')
+				effectivePatterns.push(...patterns.map((p) => `${relativeWorkspace}/${p}`))
+			}
 		}
 	}
 
-	// Also match in workspace directories
-	if (resolved.workspaces) {
-		const workspacePaths = getWorkspaces(resolved.path, resolved.workspaces)
-		for (const workspace of workspacePaths) {
-			const workspaceTree = await getTree(workspace, resolved.respectIgnored)
-			for (const filePath of workspaceTree) {
-				if (isMatch(filePath)) {
-					const absolutePath = resolve(workspace, filePath)
-					if (!seen.has(absolutePath)) {
-						seen.add(absolutePath)
-						results.push(absolutePath)
-					}
-				}
-			}
+	const isMatch = picomatch(effectivePatterns, { nocase: true })
+	const results: string[] = []
+
+	// Iterate over the single, fully-cached master tree
+	for (const filePath of tree) {
+		if (isMatch(filePath)) {
+			results.push(resolve(resolved.path, filePath))
 		}
 	}
 
