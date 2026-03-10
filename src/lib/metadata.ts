@@ -293,7 +293,7 @@ export async function getMetadata<T>(
 		context.metascope.data.durationMs = Math.round(metadataDuration)
 	}
 
-	log.info(`Metadata duration: ${prettyMs(metadataDuration)}`)
+	log.debug(`Metadata duration: ${prettyMs(metadataDuration)}`)
 
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
@@ -303,13 +303,13 @@ export async function getMetadata<T>(
 			template(context, resolvedOptions.templateData ?? {}),
 		) ?? {}) as unknown as T
 		const templateDuration = performance.now() - templateStartTime
-		log.info(`Template duration: ${prettyMs(templateDuration)}`)
-		log.info(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+		log.debug(`Template duration: ${prettyMs(templateDuration)}`)
+		log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
 		return finalTemplateResult
 	}
 
 	// Strip undefined values and empty source objects from raw output
 	const finalResult = stripUndefined(context)
-	log.info(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+	log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
 	return finalResult
 }
