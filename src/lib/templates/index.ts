@@ -1,4 +1,3 @@
-import type { Template } from '../metadata-types'
 import { codemeta } from './codemeta'
 import { frontmatter } from './frontmatter'
 import { project } from './project'
@@ -6,7 +5,7 @@ import { project } from './project'
 /**
  * Built-in templates, keyed by name.
  */
-export const templates: Record<string, Template<unknown>> = {
+export const templates = {
 	codemeta,
 	frontmatter,
 	project,
@@ -25,3 +24,10 @@ export type TemplateMap = {
  * Names of built-in templates.
  */
 export type TemplateName = keyof TemplateMap
+
+/**
+ * Type guard
+ */
+export function isKeyOfTemplate(value: unknown): value is keyof typeof templates {
+	return typeof value === 'string' && value in templates
+}

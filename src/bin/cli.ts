@@ -7,6 +7,7 @@ import { createLogger, getChildLogger } from 'lognow'
 import { getMetadata, setLogger, templates } from '../lib'
 import type { Template, TemplateData } from '../lib'
 import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
+import { isKeyOfTemplate } from '../lib/templates'
 
 const cliCommandName = Object.keys(bin).at(0)!
 const builtInTemplateNames = Object.keys(templates)
@@ -89,10 +90,11 @@ await yargsInstance
 			// Resolve template: try built-in template first, then load as file
 			let template: Template<unknown> | undefined
 			if (argv.template) {
-				const builtIn = templates[argv.template]
-				if (builtIn) {
-					template = builtIn
+				if (isKeyOfTemplate(argv.template)) {
+					// built in
+					template = templates[argv.template]
 				} else {
+					// Load file
 					try {
 						const { createJiti } = await import('jiti')
 						const jiti = createJiti(import.meta.url)

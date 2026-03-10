@@ -1,4 +1,4 @@
-import type { NodePackageJsonData } from '../metadata-types'
+import type { NodePackageJsonData } from '../sources/node-package-json'
 import type { CodeMetaJson, CodeMetaJsonData } from '../sources/codemeta-json'
 import { ensureArray, firstOf, toDelimitedString } from './formatting'
 

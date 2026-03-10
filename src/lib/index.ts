@@ -1,57 +1,15 @@
-export { getMatches, getWorkspaces, resetMatchCache } from './file-matching'
 export { setLogger } from './log'
 export { getMetadata } from './metadata'
 export { DEFAULT_GET_METADATA_OPTIONS, defineTemplate } from './metadata-types'
 export type {
-	ArduinoLibraryPropertiesData,
-	CinderCinderblockXmlData,
-	CodeMetaJsonData,
-	CodeStatisticsData,
 	Credentials,
-	DependencyUpdatesData,
-	DependencyUpdatesPackage,
-	FileStatisticsData,
-	GetMetadataBaseOptions,
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
-	GitConfigData,
-	GitHubData,
-	GitStatisticsData,
-	GoGoModData,
-	GoGoreleaserYamlData,
-	JavaPomXmlData,
-	LicenseFilesData,
 	MetadataContext,
-	MetadataFileData,
-	MetascopeData,
-	NodeNpmRegistryData,
-	NodePackageJsonData,
-	ObsidianManifest,
-	ObsidianPluginManifestJsonData,
-	ObsidianPluginRegistryData,
-	OneOrMany,
-	OpenframeworksAddonConfigMkData,
-	OpenframeworksInstallXmlData,
-	ProcessingLibraryPropertiesData,
-	ProcessingSketchPropertiesData,
-	PubliccodeYamlData,
-	PythonPkgInfoData,
-	PythonPypiRegistryData,
-	PythonPyprojectTomlData,
-	PythonSetupCfgData,
-	PythonSetupPyData,
-	ReadmeFileData,
-	RubyGemspecData,
-	RustCargoTomlData,
 	SourceName,
-	SourceRecord,
 	Template,
 	TemplateData,
-	XcodeInfoPlistData,
-	XcodeProjectPbxprojData,
 } from './metadata-types'
-export { defineSource } from './source'
+export type { OneOrMany, SourceRecord } from './source'
+
 export { templates } from './templates/index'
-export type { TemplateMap, TemplateName } from './templates/index'
-export { firstOf, formatPath } from './utilities/formatting'
-export type { LanguageInfo } from '@kitschpatrol/tokei'

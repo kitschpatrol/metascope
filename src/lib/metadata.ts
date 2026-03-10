@@ -50,6 +50,7 @@ import { rubyGemspecSource } from './sources/ruby-gemspec'
 import { rustCargoTomlSource } from './sources/rust-cargo-toml'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
+import { isKeyOfTemplate, templates } from './templates/index.js'
 import { stripUndefined } from './utilities/formatting'
 
 const execFileAsync = promisify(execFile)
@@ -126,15 +127,13 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
  * Resolve a template option to a template function.
  * Accepts a built-in template name (string) or a template function.
  */
-async function resolveTemplate(
+function resolveTemplate(
 	template: string | Template<unknown> | undefined,
-): Promise<Template<unknown> | undefined> {
+): Template<unknown> | undefined {
 	if (template === undefined) return undefined
 	if (typeof template === 'function') return template
 
-	const { templates } = await import('./templates/index.js')
-
-	if (template in templates) {
+	if (isKeyOfTemplate(template)) {
 		return templates[template]
 	}
 
@@ -214,7 +213,7 @@ export async function getMetadata<T>(
 	}
 
 	// Resolve template from options (built-in name or function)
-	const template = await resolveTemplate(resolvedOptions.template)
+	const template = resolveTemplate(resolvedOptions.template)
 
 	const credentials = await resolveCredentials(resolvedOptions.credentials)
 
