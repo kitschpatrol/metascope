@@ -75,7 +75,7 @@ npm install metascope
 npm install --global metascope
 ```
 
-If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their WASM implementations.
+If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their bundled WASM implementations.
 
 In your `pnpm-workspace.yaml`:
 

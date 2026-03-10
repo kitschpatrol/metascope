@@ -55,7 +55,12 @@ export async function getTree(path: string, respectIgnored: boolean): Promise<st
 				ignore = stdout
 					.split('\n')
 					.filter(Boolean)
-					.map((p) => escapePath(p))
+					.map((p) => {
+						const escaped = escapePath(p)
+						// Directory paths from git (trailing /) must become glob patterns
+						// so tinyglobby skips them during traversal instead of walking into them
+						return escaped.endsWith('/') ? `${escaped}**` : escaped
+					})
 			} catch {
 				// Fallback to default ignore list if the command fails (e.g., not a git repository)
 				ignore = [...DEFAULT_IGNORE]
