@@ -38,6 +38,7 @@ import { obsidianPluginRegistrySource } from './sources/obsidian-plugin-registry
 import { openframeworksAddonConfigMkSource } from './sources/openframeworks-addon-config-mk'
 import { openframeworksInstallXmlSource } from './sources/openframeworks-install-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
+import { processingSketchPropertiesSource } from './sources/processing-sketch-properties'
 import { publiccodeYamlSource } from './sources/publiccode-yaml'
 import { pythonPkgInfoSource } from './sources/python-pkg-info'
 import { pythonPypiRegistrySource } from './sources/python-pypi-registry'
@@ -76,6 +77,7 @@ const sources: MetadataSource[] = [
 	openframeworksAddonConfigMkSource,
 	openframeworksInstallXmlSource,
 	processingLibraryPropertiesSource,
+	processingSketchPropertiesSource,
 	publiccodeYamlSource,
 	pythonPkgInfoSource,
 	pythonPyprojectTomlSource,
@@ -249,6 +251,7 @@ export async function getMetadata<T>(
 		openframeworksAddonConfigMk: undefined,
 		openframeworksInstallXml: undefined,
 		processingLibraryProperties: undefined,
+		processingSketchProperties: undefined,
 		publiccodeYaml: undefined,
 		pythonPkgInfo: undefined,
 		pythonPypiRegistry: undefined,

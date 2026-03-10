@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
-import { parseLibraryProperties } from '../parsers/library-properties-parser'
+import { parseProperties } from '../parsers/properties-parser'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 
@@ -88,7 +88,7 @@ export type ProcessingLibraryPropertiesData =
  * Parse a Processing `library.properties` content string into a structured object.
  */
 export function parse(content: string): ProcessingLibraryProperties {
-	const raw = parseLibraryProperties(content)
+	const raw = parseProperties(content)
 
 	const versionRaw = get(raw, 'version') ?? '0'
 	const versionParsed = Number.parseInt(versionRaw, 10)
@@ -284,7 +284,7 @@ const ARDUINO_EXCLUSIVE_FIELDS = new Set(['architectures', 'depends', 'maintaine
  * Validate that a library.properties file is Processing (not Arduino).
  */
 function isProcessingLibraryProperties(content: string): boolean {
-	const raw = parseLibraryProperties(content)
+	const raw = parseProperties(content)
 	const keys = new Set(Object.keys(raw).map((k) => k.toLowerCase()))
 
 	// Must have base fields

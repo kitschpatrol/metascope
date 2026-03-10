@@ -1,39 +1,58 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import prettyMilliseconds from 'pretty-ms'
 import { glob } from 'tinyglobby'
 import { getMetadata } from '../src/lib'
 
+const startTime = performance.now()
+
 const sourceDirectory = '/Users/mika/Code'
-const destinationDirectory = '/Users/mika/Desktop/metascope-test'
+const destinationDirectory = '/Users/mika/Desktop/metascope-test-batch-10'
 
 const codeFolders = await glob('*', {
 	cwd: sourceDirectory,
 	onlyDirectories: true,
 })
 
+console.log(`Found ${codeFolders.length} folders to process.`)
+
 // Create dir if not needed (recursive: true prevents errors if it already exists)
 await mkdir(destinationDirectory, { recursive: true })
 
-// Run getMetadata on each folder, save nicely formatted JSON output to a file
-for (const folder of codeFolders) {
-	try {
-		// Reconstruct the full path so getMetadata knows exactly where to look
-		const fullFolderPath = join(sourceDirectory, folder)
+// Set a safe concurrency limit (5 to 10 is usually the sweet spot for I/O)
+// 01: 4m 3.5s (1s/project)
+// 05: 3m 18.5s (821ms/project)
+// 10: 3m 18.7s (821ms/project)
+const concurrencyLimit = 10
 
-		// Assuming getMetadata is async; if it's synchronous, you can remove 'await'
-		const metadata = await getMetadata({
-			path: fullFolderPath,
-		})
+for (let index = 0; index < codeFolders.length; index += concurrencyLimit) {
+	// Slice the array into a small batch
+	const batch = codeFolders.slice(index, index + concurrencyLimit)
 
-		// Format JSON with a 2-space indent
-		const jsonOutput = JSON.stringify(metadata, undefined, 2)
-		const outputPath = join(destinationDirectory, `${folder}.json`)
+	console.log(
+		`⏳ Processing batch ${index / concurrencyLimit + 1} of ${Math.ceil(codeFolders.length / concurrencyLimit)}...`,
+	)
 
-		// Write the file to the destination
-		await writeFile(outputPath, jsonOutput, 'utf8')
+	// Process ONLY this batch concurrently
+	await Promise.all(
+		batch.map(async (folder) => {
+			try {
+				const fullFolderPath = join(sourceDirectory, folder)
+				const metadata = await getMetadata({ path: fullFolderPath })
 
-		console.log(`✅ Successfully saved metadata for ${folder}`)
-	} catch (error) {
-		console.error(`❌ Error processing ${folder}:`, error)
-	}
+				const jsonOutput = JSON.stringify(metadata, undefined, 2)
+				const outputPath = join(destinationDirectory, `${folder.replaceAll('/', '')}.json`)
+
+				await writeFile(outputPath, jsonOutput, 'utf8')
+				console.log(`✅ Successfully saved metadata for ${folder}`)
+			} catch (error) {
+				console.error(`❌ Error processing ${folder}:`, error)
+			}
+		}),
+	)
 }
+
+const elapsed = performance.now() - startTime
+console.log(
+	`🎉 All metadata parsing complete in ${prettyMilliseconds(elapsed)} (${prettyMilliseconds(elapsed / codeFolders.length)}/project)`,
+)

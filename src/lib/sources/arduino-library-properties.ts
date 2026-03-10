@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
-import { parseLibraryProperties } from '../parsers/library-properties-parser'
+import { parseProperties } from '../parsers/properties-parser'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
@@ -90,7 +90,7 @@ export type ArduinoLibraryPropertiesData =
  * Parse an Arduino `library.properties` content string into a structured object.
  */
 export function parse(content: string): ArduinoLibraryProperties {
-	const raw = parseLibraryProperties(content)
+	const raw = parseProperties(content)
 
 	const includesValue = get(raw, 'includes')
 
@@ -248,7 +248,7 @@ const PROCESSING_EXCLUSIVE_FIELDS = new Set(['authors', 'minrevision', 'prettyve
  * or no Processing-exclusive fields.
  */
 function isArduinoLibraryProperties(content: string): boolean {
-	const raw = parseLibraryProperties(content)
+	const raw = parseProperties(content)
 	const keys = new Set(Object.keys(raw))
 
 	// Must have the three base fields

@@ -24,6 +24,7 @@ export type { ObsidianPluginRegistryData } from './sources/obsidian-plugin-regis
 export type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
 export type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 export type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
+export type { ProcessingSketchPropertiesData } from './sources/processing-sketch-properties'
 export type { PubliccodeYamlData } from './sources/publiccode-yaml'
 export type { PythonPkgInfoData } from './sources/python-pkg-info'
 export type { PythonPypiRegistryData } from './sources/python-pypi-registry'
@@ -58,6 +59,7 @@ import type { ObsidianPluginRegistryData } from './sources/obsidian-plugin-regis
 import type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
 import type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
+import type { ProcessingSketchPropertiesData } from './sources/processing-sketch-properties'
 import type { PubliccodeYamlData } from './sources/publiccode-yaml'
 import type { PythonPkgInfoData } from './sources/python-pkg-info'
 import type { PythonPypiRegistryData } from './sources/python-pypi-registry'
@@ -99,6 +101,7 @@ export type MetadataContext = {
 	openframeworksAddonConfigMk: OpenframeworksAddonConfigMkData
 	openframeworksInstallXml: OpenframeworksInstallXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
+	processingSketchProperties: ProcessingSketchPropertiesData
 	publiccodeYaml: PubliccodeYamlData
 	pythonPkgInfo: PythonPkgInfoData
 	pythonPypiRegistry: PythonPypiRegistryData

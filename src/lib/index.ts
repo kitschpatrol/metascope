@@ -33,6 +33,7 @@ export type {
 	OpenframeworksAddonConfigMkData,
 	OpenframeworksInstallXmlData,
 	ProcessingLibraryPropertiesData,
+	ProcessingSketchPropertiesData,
 	PubliccodeYamlData,
 	PythonPkgInfoData,
 	PythonPypiRegistryData,

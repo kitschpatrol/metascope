@@ -1,5 +1,5 @@
 /**
- * Parser for `library.properties` files (key=value format).
+ * Parser for Java `*.properties` files (key=value format).
  *
  * Used by both Arduino and Processing IDE library managers. These are
  * flat UTF-8 properties files with no sections or nesting. Comment lines
@@ -7,12 +7,14 @@
  *
  * Returns raw key-value pairs — all domain-specific validation and
  * transformation is handled by the consuming source.
+ *
+ * See https://en.wikipedia.org/wiki/.properties
  */
 
 /**
- * Parse a `library.properties` content string into raw key-value pairs.
+ * Parse a `*.properties` content string into raw key-value pairs.
  */
-export function parseLibraryProperties(content: string): Record<string, string> {
+export function parseProperties(content: string): Record<string, string> {
 	const raw: Record<string, string> = {}
 
 	for (const rawLine of content.split(/\r?\n/)) {

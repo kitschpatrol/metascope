@@ -1,17 +1,17 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseLibraryProperties } from '../../src/lib/parsers/library-properties-parser'
+import { parseProperties } from '../../src/lib/parsers/properties-parser'
 
 const fixturesDirectory = resolve('test/fixtures/processing-library-properties')
 
-describe('parseLibraryProperties (Processing)', () => {
+describe('parseProperties (Processing)', () => {
 	it('should return a Record<string, string> with key-value pairs', async () => {
 		const content = await readFile(
 			resolve(fixturesDirectory, 'hx2a-camera3d/library.properties'),
 			'utf8',
 		)
-		const result = parseLibraryProperties(content)
+		const result = parseProperties(content)
 
 		expect(typeof result).toBe('object')
 		expect(result.name).toBe('Camera 3D')
@@ -24,7 +24,7 @@ describe('parseLibraryProperties (Processing)', () => {
 			resolve(fixturesDirectory, 'hx2a-camera3d/library.properties'),
 			'utf8',
 		)
-		const result = parseLibraryProperties(content)
+		const result = parseProperties(content)
 
 		for (const value of Object.values(result)) {
 			expect(typeof value).toBe('string')
@@ -42,7 +42,7 @@ describe('parseLibraryProperties (Processing)', () => {
 				resolve(fixturesDirectory, directory, 'library.properties'),
 				'utf8',
 			)
-			expect(() => parseLibraryProperties(content)).not.toThrow()
+			expect(() => parseProperties(content)).not.toThrow()
 		}
 	})
 })

@@ -108,6 +108,7 @@ const mockContext: MetadataContext = {
 	openframeworksAddonConfigMk: undefined,
 	openframeworksInstallXml: undefined,
 	processingLibraryProperties: undefined,
+	processingSketchProperties: undefined,
 	publiccodeYaml: undefined,
 	pythonPkgInfo: undefined,
 	pythonPypiRegistry: undefined,

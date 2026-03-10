@@ -427,4 +427,10 @@ async function run() {
 	)
 }
 
-await run()
+// await run()
+
+await saveAllFileSearchResults(
+	'sketch.properties',
+	'./test/fixtures/processing-sketch-properties',
+	false,
+)
