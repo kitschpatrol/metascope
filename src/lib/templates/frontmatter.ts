@@ -34,13 +34,14 @@ export const frontmatter = defineTemplate(
 			gitStatistics: git,
 			metascope,
 			nodeNpmRegistry: npm,
-			obsidianManifestJson: obsidianManifestJsonRaw,
+			obsidianPluginManifestJson: obsidianPluginManifestJsonRaw,
+			obsidianPluginRegistry: obsidianRegistry,
 			pythonPypiRegistry: pypi,
 		},
 		{ authorName, githubAccount },
 	) => {
 		const codemeta = firstOf(codemetaRaw)
-		const obsidianManifestJson = firstOf(obsidianManifestJsonRaw)
+		const obsidianPluginManifestJson = firstOf(obsidianPluginManifestJsonRaw)
 
 		return {
 			/* eslint-disable perfectionist/sort-objects */
@@ -56,7 +57,7 @@ export const frontmatter = defineTemplate(
 				) ?? null,
 			Version: codemeta?.data.version ?? null,
 			Public: !(github?.data.isPrivate ?? false),
-			Published: Boolean(obsidianManifestJson?.extra?.url ?? npm?.data.url ?? pypi?.data.url),
+			Published: Boolean(obsidianRegistry?.data.url ?? npm?.data.url ?? pypi?.data.url),
 			Status: toStatus(codemeta, authorName, githubAccount) ?? null,
 			'GitHub Owner': github?.data.ownerLogin ?? null,
 			tags: codemeta?.data.keywords ?? [], // Obsidian special field
@@ -82,7 +83,7 @@ export const frontmatter = defineTemplate(
 					? codemeta.data.url
 					: null,
 			'Repo URL': codemeta?.data.codeRepository ?? github?.data.url ?? null,
-			'Package URL': obsidianManifestJson?.extra?.url ?? npm?.data.url ?? pypi?.data.url ?? null,
+			'Package URL': obsidianRegistry?.data.url ?? npm?.data.url ?? pypi?.data.url ?? null,
 			'Readme URL': codemeta?.data.readme ?? null,
 			'Issues URL': codemeta?.data.issueTracker ?? null,
 
@@ -100,7 +101,7 @@ export const frontmatter = defineTemplate(
 				git?.data.tagVersionDateLatest ??
 				null,
 			'Latest Release Version':
-				obsidianManifestJson?.data.version ??
+				obsidianPluginManifestJson?.data.version ??
 				npm?.data.versionLatest ??
 				pypi?.data.versionLatest ??
 				github?.data.releaseVersionLatest ??
@@ -113,7 +114,7 @@ export const frontmatter = defineTemplate(
 			Contributors: github?.data.contributorCount ?? git?.data.contributorCount ?? null,
 			Forks: github?.data.forkCount ?? null,
 			'Downloads Total':
-				obsidianManifestJson?.extra?.downloadCount ??
+				obsidianRegistry?.data.downloadCount ??
 				npm?.data.downloadsTotal ??
 				pypi?.data.downloads180Days ??
 				github?.data.releaseDownloadCount ??

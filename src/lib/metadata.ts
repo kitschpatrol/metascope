@@ -32,7 +32,8 @@ import { metadataFileSource } from './sources/metadata-file'
 import { metascopeSource } from './sources/metascope'
 import { nodeNpmRegistrySource } from './sources/node-npm-registry'
 import { nodePackageJsonSource } from './sources/node-package-json'
-import { obsidianManifestJsonSource } from './sources/obsidian-manifest-json'
+import { obsidianPluginManifestJsonSource } from './sources/obsidian-plugin-manifest-json'
+import { obsidianPluginRegistrySource } from './sources/obsidian-plugin-registry'
 import { openframeworksAddonConfigMkSource } from './sources/openframeworks-addon-config-mk'
 import { openframeworksInstallXmlSource } from './sources/openframeworks-install-xml'
 import { processingLibraryPropertiesSource } from './sources/processing-library-properties'
@@ -71,7 +72,7 @@ const sources: MetadataSource[] = [
 	metadataFileSource,
 	metascopeSource,
 	nodePackageJsonSource,
-	obsidianManifestJsonSource,
+	obsidianPluginManifestJsonSource,
 	openframeworksAddonConfigMkSource,
 	openframeworksInstallXmlSource,
 	processingLibraryPropertiesSource,
@@ -92,6 +93,7 @@ const sources: MetadataSource[] = [
 	gitStatisticsSource,
 	githubSource,
 	nodeNpmRegistrySource,
+	obsidianPluginRegistrySource,
 	pythonPypiRegistrySource,
 ]
 
@@ -247,7 +249,8 @@ export async function getMetadata<T>(
 		metascope: undefined,
 		nodeNpmRegistry: undefined,
 		nodePackageJson: undefined,
-		obsidianManifestJson: undefined,
+		obsidianPluginManifestJson: undefined,
+		obsidianPluginRegistry: undefined,
 		openframeworksAddonConfigMk: undefined,
 		openframeworksInstallXml: undefined,
 		processingLibraryProperties: undefined,

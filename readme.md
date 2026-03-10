@@ -103,17 +103,20 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option                | Description                                                                                        | Type      |
-| --------------------- | -------------------------------------------------------------------------------------------------- | --------- |
-| `--template`<br>`-t`  | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js) | `string`  |
-| `--github-token`      | GitHub API token (or set $GITHUB_TOKEN)                                                            | `string`  |
-| `--author-name`       | Optional author name(s) for ownership checks in templates                                          | `array`   |
-| `--github-account`    | Optional GitHub account name(s) for ownership checks in templates                                  | `array`   |
-| `--offline`           | Skip network requests (web-based sources will return only locally-available data)                  | `boolean` |
-| `--recursive`<br>`-r` | Search for metadata files recursively in subdirectories                                            | `boolean` |
-| `--verbose`           | Run with verbose logging                                                                           | `boolean` |
-| `--help`<br>`-h`      | Show help                                                                                          | `boolean` |
-| `--version`<br>`-v`   | Show version number                                                                                | `boolean` |
+| Option                 | Description                                                                                                                                                               | Type      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `--template`<br>`-t`   | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js)                                                                        | `string`  |
+| `--github-token`       | GitHub API token (or set $GITHUB_TOKEN)                                                                                                                                   | `string`  |
+| `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                 | `array`   |
+| `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                         | `array`   |
+| `--absolute`           | Output absolute paths (default: true). Use --no-absolute for relative paths.                                                                                              | `boolean` |
+| `--offline`            | Skip network requests (web-based sources will return only locally-available data)                                                                                         | `boolean` |
+| `--no-ignore`          | Include files ignored by .gitignore in the file tree                                                                                                                      | `boolean` |
+| `--recursive`<br>`-r`  | Search for metadata files recursively in subdirectories                                                                                                                   | `boolean` |
+| `--workspaces`<br>`-w` | Monorepo workspace paths relative to the project directory. Use --workspaces to auto-discover, --no-workspaces to disable, or --workspaces path1 path2 for specific paths |           |
+| `--verbose`            | Run with verbose logging                                                                                                                                                  | `boolean` |
+| `--help`<br>`-h`       | Show help                                                                                                                                                                 | `boolean` |
+| `--version`<br>`-v`    | Show version number                                                                                                                                                       | `boolean` |
 
 <!-- /cli-help -->
 

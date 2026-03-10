@@ -183,9 +183,9 @@ describe('all-sources fixture', () => {
 		expect(data!.homepage).toBe('https://example.com/all-sources')
 	})
 
-	it('should extract obsidianManifestJson', async () => {
+	it('should extract obsidianPluginManifestJson', async () => {
 		const result = await resultPromise
-		const data = firstOf(result.obsidianManifestJson)?.data
+		const data = firstOf(result.obsidianPluginManifestJson)?.data
 		expect(data).toBeDefined()
 		expect(data!.id).toBe('all-sources-plugin')
 		expect(data!.name).toBe('All Sources Plugin')

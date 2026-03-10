@@ -1,6 +1,6 @@
 import { mkdtempSync } from 'node:fs'
-import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
 

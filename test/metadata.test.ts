@@ -50,12 +50,12 @@ describe('getMetadata', () => {
 	})
 
 	it('should strip undefined from template output', async () => {
-		const template = defineTemplate(({ obsidianManifestJson }) => ({
-			downloads: firstOf(obsidianManifestJson)?.extra?.downloadCount,
+		const template = defineTemplate(({ obsidianPluginRegistry }) => ({
+			downloads: obsidianPluginRegistry?.data.downloadCount,
 		}))
 
 		const result = await getMetadata({ path: '.', template })
-		// The obsidianManifestJson source is not available (no obsidian-plugin keyword), so downloadCount is undefined
+		// The obsidianPluginRegistry source is not available, so downloadCount is undefined
 		// stripUndefined should remove it, resulting in empty object (which is also stripped)
 		expect(result).not.toHaveProperty('downloads')
 	})

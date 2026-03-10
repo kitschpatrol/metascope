@@ -15,7 +15,11 @@ export type { MetadataFileData } from './sources/metadata-file'
 export type { MetascopeData } from './sources/metascope'
 export type { NodeNpmRegistryData } from './sources/node-npm-registry'
 export type { NodePackageJsonData } from './sources/node-package-json'
-export type { ObsidianManifest, ObsidianManifestJsonData } from './sources/obsidian-manifest-json'
+export type {
+	ObsidianManifest,
+	ObsidianPluginManifestJsonData,
+} from './sources/obsidian-plugin-manifest-json'
+export type { ObsidianPluginRegistryData } from './sources/obsidian-plugin-registry'
 export type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
 export type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 export type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
@@ -49,7 +53,8 @@ import type { MetadataFileData } from './sources/metadata-file'
 import type { MetascopeData } from './sources/metascope'
 import type { NodeNpmRegistryData } from './sources/node-npm-registry'
 import type { NodePackageJsonData } from './sources/node-package-json'
-import type { ObsidianManifestJsonData } from './sources/obsidian-manifest-json'
+import type { ObsidianPluginManifestJsonData } from './sources/obsidian-plugin-manifest-json'
+import type { ObsidianPluginRegistryData } from './sources/obsidian-plugin-registry'
 import type { OpenframeworksAddonConfigMkData } from './sources/openframeworks-addon-config-mk'
 import type { OpenframeworksInstallXmlData } from './sources/openframeworks-install-xml'
 import type { ProcessingLibraryPropertiesData } from './sources/processing-library-properties'
@@ -89,7 +94,8 @@ export type MetadataContext = {
 	metascope: MetascopeData
 	nodeNpmRegistry: NodeNpmRegistryData
 	nodePackageJson: NodePackageJsonData
-	obsidianManifestJson: ObsidianManifestJsonData
+	obsidianPluginManifestJson: ObsidianPluginManifestJsonData
+	obsidianPluginRegistry: ObsidianPluginRegistryData
 	openframeworksAddonConfigMk: OpenframeworksAddonConfigMkData
 	openframeworksInstallXml: OpenframeworksInstallXmlData
 	processingLibraryProperties: ProcessingLibraryPropertiesData
