@@ -28,7 +28,7 @@
  */
 
 import is from '@sindresorhus/is'
-import { basename } from 'node:path'
+import { basename, relative } from 'node:path'
 import type { MetadataContext } from '../metadata-types'
 import type { CodemetaDependencyLd, CodemetaPersonLd } from '../utilities/codemeta-helpers'
 import { defineTemplate } from '../metadata-types'
@@ -67,6 +67,7 @@ export const codemeta = defineTemplate(
 		goGoMod,
 		javaPomXml,
 		licenseFiles,
+		metascope,
 		nodeNpmRegistry: npmRaw,
 		nodePackageJson,
 		obsidianPluginManifestJson,
@@ -580,6 +581,7 @@ export const codemeta = defineTemplate(
 				firstOf(readmeFile),
 				codeRepository,
 				github?.data.defaultBranch ?? git?.data.branchCurrent,
+				firstOf(metascope)?.data.options.path,
 			) ?? cm?.data.readme
 		const releaseNotes = cm?.data.releaseNotes
 		const installUrl = cm?.data.installUrl
@@ -1000,17 +1002,21 @@ function readmeUrl(
 	readmeRecord: ReturnType<typeof firstOf<{ source: string }>>,
 	repoUrl: string | undefined,
 	defaultBranch: string | undefined,
+	basePath: string | undefined,
 ): string | undefined {
 	if (readmeRecord === undefined) return undefined
-	const filename = basename(readmeRecord.source)
+	const repoRelativePath =
+		basePath !== undefined
+			? relative(basePath, readmeRecord.source).replaceAll('\\', '/')
+			: basename(readmeRecord.source)
 
 	// Build a web URL if we have a GitHub-style repo URL
 	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {
 		const branch = defaultBranch ?? 'main'
 		const base = repoUrl.replace(/\.git$/, '')
-		return `${base}/blob/${branch}/${filename}`
+		return `${base}/blob/${branch}/${repoRelativePath}`
 	}
 
-	// Fall back to the source path
-	return filename
+	// Fall back to the repo-relative path
+	return repoRelativePath
 }

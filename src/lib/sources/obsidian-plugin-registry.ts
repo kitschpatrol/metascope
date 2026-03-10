@@ -55,7 +55,7 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 		}
 
 		const stats = pluginStatsSchema.parse(await response.json())
-		const downloadCount = stats[pluginId].downloads || undefined
+		const downloadCount = stats[pluginId]?.downloads || undefined
 
 		return { data: { downloadCount, url }, source: url }
 	},

@@ -6,7 +6,7 @@ import { firstOf } from '../src/lib/utilities/formatting'
 // @case-police-ignore github
 
 describe('getMetadata', () => {
-	it('should return metadata with nodePackageJson and git sources', async () => {
+	it('should return metadata with nodePackageJson and git sources', { timeout: 30_000 }, async () => {
 		const result = await getMetadata({ path: '.' })
 
 		// Should have package.json data

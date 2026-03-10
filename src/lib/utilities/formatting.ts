@@ -25,7 +25,7 @@ const casePoliceDict: Record<string, string> = {
 }
 
 /**
- * TODO
+ * Convert a URL or path to a markdown link using its basename as the label.
  */
 export function toMarkdownLink(value: string | undefined): string | undefined {
 	if (is.nonEmptyStringAndNotWhitespace(value)) {
@@ -44,7 +44,7 @@ export function toMb(bytes: unknown): number | undefined {
 }
 
 /**
- * TODO
+ * Strip the namespace or directory prefix from a package name or path.
  */
 export function stripNamespace(value: string): string {
 	return path.basename(value)
@@ -69,7 +69,7 @@ export function toAlias(value: string | undefined): string | undefined {
 }
 
 /**
- * TODO
+ * Convert a filename or relative path to a local `file://` URL rooted at `repoPath`.
  */
 export function toLocalUrl(
 	value: string | undefined,
@@ -83,7 +83,7 @@ export function toLocalUrl(
 }
 
 /**
- * TODO
+ * Join an array of strings with a delimiter, filtering out undefined values.
  */
 export function toDelimitedString(
 	source: Array<string | undefined> | string | string[] | undefined,
@@ -98,9 +98,11 @@ export function toDelimitedString(
 }
 
 /**
- * TODO
+ * Wrap a value in an array if it isn't one already.
+ * Returns an empty array for `undefined` or `null`.
  */
-export function ensureArray<T>(value: T | T[]): T[] {
+export function ensureArray<T>(value: T | T[] | undefined | null): T[] {
+	if (value === undefined || value === null) return []
 	return Array.isArray(value) ? value : [value]
 }
 

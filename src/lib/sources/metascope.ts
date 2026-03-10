@@ -10,7 +10,7 @@ import { formatPath } from '../utilities/formatting'
 export type MetascopeInfo = {
 	/** Total scan duration in milliseconds. */
 	durationMs: number
-	/** TODO */
+	/** Resolved options used for this scan (credentials excluded). */
 	options: Omit<GetMetadataBaseOptions, 'credentials'>
 	/** ISO 8601 timestamp of when the scan was performed. */
 	scannedAt: string

@@ -18,6 +18,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
+import { ensureArray } from '../utilities/formatting'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
 // ─── Schema ─────────────────────────────────────────────────────────
@@ -104,14 +105,6 @@ export function parse(content: string): CinderCinderblock | undefined {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
-
-/**
- * Ensure a value is an array (XML parser may return single objects or arrays).
- */
-function ensureArray<T>(value: T | T[] | undefined): T[] {
-	if (value === undefined || value === null) return []
-	return Array.isArray(value) ? value : [value]
-}
 
 /**
  * Get a trimmed string attribute from a parsed XML element.

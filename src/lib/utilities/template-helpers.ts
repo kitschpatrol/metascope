@@ -1,11 +1,11 @@
 import type { NodePackageJsonData } from '../metadata-types'
 import type { CodeMetaJson, CodeMetaJsonData } from '../sources/codemeta-json'
-import { firstOf, toDelimitedString } from './formatting'
+import { ensureArray, firstOf, toDelimitedString } from './formatting'
 
 type CodeMetaPersonOrOrg = NonNullable<CodeMetaJson['author']>[number]
 
 /**
- * TODO
+ * Strip the SPDX license URL prefix, returning just the license identifier.
  */
 export function basicLicense(source: string | undefined): string | undefined {
 	if (source === undefined) {
@@ -16,7 +16,7 @@ export function basicLicense(source: string | undefined): string | undefined {
 }
 
 /**
- * TODO
+ * Normalize one or more license values to plain SPDX identifiers, stripping URL prefixes.
  */
 export function toBasicLicenses(
 	...sources: Array<string | string[] | undefined>
@@ -31,7 +31,7 @@ export function toBasicLicenses(
 }
 
 /**
- * TODO
+ * Check if the project has `@kitschpatrol/shared-config` as a dependency.
  */
 export function usesSharedConfig(codemetaRaw: CodeMetaJsonData): boolean {
 	const codemeta = firstOf(codemetaRaw)
@@ -40,7 +40,7 @@ export function usesSharedConfig(codemetaRaw: CodeMetaJsonData): boolean {
 }
 
 /**
- * TODO
+ * Check if the project uses pnpm as its package manager.
  */
 export function usesPnpm(packageJson: NodePackageJsonData): boolean {
 	const first = firstOf(packageJson)
@@ -80,9 +80,11 @@ export function basicNames(source: CodeMetaPersonOrOrg[] | undefined): string[] 
 		return undefined
 	}
 
-	return source
+	const result = source
 		.map((basicPersonOrOrg) => basicName(basicPersonOrOrg))
 		.filter((value) => value !== undefined)
+
+	return result.length > 0 ? result : undefined
 }
 
 /**
@@ -167,6 +169,3 @@ export function getStatus(
 			: 'unmaintained'
 }
 
-function ensureArray<T>(value: T | T[]): T[] {
-	return Array.isArray(value) ? value : [value]
-}

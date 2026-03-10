@@ -130,7 +130,7 @@ export const frontmatter = defineTemplate(
 
 			// ── Activity ──────────────────────────────────────────
 			Commits: git?.data.commitCount ?? null,
-			Releases: github?.data.releaseCount ?? git?.data.tagReleaseCount,
+			Releases: github?.data.releaseCount ?? git?.data.tagReleaseCount ?? null,
 			'Issues Open': github?.data.issueCountOpen ?? null,
 			'Issues Closed': github?.data.issueCountClosed ?? null,
 			'PRs Open': github?.data.pullRequestCountOpen ?? null,
