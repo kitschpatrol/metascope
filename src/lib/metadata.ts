@@ -9,6 +9,7 @@ import type {
 	GetMetadataOptions,
 	GetMetadataTemplateOptions,
 	MetadataContext,
+	SourceName,
 	Template,
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './source.js'
@@ -267,11 +268,13 @@ export async function getMetadata<T>(
 	// Group sources by phase and run each phase sequentially.
 	// Within a phase, all sources run in parallel.
 	// Each phase receives the accumulated context from all previous phases.
+	const completedSources = new Set<SourceName>()
 	const phases = new Set(sources.map((s) => s.phase))
 	for (const phase of [...phases].toSorted((a, b) => a - b)) {
 		const phaseSources = sources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
+			completedSources,
 			metadata: { ...context },
 			options: {
 				...resolvedOptions,
@@ -280,6 +283,9 @@ export async function getMetadata<T>(
 			},
 		}
 		await runSources(phaseSources, sourceContext, context)
+		for (const source of phaseSources) {
+			completedSources.add(source.key)
+		}
 	}
 
 	const metadataDuration = performance.now() - startTime

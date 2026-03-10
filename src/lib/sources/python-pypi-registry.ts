@@ -99,42 +99,47 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 				.filter((value) => value !== undefined)
 		}
 
-		// Try to get it ourselves if missing...
-
-		// Try to get package name from pyproject.toml source
+		// Fall back to extracting sources ourselves if they haven't run yet
 		if (packageNames.length === 0) {
-			log.warn(
-				`Missing python package names in source context metadata for ${context.options.path}, extracting it now...`,
-			)
+			const pythonSources = [
+				'pythonPyprojectToml',
+				'pythonSetupCfg',
+				'pythonSetupPy',
+				'pythonPkgInfo',
+			] as const
+			const anyCompleted = pythonSources.some((key) => context.completedSources?.has(key))
 
-			const extraction = await pythonPyprojectTomlSource.extract(context)
-			packageNames = ensureArray(extraction)
-				.map((value) => value.data.project?.name)
-				.filter((value) => value !== undefined)
-		}
+			if (!anyCompleted) {
+				log.warn(
+					`Missing python package names in source context metadata for ${context.options.path}, extracting them now...`,
+				)
 
-		// Try to get package name from setup.cfg source
-		if (packageNames.length === 0) {
-			const extraction = await pythonSetupCfgSource.extract(context)
-			packageNames = ensureArray(extraction)
-				.map((value) => value.data.name)
-				.filter((value) => value !== undefined)
-		}
+				const extraction = await pythonPyprojectTomlSource.extract(context)
+				packageNames = ensureArray(extraction)
+					.map((value) => value.data.project?.name)
+					.filter((value) => value !== undefined)
 
-		// Try to get package name from setup.py source
-		if (packageNames.length === 0) {
-			const extraction = await pythonSetupPySource.extract(context)
-			packageNames = ensureArray(extraction)
-				.map((value) => value.data.name)
-				.filter((value) => value !== undefined)
-		}
+				if (packageNames.length === 0) {
+					const setupCfg = await pythonSetupCfgSource.extract(context)
+					packageNames = ensureArray(setupCfg)
+						.map((value) => value.data.name)
+						.filter((value) => value !== undefined)
+				}
 
-		// Try to get package name from pkg-info source
-		if (packageNames.length === 0) {
-			const extraction = await pythonPkgInfoSource.extract(context)
-			packageNames = ensureArray(extraction)
-				.map((value) => value.data.name)
-				.filter((value) => value !== undefined)
+				if (packageNames.length === 0) {
+					const setupPy = await pythonSetupPySource.extract(context)
+					packageNames = ensureArray(setupPy)
+						.map((value) => value.data.name)
+						.filter((value) => value !== undefined)
+				}
+
+				if (packageNames.length === 0) {
+					const pkgInfo = await pythonPkgInfoSource.extract(context)
+					packageNames = ensureArray(pkgInfo)
+						.map((value) => value.data.name)
+						.filter((value) => value !== undefined)
+				}
+			}
 		}
 
 		return packageNames

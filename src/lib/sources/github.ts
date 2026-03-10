@@ -601,8 +601,8 @@ export const githubSource = defineSource<'github'>({
 			.map((config) => config.data.remote)
 			.filter((remote) => remote !== undefined)
 
-		// Fall back if we don't have gitConfig context
-		if (gitRemotes.length === 0) {
+		// Fall back to extracting it ourselves if the source hasn't run yet
+		if (gitRemotes.length === 0 && !context.completedSources?.has('gitConfig')) {
 			log.warn(
 				`Missing gitConfig in source context metadata for ${context.options.path}, extracting it now...`,
 			)

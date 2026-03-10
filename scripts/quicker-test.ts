@@ -2,8 +2,10 @@ import { getMetadata } from '../src/lib'
 
 const metadata = await getMetadata({
 	absolute: false,
-	offline: true,
-	path: './test/fixtures/all-sources',
+	offline: false,
+	//
+	// path: './test/fixtures/all-sources',
+	path: '/Users/mika/Code/Cinder-BarcodeScanner',
 	recursive: false,
 	respectIgnored: false,
 	workspaces: false,

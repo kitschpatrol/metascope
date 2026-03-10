@@ -7,6 +7,8 @@ import { formatPath } from './utilities/formatting'
  * Options may be partial — `defineSource` resolves defaults internally.
  */
 export type SourceContext = {
+	/** Source keys that have already been extracted (regardless of whether they produced data). */
+	completedSources?: ReadonlySet<SourceName>
 	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
 	metadata?: Partial<MetadataContext>
 	/** Options passed to `getMetadata`. May be partial; defaults are resolved by `defineSource`. */
@@ -122,6 +124,7 @@ export function defineSource<K extends SourceName>(
 			const inputs = await config.discover(context)
 			if (inputs.length === 0) return undefined as MetadataContext[K]
 
+			// Running this concurrently with Promise.all was actually slower
 			const results: SourceRecord[] = []
 			for (const input of inputs) {
 				try {
