@@ -29,16 +29,14 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 		}
 
 		// Try to get plugin IDs from context
-		let pluginIds = ensureArray(context.metadata?.obsidianPluginManifestJson)
-			.map((value) => value?.data.id)
-			.filter((value) => value !== undefined)
+		let pluginIds = ensureArray(context.metadata?.obsidianPluginManifestJson).map(
+			(value) => value.data.id,
+		)
 
 		// Fallback to running the manifest source directly
 		if (pluginIds.length === 0) {
 			const extraction = await obsidianPluginManifestJsonSource.extract(context)
-			pluginIds = ensureArray(extraction)
-				.map((value) => value?.data.id)
-				.filter((value) => value !== undefined)
+			pluginIds = ensureArray(extraction).map((value) => value.data.id)
 		}
 
 		return pluginIds
@@ -55,6 +53,7 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 		}
 
 		const stats = pluginStatsSchema.parse(await response.json())
+		// eslint-disable-next-line ts/no-unnecessary-condition -- pluginId may not exist in stats
 		const downloadCount = stats[pluginId]?.downloads || undefined
 
 		return { data: { downloadCount, url }, source: url }

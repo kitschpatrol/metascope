@@ -75,27 +75,27 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 
 		// Try to get package name from pyproject.toml context
 		packageNames = ensureArray(context.metadata?.pythonPyprojectToml)
-			.map((value) => value?.data.project?.name)
+			.map((value) => value.data.project?.name)
 			.filter((value) => value !== undefined)
 
 		// Try to get package name from setup.cfg context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonSetupCfg)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 
 		// Try to get package name from setup.py context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonSetupPy)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 
 		// Try to get package name from pkg-info context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonPkgInfo)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 
@@ -105,7 +105,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		if (packageNames.length === 0) {
 			const extraction = await pythonPyprojectTomlSource.extract(context)
 			packageNames = ensureArray(extraction)
-				.map((value) => value?.data.project?.name)
+				.map((value) => value.data.project?.name)
 				.filter((value) => value !== undefined)
 		}
 
@@ -113,7 +113,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		if (packageNames.length === 0) {
 			const extraction = await pythonSetupCfgSource.extract(context)
 			packageNames = ensureArray(extraction)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 
@@ -121,7 +121,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		if (packageNames.length === 0) {
 			const extraction = await pythonSetupPySource.extract(context)
 			packageNames = ensureArray(extraction)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 
@@ -129,7 +129,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		if (packageNames.length === 0) {
 			const extraction = await pythonPkgInfoSource.extract(context)
 			packageNames = ensureArray(extraction)
-				.map((value) => value?.data.name)
+				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
 

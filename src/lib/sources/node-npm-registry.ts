@@ -42,16 +42,14 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 		}
 
 		// Try to get package name from context
-		let packageNames = ensureArray(context.metadata?.nodePackageJson)
-			.map((value) => value?.data.name)
-			.filter((value) => value !== undefined)
+		let packageNames = ensureArray(context.metadata?.nodePackageJson).map(
+			(value) => value.data.name,
+		)
 
 		// Try to get it ourselves if missing
 		if (packageNames.length === 0) {
 			const nodePackageJson = await nodePackageJsonSource.extract(context)
-			packageNames = ensureArray(nodePackageJson)
-				.map((value) => value?.data.name)
-				.filter((value) => value !== undefined)
+			packageNames = ensureArray(nodePackageJson).map((value) => value.data.name)
 		}
 
 		return packageNames

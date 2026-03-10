@@ -348,4 +348,4 @@ async function downloadData(
 // Change the tag name here to get the latest...
 // Note CSV customizations in updateCrossWalkJson() above
 // Note software-types context additions in softwareTypesTermsMutation() above
-await downloadData('3.1', './data', true)
+await downloadData('3.1', './scripts/data', true)

@@ -1,7 +1,7 @@
 import is from '@sindresorhus/is'
 
 /**
- * TODO
+ * Check if a value is non-nullish and non-empty (handles strings, arrays, maps, sets, and objects).
  */
 export function exists<T>(value: T): value is NonNullable<T> {
 	if (is.nullOrUndefined(value)) return false

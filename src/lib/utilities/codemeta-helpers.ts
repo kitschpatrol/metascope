@@ -138,7 +138,7 @@ export function deduplicateDependencies(
 	const seen = new Map<string, CodemetaDependencyLd>()
 	for (const dep of deps) {
 		const key = dep.name.toLowerCase().trim()
-		if (!seen.has(key)) {
+		if (key.length > 0 && !seen.has(key)) {
 			seen.set(key, dep)
 		}
 	}

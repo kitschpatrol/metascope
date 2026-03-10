@@ -46,9 +46,9 @@ Highlights:
 
 ### Dependencies
 
-Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+Metascope requires [Node.js](https://nodejs.org/) 24.1+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
-Metascope also requires a recent version of [git](https://git-scm.com/) on your path, for quickly identify ignored files and aggregating repository statistics.
+Metascope also requires a recent version of [git](https://git-scm.com/) on your path, for quickly identifying ignored files and aggregating repository statistics.
 
 Optional external tools:
 
@@ -169,14 +169,19 @@ metascope --template ./my-template.ts
 Where `my-template.ts` might look like:
 
 ```ts
-import { defineTemplate } from 'metascope'
+import { defineTemplate, firstOf } from 'metascope'
 
-export default defineTemplate(({ codemeta, git, github }) => ({
-  commits: git.commitCount,
-  name: codemeta.name,
-  stars: github.stargazerCount,
-  version: codemeta.version,
-}))
+export default defineTemplate(({ codemetaJson, github, gitStatistics }) => {
+  const codemeta = firstOf(codemetaJson)
+  const git = firstOf(gitStatistics)
+  const gh = firstOf(github)
+  return {
+    commits: git?.data.commitCount,
+    name: codemeta?.data.name,
+    stars: gh?.data.stargazerCount,
+    version: codemeta?.data.version,
+  }
+})
 ```
 
 ##### Pipe compact JSON to another tool
@@ -234,22 +239,22 @@ An identity wrapper that provides autocomplete and type inference when authoring
 ##### Get all metadata
 
 ```ts
-import { getMetadata } from 'metascope'
+import { firstOf, getMetadata } from 'metascope'
 
 const metadata = await getMetadata({ path: '.' })
-console.log(metadata.codemeta.name)
-console.log(metadata.github.stargazerCount)
-console.log(metadata.git.commitCount)
+console.log(firstOf(metadata.codemetaJson)?.data.name)
+console.log(firstOf(metadata.github)?.data.stargazerCount)
+console.log(firstOf(metadata.gitStatistics)?.data.commitCount)
 ```
 
 ##### Get shaped metadata via a template
 
 ```ts
-import { defineTemplate, getMetadata } from 'metascope'
+import { defineTemplate, firstOf, getMetadata } from 'metascope'
 
-const template = defineTemplate(({ codemeta, github }) => ({
-  name: codemeta.name,
-  stars: github.stargazerCount,
+const template = defineTemplate(({ codemetaJson, github }) => ({
+  name: firstOf(codemetaJson)?.data.name,
+  stars: firstOf(github)?.data.stargazerCount,
 }))
 
 // Result is typed as { name: ..., stars: ... }
@@ -270,12 +275,15 @@ const metadata = await getMetadata({
 ##### Pass template data
 
 ```ts
-import { defineTemplate, getMetadata } from 'metascope'
+import { defineTemplate, firstOf, getMetadata } from 'metascope'
 
-const template = defineTemplate(({ codemeta }, { authorName }) => ({
-  isAuthoredByMe: codemeta.author?.some((a) => a.name === authorName),
-  name: codemeta.name,
-}))
+const template = defineTemplate(({ codemetaJson }, { authorName }) => {
+  const codemeta = firstOf(codemetaJson)
+  return {
+    isAuthoredByMe: codemeta?.data.author?.some((a) => a.name === authorName),
+    name: codemeta?.data.name,
+  }
+})
 
 const result = await getMetadata({
   path: '.',
@@ -328,6 +336,14 @@ The green-checked entries below indicate metadata file formats and sources that 
 | Agnostic   | [SPDX](https://spdx.org/)                                                                               | `licenseFiles`                | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            | No                                                                                   |
 | Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       | No                                                                                   |
 | Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 | `github`                      | _GitHub GraphQL metadata_                                                                           | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                         |
+| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitStatistics`               | _Git CLI statistics_ (commits, branches, tags, contributors)                                        | No                                                                                   |
+| Agnostic   |                                                                                                         | `codeStatistics`              | _Lines of code analysis_ via [tokei](https://github.com/XAMPPRocky/tokei)                           | No                                                                                   |
+| Agnostic   |                                                                                                         | `fileStatistics`              | _Filesystem metadata_ (file counts, directory counts, total size)                                   | No                                                                                   |
+| Agnostic   |                                                                                                         | `dependencyUpdates`           | _Dependency freshness_ (outdated packages, libyears)                                                | No                                                                                   |
+| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                                  | `nodeNpmRegistry`             | _NPM registry API_ (download counts, publish dates, latest version)                                 | No                                                                                   |
+| Python     | [PyPI Registry](https://pypi.org/)                                                                      | `pythonPypiRegistry`          | _PyPI registry API_ (download counts, publish dates, latest version)                                | No                                                                                   |
+| Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                      | No                                                                                   |
+| Obsidian   | [Obsidian Community Plugins](https://obsidian.md/plugins)                                               | `obsidianPluginRegistry`      | _Obsidian community plugin stats_ (download counts)                                                 | No                                                                                   |
 
 ### metadata.json
 
@@ -343,299 +359,6 @@ If multiple key aliases are present in the object, priority for populating the a
 
 This is a non-standard format that exists primarily for use in combination with [github-action-repo-sync](https://github.com/kitschpatrol/github-action-repo-sync).
 
-## Metadata JSON
-
-### codemeta
-
-Extracts package metadata from `package.json` (and other supported manifest files) via the [`@kitschpatrol/codemeta`](https://github.com/kitschpatrol/codemeta) library, mapped to the [CodeMeta](https://codemeta.github.io) standard, and then normalized and simplified into a consistent JSON structure.
-
-Always available. Extracted first because other sources use its output for discovery (e.g. package name for npm, repository URL for GitHub, keywords for Obsidian).
-
-### fileStatistics
-
-Basic filesystem statistics for the project directory.
-
-Always available.
-
-| Field                 | Type     | Description                             |
-| --------------------- | -------- | --------------------------------------- |
-| `totalDirectoryCount` | `number` | Total number of directories (recursive) |
-| `totalFileCount`      | `number` | Total number of files (recursive)       |
-| `totalSizeBytes`      | `number` | Total size of all files in bytes        |
-
-### gitConfig
-
-Parsed `.git/config` file contents via [pkg-types](https://github.com/unjs/pkg-types).
-
-Available when the project directory contains a `.git/config` file.
-
-| Field    | Type        | Description                 |
-| -------- | ----------- | --------------------------- |
-| `config` | `GitConfig` | Parsed .git/config contents |
-
-### gitStatistics
-
-Local git repository statistics via [simple-git](https://github.com/steveukx/git-js).
-
-Available when the project directory contains a `.git` directory.
-
-| Field                  | Type                                               | Description                                             |
-| ---------------------- | -------------------------------------------------- | ------------------------------------------------------- |
-| `branchCount`          | `number`                                           | Total number of local branches                          |
-| `branchCurrent`        | `string`                                           | Name of the currently checked-out branch                |
-| `commitCount`          | `number`                                           | Total number of commits in the current branch           |
-| `commitDateFirst`      | `string`                                           | ISO 8601 date of the repository's first commit          |
-| `commitDateLast`       | `string`                                           | ISO 8601 date of the most recent commit                 |
-| `contributorCount`     | `number`                                           | Number of unique commit author emails                   |
-| `hasLfs`               | `boolean`                                          | Whether the repo uses Git LFS                           |
-| `isClean`              | `boolean`                                          | Whether the working tree has no uncommitted changes     |
-| `isDirty`              | `boolean`                                          | Whether the working tree has uncommitted changes        |
-| `isRemoteAhead`        | `boolean`                                          | Whether any remote is ahead of the local branch         |
-| `remoteCount`          | `number`                                           | Number of configured remotes                            |
-| `remoteStatus`         | `Record<string, { ahead: number; behind: number}>` | Per-remote ahead/behind commit counts relative to HEAD  |
-| `submoduleCount`       | `number`                                           | Number of registered git submodules                     |
-| `tagCount`             | `number`                                           | Total number of tags                                    |
-| `tagDateLatest`        | `string`                                           | ISO 8601 date of the most recent tag                    |
-| `tagNameLatest`        | `string`                                           | Name of the most recent tag                             |
-| `tagReleaseCount`      | `number`                                           | Number of tags matching a version pattern (e.g. v1.2.3) |
-| `tagVersionDateLatest` | `string`                                           | ISO 8601 date of the most recent version tag            |
-| `tagVersionLatest`     | `string`                                           | Most recent version tag, without the leading "v"        |
-| `totalAhead`           | `number`                                           | Total commits ahead of all remotes combined             |
-| `totalBehind`          | `number`                                           | Total commits behind all remotes combined               |
-| `trackedFileCount`     | `number`                                           | Number of files tracked by git                          |
-| `trackedSizeBytes`     | `number`                                           | Total size in bytes of all tracked files                |
-| `uncommittedFileCount` | `number`                                           | Number of files with staged or unstaged changes         |
-
-### github
-
-GitHub repository metadata via the [Octokit](https://github.com/octokit/octokit.js) GraphQL and REST APIs.
-
-Available when a git remote points to `github.com`. Requires a GitHub token for private repositories and for higher rate limits. Token resolution order: `--github-token` flag > `$GITHUB_TOKEN` environment variable > `gh auth token` CLI fallback.
-
-| Field                               | Type                     | Description                                                     |
-| ----------------------------------- | ------------------------ | --------------------------------------------------------------- |
-| `archivedAt`                        | `string`                 | ISO 8601 date when the repo was archived, if applicable         |
-| `codeOfConduct`                     | `string`                 | Name of the repository's code of conduct                        |
-| `commitsAheadUpstream`              | `number`                 | Commits the default branch is ahead of the upstream fork parent |
-| `commitsBehindUpstream`             | `number`                 | Commits the default branch is behind the upstream fork parent   |
-| `contributorCount`                  | `number`                 | Number of contributors to the repository                        |
-| `createdAt`                         | `string`                 | ISO 8601 date when the repo was created                         |
-| `databaseId`                        | `number`                 | GitHub's internal numeric repository ID                         |
-| `defaultBranch`                     | `string`                 | Name of the default branch (e.g. "main")                        |
-| `description`                       | `string`                 | Repository description                                          |
-| `discussionCount`                   | `number`                 | Total number of discussions                                     |
-| `diskUsageBytes`                    | `number`                 | Repository disk usage in bytes                                  |
-| `forkCount`                         | `number`                 | Number of forks                                                 |
-| `forkedFrom`                        | `string`                 | URL of the upstream repository this was forked from             |
-| `fundingLinks`                      | `Array<{platform, url}>` | Funding links configured on the repository                      |
-| `hasContributing`                   | `boolean`                | Whether a CONTRIBUTING file exists                              |
-| `hasDiscussionsEnabled`             | `boolean`                | Whether discussions are enabled                                 |
-| `hasIssuesEnabled`                  | `boolean`                | Whether issues are enabled                                      |
-| `hasLfs`                            | `boolean`                | Whether the repo uses Git LFS (detected via .gitattributes)     |
-| `hasPages`                          | `boolean`                | Whether GitHub Pages is enabled                                 |
-| `hasProjectsEnabled`                | `boolean`                | Whether projects are enabled                                    |
-| `hasSponsorshipsEnabled`            | `boolean`                | Whether sponsorships are enabled                                |
-| `hasVulnerabilityAlertsEnabled`     | `boolean`                | Whether vulnerability alerts are enabled                        |
-| `hasWikiEnabled`                    | `boolean`                | Whether the wiki is enabled                                     |
-| `homepageUrl`                       | `string`                 | Homepage URL set on the repository                              |
-| `isArchived`                        | `boolean`                | Whether the repository is archived                              |
-| `isDisabled`                        | `boolean`                | Whether the repository is disabled                              |
-| `isFork`                            | `boolean`                | Whether the repository is a fork                                |
-| `isInOrganization`                  | `boolean`                | Whether the repository belongs to an organization               |
-| `isMirror`                          | `boolean`                | Whether the repository is a mirror                              |
-| `isPrivate`                         | `boolean`                | Whether the repository is private                               |
-| `isSecurityPolicyEnabled`           | `boolean`                | Whether a security policy is enabled                            |
-| `isTemplate`                        | `boolean`                | Whether the repository is a template                            |
-| `issueCountClosed`                  | `number`                 | Number of closed issues                                         |
-| `issueCountOpen`                    | `number`                 | Number of open issues                                           |
-| `languages`                         | `Record<string, number>` | Languages used in the repo, keyed by name with size in bytes    |
-| `licenseKey`                        | `string`                 | SPDX license key (e.g. "mit")                                   |
-| `licenseName`                       | `string`                 | Human-readable license name                                     |
-| `licenseSpdxId`                     | `string`                 | SPDX license identifier (e.g. "MIT")                            |
-| `licenseUrl`                        | `string`                 | URL to the license text                                         |
-| `mirrorUrl`                         | `string`                 | URL of the upstream mirror, if applicable                       |
-| `name`                              | `string`                 | Repository name                                                 |
-| `nameWithOwner`                     | `string`                 | Full "owner/repo" identifier                                    |
-| `openGraphImageUrl`                 | `string`                 | URL to the repository's Open Graph image                        |
-| `ownerLogin`                        | `string`                 | GitHub username of the repository owner                         |
-| `ownerType`                         | `string`                 | Owner type, e.g. "User" or "Organization"                       |
-| `parentNameWithOwner`               | `string`                 | Full "owner/repo" of the parent fork source                     |
-| `primaryLanguage`                   | `string`                 | Primary programming language of the repository                  |
-| `pullRequestCountClosed`            | `number`                 | Number of closed pull requests                                  |
-| `pullRequestCountMerged`            | `number`                 | Number of merged pull requests                                  |
-| `pullRequestCountOpen`              | `number`                 | Number of open pull requests                                    |
-| `pushedAt`                          | `string`                 | ISO 8601 date of the most recent push                           |
-| `releaseCount`                      | `number`                 | Total number of releases                                        |
-| `releaseDateLatest`                 | `string`                 | ISO 8601 date of the latest release                             |
-| `releaseDownloadCount`              | `number`                 | Total download count across latest release assets               |
-| `releaseVersionLatest`              | `string`                 | Tag name of the latest release                                  |
-| `securityPolicyUrl`                 | `string`                 | URL to the security policy                                      |
-| `settings.allowUpdateBranch`        | `boolean`                | Whether "Update branch" button is enabled                       |
-| `settings.autoMergeAllowed`         | `boolean`                | Whether auto-merge is allowed                                   |
-| `settings.deleteBranchOnMerge`      | `boolean`                | Whether branches are deleted after merge                        |
-| `settings.forkingAllowed`           | `boolean`                | Whether forking is allowed                                      |
-| `settings.mergeCommitAllowed`       | `boolean`                | Whether merge commits are allowed                               |
-| `settings.mergeCommitMessage`       | `string`                 | Template for merge commit messages                              |
-| `settings.mergeCommitTitle`         | `string`                 | Template for merge commit titles                                |
-| `settings.rebaseMergeAllowed`       | `boolean`                | Whether rebase merging is allowed                               |
-| `settings.squashMergeAllowed`       | `boolean`                | Whether squash merging is allowed                               |
-| `settings.squashMergeCommitMessage` | `string`                 | Template for squash merge commit messages                       |
-| `settings.squashMergeCommitTitle`   | `string`                 | Template for squash merge commit titles                         |
-| `settings.webCommitSignoffRequired` | `boolean`                | Whether web-based commits require sign-off                      |
-| `sshUrl`                            | `string`                 | SSH clone URL                                                   |
-| `stargazerCount`                    | `number`                 | Number of stars                                                 |
-| `submoduleCount`                    | `number`                 | Number of git submodules (detected via .gitmodules)             |
-| `templateFrom`                      | `string`                 | URL of the template repository this was created from            |
-| `topics`                            | `string[]`               | Repository topics                                               |
-| `updatedAt`                         | `string`                 | ISO 8601 date the repo was last updated                         |
-| `url`                               | `string`                 | GitHub URL of the repository                                    |
-| `usesCustomOpenGraphImage`          | `boolean`                | Whether a custom Open Graph image is set                        |
-| `visibility`                        | `string`                 | Repository visibility (e.g. "PUBLIC", "PRIVATE")                |
-| `vulnerabilityAlertCount`           | `number`                 | Number of open vulnerability alerts                             |
-| `watcherCount`                      | `number`                 | Number of watchers                                              |
-
-### loc
-
-Lines of code analysis via [tokei](https://github.com/XAMPPRocky/tokei) (using the [@kitschpatrol/tokei](https://github.com/kitschpatrol/napi-tokei) native binding).
-
-Always available. Supports 260+ programming languages.
-
-| Field       | Type                 | Description                                |
-| ----------- | -------------------- | ------------------------------------------ |
-| `breakdown` | `LocLanguageEntry[]` | Per-language line count breakdown          |
-| `total`     | `LocLanguageStats`   | Aggregate line counts across all languages |
-
-Each `LocLanguageEntry`:
-
-| Field      | Type     | Description               |
-| ---------- | -------- | ------------------------- |
-| `blanks`   | `number` | Number of blank lines     |
-| `code`     | `number` | Number of lines of code   |
-| `comments` | `number` | Number of comment lines   |
-| `files`    | `number` | Number of files           |
-| `language` | `string` | Programming language name |
-
-The `total` object has the same shape without the `language` field.
-
-### metascope
-
-Metadata about the metascope scan itself.
-
-Always available.
-
-| Field        | Type     | Description                                       |
-| ------------ | -------- | ------------------------------------------------- |
-| `durationMs` | `number` | Total scan duration in milliseconds               |
-| `path`       | `string` | Absolute path to the scanned project directory    |
-| `scannedAt`  | `string` | ISO 8601 timestamp of when the scan was performed |
-| `version`    | `string` | Version of the metascope library used             |
-
-### npm
-
-NPM registry metadata via [package-json](https://github.com/sindresorhus/package-json) and the NPM downloads API.
-
-Available when the codemeta `name` field resolves to an NPM package.
-
-| Field               | Type      | Description                                       |
-| ------------------- | --------- | ------------------------------------------------- |
-| `deprecated`        | `string`  | Deprecation message, if the package is deprecated |
-| `downloadsMonthly`  | `number`  | Downloads in the last month                       |
-| `downloadsTotal`    | `number`  | All-time total downloads                          |
-| `downloadsWeekly`   | `number`  | Downloads in the last week                        |
-| `downloadsYearly`   | `number`  | Downloads in the last year                        |
-| `fileCount`         | `number`  | Number of files in the published package          |
-| `hasTypes`          | `boolean` | Whether the package exposes TypeScript types      |
-| `publishDateLatest` | `string`  | ISO 8601 date the package was last published      |
-| `unpackedSizeBytes` | `number`  | Unpacked size of the published package in bytes   |
-| `url`               | `string`  | The npmjs.com URL for the package                 |
-| `versionLatest`     | `string`  | Latest published version string                   |
-
-### packageJson
-
-Raw `package.json` contents, normalized via [read-pkg](https://github.com/sindresorhus/read-pkg).
-
-Available when the project directory contains a `package.json` file.
-
-The type is `Partial<NormalizedPackageJson>` from read-pkg. This provides the full normalized package manifest, including fields like `name`, `version`, `dependencies`, `scripts`, `bin`, etc. Refer to the [read-pkg documentation](https://github.com/sindresorhus/read-pkg) for details on normalization.
-
-### obsidianManifestJson
-
-Obsidian community plugin metadata, fetched from the Obsidian community plugin registry and GitHub release stats.
-
-Available when the codemeta keywords include `obsidian-plugin`.
-
-| Field           | Type               | Description                    |
-| --------------- | ------------------ | ------------------------------ |
-| `downloadCount` | `number`           | Total community download count |
-| `manifest`      | `ObsidianManifest` | Parsed manifest.json contents  |
-| `url`           | `string`           | Obsidian plugin directory URL  |
-
-Each `ObsidianManifest`:
-
-| Field           | Type      | Description                           |
-| --------------- | --------- | ------------------------------------- |
-| `author`        | `string`  | Plugin author name                    |
-| `authorUrl`     | `string`  | URL for the plugin author             |
-| `description`   | `string`  | Plugin description                    |
-| `fundingUrl`    | `string`  | URL for funding or sponsorship        |
-| `id`            | `string`  | Unique plugin identifier              |
-| `isDesktopOnly` | `boolean` | Whether the plugin is desktop-only    |
-| `minAppVersion` | `string`  | Minimum Obsidian app version required |
-| `name`          | `string`  | Display name of the plugin            |
-| `version`       | `string`  | Plugin version string                 |
-
-### pypi
-
-PyPI registry metadata and download statistics via the [PyPI JSON API](https://wiki.python.org/moin/PyPIJSON) and [pypistats](https://pypistats.org/api/).
-
-Available when the project contains a `pyproject.toml` and the codemeta `name` field resolves to a PyPI package.
-
-| Field               | Type      | Description                                  |
-| ------------------- | --------- | -------------------------------------------- |
-| `downloads180Days`  | `number`  | Total downloads over the last 180 days       |
-| `downloadsDaily`    | `number`  | Downloads in the last day                    |
-| `downloadsMonthly`  | `number`  | Downloads in the last month                  |
-| `downloadsWeekly`   | `number`  | Downloads in the last week                   |
-| `publishDateLatest` | `string`  | ISO 8601 date the package was last published |
-| `releaseCount`      | `number`  | Total number of releases on PyPI             |
-| `sizeBytes`         | `number`  | Size in bytes of the latest release artifact |
-| `url`               | `string`  | PyPI project URL                             |
-| `versionLatest`     | `string`  | Latest published version string              |
-| `yanked`            | `boolean` | Whether the latest version has been yanked   |
-| `yankedReason`      | `string`  | Reason the version was yanked, if provided   |
-
-### pythonPyprojectToml
-
-Raw `pyproject.toml` contents, parsed via [read-pyproject](https://github.com/nicholasgasior/read-pyproject).
-
-Available when the project directory contains a `pyproject.toml` file.
-
-The type is `PythonPyprojectTomlData` from read-pyproject, with keys camel-cased. This provides the full parsed pyproject manifest, including `project`, `tool`, and `buildSystem` sections. Refer to the [read-pyproject documentation](https://github.com/nicholasgasior/read-pyproject) for the full type shape.
-
-### dependencyUpdates
-
-Dependency update analysis via [updates](https://github.com/silverwind/updates).
-
-Available when the project contains a `package.json`, `pyproject.toml`, `go.mod`, or `.github` workflows directory. Scans for outdated dependencies and classifies version bumps by severity.
-
-| Field      | Type                         | Description                                                    |
-| ---------- | ---------------------------- | -------------------------------------------------------------- |
-| `libyears` | `number`                     | Total dependency staleness in [libyears](https://libyear.com/) |
-| `major`    | `DependencyUpdatesPackage[]` | Packages with available major version updates                  |
-| `minor`    | `DependencyUpdatesPackage[]` | Packages with available minor version updates                  |
-| `patch`    | `DependencyUpdatesPackage[]` | Packages with available patch version updates                  |
-| `total`    | `number`                     | Total number of outdated packages                              |
-
-Each `DependencyUpdatesPackage`:
-
-| Field  | Type     | Description                                                |
-| ------ | -------- | ---------------------------------------------------------- |
-| `age`  | `string` | Human-readable age of the update (e.g. "3 months")         |
-| `info` | `string` | Additional info about the update (e.g. deprecation notice) |
-| `name` | `string` | Package name                                               |
-| `new`  | `string` | Latest available version                                   |
-| `old`  | `string` | Currently installed version                                |
-
 ## Templates
 
 Templates are pure functions that receive the full `MetadataContext` and an optional `TemplateData` object, and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
@@ -646,16 +369,22 @@ Use `defineTemplate()` for type inference and autocomplete:
 
 ```ts
 // Metascope-template.ts
-import { defineTemplate } from 'metascope'
+import { defineTemplate, firstOf } from 'metascope'
 
-export default defineTemplate(({ codemeta, git, github, loc }) => ({
-  commits: git.commitCount,
-  forks: github.forkCount,
-  linesOfCode: loc.total?.code,
-  name: codemeta.name,
-  stars: github.stargazerCount,
-  version: codemeta.version,
-}))
+export default defineTemplate(({ codemetaJson, codeStatistics, github, gitStatistics }) => {
+  const codemeta = firstOf(codemetaJson)
+  const git = firstOf(gitStatistics)
+  const gh = firstOf(github)
+  const loc = firstOf(codeStatistics)
+  return {
+    commits: git?.data.commitCount,
+    forks: gh?.data.forkCount,
+    linesOfCode: loc?.data.total?.code,
+    name: codemeta?.data.name,
+    stars: gh?.data.stargazerCount,
+    version: codemeta?.data.version,
+  }
+})
 ```
 
 ### Template data
@@ -663,13 +392,18 @@ export default defineTemplate(({ codemeta, git, github, loc }) => ({
 The second argument to a template function is a `TemplateData` object with optional `authorName` and `githubAccount` fields. This lets templates parameterize ownership checks instead of hardcoding author names:
 
 ```ts
-import { defineTemplate, isAuthoredBy, isOnGithubAccountOf } from 'metascope'
+import { defineTemplate, firstOf } from 'metascope'
 
-export default defineTemplate(({ codemeta }, { authorName, githubAccount }) => ({
-  isMyProject: isAuthoredBy(codemeta, authorName),
-  isOnMyGitHub: isOnGithubAccountOf(codemeta, githubAccount),
-  name: codemeta.name,
-}))
+export default defineTemplate(({ codemetaJson }, { authorName, githubAccount }) => {
+  const codemeta = firstOf(codemetaJson)
+  const authors = codemeta?.data.author?.map((a) => a.name) ?? []
+  const repo = codemeta?.data.codeRepository?.toLowerCase() ?? ''
+  return {
+    isMyProject: authors.includes(authorName),
+    isOnMyGitHub: typeof githubAccount === 'string' && repo.includes(`/${githubAccount}/`),
+    name: codemeta?.data.name,
+  }
+})
 ```
 
 Values are provided via the `--author-name` and `--github-account` CLI flags, or via the `templateData` option in the API. Templates that don't need this data can simply omit the second argument.
