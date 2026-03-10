@@ -30,7 +30,7 @@ export function resetMatchCache(): void {
  * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
  * Returns relative POSIX paths (internal to globby; callers receive absolute paths via getMatches).
  */
-async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
+export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
 	let tree = matchCache.get(key)
 	if (!tree) {

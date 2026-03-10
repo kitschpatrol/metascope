@@ -13,7 +13,7 @@ import type {
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './source.js'
 import type { TemplateMap, TemplateName } from './templates/index.js'
-import { getMatches, resetMatchCache } from './file-matching.js'
+import { getTree, getWorkspaces, resetMatchCache } from './file-matching.js'
 import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
@@ -219,16 +219,17 @@ export async function getMetadata<T>(
 	// Reset match cache to ensure fresh results for each getMetadata call
 	resetMatchCache()
 
-	// Pre-populate the memoized file tree (sources access it via getMatches)
-	log.debug(
-		`Building file tree (recursive: ${resolvedOptions.recursive}, respectIgnored: ${resolvedOptions.respectIgnored})...`,
-	)
-	const allFiles = await getMatches(
-		{ path: absolutePath, recursive: true, respectIgnored: resolvedOptions.respectIgnored },
-		['**'],
-		['**'],
-	)
-	log.debug(`File tree contains ${allFiles.length} entries`)
+	// Warm the memoized file tree cache (sources access it via getMatches).
+	// Only cache the tree — don't materialize a full results array to avoid OOM on large repos.
+	log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
+	const rootTree = await getTree(absolutePath, resolvedOptions.respectIgnored)
+	log.debug(`Root file tree contains ${rootTree.length} entries`)
+
+	// Also warm workspace trees so sources don't each trigger their own globby calls
+	const workspacePaths = getWorkspaces(absolutePath, resolvedOptions.workspaces)
+	for (const workspace of workspacePaths) {
+		await getTree(workspace, resolvedOptions.respectIgnored)
+	}
 
 	// Assemble context with defaults
 	const context: MetadataContext = {
