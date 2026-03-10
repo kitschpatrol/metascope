@@ -4,7 +4,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { bin, version } from '../../package.json'
 import { createLogger, getChildLogger } from 'lognow'
-import { getMetadata, setLogger, templates } from '../lib'
+import { DEFAULT_GET_METADATA_OPTIONS, getMetadata, setLogger, templates } from '../lib'
 import type { Template, TemplateData } from '../lib'
 import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
 import { isKeyOfTemplate } from '../lib/templates'
@@ -21,17 +21,17 @@ await yargsInstance
 		(yargs) =>
 			yargs
 				.positional('path', {
-					default: '.',
+					default: DEFAULT_GET_METADATA_OPTIONS.path,
 					description: 'Project directory path',
 					type: 'string',
 				})
 				.option('template', {
 					alias: 't',
-					description: `Built-in template name (${builtInTemplateNames.map((n) => `"${n}"`).join(', ')}) or path to a template file (.ts/.js)`,
+					description: `Built-in template name (${builtInTemplateNames.map((n) => `\`${n}\``).join(', ')}) or path to a custom template file`,
 					type: 'string',
 				})
 				.option('github-token', {
-					description: 'GitHub API token (or set $GITHUB_TOKEN)',
+					description: 'GitHub API token (or set `$GITHUB_TOKEN`)',
 					type: 'string',
 				})
 				.option('author-name', {
@@ -45,23 +45,25 @@ await yargsInstance
 					array: true,
 				})
 				.option('absolute', {
-					description:
-						'Output absolute paths (default: true). Use --no-absolute for relative paths.',
+					description: 'Output absolute paths. Use `--no-absolute` for relative paths.',
 					type: 'boolean',
+					default: DEFAULT_GET_METADATA_OPTIONS.absolute,
 				})
 				.option('offline', {
-					description:
-						'Skip network requests (web-based sources will return only locally-available data)',
+					description: 'Skip sources requiring network requests',
 					type: 'boolean',
+					default: DEFAULT_GET_METADATA_OPTIONS.offline,
 				})
 				.option('no-ignore', {
 					description: 'Include files ignored by .gitignore in the file tree',
 					type: 'boolean',
+					default: !DEFAULT_GET_METADATA_OPTIONS.respectIgnored,
 				})
 				.option('recursive', {
 					alias: 'r',
 					description: 'Search for metadata files recursively in subdirectories',
 					type: 'boolean',
+					default: DEFAULT_GET_METADATA_OPTIONS.recursive,
 				})
 				.option('workspaces', {
 					alias: 'w',
@@ -71,12 +73,14 @@ await yargsInstance
 						const strings = values.filter((v): v is string => typeof v === 'string')
 						return strings.length > 0 ? strings : true
 					},
+					default: DEFAULT_GET_METADATA_OPTIONS.workspaces,
 					description:
-						'Monorepo workspace paths relative to the project directory. Use --workspaces to auto-discover, --no-workspaces to disable, or --workspaces path1 path2 for specific paths',
+						'Include workspace-specific metadata in monorepos; pass a `boolean` to enable or disable auto-detection, or pass one or more `string`s to explicitly define workspace paths',
 				})
 				.option('verbose', {
 					description: 'Run with verbose logging',
 					type: 'boolean',
+					default: false,
 				}),
 		async (argv) => {
 			const log = createLogger({

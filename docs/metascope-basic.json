@@ -1,0 +1,387 @@
+{
+	"codeStats": {
+		"data": {
+			"perLanguage": [
+				{
+					"language": "JSON",
+					"files": 190,
+					"lines": 36788,
+					"code": 36773,
+					"comments": 0,
+					"blanks": 15
+				},
+				{
+					"language": "YAML",
+					"files": 329,
+					"lines": 40323,
+					"code": 32786,
+					"comments": 1912,
+					"blanks": 5625
+				},
+				{
+					"language": "TypeScript",
+					"files": 116,
+					"lines": 17195,
+					"code": 12849,
+					"comments": 2180,
+					"blanks": 2166
+				},
+				{
+					"language": "XML",
+					"files": 297,
+					"lines": 13809,
+					"code": 12052,
+					"comments": 568,
+					"blanks": 1189
+				},
+				{
+					"language": "Makefile",
+					"files": 428,
+					"lines": 29459,
+					"code": 8964,
+					"comments": 15321,
+					"blanks": 5174
+				},
+				{
+					"language": "Python",
+					"files": 111,
+					"lines": 4528,
+					"code": 3757,
+					"comments": 215,
+					"blanks": 556
+				},
+				{
+					"language": "TOML",
+					"files": 82,
+					"lines": 2973,
+					"code": 2358,
+					"comments": 255,
+					"blanks": 360
+				},
+				{
+					"language": "Forge Config",
+					"files": 14,
+					"lines": 445,
+					"code": 385,
+					"comments": 22,
+					"blanks": 38
+				},
+				{
+					"language": "Markdown",
+					"files": 81,
+					"lines": 7511,
+					"code": 0,
+					"comments": 5941,
+					"blanks": 1570
+				},
+				{
+					"language": "Plain Text",
+					"files": 4,
+					"lines": 102,
+					"code": 0,
+					"comments": 81,
+					"blanks": 21
+				}
+			],
+			"total": {
+				"blanks": 16714,
+				"code": 109924,
+				"comments": 26495,
+				"files": 1652,
+				"languages": [
+					"JSON",
+					"YAML",
+					"TypeScript",
+					"XML",
+					"Makefile",
+					"Python",
+					"TOML",
+					"Forge Config",
+					"Markdown",
+					"Plain Text"
+				],
+				"lines": 153133
+			}
+		},
+		"source": "/Users/Someone/metascope"
+	},
+	"dependencyUpdates": {
+		"extra": {
+			"libyears": 0,
+			"total": 0
+		},
+		"source": "/Users/Someone/metascope"
+	},
+	"fileStats": {
+		"data": {
+			"totalDirectoryCount": 2530,
+			"totalFileCount": 2672,
+			"totalSizeBytes": 8641944
+		},
+		"source": "/Users/Someone/metascope"
+	},
+	"gitConfig": {
+		"data": {
+			"core": {
+				"repositoryformatversion": "0",
+				"filemode": true,
+				"bare": false,
+				"logallrefupdates": true,
+				"ignorecase": true,
+				"precomposeunicode": true
+			},
+			"lfs": {
+				"repositoryformatversion": "0"
+			},
+			"remote": {
+				"origin": {
+					"url": "https://kitschpatrol@github.com/kitschpatrol/metascope.git",
+					"fetch": "+refs/heads/*:refs/remotes/origin/*"
+				}
+			},
+			"branch": {
+				"main": {
+					"vscode-merge-base": "origin/main"
+				}
+			}
+		},
+		"source": "/Users/Someone/metascope/.git/config"
+	},
+	"github": {
+		"data": {
+			"createdAt": "2026-02-25T08:29:15Z",
+			"databaseId": 1166446600,
+			"defaultBranch": "main",
+			"description": "Extract metadata from a code repository.",
+			"discussionCount": 0,
+			"diskUsageBytes": 165888,
+			"forkCount": 0,
+			"hasContributing": false,
+			"hasDiscussionsEnabled": false,
+			"hasIssuesEnabled": true,
+			"hasLfs": false,
+			"hasPages": false,
+			"hasProjectsEnabled": true,
+			"hasSponsorshipsEnabled": false,
+			"hasVulnerabilityAlertsEnabled": true,
+			"hasWikiEnabled": false,
+			"isArchived": false,
+			"isDisabled": false,
+			"isFork": false,
+			"isInOrganization": false,
+			"isMirror": false,
+			"isPrivate": true,
+			"isSecurityPolicyEnabled": false,
+			"issueCountClosed": 0,
+			"issueCountOpen": 0,
+			"isTemplate": false,
+			"languages": {
+				"TypeScript": 47273,
+				"JavaScript": 3136
+			},
+			"licenseKey": "mit",
+			"licenseName": "MIT License",
+			"licenseSpdxId": "MIT",
+			"licenseUrl": "http://choosealicense.com/licenses/mit/",
+			"name": "metascope",
+			"nameWithOwner": "kitschpatrol/metascope",
+			"openGraphImageUrl": "https://avatars.githubusercontent.com/u/194164?s=400&v=4",
+			"ownerLogin": "kitschpatrol",
+			"ownerType": "User",
+			"primaryLanguage": "TypeScript",
+			"pullRequestCountClosed": 0,
+			"pullRequestCountMerged": 0,
+			"pullRequestCountOpen": 0,
+			"pushedAt": "2026-02-25T08:29:16Z",
+			"settings": {
+				"allowUpdateBranch": false,
+				"autoMergeAllowed": false,
+				"deleteBranchOnMerge": false,
+				"forkingAllowed": true,
+				"mergeCommitAllowed": true,
+				"mergeCommitMessage": "PR_TITLE",
+				"mergeCommitTitle": "MERGE_MESSAGE",
+				"rebaseMergeAllowed": true,
+				"squashMergeAllowed": true,
+				"squashMergeCommitMessage": "COMMIT_MESSAGES",
+				"squashMergeCommitTitle": "COMMIT_OR_PR_TITLE",
+				"webCommitSignoffRequired": false
+			},
+			"sshUrl": "git@github.com:kitschpatrol/metascope.git",
+			"stargazerCount": 0,
+			"submoduleCount": 0,
+			"topics": ["cli", "npm-package"],
+			"updatedAt": "2026-02-26T22:26:29Z",
+			"url": "https://github.com/kitschpatrol/metascope",
+			"usesCustomOpenGraphImage": false,
+			"visibility": "PRIVATE",
+			"vulnerabilityAlertCount": 8,
+			"watcherCount": 0
+		},
+		"source": "https://github.com/kitschpatrol/metascope"
+	},
+	"gitStats": {
+		"data": {
+			"branchCount": 2,
+			"branchCurrent": "main",
+			"commitCount": 118,
+			"commitDateFirst": "2026-02-24T12:07:53-05:00",
+			"commitDateLast": "2026-03-10T17:14:46-04:00",
+			"contributorCount": 1,
+			"isClean": false,
+			"isDirty": true,
+			"remoteCount": 1,
+			"remoteStatus": {
+				"origin": {
+					"ahead": 116,
+					"behind": 0
+				}
+			},
+			"tagCount": 0,
+			"totalAhead": 116,
+			"totalBehind": 0,
+			"trackedFileCount": 3029,
+			"trackedSizeBytes": 8744130,
+			"uncommittedFileCount": 12
+		},
+		"source": "/Users/Someone/metascope"
+	},
+	"licenseFile": {
+		"data": {
+			"confidence": 1,
+			"spdxId": "MIT"
+		},
+		"source": "/Users/Someone/metascope/license.txt"
+	},
+	"metascope": {
+		"data": {
+			"durationMs": 5105,
+			"options": {
+				"absolute": true,
+				"offline": false,
+				"path": "/Users/Someone/metascope",
+				"recursive": false,
+				"respectIgnored": true,
+				"workspaces": true
+			},
+			"scannedAt": "2026-03-10T22:13:24.070Z",
+			"version": "0.0.0"
+		},
+		"source": "/Users/Someone/metascope"
+	},
+	"nodePackageJson": {
+		"data": {
+			"name": "metascope",
+			"version": "0.0.0",
+			"description": "A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.",
+			"keywords": ["metadata", "codemeta", "cli", "npm-package"],
+			"homepage": "https://github.com/kitschpatrol/metascope",
+			"bugs": {
+				"url": "https://github.com/kitschpatrol/metascope/issues"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/kitschpatrol/metascope.git"
+			},
+			"license": "MIT",
+			"author": {
+				"name": "Eric Mika",
+				"email": "eric@ericmika.com",
+				"url": "https://ericmika.com"
+			},
+			"sideEffects": false,
+			"type": "module",
+			"exports": {
+				".": {
+					"types": "./dist/lib/index.d.ts",
+					"import": "./dist/lib/index.js"
+				}
+			},
+			"main": "./dist/lib/index.js",
+			"module": "./dist/lib/index.js",
+			"types": "./dist/lib/index.d.ts",
+			"bin": {
+				"metascope": "dist/bin/cli.js"
+			},
+			"files": ["dist/*"],
+			"scripts": {
+				"build": "tsdown",
+				"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
+				"docs": "tsx ./scripts/generate-examples.ts && ksc-prettier fix ./docs",
+				"fix": "ksc fix",
+				"lint": "ksc lint",
+				"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+				"pretest": "cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/lib/grammars/tree-sitter-python.wasm",
+				"test": "vitest"
+			},
+			"dependencies": {
+				"@bacons/xcode": "1.0.0-alpha.33",
+				"@kitschpatrol/tokei": "^2.0.0",
+				"@sindresorhus/is": "^7.2.0",
+				"@types/mdast": "^4.0.4",
+				"@types/node": "~24.1.0",
+				"@types/plist": "^3.0.5",
+				"@types/yargs": "^17.0.35",
+				"case-police": "^2.2.0",
+				"defu": "^6.1.4",
+				"fast-xml-parser": "^5.5.1",
+				"find-workspaces": "^0.3.1",
+				"git-url-parse": "^16.1.0",
+				"jiti": "^2.6.1",
+				"lognow": "^0.5.2",
+				"octokit": "^5.0.5",
+				"package-json": "^10.0.1",
+				"picomatch": "^4.0.3",
+				"pkg-types": "^2.3.0",
+				"plist": "^3.1.0",
+				"pretty-ms": "^9.3.0",
+				"read-pkg": "^10.1.0",
+				"read-pyproject": "^0.3.1",
+				"remark-parse": "^11.0.0",
+				"scule": "^1.3.0",
+				"semver": "^7.7.4",
+				"simple-git": "^3.33.0",
+				"smol-toml": "^1.6.0",
+				"spdx-license-list": "^6.11.0",
+				"tinyexec": "^1.0.2",
+				"tinyglobby": "^0.2.15",
+				"unified": "^11.0.5",
+				"updates": "^17.9.0",
+				"web-tree-sitter": "^0.26.6",
+				"yaml": "^2.8.2",
+				"yargs": "^18.0.0",
+				"zod": "^4.3.6"
+			},
+			"devDependencies": {
+				"@arethetypeswrong/core": "^0.18.2",
+				"@fast-csv/parse": "^5.0.5",
+				"@kitschpatrol/shared-config": "^6.0.3",
+				"@types/jsonld": "^1.5.15",
+				"@types/picomatch": "^4.0.2",
+				"@types/semver": "^7.7.1",
+				"bumpp": "^10.4.1",
+				"jsonld": "^9.0.0",
+				"mdat-plugin-cli-help": "^1.0.7",
+				"publint": "^0.3.18",
+				"tree-sitter-python": "^0.25.0",
+				"tree-sitter-ruby": "^0.23.1",
+				"tsdown": "^0.21.1",
+				"typescript": "~5.9.3",
+				"vitest": "^4.0.18"
+			},
+			"packageManager": "pnpm@10.32.0",
+			"engines": {
+				"node": ">=22.17.0"
+			},
+			"readme": "ERROR: No README data found!",
+			"_id": "metascope@0.0.0"
+		},
+		"source": "/Users/Someone/metascope/package.json"
+	},
+	"readmeFile": {
+		"data": {
+			"name": "metascope"
+		},
+		"source": "/Users/Someone/metascope/readme.md"
+	}
+}

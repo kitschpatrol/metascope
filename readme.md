@@ -15,7 +15,7 @@
 
 <!-- short-description -->
 
-**A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.**
+**A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.**
 
 <!-- /short-description -->
 
@@ -23,7 +23,7 @@
 
 Metascope aggregates metadata from a local code repository into a single monolithic JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a JSON object containing everything it could find.
 
-From there, an (optional) template system lets you refine and transform the output to reflect exactly which fields you need, useful for archival purposes, populating dashboards, or feeding data into other tools. The template system also provides a spec-compliant implementation of the [CodeMeta](https://codemeta.github.io/) metadata vocabulary, allowing easy generation of `codemeta.json` files providing a semantically normalized view of a variety of project types.
+From there, an (optional) template system lets you refine and transform the output to reflect exactly which fields you need, useful for archival purposes, populating dashboards, or feeding data into other tools. The template system also provides a spec-compliant implementation of the [CodeMeta](https://codemeta.github.io/) vocabulary, allowing easy generation of `codemeta.json` files for a semantically normalized view of a variety of project types.
 
 Highlights:
 
@@ -48,7 +48,7 @@ Highlights:
 
 Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
-Metascope also requires a recent version of [git](https://git-scm.com/) on your path, for quickly identifying ignored files and aggregating repository statistics.
+Metascope also requires a recent version of [git](https://git-scm.com/) on your path for quickly identifying ignored files and aggregating repository statistics.
 
 Optional external tools:
 
@@ -105,20 +105,20 @@ metascope [path]
 | ------------------- | ---------------------- | -------- | ------- |
 | `path`              | Project directory path | `string` | `"."`   |
 
-| Option                 | Description                                                                                                                                                               | Type      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `--template`<br>`-t`   | Built-in template name ("codemeta", "frontmatter", "project") or path to a template file (.ts/.js)                                                                        | `string`  |
-| `--github-token`       | GitHub API token (or set $GITHUB_TOKEN)                                                                                                                                   | `string`  |
-| `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                 | `array`   |
-| `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                         | `array`   |
-| `--absolute`           | Output absolute paths (default: true). Use --no-absolute for relative paths.                                                                                              | `boolean` |
-| `--offline`            | Skip network requests (web-based sources will return only locally-available data)                                                                                         | `boolean` |
-| `--no-ignore`          | Include files ignored by .gitignore in the file tree                                                                                                                      | `boolean` |
-| `--recursive`<br>`-r`  | Search for metadata files recursively in subdirectories                                                                                                                   | `boolean` |
-| `--workspaces`<br>`-w` | Monorepo workspace paths relative to the project directory. Use --workspaces to auto-discover, --no-workspaces to disable, or --workspaces path1 path2 for specific paths |           |
-| `--verbose`            | Run with verbose logging                                                                                                                                                  | `boolean` |
-| `--help`<br>`-h`       | Show help                                                                                                                                                                 | `boolean` |
-| `--version`<br>`-v`    | Show version number                                                                                                                                                       | `boolean` |
+| Option                 | Description                                                                                                                                                                | Type      | Default |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
+| `--template`<br>`-t`   | Built-in template name (`codemeta`, `frontmatter`, `project`) or path to a custom template file                                                                            | `string`  |         |
+| `--github-token`       | GitHub API token (or set `$GITHUB_TOKEN`)                                                                                                                                  | `string`  |         |
+| `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                  | `array`   |         |
+| `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                          | `array`   |         |
+| `--absolute`           | Output absolute paths. Use `--no-absolute` for relative paths.                                                                                                             | `boolean` | `true`  |
+| `--offline`            | Skip sources requiring network requests                                                                                                                                    | `boolean` | `false` |
+| `--no-ignore`          | Include files ignored by .gitignore in the file tree                                                                                                                       | `boolean` | `false` |
+| `--recursive`<br>`-r`  | Search for metadata files recursively in subdirectories                                                                                                                    | `boolean` | `false` |
+| `--workspaces`<br>`-w` | Include workspace-specific metadata in monorepos; pass a `boolean` to enable or disable auto-detection, or pass one or more `string`s to explicitly define workspace paths |           | `true`  |
+| `--verbose`            | Run with verbose logging                                                                                                                                                   | `boolean` | `false` |
+| `--help`<br>`-h`       | Show help                                                                                                                                                                  | `boolean` |         |
+| `--version`<br>`-v`    | Show version number                                                                                                                                                        | `boolean` |         |
 
 <!-- /cli-help -->
 
@@ -192,6 +192,8 @@ metascope | jq '.github.stargazerCount'
 
 ##### Provide a GitHub token
 
+An optional GitHub token can allow access to metadata about private repositories, and raises the request limit if you're operating on a large collection of repositories:
+
 ```sh
 metascope --github-token ghp_xxxxxxxxxxxx
 ```
@@ -247,6 +249,8 @@ console.log(helpers.firstOf(metadata.github)?.data.stargazerCount)
 console.log(helpers.firstOf(metadata.gitStats)?.data.commitCount)
 ```
 
+_See [output sample](./docs/metascope-basic.json) for this repository._
+
 ##### Get shaped metadata via a template
 
 ```ts
@@ -271,6 +275,8 @@ const metadata = await getMetadata({
   path: '.',
 })
 ```
+
+Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
 
 ##### Pass template data
 
@@ -304,48 +310,64 @@ const result = await getMetadata({ path: '.', template: 'frontmatter' })
 
 Metascope extracts data from a wide range of data sources:
 
-| Ecosystem  | Organization or Registry                                                                                | Metascope Key                 | Source Specifications                                                                               | CodeMeta Crosswalk                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Agnostic   | [CodeMeta (v1)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld)          | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V1')     |
-| Agnostic   | [CodeMeta (v2)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld)          | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V2')     |
-| Agnostic   | [CodeMeta (v3)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)          | No                                                                                   |
-| Agnostic   | [CodeMeta (v3.1)](https://codemeta.github.io/)                                                          | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.1/codemeta.jsonld)          | No                                                                                   |
-| Apple      | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) | `xcodeInfoPlist`              | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list) | No                                                                                   |
-| Apple      | [Xcode Project](https://developer.apple.com/xcode/)                                                     | `xcodeProjectPbxproj`         | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                    | No                                                                                   |
-| C++        | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           | `arduinoLibraryProperties`    | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                  | No                                                                                   |
-| C++        | [Cinder CinderBlock](https://libcinder.org/docs/guides/cinder-blocks/index.html)                        | `cinderCinderblockXml`        | [`cinderblock.xml`](https://libcinder.org/docs/guides/cinder-blocks/index.html)                     | No                                                                                   |
-| C++        | [openFrameworks Addon](https://openframeworks.cc/)                                                      | `openframeworksAddonConfigMk` | [`addon_config.mk`](https://github.com/openframeworks/ofxAddonTemplate)                             | No                                                                                   |
-| C++        | [openFrameworks Addon (Legacy)](https://openframeworks.cc/)                                             | `openframeworksInstallXml`    | [`install.xml`](https://openframeworks.cc/) (Legacy format, replaced by `addon_config.mk`)          | No                                                                                   |
-| Go         | [Go Modules](https://go.dev/ref/mod)                                                                    | `goGoMod`                     | [`go.mod`](https://go.dev/doc/modules/gomod-ref)                                                    | No                                                                                   |
-| Go         | [GoReleaser](https://goreleaser.com/)                                                                   | `goGoreleaserYaml`            | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                   | No                                                                                   |
-| Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                      | [Yes](https://codemeta.github.io/crosswalk/java/ 'Java (Maven)')                     |
-| Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)               | No                                                                                   |
-| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)              | No                                                                                   |
-| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)                       | [Yes](https://codemeta.github.io/crosswalk/node/ 'NodeJS')                           |
-| Agnostic   | [Public Code](https://publiccode.net/)                                                                  | `publiccodeYaml`              | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)            | [Yes](https://codemeta.github.io/crosswalk/publiccode/ 'publiccode')                 |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html)                                  | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')        |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://docs.python.org/3/distutils/apiref.html#distutils.config)                     | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')        |
-| Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    | `pythonPkgInfo`               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                      | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Python PKG-INFO') |
-| Python     | [PyPi (pep-0621)](https://pypi.org/)                                                                    | `pythonPyprojectToml`         | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                               | No                                                                                   |
-| Ruby       | [Ruby Gems](https://rubygems.org/)                                                                      | `rubyGemspec`                 | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                 | [Yes](https://codemeta.github.io/crosswalk/ruby/ 'Ruby Gem')                         |
-| Rust       | [Crates](https://crates.io/)                                                                            | `rustCargoToml`               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                             | [Yes](https://codemeta.github.io/crosswalk/cargo/ 'Rust Package Manager')            |
-| Agnostic   |                                                                                                         | `readmeFile`                  | `README.md` (and variants)                                                                          | No                                                                                   |
-| Agnostic   | [Documented below](#metadatajson)                                                                       | `metadataFile`                | `metadata.json` (and `.yaml` / `.yml` variants)                                                     | No                                                                                   |
-| Agnostic   | [SPDX](https://spdx.org/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            | No                                                                                   |
-| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       | No                                                                                   |
-| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 | `github`                      | _GitHub GraphQL metadata_                                                                           | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                         |
-| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitStats`                    | _Git CLI statistics_ (commits, branches, tags, contributors)                                        | No                                                                                   |
-| Agnostic   |                                                                                                         | `codeStats`                   | _Lines of code analysis_ via [tokei](https://github.com/XAMPPRocky/tokei)                           | No                                                                                   |
-| Agnostic   |                                                                                                         | `fileStats`                   | _Filesystem metadata_ (file counts, directory counts, total size)                                   | No                                                                                   |
-| Agnostic   |                                                                                                         | `dependencyUpdates`           | _Dependency freshness_ (outdated packages, libyears)                                                | No                                                                                   |
-| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                                  | `nodeNpmRegistry`             | _NPM registry API_ (download counts, publish dates, latest version)                                 | No                                                                                   |
-| Python     | [PyPI Registry](https://pypi.org/)                                                                      | `pythonPypiRegistry`          | _PyPI registry API_ (download counts, publish dates, latest version)                                | No                                                                                   |
-| Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                      | No                                                                                   |
-| Obsidian   | [Obsidian Community Plugins](https://obsidian.md/plugins)                                               | `obsidianPluginRegistry`      | _Obsidian community plugin stats_ (download counts)                                                 | No                                                                                   |
+### Local Files
 
-### metadata.json
+| Ecosystem  | Organization                                                                                            | Metascope Key                 | Source Specifications                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- |
+| Agnostic   |                                                                                                         | `readmeFile`                  | `README.md` (and variants)                                                                          |
+| Agnostic   | [CodeMeta (v1)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld)          |
+| Agnostic   | [CodeMeta (v2)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld)          |
+| Agnostic   | [CodeMeta (v3.1)](https://codemeta.github.io/)                                                          | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.1/codemeta.jsonld)          |
+| Agnostic   | [CodeMeta (v3)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)          |
+| Agnostic   | [Documented below](#about-metadatajson)                                                                 | `metadataFile`                | `metadata.json` (and `.yaml` / `.yml` variants)                                                     |
+| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       |
+| Agnostic   | [Public Code](https://publiccode.net/)                                                                  | `publiccodeYaml`              | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)            |
+| Agnostic   | [SPDX](https://spdx.org/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            |
+| Apple      | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) | `xcodeInfoPlist`              | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list) |
+| Apple      | [Xcode Project](https://developer.apple.com/xcode/)                                                     | `xcodeProjectPbxproj`         | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                    |
+| C++        | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           | `arduinoLibraryProperties`    | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                  |
+| C++        | [Cinder CinderBlock](https://libcinder.org/docs/guides/cinder-blocks/index.html)                        | `cinderCinderblockXml`        | [`cinderblock.xml`](https://libcinder.org/docs/guides/cinder-blocks/index.html)                     |
+| C++        | [openFrameworks Addon (Legacy)](https://openframeworks.cc/)                                             | `openframeworksInstallXml`    | [`install.xml`](https://openframeworks.cc/) (Legacy format, replaced by `addon_config.mk`)          |
+| C++        | [openFrameworks Addon](https://openframeworks.cc/)                                                      | `openframeworksAddonConfigMk` | [`addon_config.mk`](https://github.com/openframeworks/ofxAddonTemplate)                             |
+| Go         | [Go Modules](https://go.dev/ref/mod)                                                                    | `goGoMod`                     | [`go.mod`](https://go.dev/doc/modules/gomod-ref)                                                    |
+| Go         | [GoReleaser](https://goreleaser.com/)                                                                   | `goGoreleaserYaml`            | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                   |
+| Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                      |
+| Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)               |
+| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)              |
+| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)                       |
+| Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                      |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://docs.python.org/3/distutils/apiref.html#distutils.config)                     |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html)                                  |
+| Python     | [PyPi (pep-0621)](https://pypi.org/)                                                                    | `pythonPyprojectToml`         | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                               |
+| Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    | `pythonPkgInfo`               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                      |
+| Ruby       | [Ruby Gems](https://rubygems.org/)                                                                      | `rubyGemspec`                 | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                 |
+| Rust       | [Crates](https://crates.io/)                                                                            | `rustCargoToml`               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                             |
 
-Additionally, a minimalist `metadata.json` (or `.yaml`) file is supported, which can capture the minimal metadata required to populate a GitHub project's repository page's description, homepage, and topics.
+### Local Tools
+
+| Ecosystem | Organization                | Metascope Key       | Source Specifications                                                                                                                              |
+| --------- | --------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agnostic  |                             | `dependencyUpdates` | Dependency freshness (outdated packages, libyears)                                                                                                 |
+| Agnostic  |                             | `fileStats`         | Filesystem metadata (file counts, directory counts, total size)                                                                                    |
+| Agnostic  | [Git](https://git-scm.com/) | `gitStats`          | Git CLI statistics (commits, branches, tags, contributors)                                                                                         |
+| Agnostic  | None                        | `codeStats`         | Lines of code analysis from [tokei](https://github.com/XAMPPRocky/tokei) via [bundled native bindings](https://github.com/kitschpatrol/napi-tokei) |
+
+### Remote Sources
+
+You can skip network calls by passing `--offline` to the CLI.
+
+| Ecosystem  | Organization                                                                            | Metascope Key            | Source Specifications                                                |
+| ---------- | --------------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------- |
+| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository) | `github`                 | _GitHub GraphQL metadata_                                            |
+| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                  | `nodeNpmRegistry`        | _NPM registry API_ (download counts, publish dates, latest version)  |
+| Obsidian   | [Obsidian Community Plugins](https://obsidian.md/plugins)                               | `obsidianPluginRegistry` | _Obsidian community plugin stats_ (download counts)                  |
+| Python     | [PyPI Registry](https://pypi.org/)                                                      | `pythonPypiRegistry`     | _PyPI registry API_ (download counts, publish dates, latest version) |
+
+### About metadata.json
+
+Metascope supports a minimalist `metadata.json` (or `.yaml`) file is supported, which can capture the minimal metadata required to populate a GitHub project's repository page's description, homepage, and topics.
+
+This is a non-standard format that exists primarily for use in combination with [github-action-repo-sync](https://github.com/kitschpatrol/github-action-repo-sync).
 
 | Key           | Key Aliases                  | CodeMeta Property | Notes                                                                         |
 | ------------- | ---------------------------- | ----------------- | ----------------------------------------------------------------------------- |
@@ -355,64 +377,11 @@ Additionally, a minimalist `metadata.json` (or `.yaml`) file is supported, which
 
 If multiple key aliases are present in the object, priority for populating the associated `codemeta.json` goes to the key, then falls through to key aliases in the order shown above. (E.g. homepage takes priority over url.)
 
-This is a non-standard format that exists primarily for use in combination with [github-action-repo-sync](https://github.com/kitschpatrol/github-action-repo-sync).
+_If you have more metadata to define but your project lacks a canonical package specification format, then creating a `codemeta.json` file is recommended over the non-standard `metadata.json`._
 
 ## Templates
 
-Templates are pure functions that receive the full `MetadataContext` and an optional `TemplateData` object, and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
-
-### Defining a template
-
-Use `defineTemplate()` for type inference and autocomplete:
-
-```ts
-// Metascope-template.ts
-import { defineTemplate, helpers } from 'metascope'
-
-export default defineTemplate(({ codemetaJson, codeStats, github, gitStats }) => {
-  const codemeta = helpers.firstOf(codemetaJson)
-  const git = helpers.firstOf(gitStats)
-  const gh = helpers.firstOf(github)
-  const loc = helpers.firstOf(codeStats)
-  return {
-    commits: git?.data.commitCount,
-    forks: gh?.data.forkCount,
-    linesOfCode: loc?.data.total?.code,
-    name: codemeta?.data.name,
-    stars: gh?.data.stargazerCount,
-    version: codemeta?.data.version,
-  }
-})
-```
-
-### Template data
-
-The second argument to a template function is a `TemplateData` object with optional `authorName` and `githubAccount` fields. This lets templates parameterize ownership checks instead of hardcoding author names:
-
-```ts
-import { defineTemplate, helpers } from 'metascope'
-
-export default defineTemplate(({ codemetaJson }, { authorName, githubAccount }) => {
-  const codemeta = helpers.firstOf(codemetaJson)
-  const authors = codemeta?.data.author?.map((a) => a.name) ?? []
-  const repo = codemeta?.data.codeRepository?.toLowerCase() ?? ''
-  return {
-    isMyProject: authors.includes(authorName),
-    isOnMyGitHub: typeof githubAccount === 'string' && repo.includes(`/${githubAccount}/`),
-    name: codemeta?.data.name,
-  }
-})
-```
-
-Values are provided via the `--author-name` and `--github-account` CLI flags, or via the `templateData` option in the API. Templates that don't need this data can simply omit the second argument.
-
-### Using a template via the CLI
-
-```sh
-metascope --template ./metascope-template.ts
-```
-
-Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScript works out of the box without a build step.
+Metascope provides a basic templating / output transformation functionality to compose its output into more compact and focused representations.
 
 ### Built-in templates
 
@@ -434,6 +403,8 @@ Note that Metascope and its its author is not affiliated with the CodeMeta proje
 metascope --template codemeta
 ```
 
+_See an [output sample](./docs/metascope-template-codemeta.json) from the `codemeta` template run against this repository._
+
 #### `frontmatter`
 
 A compact, non-nested, polyglot overview of the project. Designed for Obsidian frontmatter — flat keys with natural language names, blending all available sources into a single trackable snapshot. Uses `null` for missing values to ensure stable keys.
@@ -442,19 +413,80 @@ A compact, non-nested, polyglot overview of the project. Designed for Obsidian f
 metascope --template frontmatter
 ```
 
+_See an [output sample](./docs/metascope-template-frontmatter.json) from the `frontmatter` template run against this repository._
+
 #### `project`
 
-A legacy structure used in the AllWork desktop app. Includes ownership checks via `authorName` and `githubAccount` template data.
+I needed this one for a legacy internal dashboard application. Includes ownership checks via `authorName` and `githubAccount` template data.
 
 ```sh
 metascope --template project --author-name "Jane Doe" --github-account janedoe
 ```
 
+_See an [output sample](./docs/metascope-template-project.json) from the `project` template run against this repository._
+
+### Defining a custom template
+
+Templates are pure functions that receive the full `MetadataContext` and an optional `TemplateData` object, and return whatever shape you like. They are applied _after_ all sources have been extracted, so all available data is accessible.
+
+Yes, you can just pipe output to [jq](https://jqlang.org/) and filter / transform as you please, but for complex templates with a lot of logic, TypeScript can be nicer to work with.
+
+Use `defineTemplate()` for type inference and autocomplete.
+
+Many helper functions for working with template data are also under the `helpers` namespace:
+
+```ts
+// In e.g. "metascope-template.ts":
+import { defineTemplate, helpers } from 'metascope'
+
+export default defineTemplate(({ codemetaJson, codeStats, github, gitStats }) => {
+  const codemeta = helpers.firstOf(codemetaJson)
+  const git = helpers.firstOf(gitStats)
+  const gh = helpers.firstOf(github)
+  const loc = helpers.firstOf(codeStats)
+  return {
+    commits: git?.data.commitCount,
+    forks: gh?.data.forkCount,
+    linesOfCode: loc?.data.total?.code,
+    name: codemeta?.data.name,
+    stars: gh?.data.stargazerCount,
+    version: codemeta?.data.version,
+  }
+})
+```
+
+### Passing template data
+
+The second argument to a template function is a `TemplateData` object with optional `authorName` and `githubAccount` fields. This lets templates parameterize ownership checks instead of hardcoding author names:
+
+```ts
+import { defineTemplate, helpers } from 'metascope'
+
+export default defineTemplate(({ codemetaJson }, { authorName, githubAccount }) => {
+  const codemeta = helpers.firstOf(codemetaJson)
+  const authors = codemeta?.data.author?.map((a) => a.name) ?? []
+  const repo = codemeta?.data.codeRepository?.toLowerCase() ?? ''
+  return {
+    isMyProject: authors.includes(authorName),
+    isOnMyGitHub: typeof githubAccount === 'string' && repo.includes(`/${githubAccount}/`),
+    name: codemeta?.data.name,
+  }
+})
+```
+
+Values for the built-in templates are provided via the `--author-name` and `--github-account` CLI flags, or via the `templateData` option in the API. Templates that don't need this data can simply omit the second argument.
+
+### Using a custom template via the CLI
+
+```sh
+metascope --template ./metascope-template.ts
+```
+
+Template files are loaded via [jiti](https://github.com/unjs/jiti), so TypeScript works out of the box without a build step.
+
 ## Background
 
-Metascope was built to support automated generation of project dashboards, badges, and documentation where a single source of truth for project metadata is useful. Rather than querying each API individually, metascope handles the discovery, authentication, and aggregation in one pass.
-
-Credential resolution follows a precedence chain: explicit options > environment variables > CLI tool fallbacks (e.g. `gh auth token`). This makes metascope work in both CI environments and local development without configuration.
+Metascope was built to support automated generation of project dashboards, badges, and documentation where a single source of truth for project metadata is useful. Rather than querying each API individually, metascope handles the discovery, authentication, and aggregation in one pass for a wide variety of project types.
 
 ### Related projects
 

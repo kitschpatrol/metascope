@@ -39,44 +39,62 @@ Not yet implemented, but under consideration:
 | Scholarly       | [Trove Software Map](https://trove.nla.gov.au/)                                               | _portal metadata_                                                                                                                                              | [Yes](https://codemeta.github.io/crosswalk/trove/ 'Trove Software Map')                                                 |
 | Scholarly       | [VIVO](https://vivoweb.org/)                                                                  | [`*.rdf`](https://vivoweb.org/ontology)                                                                                                                        | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'VIVO')                                               |
 | Scholarly       | [Zenodo Metadata](https://zenodo.org/)                                                        | [`*.zenodo.json`](https://zenodo.org/api/doc)                                                                                                                  | [Yes](https://codemeta.github.io/crosswalk/zenodo/ 'Zenodo')                                                            |
-| Space Physics   | [SPASE](https://www.spase-group.org/)                                                         |                                                                                                                                                                |                                                                                                                         |
+| Space Physics   | [SPASE](https://www.spase-group.org/)                                                         | [`*.xml`](https://www.spase-group.org/data/schema)                                                                                                             | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'SPASE')                                              |
+
+## Crosswalk availability for existing sources
+
+Crosswalk data informs mapping to the `crosswalk` output template:
+
+| Ecosystem  | Organization                                                                            | Metascope Key     | Source Specifications                                                                      | CodeMeta Crosswalk                                                                   |
+| ---------- | --------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Agnostic   | [CodeMeta (v1)](https://codemeta.github.io/)                                            | `codemetaJson`    | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld) | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V1')     |
+| Agnostic   | [CodeMeta (v2)](https://codemeta.github.io/)                                            | `codemetaJson`    | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld) | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'codemeta-V2')     |
+| Agnostic   | [Public Code](https://publiccode.net/)                                                  | `publiccodeYaml`  | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)   | [Yes](https://codemeta.github.io/crosswalk/publiccode/ 'publiccode')                 |
+| Java       | [Maven](https://search.maven.org/)                                                      | `javaPomXml`      | [`pom.xml`](https://maven.apache.org/pom.html)                                             | [Yes](https://codemeta.github.io/crosswalk/java/ 'Java (Maven)')                     |
+| JavaScript | [NPM](https://www.npmjs.com/)                                                           | `nodePackageJson` | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)              | [Yes](https://codemeta.github.io/crosswalk/node/ 'NodeJS')                           |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                   | `pythonSetupCfg`  | [`setup.cfg`](https://docs.python.org/3/distutils/apiref.html#distutils.config)            | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')        |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                   | `pythonSetupPy`   | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html)                         | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')        |
+| Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                    | `pythonPkgInfo`   | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)             | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'Python PKG-INFO') |
+| Ruby       | [Ruby Gems](https://rubygems.org/)                                                      | `rubyGemspec`     | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                        | [Yes](https://codemeta.github.io/crosswalk/ruby/ 'Ruby Gem')                         |
+| Rust       | [Crates](https://crates.io/)                                                            | `rustCargoToml`   | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                    | [Yes](https://codemeta.github.io/crosswalk/cargo/ 'Rust Package Manager')            |
+| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository) | `github`          | _GitHub GraphQL metadata_                                                                  | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                         |
 
 ## Shorter context keys
 
 Maybe, but prefer specificity / preservation of origin...
 
 ```txt
-arduinoLibraryProperties --> arduinoLibrary
-cinderCinderblockXml --> cinderCinderblock
-codemetaJson --> codemeta
-codeStats --> codeStats
-dependencyUpdates --> dependencyUpdates
-fileStats --> fileStats
-gitConfig --> git
-github --> github
-gitStats --> gitStats
-goGoMod --> goGoMod
-goGoreleaserYaml --> goGoreleaser
-javaPomXml --> javaPom
-licenseFile --> license
-metadataFile --> metadata
-nodeNpmRegistry --> nodeNpm
-nodePackageJson --> nodePackage
-obsidianPluginManifestJson --> obsidianPluginManifest
-obsidianPluginRegistry --> obsidianPlugin
-openframeworksAddonConfigMk --> openframeworksAddonConfig
-openframeworksInstallXml --> openframeworksInstall
-processingLibraryProperties --> processingLibrary
-processingSketchProperties --> processingSketch
-publiccodeYaml --> publiccode
-pythonPkgInfo --> pythonPkgInfo
-pythonPypiRegistry --> pythonPypi
-pythonPyprojectToml --> pythonPyproject
-pythonSetupCfg --> pythonSetupCfg
-pythonSetupPy --> pythonSetupPy
-readmeFile --> readme
-rubyGemspec --> rubyGemspec
-rustCargoToml --> rustCargo
-xcodeInfoPlist --> xcodeInfo
-xcodeProjectPbxproj --> xcodeProject
+arduinoLibraryProperties → arduinoLibrary
+cinderCinderblockXml → cinderCinderblock
+codemetaJson → codemeta
+codeStats → codeStats
+dependencyUpdates → dependencyUpdates
+fileStats → fileStats
+gitConfig → git
+github → github
+gitStats → gitStats
+goGoMod → goGoMod
+goGoreleaserYaml → goGoreleaser
+javaPomXml → javaPom
+licenseFile → license
+metadataFile → metadata
+nodeNpmRegistry → nodeNpm
+nodePackageJson → nodePackage
+obsidianPluginManifestJson → obsidianPluginManifest
+obsidianPluginRegistry → obsidianPlugin
+openframeworksAddonConfigMk → openframeworksAddonConfig
+openframeworksInstallXml → openframeworksInstall
+processingLibraryProperties → processingLibrary
+processingSketchProperties → processingSketch
+publiccodeYaml → publiccode
+pythonPkgInfo → pythonPkgInfo
+pythonPypiRegistry → pythonPypi
+pythonPyprojectToml → pythonPyproject
+pythonSetupCfg → pythonSetupCfg
+pythonSetupPy → pythonSetupPy
+readmeFile → readme
+rubyGemspec → rubyGemspec
+rustCargoToml → rustCargo
+xcodeInfoPlist → xcodeInfo
+xcodeProjectPbxproj → xcodeProject
 ```

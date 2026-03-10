@@ -1,7 +1,7 @@
 {
 	"name": "metascope",
 	"version": "0.0.0",
-	"description": "A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.",
+	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"keywords": [
 		"metadata",
 		"codemeta",
@@ -40,6 +40,7 @@
 	"scripts": {
 		"build": "tsdown",
 		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
+		"docs": "tsx ./scripts/generate-examples.ts && ksc-prettier fix ./docs",
 		"fix": "ksc fix",
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
@@ -68,11 +69,11 @@
 		"plist": "^3.1.0",
 		"pretty-ms": "^9.3.0",
 		"read-pkg": "^10.1.0",
-		"read-pyproject": "^0.3.0",
+		"read-pyproject": "^0.3.1",
 		"remark-parse": "^11.0.0",
 		"scule": "^1.3.0",
 		"semver": "^7.7.4",
-		"simple-git": "^3.32.3",
+		"simple-git": "^3.33.0",
 		"smol-toml": "^1.6.0",
 		"spdx-license-list": "^6.11.0",
 		"tinyexec": "^1.0.2",
