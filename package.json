@@ -44,7 +44,8 @@
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
 		"pretest": "cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/lib/grammars/tree-sitter-python.wasm",
-		"test": "vitest"
+		"test": "vitest",
+		"update-data": "tsx ./scripts/update-data.ts"
 	},
 	"dependencies": {
 		"@bacons/xcode": "1.0.0-alpha.33",
@@ -60,6 +61,7 @@
 		"find-workspaces": "^0.3.1",
 		"git-url-parse": "^16.1.0",
 		"jiti": "^2.6.1",
+		"jsonld": "^9.0.0",
 		"lognow": "^0.5.2",
 		"octokit": "^5.0.5",
 		"package-json": "^10.0.1",
@@ -88,6 +90,7 @@
 		"@arethetypeswrong/core": "^0.18.2",
 		"@fast-csv/parse": "^5.0.5",
 		"@kitschpatrol/shared-config": "^6.0.3",
+		"@types/jsonld": "^1.5.15",
 		"@types/picomatch": "^4.0.2",
 		"@types/semver": "^7.7.1",
 		"bumpp": "^10.4.1",
@@ -96,6 +99,7 @@
 		"tree-sitter-python": "^0.25.0",
 		"tree-sitter-ruby": "^0.23.1",
 		"tsdown": "^0.21.1",
+		"tsx": "^4.21.0",
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.18"
 	},

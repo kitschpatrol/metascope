@@ -159,6 +159,45 @@ export function firstOf<T>(value: T | T[] | undefined): T | undefined {
 	return Array.isArray(value) ? value[0] : value
 }
 
+/**
+ * Collect values from all records in a `OneOrMany<SourceRecord<D>>` source.
+ * Runs the accessor on each record's `.data` and returns all non-undefined results.
+ *
+ * Useful for extracting a specific field from sources that may contain multiple records
+ * (e.g. multiple Cargo.toml files in a workspace).
+ */
+export function collectField<T extends { data: unknown }, R>(
+	source: T | T[] | undefined,
+	accessor: (data: T['data']) => R | undefined,
+): R[] {
+	if (source === undefined) return []
+	const records = Array.isArray(source) ? source : [source]
+	return records
+		.map((record) => accessor(record.data))
+		.filter((value): value is R => value !== undefined)
+}
+
+/**
+ * Collect and flatten array values from all records in a `OneOrMany<SourceRecord<D>>` source.
+ * Runs the accessor on each record's `.data` and flattens the resulting arrays.
+ */
+export function collectArrayField<T extends { data: unknown }, R>(
+	source: T | T[] | undefined,
+	accessor: (data: T['data']) => R[] | undefined,
+): R[] {
+	if (source === undefined) return []
+	const records = Array.isArray(source) ? source : [source]
+	return records.flatMap((record) => accessor(record.data) ?? [])
+}
+
+/**
+ * Return the array if non-empty, otherwise undefined.
+ * Useful for converting empty collection results to undefined before `stripUndefined`.
+ */
+export function nonEmpty<T>(array: T[]): T[] | undefined {
+	return array.length > 0 ? array : undefined
+}
+
 // ─── Object Helpers ─────────────────────────────────────────────────
 
 /**

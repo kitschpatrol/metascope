@@ -1,3 +1,6 @@
+/* eslint-disable ts/no-unused-vars */
+/* eslint-disable ts/naming-convention */
+
 import { XcodeProject } from '@bacons/xcode'
 import { XMLParser } from 'fast-xml-parser'
 import { randomUUID } from 'node:crypto'
@@ -243,6 +246,7 @@ function isValidLicenseFile(filename: string, _content: string): boolean {
 	return false
 }
 
+// @ts-expect-error - Run manually
 async function run() {
 	console.log('Proceeding with fetch...')
 
@@ -425,12 +429,11 @@ async function run() {
 		false,
 		isValidProcessingLibraryProperties,
 	)
+	await saveAllFileSearchResults(
+		'sketch.properties',
+		'./test/fixtures/processing-sketch-properties',
+		false,
+	)
 }
 
 // await run()
-
-await saveAllFileSearchResults(
-	'sketch.properties',
-	'./test/fixtures/processing-sketch-properties',
-	false,
-)

@@ -87,6 +87,7 @@ export type ProcessingSketchPropertiesData =
 export function parse(content: string): ProcessingSketchProperties {
 	const raw = parseProperties(content)
 
+	// eslint-disable-next-line ts/no-unnecessary-condition
 	const versionRaw = raw.version ?? '0'
 	const versionParsed = Number.parseInt(versionRaw, 10)
 
@@ -119,8 +120,10 @@ export function parse(content: string): ProcessingSketchProperties {
 		.filter((s) => s.length > 0)
 
 	return processingSketchPropertiesSchema.parse({
+		// eslint-disable-next-line ts/no-unnecessary-condition
 		authors: parseAuthors(raw.authors ?? raw.authorList ?? ''),
 		component: nonEmpty(raw.component),
+		// eslint-disable-next-line ts/no-unnecessary-condition
 		download: nonEmpty(unescapeUrl(raw.download ?? '')),
 		main: nonEmpty(raw.main),
 		manifestLabel: nonEmpty(raw['manifest.label']),
@@ -141,6 +144,7 @@ export function parse(content: string): ProcessingSketchProperties {
 		raw,
 		sentence: nonEmpty(raw.sentence),
 		templates: nonEmpty(raw.templates),
+		// eslint-disable-next-line ts/no-unnecessary-condition
 		url: nonEmpty(unescapeUrl(raw.url ?? '')),
 		version: Number.isNaN(versionParsed) ? 0 : versionParsed,
 		zipfilename: nonEmpty(raw.zipfilename),
