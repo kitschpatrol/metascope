@@ -19,6 +19,10 @@
 
 <!-- /short-description -->
 
+> [!NOTE]
+>
+> Metascope is under development. Expect breaking changes until a 1.0 release.
+
 ## Overview
 
 Metascope aggregates metadata from a local code repository into a single monolithic JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a JSON object containing everything it could find.
