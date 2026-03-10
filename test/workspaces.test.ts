@@ -117,6 +117,7 @@ describe('getMetadata with absolute flag', () => {
 	it('should return absolute source paths by default', async () => {
 		const result = await getMetadata({ path: '.', workspaces: false })
 		const source = firstOf(result.nodePackageJson)?.source
+		console.log(source)
 		expect(source).toBeDefined()
 		expect(isAbsolute(source!)).toBe(true)
 		expect(source).toContain('package.json')

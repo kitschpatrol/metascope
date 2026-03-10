@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
@@ -44,12 +45,12 @@ export const obsidianPluginManifestJsonSource = defineSource<'obsidianPluginMani
 		return getMatches(context.options, ['manifest.json'])
 	},
 	key: 'obsidianPluginManifestJson',
-	async parseInput(input) {
-		const content = await readFile(input, 'utf8')
+	async parseInput(input, context) {
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const parsed = manifestSchema.safeParse(JSON.parse(content))
-		if (!parsed.success) return
-
-		return { data: parsed.data, source: input }
+		if (parsed.success) {
+			return { data: parsed.data, source: input }
+		}
 	},
 	phase: 1,
 })

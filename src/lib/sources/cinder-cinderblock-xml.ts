@@ -13,7 +13,7 @@
 import is from '@sindresorhus/is'
 import { XMLParser } from 'fast-xml-parser'
 import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import { resolve } from 'node:path'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
@@ -171,7 +171,7 @@ export const cinderCinderblockXmlSource = defineSource<'cinderCinderblockXml'>({
 	},
 	key: 'cinderCinderblockXml',
 	async parseInput(input, context) {
-		const content = await readFile(path.resolve(context.options.path, input), 'utf8')
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 
 		if (data !== undefined) {

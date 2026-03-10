@@ -28,7 +28,7 @@
  */
 
 import is from '@sindresorhus/is'
-import path from 'node:path'
+import { basename } from 'node:path'
 import type { MetadataContext } from '../metadata-types'
 import type { CodemetaDependencyLd, CodemetaPersonLd } from '../utilities/codemeta-helpers'
 import { defineTemplate } from '../metadata-types'
@@ -1002,7 +1002,7 @@ function readmeUrl(
 	defaultBranch: string | undefined,
 ): string | undefined {
 	if (readmeRecord === undefined) return undefined
-	const filename = path.basename(readmeRecord.source)
+	const filename = basename(readmeRecord.source)
 
 	// Build a web URL if we have a GitHub-style repo URL
 	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {
