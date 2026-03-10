@@ -216,15 +216,15 @@ export async function getMetadata<T>(
 	// Resolve template from options (built-in name or function)
 	const template = resolveTemplate(resolvedOptions.template)
 
-	const credentials = await resolveCredentials(resolvedOptions.credentials)
-
 	// Reset match cache to ensure fresh results for each getMetadata call
 	resetMatchCache()
 
-	// Warm the memoized file tree cache (sources access it via getMatches).
-	// Only cache the tree — don't materialize a full results array to avoid OOM on large repos.
+	// Resolve credentials and build file tree concurrently — they are independent
 	log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
-	const rootTree = await getTree(absolutePath, resolvedOptions.respectIgnored)
+	const [credentials, rootTree] = await Promise.all([
+		resolveCredentials(resolvedOptions.credentials),
+		getTree(absolutePath, resolvedOptions.respectIgnored),
+	])
 	log.debug(`Root file tree contains ${rootTree.length} entries`)
 
 	// Assemble context with defaults
