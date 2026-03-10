@@ -5,10 +5,7 @@ import { getMatches } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 
-export type GitConfigInfo = {
-	/** Parsed .git/config contents. */
-	config?: GitConfig
-}
+type GitConfigInfo = GitConfig
 
 export type GitConfigData = SourceRecord<GitConfigInfo> | undefined
 
@@ -21,7 +18,7 @@ export const gitConfigSource = defineSource<'gitConfig'>({
 		log.debug('Extracting git config metadata...')
 		const config = await readGitConfig(input)
 		return {
-			data: { config },
+			data: { ...config },
 			source: input,
 		}
 	},

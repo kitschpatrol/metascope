@@ -149,7 +149,6 @@ describe('all-sources fixture', () => {
 		const { data } = records[0]
 		expect(data.spdxId).toBe('MIT')
 		expect(data.confidence).toBeGreaterThan(0)
-		expect(records[0].extra?.spdxUrl).toContain('spdx.org')
 	})
 
 	it('should extract metadataFile', async () => {

@@ -21,7 +21,7 @@ describe('git config source', () => {
 		const result = await gitConfigSource.extract(context)
 
 		expect(result).toBeDefined()
-		expect(result!.data.config).toBeDefined()
-		expect(typeof result!.data.config?.remote?.origin.url).toBe('string')
+		expect(result!.data).toBeDefined()
+		expect(typeof result!.data.remote?.origin.url).toBe('string')
 	})
 })

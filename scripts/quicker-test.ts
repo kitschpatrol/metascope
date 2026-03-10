@@ -6,7 +6,7 @@ const metadata = await getMetadata({
 	path: './test/fixtures/all-sources',
 	recursive: false,
 	respectIgnored: false,
-	workspaces: true,
+	workspaces: false,
 })
 
-console.log(metadata.metascope)
+console.log(JSON.stringify(metadata, undefined, 2))

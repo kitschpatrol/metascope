@@ -598,14 +598,14 @@ function mapRepoData(
 export const githubSource = defineSource<'github'>({
 	async getInputs(context) {
 		let gitRemotes = ensureArray(context.metadata?.gitConfig)
-			.map((config) => config?.data.config?.remote)
+			.map((config) => config?.data.remote)
 			.filter((remote) => remote !== undefined)
 
 		// Load manually if not in context
 		if (gitRemotes.length === 0) {
 			const extraction = await gitConfigSource.extract(context)
 			gitRemotes = ensureArray(extraction)
-				.map((config) => config?.data.config?.remote)
+				.map((config) => config?.data.remote)
 				.filter((remote) => remote !== undefined)
 		}
 

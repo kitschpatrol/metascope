@@ -7,7 +7,7 @@ import { getMetadata } from '../src/lib'
 const startTime = performance.now()
 
 const sourceDirectory = '/Users/mika/Code'
-const destinationDirectory = '/Users/mika/Desktop/metascope-test-batch-10'
+const destinationDirectory = '/Users/mika/Desktop/metascope-test'
 
 const codeFolders = await glob('*', {
 	cwd: sourceDirectory,
@@ -23,7 +23,7 @@ await mkdir(destinationDirectory, { recursive: true })
 // 01: 4m 3.5s (1s/project)
 // 05: 3m 18.5s (821ms/project)
 // 10: 3m 18.7s (821ms/project)
-const concurrencyLimit = 10
+const concurrencyLimit = 1
 
 for (let index = 0; index < codeFolders.length; index += concurrencyLimit) {
 	// Slice the array into a small batch

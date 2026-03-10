@@ -49,7 +49,6 @@ describe('licenseFiles source', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.data.spdxId).toContain('BSD')
-		expect(result!.extra?.spdxUrl).toBeDefined()
 		expect(result!.source).toBeDefined()
 	})
 

@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
-import { identifyLicense, spdxIdToUrl } from '../utilities/license-identification'
+import { identifyLicense } from '../utilities/license-identification'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -14,12 +14,7 @@ export type LicenseMatch = {
 	spdxId: string
 }
 
-export type LicenseMatchExtra = {
-	/** SPDX license URL. */
-	spdxUrl: string
-}
-
-export type LicenseFilesData = OneOrMany<SourceRecord<LicenseMatch, LicenseMatchExtra>> | undefined
+export type LicenseFilesData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
 
 export const licenseFileSource = defineSource<'licenseFiles'>({
 	async getInputs(context) {
@@ -32,7 +27,6 @@ export const licenseFileSource = defineSource<'licenseFiles'>({
 		if (!match) return
 		return {
 			data: { confidence: match.confidence, spdxId: match.spdxId },
-			extra: { spdxUrl: spdxIdToUrl(match.spdxId) },
 			source: input,
 		}
 	},
