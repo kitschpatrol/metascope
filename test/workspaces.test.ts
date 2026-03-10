@@ -99,7 +99,7 @@ describe('getMatches with workspaces', () => {
 		expect(matches).toHaveLength(unique.size)
 	})
 
-	it('should sort results alphabetically then by depth', async () => {
+	it('should sort results by depth then alphabetically', async () => {
 		const matches = await getMatches(
 			{ path: fixturesDirectory, workspaces: ['packages/pkg-a', 'packages/pkg-b'] },
 			['package.json'],
@@ -107,7 +107,7 @@ describe('getMatches with workspaces', () => {
 
 		// eslint-disable-next-line unicorn/no-array-sort
 		const sorted = [...matches].sort(
-			(a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length,
+			(a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b),
 		)
 		expect(matches).toEqual(sorted)
 	})

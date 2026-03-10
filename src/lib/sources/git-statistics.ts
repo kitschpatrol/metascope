@@ -7,6 +7,7 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
+import { batchMap } from '../utilities/formatting'
 
 export type GitStatisticsInfo = {
 	/** Total number of local branches. */
@@ -114,16 +115,14 @@ export const gitStatisticsSource = defineSource<'gitStatistics'>({
 		])
 
 		const trackedSizeBytes = (
-			await Promise.all(
-				trackedFiles.map(async (file) => {
-					try {
-						const fileStat = await stat(join(context.options.path, file))
-						return fileStat.size
-					} catch {
-						return 0
-					}
-				}),
-			)
+			await batchMap(trackedFiles, async (file) => {
+				try {
+					const fileStat = await stat(join(context.options.path, file))
+					return fileStat.size
+				} catch {
+					return 0
+				}
+			})
 		).reduce((sum, size) => sum + size, 0)
 
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
@@ -227,5 +226,5 @@ export const gitStatisticsSource = defineSource<'gitStatistics'>({
 			source: input,
 		}
 	},
-	phase: 1,
+	phase: 2,
 })

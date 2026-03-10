@@ -46,7 +46,7 @@ Highlights:
 
 ### Dependencies
 
-Metascope requires [Node.js](https://nodejs.org/) 24.1+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
 Metascope also requires a recent version of [git](https://git-scm.com/) on your path, for quickly identifying ignored files and aggregating repository statistics.
 

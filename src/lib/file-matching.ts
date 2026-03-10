@@ -24,6 +24,15 @@ export function resetMatchCache(): void {
 
 // ─── File Tree ──────────────────────────────────────────────────────
 
+// Default ignore patterns for non-git environments or when git fails
+const DEFAULT_IGNORE = [
+	'**/node_modules/**',
+	'**/dist/**',
+	'**/build/**',
+	'**/coverage/**',
+	'**/.DS_Store',
+]
+
 /**
  * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
  * Returns relative POSIX paths (internal to tinyglobby; callers receive absolute paths via getMatches).
@@ -48,7 +57,8 @@ export async function getTree(path: string, respectIgnored: boolean): Promise<st
 					.filter(Boolean)
 					.map((p) => escapePath(p))
 			} catch {
-				// Fallback to empty ignore list if the command fails (e.g., not a git repository)
+				// Fallback to default ignore list if the command fails (e.g., not a git repository)
+				ignore = [...DEFAULT_IGNORE]
 			}
 		}
 
@@ -191,6 +201,6 @@ export async function getMatches(
 		}
 	}
 
-	// Sort alphabetically first, then by depth (shallowest first)
-	return results.toSorted((a, b) => a.localeCompare(b) || a.split('/').length - b.split('/').length)
+	// Sort by depth (shallowest first), then alphabetically
+	return results.toSorted((a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b))
 }

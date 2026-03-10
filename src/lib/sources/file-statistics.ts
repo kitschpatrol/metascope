@@ -4,6 +4,7 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches, getWorkspaces } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
+import { batchMap } from '../utilities/formatting'
 
 export type FileStatistics = {
 	/** Total number of directories (recursive). */
@@ -52,15 +53,17 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 
 		const totalDirectoryCount = uniqueDirectories.size
 
-		const sizes = await Promise.all(
-			allFiles.map(async (file) => {
+		const sizes = await batchMap(
+			allFiles,
+			async (file) => {
 				try {
 					const fileStat = await stat(file)
 					return fileStat.size
 				} catch {
 					return 0
 				}
-			}),
+			},
+			100,
 		)
 
 		const totalSizeBytes = sizes.reduce((sum, size) => sum + size, 0)
@@ -74,5 +77,5 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 			source: input,
 		}
 	},
-	phase: 2,
+	phase: 1,
 })

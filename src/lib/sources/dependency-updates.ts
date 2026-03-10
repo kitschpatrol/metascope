@@ -220,5 +220,5 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 			source: input,
 		}
 	},
-	phase: 2,
+	phase: 1,
 })

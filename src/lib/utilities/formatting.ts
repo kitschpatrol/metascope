@@ -10,13 +10,6 @@ import path, { relative } from 'node:path'
 import { titleCase } from 'scule'
 import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 
-declare global {
-	// eslint-disable-next-line ts/consistent-type-definitions
-	interface RegExpConstructor {
-		escape(string_: string): string
-	}
-}
-
 const casePoliceDict: Record<string, string> = {
 	...abbreviates,
 	...brands,
@@ -70,7 +63,15 @@ export function toAlias(value: string | undefined): string | undefined {
 }
 
 /**
+ * Escape a string for use in a regular expression.
+ */
+export function escapeRegExp(string_: string): string {
+	return string_.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+}
+
+/**
  * Convert a filename or relative path to a local `file://` URL rooted at `repoPath`.
+ * Correctly handles Windows paths by replacing backslashes with forward slashes.
  */
 export function toLocalUrl(
 	value: string | undefined,
@@ -80,7 +81,9 @@ export function toLocalUrl(
 		return undefined
 	}
 
-	return `file://${path.join(repoPath, path.basename(value))}`
+	// file:// URLs must use forward slashes even on Windows
+	const relativePath = path.join(repoPath, path.basename(value)).replaceAll('\\', '/')
+	return `file://${relativePath.startsWith('/') ? '' : '/'}${relativePath}`
 }
 
 /**
@@ -127,7 +130,7 @@ export function mixedStringsToArray(
 			if (!replacements) return item
 			let result = item
 			for (const [search, replace] of replacements) {
-				const pattern = new RegExp(RegExp.escape(search), 'gi')
+				const pattern = new RegExp(escapeRegExp(search), 'gi')
 				result = result.replace(pattern, replace)
 			}
 			return result
@@ -141,18 +144,40 @@ export function mixedStringsToArray(
 /**
  * Format an absolute path as either absolute or relative, based on the `absolute` option.
  * When relative, paths identical to `basePath` are returned as `'.'`.
+ * Correctly handles Windows paths (normalizes to POSIX) and ignores URLs.
  */
 export function formatPath(
 	absolutePath: string,
 	basePath: string,
 	absolute = DEFAULT_GET_METADATA_OPTIONS.absolute,
 ): string {
-	if (absolute) return absolutePath
-	const relativePath = relative(basePath, absolutePath)
+	// Don't format URLs (roughly detected by protocol prefix)
+	if (/^[a-z]+:\/\//i.test(absolutePath)) return absolutePath
+
+	if (absolute) return absolutePath.replaceAll('\\', '/')
+
+	const relativePath = relative(basePath, absolutePath).replaceAll('\\', '/')
 	return relativePath === '' ? '.' : relativePath
 }
 
 // ─── Collection Helpers ─────────────────────────────────────────────
+
+/**
+ * Process an array of items in batches to avoid resource limits.
+ */
+export async function batchMap<T, R>(
+	items: T[],
+	mapper: (item: T) => Promise<R>,
+	batchSize = 50,
+): Promise<R[]> {
+	const results: R[] = []
+	for (let index = 0; index < items.length; index += batchSize) {
+		const chunk = items.slice(index, index + batchSize)
+		const chunkResults = await Promise.all(chunk.map(async (item) => mapper(item)))
+		results.push(...chunkResults)
+	}
+	return results
+}
 
 /**
  * Extract the first element from a `OneOrMany` value.
@@ -205,6 +230,8 @@ export function nonEmpty<T>(array: T[]): T[] | undefined {
 
 /**
  * Recursively removes `undefined` values and empty objects from an object.
+ * Only recurses into plain objects and arrays. Non-plain objects (like Date)
+ * are preserved as-is.
  * Array elements that are `undefined` are also removed.
  * Returns `undefined` if the entire input becomes empty after stripping.
  */
@@ -216,16 +243,16 @@ export function stripUndefined<T>(value: T): T {
 			.map((item) => stripUndefined(item))
 			.filter((item) => item !== undefined)
 		// eslint-disable-next-line ts/no-unsafe-type-assertion
-		return filtered as T
+		return (filtered.length > 0 ? filtered : undefined) as T
 	}
 
-	if (value !== null && typeof value === 'object') {
+	if (is.plainObject(value)) {
 		const result: Record<string, unknown> = {}
 		let hasKeys = false
 		for (const [key, theValue] of Object.entries(value)) {
 			if (theValue !== undefined) {
-				// eslint-disable-next-line ts/no-unsafe-assignment
 				const stripped = stripUndefined(theValue)
+				// eslint-disable-next-line ts/no-unnecessary-condition
 				if (stripped !== undefined) {
 					result[key] = stripped
 					hasKeys = true

@@ -601,10 +601,10 @@ export const githubSource = defineSource<'github'>({
 			.map((config) => config.data.remote)
 			.filter((remote) => remote !== undefined)
 
-		// Load manually if not in context
+		// Fall back if we don't have gitConfig context
 		if (gitRemotes.length === 0) {
-			const extraction = await gitConfigSource.extract(context)
-			gitRemotes = ensureArray(extraction)
+			const gitConfig = await gitConfigSource.extract(context)
+			gitRemotes = ensureArray(gitConfig)
 				.map((config) => config.data.remote)
 				.filter((remote) => remote !== undefined)
 		}

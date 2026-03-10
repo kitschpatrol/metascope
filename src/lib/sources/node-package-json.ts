@@ -13,7 +13,6 @@ import { parsePackage } from 'read-pkg'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
-import { formatPath } from '../utilities/formatting'
 
 export type NodePackageJsonData = OneOrMany<SourceRecord<NormalizedPackageJson>> | undefined
 
@@ -33,7 +32,7 @@ export const nodePackageJsonSource = defineSource<'nodePackageJson'>({
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		return {
 			data: parse(content),
-			source: formatPath(input, context.options.path, context.options.absolute),
+			source: input,
 		}
 	},
 	phase: 1,

@@ -1,7 +1,5 @@
-import { defu } from 'defu'
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from './metadata-types'
 import { log } from './log'
-import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types'
 import { formatPath } from './utilities/formatting'
 
 /**
@@ -104,24 +102,18 @@ export function defineSource<K extends SourceName>(
 	return {
 		...config,
 		async extract(context: SourceContext): Promise<MetadataContext[K]> {
-			// Resolve defaults so getInputs/parseInput always see complete options
-			const resolved: SourceContext = {
-				...context,
-				options: defu(context.options, DEFAULT_GET_METADATA_OPTIONS),
-			}
-
-			const inputs = await config.getInputs(resolved)
+			const inputs = await config.getInputs(context)
 			if (inputs.length === 0) return undefined as MetadataContext[K]
 
 			const results: SourceRecord[] = []
 			for (const input of inputs) {
 				try {
-					const result = await config.parseInput(input, resolved)
+					const result = await config.parseInput(input, context)
 					if (result) {
 						result.source = formatPath(
 							result.source,
-							resolved.options.path,
-							resolved.options.absolute,
+							context.options.path,
+							context.options.absolute,
 						)
 						results.push(result)
 					}

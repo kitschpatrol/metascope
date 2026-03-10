@@ -1,9 +1,7 @@
-import { defu } from 'defu'
 import type { GetMetadataBaseOptions } from '../metadata-types'
 import type { SourceRecord } from '../source'
 import { version } from '../../../package.json'
 import { getWorkspaces } from '../file-matching'
-import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 import { defineSource } from '../source'
 import { formatPath } from '../utilities/formatting'
 
@@ -39,7 +37,7 @@ export const metascopeSource = defineSource<'metascope'>({
 			respectIgnored,
 			templateData,
 			workspaces,
-		} = defu(context.options, DEFAULT_GET_METADATA_OPTIONS)
+		} = context.options
 		return {
 			data: {
 				durationMs: 0, // Injected later!
