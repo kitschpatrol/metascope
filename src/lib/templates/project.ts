@@ -20,7 +20,7 @@ export const project = defineTemplate(
 			codemetaJson: codemetaRaw,
 			dependencyUpdates: dependencyUpdatesRaw,
 			github: githubRaw,
-			gitStatistics: gitRaw,
+			gitStats: gitRaw,
 			metascope,
 			nodeNpmRegistry: npmRaw,
 			nodePackageJson: packageJson,

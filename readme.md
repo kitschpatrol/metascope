@@ -169,11 +169,11 @@ metascope --template ./my-template.ts
 Where `my-template.ts` might look like:
 
 ```ts
-import { defineTemplate, firstOf } from 'metascope'
+import { defineTemplate } from 'metascope'
 
-export default defineTemplate(({ codemetaJson, github, gitStatistics }) => {
-  const codemeta = firstOf(codemetaJson)
-  const git = firstOf(gitStatistics)
+export default defineTemplate(({ codemetaJson, github, gitStats }) => {
+  const codemeta = codemetaJson.at
+  const git = firstOf(gitStats)
   const gh = firstOf(github)
   return {
     commits: git?.data.commitCount,
@@ -244,7 +244,7 @@ import { firstOf, getMetadata } from 'metascope'
 const metadata = await getMetadata({ path: '.' })
 console.log(firstOf(metadata.codemetaJson)?.data.name)
 console.log(firstOf(metadata.github)?.data.stargazerCount)
-console.log(firstOf(metadata.gitStatistics)?.data.commitCount)
+console.log(firstOf(metadata.gitStats)?.data.commitCount)
 ```
 
 ##### Get shaped metadata via a template
@@ -322,7 +322,7 @@ The green-checked entries below indicate metadata file formats and sources that 
 | Go         | [GoReleaser](https://goreleaser.com/)                                                                   | `goGoreleaserYaml`            | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                   | No                                                                                   |
 | Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                      | [Yes](https://codemeta.github.io/crosswalk/java/ 'Java (Maven)')                     |
 | Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)               | No                                                                                   |
-| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4)                                        | No                                                                                   |
+| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)              | No                                                                                   |
 | JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)                       | [Yes](https://codemeta.github.io/crosswalk/node/ 'NodeJS')                           |
 | Agnostic   | [Public Code](https://publiccode.net/)                                                                  | `publiccodeYaml`              | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)            | [Yes](https://codemeta.github.io/crosswalk/publiccode/ 'publiccode')                 |
 | Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html)                                  | [Yes](https://codemeta.github.io/crosswalk/python/ 'Python Distutils (PyPI)')        |
@@ -336,9 +336,9 @@ The green-checked entries below indicate metadata file formats and sources that 
 | Agnostic   | [SPDX](https://spdx.org/)                                                                               | `licenseFiles`                | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            | No                                                                                   |
 | Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       | No                                                                                   |
 | Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository)                 | `github`                      | _GitHub GraphQL metadata_                                                                           | [Yes](https://codemeta.github.io/crosswalk/github/ 'GitHub')                         |
-| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitStatistics`               | _Git CLI statistics_ (commits, branches, tags, contributors)                                        | No                                                                                   |
-| Agnostic   |                                                                                                         | `codeStatistics`              | _Lines of code analysis_ via [tokei](https://github.com/XAMPPRocky/tokei)                           | No                                                                                   |
-| Agnostic   |                                                                                                         | `fileStatistics`              | _Filesystem metadata_ (file counts, directory counts, total size)                                   | No                                                                                   |
+| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitStats`                    | _Git CLI statistics_ (commits, branches, tags, contributors)                                        | No                                                                                   |
+| Agnostic   |                                                                                                         | `codeStats`                   | _Lines of code analysis_ via [tokei](https://github.com/XAMPPRocky/tokei)                           | No                                                                                   |
+| Agnostic   |                                                                                                         | `fileStats`                   | _Filesystem metadata_ (file counts, directory counts, total size)                                   | No                                                                                   |
 | Agnostic   |                                                                                                         | `dependencyUpdates`           | _Dependency freshness_ (outdated packages, libyears)                                                | No                                                                                   |
 | JavaScript | [NPM Registry](https://www.npmjs.com/)                                                                  | `nodeNpmRegistry`             | _NPM registry API_ (download counts, publish dates, latest version)                                 | No                                                                                   |
 | Python     | [PyPI Registry](https://pypi.org/)                                                                      | `pythonPypiRegistry`          | _PyPI registry API_ (download counts, publish dates, latest version)                                | No                                                                                   |
@@ -371,11 +371,11 @@ Use `defineTemplate()` for type inference and autocomplete:
 // Metascope-template.ts
 import { defineTemplate, firstOf } from 'metascope'
 
-export default defineTemplate(({ codemetaJson, codeStatistics, github, gitStatistics }) => {
+export default defineTemplate(({ codemetaJson, codeStats, github, gitStats }) => {
   const codemeta = firstOf(codemetaJson)
-  const git = firstOf(gitStatistics)
+  const git = firstOf(gitStats)
   const gh = firstOf(github)
-  const loc = firstOf(codeStatistics)
+  const loc = firstOf(codeStats)
   return {
     commits: git?.data.commitCount,
     forks: gh?.data.forkCount,

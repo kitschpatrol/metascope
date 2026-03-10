@@ -429,18 +429,18 @@ describe('all-sources fixture', () => {
 
 	// ── Phase 2: Tool/network sources ──────────────────────
 
-	it('should extract fileStatistics', async () => {
+	it('should extract fileStats', async () => {
 		const result = await resultPromise
-		const data = firstOf(result.fileStatistics)?.data
+		const data = firstOf(result.fileStats)?.data
 		expect(data).toBeDefined()
 		expect(data!.totalFileCount).toBeGreaterThan(0)
 		expect(data!.totalDirectoryCount).toBeGreaterThanOrEqual(0)
 		expect(data!.totalSizeBytes).toBeGreaterThan(0)
 	})
 
-	it('should extract codeStatistics', async () => {
+	it('should extract codeStats', async () => {
 		const result = await resultPromise
-		const data = result.codeStatistics
+		const data = result.codeStats
 		// Code-statistics uses tokei, which may or may not be available
 		if (data) {
 			const stats = firstOf(data)?.data
@@ -463,6 +463,6 @@ describe('all-sources fixture', () => {
 		const result = await resultPromise
 		// No .git directory in fixture
 		expect(result.gitConfig).toBeUndefined()
-		expect(result.gitStatistics).toBeUndefined()
+		expect(result.gitStats).toBeUndefined()
 	})
 })

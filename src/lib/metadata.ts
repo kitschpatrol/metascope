@@ -18,12 +18,12 @@ import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
 import { cinderCinderblockXmlSource } from './sources/cinder-cinderblock-xml'
-import { codeStatisticsSource } from './sources/code-statistics'
+import { codeStatsSource } from './sources/code-stats.js'
 import { codemetaJsonSource } from './sources/codemeta-json'
 import { dependencyUpdatesSource } from './sources/dependency-updates'
-import { fileStatisticsSource } from './sources/file-statistics'
+import { fileStatsSource } from './sources/file-stats.js'
 import { gitConfigSource } from './sources/git-config'
-import { gitStatisticsSource } from './sources/git-statistics'
+import { gitStatsSource } from './sources/git-stats.js'
 import { githubSource } from './sources/github'
 import { goGoModSource } from './sources/go-go-mod'
 import { goGoreleaserYamlSource } from './sources/go-goreleaser-yaml'
@@ -90,10 +90,10 @@ const sources: MetadataSource[] = [
 	xcodeInfoPlistSource,
 	xcodeProjectPbxprojSource,
 	// Phase 2: Tool sources — run local tools or fetch from remote APIs
-	codeStatisticsSource,
+	codeStatsSource,
 	dependencyUpdatesSource,
-	fileStatisticsSource,
-	gitStatisticsSource,
+	fileStatsSource,
+	gitStatsSource,
 	githubSource,
 	nodeNpmRegistrySource,
 	obsidianPluginRegistrySource,
@@ -231,12 +231,12 @@ export async function getMetadata<T>(
 		arduinoLibraryProperties: undefined,
 		cinderCinderblockXml: undefined,
 		codemetaJson: undefined,
-		codeStatistics: undefined,
+		codeStats: undefined,
 		dependencyUpdates: undefined,
-		fileStatistics: undefined,
+		fileStats: undefined,
 		gitConfig: undefined,
 		github: undefined,
-		gitStatistics: undefined,
+		gitStats: undefined,
 		goGoMod: undefined,
 		goGoreleaserYaml: undefined,
 		javaPomXml: undefined,

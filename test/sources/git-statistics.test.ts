@@ -1,22 +1,22 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { gitStatisticsSource } from '../../src/lib/sources/git-statistics'
+import { gitStatsSource } from '../../src/lib/sources/git-stats'
 import { firstOf } from '../../src/lib/utilities/formatting'
 
 const context = { options: { path: resolve('.') } }
 
 describe('git statistics source', () => {
 	it('should be available in a git repo', async () => {
-		expect(await gitStatisticsSource.extract(context)).toBeDefined()
+		expect(await gitStatsSource.extract(context)).toBeDefined()
 	})
 
 	it('should not be available in a non-git directory', async () => {
 		const nonGitContext = { options: { path: '/tmp' } }
-		expect(await gitStatisticsSource.extract(nonGitContext)).toBeUndefined()
+		expect(await gitStatsSource.extract(nonGitContext)).toBeUndefined()
 	})
 
 	it('should fetch git statistics metadata', async () => {
-		const result = firstOf(await gitStatisticsSource.extract(context))
+		const result = firstOf(await gitStatsSource.extract(context))
 
 		expect(result).toBeDefined()
 		expect(result!.data.branchCurrent).toBe('main')
@@ -30,7 +30,7 @@ describe('git statistics source', () => {
 	})
 
 	it('should return a valid commitDateLast', async () => {
-		const result = firstOf(await gitStatisticsSource.extract(context))
+		const result = firstOf(await gitStatsSource.extract(context))
 		expect(result).toBeDefined()
 		expect(result!.data.commitDateLast).toBeDefined()
 		// Should be a valid date string

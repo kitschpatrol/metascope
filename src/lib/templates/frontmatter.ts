@@ -27,11 +27,11 @@ export const frontmatter = defineTemplate(
 	(
 		{
 			codemetaJson: codemetaRaw,
-			codeStatistics: loc,
+			codeStats: loc,
 			dependencyUpdates: dependencyUpdatesRaw,
-			fileStatistics: filesystemRaw,
+			fileStats: filesystemRaw,
 			github: githubRaw,
-			gitStatistics: gitRaw,
+			gitStats: gitRaw,
 			metascope,
 			nodeNpmRegistry: npmRaw,
 			obsidianPluginManifestJson: obsidianPluginManifestJsonRaw,

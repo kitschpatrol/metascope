@@ -6,7 +6,7 @@ import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
 
-export type FileStatistics = {
+export type FileStats = {
 	/** Total number of directories (recursive). */
 	totalDirectoryCount?: number
 	/** Total number of files (recursive). */
@@ -15,9 +15,9 @@ export type FileStatistics = {
 	totalSizeBytes?: number
 }
 
-export type FileStatisticsData = OneOrMany<SourceRecord<FileStatistics>> | undefined
+export type FileStatsData = OneOrMany<SourceRecord<FileStats>> | undefined
 
-export const fileStatisticsSource = defineSource<'fileStatistics'>({
+export const fileStatsSource = defineSource<'fileStats'>({
 	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
 		return [
@@ -25,7 +25,7 @@ export const fileStatisticsSource = defineSource<'fileStatistics'>({
 			...getWorkspaces(context.options.path, context.options.workspaces),
 		]
 	},
-	key: 'fileStatistics',
+	key: 'fileStats',
 	async parseInput(input, context) {
 		log.debug('Extracting file statistics metadata...')
 

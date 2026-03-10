@@ -22,7 +22,7 @@ const mockContext: MetadataContext = {
 		},
 		source: '/test/project/codemeta.json',
 	},
-	codeStatistics: {
+	codeStats: {
 		data: {
 			perLanguage: [
 				{ blanks: 100, code: 500, comments: 50, files: 10, language: 'TypeScript', lines: 650 },
@@ -39,7 +39,7 @@ const mockContext: MetadataContext = {
 		source: 'test',
 	},
 	dependencyUpdates: undefined,
-	fileStatistics: {
+	fileStats: {
 		data: {
 			totalDirectoryCount: 20,
 			totalFileCount: 150,
@@ -62,7 +62,7 @@ const mockContext: MetadataContext = {
 		},
 		source: 'test',
 	},
-	gitStatistics: {
+	gitStats: {
 		data: {
 			branchCurrent: 'main',
 			commitCount: 42,
@@ -322,7 +322,7 @@ describe('codemeta template', () => {
 	it('should truncate dates to date-only format', () => {
 		const contextWithDates: MetadataContext = {
 			...mockContext,
-			gitStatistics: {
+			gitStats: {
 				data: {
 					commitDateFirst: '2024-01-15T10:30:00Z',
 					commitDateLast: '2025-06-20T14:00:00Z',
@@ -431,11 +431,11 @@ describe('codemeta template', () => {
 		const emptyContext: MetadataContext = {
 			...mockContext,
 			codemetaJson: undefined,
-			codeStatistics: undefined,
-			fileStatistics: undefined,
+			codeStats: undefined,
+			fileStats: undefined,
 			gitConfig: undefined,
 			github: undefined,
-			gitStatistics: undefined,
+			gitStats: undefined,
 			licenseFiles: undefined,
 			metascope: undefined,
 			nodeNpmRegistry: undefined,

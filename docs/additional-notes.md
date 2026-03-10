@@ -1,4 +1,6 @@
-# Possible sources
+# Additional notes
+
+## Possible sources
 
 Not yet implemented, but under consideration:
 
@@ -38,3 +40,39 @@ Not yet implemented, but under consideration:
 | Scholarly       | [VIVO](https://vivoweb.org/)                                                                  | [`*.rdf`](https://vivoweb.org/ontology)                                                                                                                        | [Yes](https://github.com/codemeta/codemeta/blob/3.1/crosswalk.csv 'VIVO')                                               |
 | Scholarly       | [Zenodo Metadata](https://zenodo.org/)                                                        | [`*.zenodo.json`](https://zenodo.org/api/doc)                                                                                                                  | [Yes](https://codemeta.github.io/crosswalk/zenodo/ 'Zenodo')                                                            |
 | Space Physics   | [SPASE](https://www.spase-group.org/)                                                         |                                                                                                                                                                |                                                                                                                         |
+
+## Alternate context keys:
+
+arduinoLibrary  
+cinderCinderblock  
+codemeta  
+codeStats  
+dependencyUpdates  
+fileStats  
+git  
+github  
+gitStats  
+goGoMod  
+goGoreleaser  
+javaPom  
+license  
+metadata  
+nodeNpm  
+nodePackage  
+obsidianPluginManifest  
+obsidianPlugin  
+openframeworksAddonConfig  
+openframeworksInstall  
+processingLibrary  
+processingSketch  
+publiccode  
+pythonPkgInfo  
+pythonPypi  
+pythonPyproject  
+pythonSetupCfg  
+pythonSetupPy  
+readme  
+rubyGemspec  
+rustCargo  
+xcodeInfo  
+xcodeProject

@@ -5,23 +5,23 @@ import { getWorkspaces } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 
-type CodeStatisticsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
+type CodeStatsTotals = Omit<LanguageInfo, 'language' | 'reports'> & {
 	languages: Language[]
 }
 
-type CodeStatisticsFields = {
+type CodeStatsFields = {
 	/** Per-language line count perLanguage, sorted by lines of code descending. */
 	perLanguage?: LanguageInfo[]
 	/** Aggregate line counts across all languages. */
-	total?: CodeStatisticsTotals
+	total?: CodeStatsTotals
 }
 
-export type CodeStatisticsData = OneOrMany<SourceRecord<CodeStatisticsFields>> | undefined
+export type CodeStatsData = OneOrMany<SourceRecord<CodeStatsFields>> | undefined
 
 async function getStatistics(
 	directory: string,
 	options: SourceContext['options'],
-): Promise<SourceRecord<CodeStatisticsFields>> {
+): Promise<SourceRecord<CodeStatsFields>> {
 	const results = await tokei({
 		include: [directory],
 		noIgnore: !options.respectIgnored,
@@ -31,7 +31,7 @@ async function getStatistics(
 
 	const perLanguage = results.toSorted((a, b) => b.code - a.code)
 
-	const total: CodeStatisticsTotals = {
+	const total: CodeStatsTotals = {
 		blanks: perLanguage.reduce((sum, entry) => sum + entry.blanks, 0),
 		code: perLanguage.reduce((sum, entry) => sum + entry.code, 0),
 		comments: perLanguage.reduce((sum, entry) => sum + entry.comments, 0),
@@ -46,7 +46,7 @@ async function getStatistics(
 	}
 }
 
-export const codeStatisticsSource = defineSource<'codeStatistics'>({
+export const codeStatsSource = defineSource<'codeStats'>({
 	// eslint-disable-next-line ts/require-await
 	async getInputs(context) {
 		return [
@@ -54,7 +54,7 @@ export const codeStatisticsSource = defineSource<'codeStatistics'>({
 			...getWorkspaces(context.options.path, context.options.workspaces),
 		]
 	},
-	key: 'codeStatistics',
+	key: 'codeStats',
 	async parseInput(input, context) {
 		log.debug('Extracting lines of code via tokei...')
 		return getStatistics(input, context.options)

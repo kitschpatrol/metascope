@@ -63,7 +63,7 @@ export const codemeta = defineTemplate(
 		cinderCinderblockXml,
 		codemetaJson: codemetaRaw,
 		github: githubRaw,
-		gitStatistics: gitRaw,
+		gitStats: gitRaw,
 		goGoMod,
 		javaPomXml,
 		licenseFiles,

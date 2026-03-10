@@ -17,8 +17,8 @@ describe('getMetadata', () => {
 			expect(firstOf(result.nodePackageJson)!.data.name).toBe('metascope')
 
 			// Should have git statistics data
-			expect(result.gitStatistics).toBeDefined()
-			expect(firstOf(result.gitStatistics)!.data.branchCurrent).toBe('main')
+			expect(result.gitStats).toBeDefined()
+			expect(firstOf(result.gitStats)!.data.branchCurrent).toBe('main')
 		},
 	)
 
@@ -41,8 +41,8 @@ describe('getMetadata', () => {
 	})
 
 	it('should apply a template function', async () => {
-		const template = defineTemplate(({ gitStatistics, nodePackageJson }) => ({
-			branch: firstOf(gitStatistics)?.data.branchCurrent,
+		const template = defineTemplate(({ gitStats, nodePackageJson }) => ({
+			branch: firstOf(gitStats)?.data.branchCurrent,
 			name: firstOf(nodePackageJson)?.data.name,
 		}))
 

@@ -1,11 +1,11 @@
 import type { ArduinoLibraryPropertiesData } from './sources/arduino-library-properties'
 import type { CinderCinderblockXmlData } from './sources/cinder-cinderblock-xml'
-import type { CodeStatisticsData } from './sources/code-statistics'
+import type { CodeStatsData } from './sources/code-stats'
 import type { CodeMetaJsonData } from './sources/codemeta-json'
 import type { DependencyUpdatesData } from './sources/dependency-updates'
-import type { FileStatisticsData } from './sources/file-statistics'
+import type { FileStatsData } from './sources/file-stats'
 import type { GitConfigData } from './sources/git-config'
-import type { GitStatisticsData } from './sources/git-statistics'
+import type { GitStatsData } from './sources/git-stats'
 import type { GitHubData } from './sources/github'
 import type { GoGoModData } from './sources/go-go-mod'
 import type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
@@ -43,12 +43,12 @@ export type MetadataContext = {
 	arduinoLibraryProperties: ArduinoLibraryPropertiesData
 	cinderCinderblockXml: CinderCinderblockXmlData
 	codemetaJson: CodeMetaJsonData
-	codeStatistics: CodeStatisticsData
+	codeStats: CodeStatsData
 	dependencyUpdates: DependencyUpdatesData
-	fileStatistics: FileStatisticsData
+	fileStats: FileStatsData
 	gitConfig: GitConfigData
 	github: GitHubData
-	gitStatistics: GitStatisticsData
+	gitStats: GitStatsData
 	goGoMod: GoGoModData
 	goGoreleaserYaml: GoGoreleaserYamlData
 	javaPomXml: JavaPomXmlData

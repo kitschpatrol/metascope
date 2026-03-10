@@ -9,7 +9,7 @@ import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
 
-export type GitStatisticsInfo = {
+export type GitStatsInfo = {
 	/** Total number of local branches. */
 	branchCount?: number
 	/** Name of the currently checked-out branch. */
@@ -60,9 +60,9 @@ export type GitStatisticsInfo = {
 	uncommittedFileCount?: number
 }
 
-export type GitStatisticsData = OneOrMany<SourceRecord<GitStatisticsInfo>> | undefined
+export type GitStatsData = OneOrMany<SourceRecord<GitStatsInfo>> | undefined
 
-export const gitStatisticsSource = defineSource<'gitStatistics'>({
+export const gitStatsSource = defineSource<'gitStats'>({
 	async getInputs(context) {
 		// Have to match actual file, not just folder
 		const temporary = await getMatches(context.options, ['.git/config'])
@@ -70,7 +70,7 @@ export const gitStatisticsSource = defineSource<'gitStatistics'>({
 		// Then pop up to the directory containing the `.git` folder
 		return temporary.map((value) => resolve(value, '../../'))
 	},
-	key: 'gitStatistics',
+	key: 'gitStats',
 	async parseInput(input, context) {
 		log.debug('Extracting git statistics metadata...')
 
