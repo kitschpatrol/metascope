@@ -48,6 +48,9 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 
 		// Try to get it ourselves if missing
 		if (packageNames.length === 0) {
+			log.warn(
+				`Missing nodePackageJson in source context metadata for ${context.options.path}, extracting it now...`,
+			)
 			const nodePackageJson = await nodePackageJsonSource.extract(context)
 			packageNames = ensureArray(nodePackageJson).map((value) => value.data.name)
 		}

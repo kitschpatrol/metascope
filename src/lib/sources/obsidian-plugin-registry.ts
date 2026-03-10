@@ -35,6 +35,9 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 
 		// Fallback to running the manifest source directly
 		if (pluginIds.length === 0) {
+			log.warn(
+				`Missing obsidianPluginManifestJson in source context metadata for ${context.options.path}, extracting it now...`,
+			)
 			const extraction = await obsidianPluginManifestJsonSource.extract(context)
 			pluginIds = ensureArray(extraction).map((value) => value.data.id)
 		}

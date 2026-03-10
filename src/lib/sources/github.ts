@@ -603,6 +603,9 @@ export const githubSource = defineSource<'github'>({
 
 		// Fall back if we don't have gitConfig context
 		if (gitRemotes.length === 0) {
+			log.warn(
+				`Missing gitConfig in source context metadata for ${context.options.path}, extracting it now...`,
+			)
 			const gitConfig = await gitConfigSource.extract(context)
 			gitRemotes = ensureArray(gitConfig)
 				.map((config) => config.data.remote)

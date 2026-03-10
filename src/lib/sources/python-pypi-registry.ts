@@ -103,6 +103,10 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 
 		// Try to get package name from pyproject.toml source
 		if (packageNames.length === 0) {
+			log.warn(
+				`Missing python package names in source context metadata for ${context.options.path}, extracting it now...`,
+			)
+
 			const extraction = await pythonPyprojectTomlSource.extract(context)
 			packageNames = ensureArray(extraction)
 				.map((value) => value.data.project?.name)
