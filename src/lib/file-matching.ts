@@ -2,7 +2,7 @@ import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
 import { existsSync } from 'node:fs'
-import { relative, resolve } from 'node:path'
+import { dirname, relative, resolve } from 'node:path'
 import picomatch from 'picomatch'
 import { exec } from 'tinyexec'
 import { escapePath, glob } from 'tinyglobby'
@@ -131,7 +131,9 @@ export function getWorkspaces(directory: string, workspaces: boolean | string[] 
 		locations = validateWorkspaces(
 			directory,
 			workspaces === true
-				? (findWorkspaces(directory)?.map((value) => value.location) ?? [])
+				? (findWorkspaces(directory, { stopDir: dirname(directory) })?.map(
+						(value) => value.location,
+					) ?? [])
 				: workspaces,
 		)
 		workspaceCache.set(directory, locations)
