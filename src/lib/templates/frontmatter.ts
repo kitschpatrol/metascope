@@ -66,9 +66,10 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		'GitHub Owner': github?.ownerLogin ?? null,
 		tags: codemeta.keywords ?? [], // Obsidian special field
 		License: toBasicLicenses(codemeta.license ?? github?.licenseSpdxId) ?? null,
-		Languages:
+		Language:
 			mixedStringsToArray(codemeta.programmingLanguage ?? github?.primaryLanguage, REPLACEMENTS) ??
 			null,
+		'Secondary Language': codeStats?.total?.languages ?? null,
 
 		// ── Local Repo ─────────────────────────────────────────────
 		'Repo Path': metascope?.options.path === undefined ? null : `file://${metascope.options.path}`,
@@ -122,7 +123,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 			nodeNpmRegistry?.downloadsMonthly ?? pythonPypiRegistry?.downloadsMonthly ?? null,
 
 		// ── Activity ──────────────────────────────────────────
-		Commits: gitStats?.commitCount ?? null,
+
 		Releases: github?.releaseCount ?? gitStats?.tagReleaseCount ?? null,
 		'Issues Open': github?.issueCountOpen ?? null,
 		'Issues Closed': github?.issueCountClosed ?? null,
@@ -161,14 +162,14 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// 'Funding Links': github.fundingLinks?.map((l) => `${l.platform}: ${l.url}`),
 
 		// ── Flags ─────────────────────────────────────────────
-		// Archived: github.isArchived ?? false,
-		Archived: github?.archivedAt ?? null,
 		// Fork: github?.isFork ?? false,
 		'Forked From': github?.forkedFrom ?? null,
 		'Fork Ahead': github?.commitsAheadUpstream ?? null,
 		'Fork Behind': github?.commitsBehindUpstream ?? null,
 		// Mirror: github?.isMirror ?? false,
-		'Mirrored From': github?.mirrorUrl ?? null,
+		// 'Mirrored From': github?.mirrorUrl ?? null,
+		// "Archived Date": github?.archivedAt ?? null,
+		// Archived: github.isArchived ?? false,
 		'Template From': github?.templateFrom ?? null,
 		'Template Repo': github?.isTemplate ?? false,
 		Organization: github?.isInOrganization ?? false,
@@ -178,11 +179,12 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// 'Issues': github.hasIssuesEnabled,
 
 		// ── Git Status ────────────────────────────────────────
-		'Dirty Files': gitStats?.uncommittedFileCount ?? null,
-		'Remotes Ahead': gitStats?.totalAhead ?? null,
-		'Remotes Behind': gitStats?.totalBehind ?? null,
-		'Git LFS': gitStats?.hasLfs ?? github?.hasLfs ?? false,
 		// 'Git Clean': gitStats?.isClean ?? null,
+		'Git Commits': gitStats?.commitCount ?? null,
+		'Git Dirty Files': gitStats?.uncommittedFileCount ?? null,
+		'Git Remotes Ahead': gitStats?.totalAhead ?? null,
+		'Git Remotes Behind': gitStats?.totalBehind ?? null,
+		'Git LFS': gitStats?.hasLfs ?? github?.hasLfs ?? false,
 		'Git Tags': gitStats?.tagCount ?? null,
 		'Git Current Branch': gitStats?.branchCurrent ?? null,
 		'Git Branches': gitStats?.branchCount ?? null,
