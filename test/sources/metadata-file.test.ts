@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { resetMatchCache } from '../../src/lib/file-matching'
 import { metadataFileSource, parse as parseMetadata } from '../../src/lib/sources/metadata-file'
-import { firstOf } from '../../src/lib/utilities/formatting'
+import { firstOf } from '../../src/lib/utilities/template-helpers'
 
 const fixturesDirectory = resolve('test/fixtures/metadata-file')
 

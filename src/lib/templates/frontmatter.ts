@@ -8,13 +8,11 @@ import {
 	mixedStringsToArray,
 	REPLACEMENTS,
 	toAlias,
+	toBasicLicenses,
+	toBasicNames,
 	toLocalUrl,
 	toMb,
-} from '../utilities/formatting'
-import {
-	toBasicLicenses,
-	basicNames as toBasicNames,
-	getStatus as toStatus,
+	toStatus,
 	usesSharedConfig,
 } from '../utilities/template-helpers'
 

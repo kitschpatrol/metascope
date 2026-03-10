@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { gitStatsSource } from '../../src/lib/sources/git-stats'
-import { firstOf } from '../../src/lib/utilities/formatting'
+import { firstOf } from '../../src/lib/utilities/template-helpers'
 
 const context = { options: { path: resolve('.') } }
 

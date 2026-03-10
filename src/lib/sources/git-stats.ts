@@ -226,5 +226,5 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			source: input,
 		}
 	},
-	phase: 2,
+	phase: 1,
 })

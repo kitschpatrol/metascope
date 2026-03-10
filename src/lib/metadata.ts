@@ -51,7 +51,7 @@ import { rustCargoTomlSource } from './sources/rust-cargo-toml'
 import { xcodeInfoPlistSource } from './sources/xcode-info-plist'
 import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
 import { isKeyOfTemplate, templates } from './templates/index.js'
-import { stripUndefined } from './utilities/formatting'
+import { stripUndefined } from './utilities/template-helpers'
 
 const execFileAsync = promisify(execFile)
 

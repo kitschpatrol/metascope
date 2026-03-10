@@ -1,12 +1,13 @@
 /* eslint-disable complexity */
 
 import { defineTemplate } from '../metadata-types'
-import { firstOf, toLocalUrl } from '../utilities/formatting'
 import {
-	getStatus,
+	firstOf,
 	isAuthoredBy,
 	isOnGithubAccountOf,
 	toBasicLicenses,
+	toLocalUrl,
+	toStatus,
 	usesPnpm,
 	usesSharedConfig,
 } from '../utilities/template-helpers'
@@ -61,7 +62,7 @@ export const project = defineTemplate(
 			semverUpdateList: undefined, // TODO, Not well supported by `updates` package
 			tags: codemeta?.data.keywords,
 			title: codemeta?.data.name,
-			type: getStatus(codemeta, authorName, githubAccount),
+			type: toStatus(codemeta, authorName, githubAccount),
 			usesPnpm: usesPnpm(packageJson),
 			usesSharedConfig: usesSharedConfig(codemeta),
 			version: codemeta?.data.version,

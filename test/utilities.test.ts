@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stripUndefined } from '../src/lib/utilities/formatting'
+import { stripUndefined } from '../src/lib/utilities/template-helpers'
 
 describe('stripUndefined', () => {
 	it('should remove undefined values from a flat object', () => {

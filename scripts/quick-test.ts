@@ -38,7 +38,14 @@ for (let index = 0; index < codeFolders.length; index += concurrencyLimit) {
 		batch.map(async (folder) => {
 			try {
 				const fullFolderPath = join(sourceDirectory, folder)
-				const metadata = await getMetadata({ path: fullFolderPath })
+				const metadata = await getMetadata({
+					path: fullFolderPath,
+					template: 'frontmatter',
+					templateData: {
+						authorName: ['kitschpatrol', 'Eric Mika', 'eric mika', 'scalarstudio', 'Scalar Studio'],
+						githubAccount: ['kitschpatrol', 'scalarstudio'],
+					},
+				})
 
 				const jsonOutput = JSON.stringify(metadata, undefined, 2)
 				const outputPath = join(destinationDirectory, `${folder.replaceAll('/', '')}.json`)

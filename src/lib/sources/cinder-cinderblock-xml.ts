@@ -18,8 +18,8 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
-import { ensureArray } from '../utilities/formatting'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { ensureArray } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 

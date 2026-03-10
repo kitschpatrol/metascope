@@ -11,5 +11,6 @@ export type {
 	TemplateData,
 } from './metadata-types'
 export type { OneOrMany, SourceRecord } from './source'
-
 export { templates } from './templates/index'
+
+export * as helpers from './utilities/template-helpers'

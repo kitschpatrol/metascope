@@ -2,7 +2,7 @@ import { isAbsolute, resolve } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getMatches, getWorkspaces, resetMatchCache } from '../src/lib/file-matching'
 import { getMetadata } from '../src/lib/metadata'
-import { firstOf } from '../src/lib/utilities/formatting'
+import { firstOf } from '../src/lib/utilities/template-helpers'
 
 const fixturesDirectory = resolve('test/fixtures/workspaces')
 

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
-import { ensureArray } from '../utilities/formatting'
+import { ensureArray } from '../utilities/template-helpers'
 import { obsidianPluginManifestJsonSource } from './obsidian-plugin-manifest-json'
 
 export type ObsidianPluginRegistryInfo = {

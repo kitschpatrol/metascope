@@ -45,7 +45,7 @@ import {
 	firstOf,
 	nonEmpty,
 	stripUndefined,
-} from '../utilities/formatting'
+} from '../utilities/template-helpers'
 
 // ─── Feature flags ──────────────────────────────────────────────────
 

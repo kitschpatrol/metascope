@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getMetadata } from '../src/lib/metadata'
 import { defineTemplate } from '../src/lib/metadata-types'
-import { firstOf } from '../src/lib/utilities/formatting'
+import { firstOf } from '../src/lib/utilities/template-helpers'
 
 // @case-police-ignore github
 

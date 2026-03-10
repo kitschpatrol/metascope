@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { gitConfigSource } from '../../src/lib/sources/git-config'
-import { firstOf } from '../../src/lib/utilities/formatting'
+import { firstOf } from '../../src/lib/utilities/template-helpers'
 
 const context = { options: { path: resolve('.') } }
 

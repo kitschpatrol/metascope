@@ -169,12 +169,12 @@ metascope --template ./my-template.ts
 Where `my-template.ts` might look like:
 
 ```ts
-import { defineTemplate } from 'metascope'
+import { defineTemplate, helpers } from 'metascope'
 
 export default defineTemplate(({ codemetaJson, github, gitStats }) => {
-  const codemeta = codemetaJson.at
-  const git = firstOf(gitStats)
-  const gh = firstOf(github)
+  const codemeta = helpers.firstOf(codemetaJson)
+  const git = helpers.firstOf(gitStats)
+  const gh = helpers.firstOf(github)
   return {
     commits: git?.data.commitCount,
     name: codemeta?.data.name,
@@ -208,7 +208,7 @@ Logs source availability checks, extraction durations, and other diagnostics to 
 
 ### API
 
-The `metascope` library exports `getMetadata` as its primary function, along with `defineTemplate` for type-safe template authoring.
+The `metascope` library exports `getMetadata` as its primary function, `defineTemplate` for type-safe template authoring, and a `helpers` namespace with utility functions for working with metadata in templates.
 
 #### `getMetadata`
 
@@ -239,22 +239,22 @@ An identity wrapper that provides autocomplete and type inference when authoring
 ##### Get all metadata
 
 ```ts
-import { firstOf, getMetadata } from 'metascope'
+import { getMetadata, helpers } from 'metascope'
 
 const metadata = await getMetadata({ path: '.' })
-console.log(firstOf(metadata.codemetaJson)?.data.name)
-console.log(firstOf(metadata.github)?.data.stargazerCount)
-console.log(firstOf(metadata.gitStats)?.data.commitCount)
+console.log(helpers.firstOf(metadata.codemetaJson)?.data.name)
+console.log(helpers.firstOf(metadata.github)?.data.stargazerCount)
+console.log(helpers.firstOf(metadata.gitStats)?.data.commitCount)
 ```
 
 ##### Get shaped metadata via a template
 
 ```ts
-import { defineTemplate, firstOf, getMetadata } from 'metascope'
+import { defineTemplate, getMetadata, helpers } from 'metascope'
 
 const template = defineTemplate(({ codemetaJson, github }) => ({
-  name: firstOf(codemetaJson)?.data.name,
-  stars: firstOf(github)?.data.stargazerCount,
+  name: helpers.firstOf(codemetaJson)?.data.name,
+  stars: helpers.firstOf(github)?.data.stargazerCount,
 }))
 
 // Result is typed as { name: ..., stars: ... }
@@ -275,10 +275,10 @@ const metadata = await getMetadata({
 ##### Pass template data
 
 ```ts
-import { defineTemplate, firstOf, getMetadata } from 'metascope'
+import { defineTemplate, getMetadata, helpers } from 'metascope'
 
 const template = defineTemplate(({ codemetaJson }, { authorName }) => {
-  const codemeta = firstOf(codemetaJson)
+  const codemeta = helpers.firstOf(codemetaJson)
   return {
     isAuthoredByMe: codemeta?.data.author?.some((a) => a.name === authorName),
     name: codemeta?.data.name,
@@ -367,13 +367,13 @@ Use `defineTemplate()` for type inference and autocomplete:
 
 ```ts
 // Metascope-template.ts
-import { defineTemplate, firstOf } from 'metascope'
+import { defineTemplate, helpers } from 'metascope'
 
 export default defineTemplate(({ codemetaJson, codeStats, github, gitStats }) => {
-  const codemeta = firstOf(codemetaJson)
-  const git = firstOf(gitStats)
-  const gh = firstOf(github)
-  const loc = firstOf(codeStats)
+  const codemeta = helpers.firstOf(codemetaJson)
+  const git = helpers.firstOf(gitStats)
+  const gh = helpers.firstOf(github)
+  const loc = helpers.firstOf(codeStats)
   return {
     commits: git?.data.commitCount,
     forks: gh?.data.forkCount,
@@ -390,10 +390,10 @@ export default defineTemplate(({ codemetaJson, codeStats, github, gitStats }) =>
 The second argument to a template function is a `TemplateData` object with optional `authorName` and `githubAccount` fields. This lets templates parameterize ownership checks instead of hardcoding author names:
 
 ```ts
-import { defineTemplate, firstOf } from 'metascope'
+import { defineTemplate, helpers } from 'metascope'
 
 export default defineTemplate(({ codemetaJson }, { authorName, githubAccount }) => {
-  const codemeta = firstOf(codemetaJson)
+  const codemeta = helpers.firstOf(codemetaJson)
   const authors = codemeta?.data.author?.map((a) => a.name) ?? []
   const repo = codemeta?.data.codeRepository?.toLowerCase() ?? ''
   return {
