@@ -160,7 +160,8 @@ describe('defineTemplate', () => {
 
 	it('should support computed values', () => {
 		const template = defineTemplate(({ github }) => ({
-			popularity: (firstOf(github)?.data.stargazerCount ?? 0) + (firstOf(github)?.data.forkCount ?? 0),
+			popularity:
+				(firstOf(github)?.data.stargazerCount ?? 0) + (firstOf(github)?.data.forkCount ?? 0),
 		}))
 
 		const result = template(mockContext, {})
@@ -222,7 +223,7 @@ describe('codemeta template', () => {
 
 	it('should prefer ecosystem sources (package.json) over codemetaJson for name/version', () => {
 		const result = codemeta(mockContext, {})
-		// package.json has name and version, same as codemetaJson in mock
+		// The package.json has name and version, same as codemetaJson in mock
 		expect(result.name).toBe('test-package')
 		expect(result.version).toBe('1.2.3')
 	})
@@ -238,11 +239,11 @@ describe('codemeta template', () => {
 	})
 
 	it('should convert author from codemetaJson to JSON-LD Person when no ecosystem author', () => {
-		const contextWithoutPkgAuthor: MetadataContext = {
+		const contextWithoutPackageAuthor: MetadataContext = {
 			...mockContext,
-			// package.json has no author field in the mock
+			// Package.json has no author field in the mock
 		}
-		const result = codemeta(contextWithoutPkgAuthor, {})
+		const result = codemeta(contextWithoutPackageAuthor, {})
 		expect(result.author).toEqual([
 			{
 				'@type': 'Person',
@@ -253,7 +254,7 @@ describe('codemeta template', () => {
 	})
 
 	it('should prefer package.json author over codemetaJson author', () => {
-		const contextWithPkgAuthor: MetadataContext = {
+		const contextWithPackageAuthor: MetadataContext = {
 			...mockContext,
 			nodePackageJson: {
 				data: {
@@ -267,7 +268,7 @@ describe('codemeta template', () => {
 				source: 'package.json',
 			},
 		}
-		const result = codemeta(contextWithPkgAuthor, {})
+		const result = codemeta(contextWithPackageAuthor, {})
 		expect(result.author).toEqual([
 			{ '@type': 'Person', email: 'jane@example.com', name: 'Jane Smith' },
 		])

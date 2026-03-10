@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/no-await-expression-member */
 /* eslint-disable unicorn/no-useless-undefined */
-import { access, stat } from 'node:fs/promises'
+import { stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { simpleGit } from 'simple-git'
 import type { OneOrMany, SourceRecord } from '../source'
-import { getMatches, getTree } from '../file-matching'
+import { getMatches } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 

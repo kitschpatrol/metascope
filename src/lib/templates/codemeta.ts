@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-immediate-mutation */
+/* eslint-disable unicorn/prefer-single-call */
 /* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
 
@@ -26,15 +28,10 @@
  */
 
 import is from '@sindresorhus/is'
+import path from 'node:path'
 import type { MetadataContext } from '../metadata-types'
+import type { CodemetaDependencyLd, CodemetaPersonLd } from '../utilities/codemeta-helpers'
 import { defineTemplate } from '../metadata-types'
-import {
-	collectArrayField,
-	collectField,
-	firstOf,
-	nonEmpty,
-	stripUndefined,
-} from '../utilities/formatting'
 import {
 	deduplicateDependencies,
 	deduplicatePersons,
@@ -42,7 +39,13 @@ import {
 	toPersonLd,
 	toSpdxLicenseUrl,
 } from '../utilities/codemeta-helpers'
-import type { CodemetaDependencyLd, CodemetaPersonLd } from '../utilities/codemeta-helpers'
+import {
+	collectArrayField,
+	collectField,
+	firstOf,
+	nonEmpty,
+	stripUndefined,
+} from '../utilities/formatting'
 
 // ─── Feature flags ──────────────────────────────────────────────────
 
@@ -73,10 +76,10 @@ export const codemeta = defineTemplate(
 		publiccodeYaml,
 		pythonPkgInfo,
 		pythonPypiRegistry: pypiRaw,
-		readmeFile,
 		pythonPyprojectToml,
 		pythonSetupCfg,
 		pythonSetupPy,
+		readmeFile,
 		rubyGemspec,
 		rustCargoToml,
 		xcodeInfoPlist,
@@ -88,7 +91,7 @@ export const codemeta = defineTemplate(
 		const git = firstOf(gitRaw)
 		const npm = firstOf(npmRaw)
 		const pypi = firstOf(pypiRaw)
-		const pkg = firstOf(nodePackageJson)
+		const package_ = firstOf(nodePackageJson)
 		const pyproject = firstOf(pythonPyprojectToml)
 		const setupPy = firstOf(pythonSetupPy)
 		const setupCfg = firstOf(pythonSetupCfg)
@@ -109,7 +112,7 @@ export const codemeta = defineTemplate(
 		// ── Identity ────────────────────────────────────────────────
 
 		const name =
-			pkg?.data.name ??
+			package_?.data.name ??
 			pyproject?.data.project?.name ??
 			setupPy?.data.name ??
 			setupCfg?.data.name ??
@@ -129,7 +132,7 @@ export const codemeta = defineTemplate(
 			cm?.data.name
 
 		const description =
-			pkg?.data.description ??
+			package_?.data.description ??
 			pyproject?.data.project?.description ??
 			setupPy?.data.description ??
 			setupCfg?.data.description ??
@@ -149,7 +152,7 @@ export const codemeta = defineTemplate(
 			github?.data.description
 
 		const version =
-			pkg?.data.version ??
+			package_?.data.version ??
 			pyproject?.data.project?.version ??
 			setupPy?.data.version ??
 			setupCfg?.data.version ??
@@ -178,15 +181,19 @@ export const codemeta = defineTemplate(
 
 		const ecosystemAuthors: Array<CodemetaPersonLd | undefined> = [
 			// Node package.json
-			...(pkg?.data.author
-				? [toPersonLd({ email: pkg.data.author.email, name: pkg.data.author.name, url: pkg.data.author.url })]
+			...(package_?.data.author
+				? [
+						toPersonLd({
+							email: package_.data.author.email,
+							name: package_.data.author.name,
+							url: package_.data.author.url,
+						}),
+					]
 				: []),
 
 			// Python pyproject.toml
 			...(pyproject?.data.project?.authors ?? []).map((a) =>
-				is.plainObject(a)
-					? toPersonLd({ email: a.email, name: a.name })
-					: toPersonLd({ name: a }),
+				is.plainObject(a) ? toPersonLd({ email: a.email, name: a.name }) : toPersonLd({ name: a }),
 			),
 
 			// Python setup.py / setup.cfg
@@ -198,9 +205,7 @@ export const codemeta = defineTemplate(
 				: []),
 
 			// Rust Cargo.toml
-			...(cargo?.data.authors ?? []).map((a) =>
-				toPersonLd({ email: a.email, name: a.name }),
-			),
+			...(cargo?.data.authors ?? []).map((a) => toPersonLd({ email: a.email, name: a.name })),
 
 			// Ruby gemspec (authors + email paired by index)
 			...gemspecAuthors(gem),
@@ -211,14 +216,10 @@ export const codemeta = defineTemplate(
 			),
 
 			// Arduino
-			...(arduino?.data.authors ?? []).map((a) =>
-				toPersonLd({ email: a.email, name: a.name }),
-			),
+			...(arduino?.data.authors ?? []).map((a) => toPersonLd({ email: a.email, name: a.name })),
 
 			// Processing
-			...(processing?.data.authors ?? []).map((a) =>
-				toPersonLd({ name: a.name, url: a.url }),
-			),
+			...(processing?.data.authors ?? []).map((a) => toPersonLd({ name: a.name, url: a.url })),
 
 			// OpenFrameworks
 			...(ofAddon?.data.author ? [toPersonLd({ name: ofAddon.data.author })] : []),
@@ -237,7 +238,7 @@ export const codemeta = defineTemplate(
 				? [toPersonLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]
 				: []),
 
-			// publiccode.yml contacts
+			// Publiccode.yml contacts
 			...(publiccode?.data.contacts ?? []).map((c) =>
 				toPersonLd({ affiliation: c.affiliation, email: c.email, name: c.name }),
 			),
@@ -245,8 +246,14 @@ export const codemeta = defineTemplate(
 
 		const cmAuthors = cm?.data.author?.map((p) =>
 			toPersonLd({
-				affiliation: p.affiliation, email: p.email, familyName: p.familyName,
-				givenName: p.givenName, id: p.id, name: p.name, type: p.type, url: p.url,
+				affiliation: p.affiliation,
+				email: p.email,
+				familyName: p.familyName,
+				givenName: p.givenName,
+				id: p.id,
+				name: p.name,
+				type: p.type,
+				url: p.url,
 			}),
 		)
 
@@ -272,8 +279,14 @@ export const codemeta = defineTemplate(
 
 		const cmContributors = cm?.data.contributor?.map((p) =>
 			toPersonLd({
-				affiliation: p.affiliation, email: p.email, familyName: p.familyName,
-				givenName: p.givenName, id: p.id, name: p.name, type: p.type, url: p.url,
+				affiliation: p.affiliation,
+				email: p.email,
+				familyName: p.familyName,
+				givenName: p.givenName,
+				id: p.id,
+				name: p.name,
+				type: p.type,
+				url: p.url,
 			}),
 		)
 
@@ -283,9 +296,7 @@ export const codemeta = defineTemplate(
 
 		const ecosystemMaintainers: Array<CodemetaPersonLd | undefined> = [
 			...(pyproject?.data.project?.maintainers ?? []).map((m) =>
-				is.plainObject(m)
-					? toPersonLd({ email: m.email, name: m.name })
-					: toPersonLd({ name: m }),
+				is.plainObject(m) ? toPersonLd({ email: m.email, name: m.name }) : toPersonLd({ name: m }),
 			),
 			...(setupPy?.data.maintainer
 				? [toPersonLd({ email: setupPy.data.maintainer_email, name: setupPy.data.maintainer })]
@@ -303,8 +314,14 @@ export const codemeta = defineTemplate(
 
 		const cmMaintainers = cm?.data.maintainer?.map((p) =>
 			toPersonLd({
-				affiliation: p.affiliation, email: p.email, familyName: p.familyName,
-				givenName: p.givenName, id: p.id, name: p.name, type: p.type, url: p.url,
+				affiliation: p.affiliation,
+				email: p.email,
+				familyName: p.familyName,
+				givenName: p.givenName,
+				id: p.id,
+				name: p.name,
+				type: p.type,
+				url: p.url,
 			}),
 		)
 
@@ -316,15 +333,19 @@ export const codemeta = defineTemplate(
 			...(publiccode?.data.mainCopyrightOwner
 				? [toPersonLd({ name: publiccode.data.mainCopyrightOwner })]
 				: []),
-			...(xcode?.data.copyrightHolder
-				? [toPersonLd({ name: xcode.data.copyrightHolder })]
-				: []),
+			...(xcode?.data.copyrightHolder ? [toPersonLd({ name: xcode.data.copyrightHolder })] : []),
 		]
 
 		const cmCopyrightHolders = cm?.data.copyrightHolder?.map((p) =>
 			toPersonLd({
-				affiliation: p.affiliation, email: p.email, familyName: p.familyName,
-				givenName: p.givenName, id: p.id, name: p.name, type: p.type, url: p.url,
+				affiliation: p.affiliation,
+				email: p.email,
+				familyName: p.familyName,
+				givenName: p.givenName,
+				id: p.id,
+				name: p.name,
+				type: p.type,
+				url: p.url,
 			}),
 		)
 
@@ -336,8 +357,14 @@ export const codemeta = defineTemplate(
 			[],
 			cm?.data.funder?.map((p) =>
 				toPersonLd({
-					affiliation: p.affiliation, email: p.email, familyName: p.familyName,
-					givenName: p.givenName, id: p.id, name: p.name, type: p.type, url: p.url,
+					affiliation: p.affiliation,
+					email: p.email,
+					familyName: p.familyName,
+					givenName: p.givenName,
+					id: p.id,
+					name: p.name,
+					type: p.type,
+					url: p.url,
 				}),
 			),
 		)
@@ -353,29 +380,24 @@ export const codemeta = defineTemplate(
 			arduino?.data.repository ??
 			cinder?.data.git ??
 			cm?.data.codeRepository ??
-			repositoryUrlFromPackageJson(pkg?.data.repository)
+			repositoryUrlFromPackageJson(package_?.data.repository)
 
-		const programmingLanguage = nonEmpty([
-			...(github?.data.primaryLanguage ? [github.data.primaryLanguage] : []),
-			...(cm?.data.programmingLanguage ?? []),
-		]) ?? nonEmpty(Object.keys(github?.data.languages ?? {}))
+		const programmingLanguage =
+			nonEmpty([
+				...(github?.data.primaryLanguage ? [github.data.primaryLanguage] : []),
+				...(cm?.data.programmingLanguage ?? []),
+			]) ?? nonEmpty(Object.keys(github?.data.languages ?? {}))
 
 		const runtimePlatform = nonEmpty([
-			...Object.keys(pkg?.data.engines ?? {}),
+			...Object.keys(package_?.data.engines ?? {}),
 			...(goMod?.data.go_version ? [`go ${goMod.data.go_version}`] : []),
 			...(cargo?.data.rustVersion ? [`rust ${cargo.data.rustVersion}`] : []),
 			...(pyproject?.data.project?.requiresPython
 				? [`python ${pyproject.data.project.requiresPython}`]
 				: []),
-			...(setupPy?.data.python_requires
-				? [`python ${setupPy.data.python_requires}`]
-				: []),
-			...(gem?.data.required_ruby_version
-				? [`ruby ${gem.data.required_ruby_version}`]
-				: []),
-			...(pom?.data.javaVersion
-				? [`java ${pom.data.javaVersion}`]
-				: []),
+			...(setupPy?.data.python_requires ? [`python ${setupPy.data.python_requires}`] : []),
+			...(gem?.data.required_ruby_version ? [`ruby ${gem.data.required_ruby_version}`] : []),
+			...(pom?.data.javaVersion ? [`java ${pom.data.javaVersion}`] : []),
 			...(cm?.data.runtimePlatform ?? []),
 		])
 
@@ -395,42 +417,65 @@ export const codemeta = defineTemplate(
 			arduino?.data.category ??
 			publiccode?.data.softwareType
 
-		const applicationSubCategory =
-			cm?.data.applicationSubCategory
+		const applicationSubCategory = cm?.data.applicationSubCategory
 
 		// ── Dependencies ────────────────────────────────────────────
 
 		const runtimeDeps = collectRuntimeDeps({
-			arduino, cargo, cinder, gem, goGoMod, javaPomXml, nodePackageJson,
-			ofAddon, ofInstall, pkgInfo, publiccode, pyproject, rubyGemspec,
-			setupCfg, setupPy,
+			arduino,
+			cargo,
+			cinder,
+			gem,
+			goGoMod,
+			javaPomXml,
+			nodePackageJson,
+			ofAddon,
+			ofInstall,
+			pkgInfo,
+			publiccode,
+			pyproject,
+			rubyGemspec,
+			setupCfg,
+			setupPy,
 		})
 
-		const softwareRequirements = runtimeDeps.length > 0
-			? deduplicateDependencies(runtimeDeps)
-			: cm?.data.softwareRequirements?.map((d) =>
-				toDependencyLd(d.name ?? d.identifier ?? '', d.version, d.identifier, d.runtimePlatform),
-			)
+		const softwareRequirements =
+			runtimeDeps.length > 0
+				? deduplicateDependencies(runtimeDeps)
+				: cm?.data.softwareRequirements?.map((d) =>
+						toDependencyLd(
+							d.name ?? d.identifier ?? '',
+							d.version,
+							d.identifier,
+							d.runtimePlatform,
+						),
+					)
 
-		const devDeps = collectDevDeps({ cargo, gem, javaPomXml, nodePackageJson, rubyGemspec })
+		const developmentDeps = collectDevelopmentDeps({
+			cargo,
+			gem,
+			javaPomXml,
+			nodePackageJson,
+			rubyGemspec,
+		})
 
-		const softwareSuggestions = devDeps.length > 0
-			? deduplicateDependencies(devDeps)
-			: cm?.data.softwareSuggestions?.map((d) =>
-				toDependencyLd(d.name ?? d.identifier ?? '', d.version, d.identifier, d.runtimePlatform),
-			)
+		const softwareSuggestions =
+			developmentDeps.length > 0
+				? deduplicateDependencies(developmentDeps)
+				: cm?.data.softwareSuggestions?.map((d) =>
+						toDependencyLd(
+							d.name ?? d.identifier ?? '',
+							d.version,
+							d.identifier,
+							d.runtimePlatform,
+						),
+					)
 
 		// ── Dates ───────────────────────────────────────────────────
 
-		const dateCreated =
-			git?.data.commitDateFirst ??
-			github?.data.createdAt ??
-			cm?.data.dateCreated
+		const dateCreated = git?.data.commitDateFirst ?? github?.data.createdAt ?? cm?.data.dateCreated
 
-		const dateModified =
-			git?.data.commitDateLast ??
-			github?.data.pushedAt ??
-			cm?.data.dateModified
+		const dateModified = git?.data.commitDateLast ?? github?.data.pushedAt ?? cm?.data.dateModified
 
 		const datePublished =
 			npm?.data.publishDateLatest ??
@@ -443,12 +488,13 @@ export const codemeta = defineTemplate(
 		const copyrightYear =
 			xcode?.data.copyrightYear ??
 			pom?.data.inceptionYear ??
-			(cm?.data.copyrightYear !== undefined ? String(cm.data.copyrightYear) : undefined)
+			(cm?.data.copyrightYear === undefined ? undefined : String(cm.data.copyrightYear))
 
 		// ── License ─────────────────────────────────────────────────
 
 		const rawLicense =
-			pkg?.data.license ??
+			// eslint-disable-next-line ts/no-unnecessary-condition
+			package_?.data.license ??
 			cargo?.data.license ??
 			resolvePythonLicense(pyproject?.data.project?.license) ??
 			setupPy?.data.license ??
@@ -467,14 +513,13 @@ export const codemeta = defineTemplate(
 			: undefined
 
 		const isAccessibleForFree =
-			cm?.data.isAccessibleForFree ??
-			(github?.data.isPrivate === false ? true : undefined)
+			cm?.data.isAccessibleForFree ?? (github?.data.isPrivate === false ? true : undefined)
 
 		// ── Keywords ────────────────────────────────────────────────
 
 		const keywords = nonEmpty(
 			deduplicateStrings([
-				...(pkg?.data.keywords ?? []),
+				...(package_?.data.keywords ?? []),
 				...(pyproject?.data.project?.keywords ?? []),
 				...(setupPy?.data.keywords ?? []),
 				...(setupCfg?.data.keywords ?? []),
@@ -490,7 +535,7 @@ export const codemeta = defineTemplate(
 		// ── URLs ────────────────────────────────────────────────────
 
 		const url =
-			pkg?.data.homepage ??
+			package_?.data.homepage ??
 			cargo?.data.homepage ??
 			setupPy?.data.url ??
 			setupCfg?.data.url ??
@@ -515,104 +560,91 @@ export const codemeta = defineTemplate(
 			cm?.data.downloadUrl
 
 		const issueTracker =
-			bugsUrlFromPackageJson(pkg?.data.bugs) ??
+			bugsUrlFromPackageJson(package_?.data.bugs) ??
 			pom?.data.issueManagementUrl ??
 			cm?.data.issueTracker ??
 			(github?.data.hasIssuesEnabled ? `${github.data.url}/issues` : undefined)
 
-		const continuousIntegration =
-			pom?.data.ciManagementUrl ??
-			cm?.data.continuousIntegration
+		const continuousIntegration = pom?.data.ciManagementUrl ?? cm?.data.continuousIntegration
 
-		const softwareHelp =
-			cargo?.data.documentation ??
-			cm?.data.softwareHelp
+		const softwareHelp = cargo?.data.documentation ?? cm?.data.softwareHelp
 
 		// ── Codemeta-specific (preserved from existing codemeta.json) ───
 
-		const developmentStatus =
-			publiccode?.data.developmentStatus ??
-			cm?.data.developmentStatus
+		const developmentStatus = publiccode?.data.developmentStatus ?? cm?.data.developmentStatus
 
 		const funding = cm?.data.funding
 		const buildInstructions = cm?.data.buildInstructions
-		const readme = readmeUrl(firstOf(readmeFile), codeRepository, github?.data.defaultBranch ?? git?.data.branchCurrent) ?? cm?.data.readme
+		const readme =
+			readmeUrl(
+				firstOf(readmeFile),
+				codeRepository,
+				github?.data.defaultBranch ?? git?.data.branchCurrent,
+			) ?? cm?.data.readme
 		const releaseNotes = cm?.data.releaseNotes
 		const installUrl = cm?.data.installUrl
 		const relatedLink = cm?.data.relatedLink
 
 		// ── Software type inference ────────────────────────────────
 
-		const targetProduct = INFER_TARGET_PRODUCT
-			? inferTargetProduct(pkg, obsidian)
-			: undefined
+		// eslint-disable-next-line ts/no-unnecessary-condition
+		const targetProduct = INFER_TARGET_PRODUCT ? inferTargetProduct(package_, obsidian) : undefined
 
 		// ── Build the JSON-LD object ────────────────────────────────
 
 		return stripUndefined({
 			'@context': 'https://w3id.org/codemeta/3.0',
 			'@type': 'SoftwareSourceCode',
-
-			// Identity
-			name,
-			identifier,
-			description,
-			version,
-
-			// People
-			author,
-			contributor,
-			maintainer,
-			copyrightHolder,
-			funder,
-
-			// Source code
-			codeRepository,
-			programmingLanguage,
-			runtimePlatform,
-
 			// Application
 			applicationCategory,
 			applicationSubCategory,
-			operatingSystem,
-
-			// Dependencies
-			softwareRequirements,
-			softwareSuggestions,
-
+			// People
+			author,
+			buildInstructions,
+			// Source code
+			codeRepository,
+			continuousIntegration,
+			contributor,
+			copyrightHolder,
+			copyrightYear: is.nonEmptyStringAndNotWhitespace(copyrightYear)
+				? Number.parseInt(copyrightYear, 10) || undefined
+				: undefined,
 			// Dates
 			dateCreated: toDateOnly(dateCreated),
 			dateModified: toDateOnly(dateModified),
 			datePublished: toDateOnly(datePublished),
-			copyrightYear: is.nonEmptyStringAndNotWhitespace(copyrightYear)
-				? Number.parseInt(copyrightYear, 10) || undefined
-				: undefined,
-
-			// License
-			license,
-			isAccessibleForFree,
-
-			// Keywords
-			keywords,
-
-			// URLs
-			url,
-			downloadUrl,
-			installUrl,
-			issueTracker,
-			continuousIntegration,
-			buildInstructions,
-			softwareHelp,
-			readme,
-			releaseNotes,
-			relatedLink,
-
+			description,
 			// Development
 			developmentStatus,
+			downloadUrl,
+			funder,
 			funding,
-
+			identifier,
+			installUrl,
+			isAccessibleForFree,
+			issueTracker,
+			// Keywords
+			keywords,
+			// License
+			license,
+			maintainer,
+			// Identity
+			name,
+			operatingSystem,
+			programmingLanguage,
+			readme,
+			relatedLink,
+			releaseNotes,
+			runtimePlatform,
+			softwareHelp,
+			// Dependencies
+			softwareRequirements,
+			softwareSuggestions,
 			// Software type
 			targetProduct,
+			// URLs
+			url,
+			version,
 		})
 	},
 )
@@ -628,11 +660,12 @@ function gemspecAuthors(
 	gem: ReturnType<typeof firstOf<{ data: { authors: string[]; email?: string | string[] } }>>,
 ): Array<CodemetaPersonLd | undefined> {
 	if (gem === undefined) return []
-	const emails = gem.data.email === undefined
-		? []
-		: Array.isArray(gem.data.email)
-			? gem.data.email
-			: [gem.data.email]
+	const emails =
+		gem.data.email === undefined
+			? []
+			: Array.isArray(gem.data.email)
+				? gem.data.email
+				: [gem.data.email]
 
 	return gem.data.authors.map((authorName, index) =>
 		toPersonLd({ email: emails[index], name: authorName }),
@@ -648,17 +681,13 @@ function resolvePersons(
 	ecosystemPersons: Array<CodemetaPersonLd | undefined>,
 	fallbackPersons?: Array<CodemetaPersonLd | undefined>,
 ): CodemetaPersonLd[] | undefined {
-	const ecosystem = ecosystemPersons.filter(
-		(p): p is CodemetaPersonLd => p !== undefined,
-	)
+	const ecosystem = ecosystemPersons.filter((p): p is CodemetaPersonLd => p !== undefined)
 
 	if (ecosystem.length > 0) {
 		return deduplicatePersons(ecosystem)
 	}
 
-	const fallback = (fallbackPersons ?? []).filter(
-		(p): p is CodemetaPersonLd => p !== undefined,
-	)
+	const fallback = (fallbackPersons ?? []).filter((p): p is CodemetaPersonLd => p !== undefined)
 
 	return deduplicatePersons(fallback)
 }
@@ -669,29 +698,43 @@ function resolvePersons(
  * Collect runtime dependencies from all ecosystem sources.
  */
 function collectRuntimeDeps(sources: {
-	arduino: ReturnType<typeof firstOf<{ data: { depends: Array<{ name: string; versionConstraint?: string }> } }>>,
-	cargo: ReturnType<typeof firstOf<{ data: { dependencies: Array<{ name: string; version?: string }> } }>>,
-	cinder: ReturnType<typeof firstOf<{ data: { requires: string[] } }>>,
-	gem: ReturnType<typeof firstOf<{ data: { dependencies: Array<{ name: string; requirements: string[]; type: 'development' | 'runtime' }> } }>>,
-	goGoMod: MetadataContext['goGoMod'],
-	javaPomXml: MetadataContext['javaPomXml'],
-	nodePackageJson: MetadataContext['nodePackageJson'],
-	ofAddon: ReturnType<typeof firstOf<{ data: { dependencies: string[] } }>>,
-	ofInstall: ReturnType<typeof firstOf<{ data: { requirements: string[] } }>>,
-	pkgInfo: ReturnType<typeof firstOf<{ data: { requires_dist: string[] } }>>,
-	publiccode: ReturnType<typeof firstOf<{ data: { dependencies: Array<{ name: string; version?: string }> } }>>,
-	pyproject: ReturnType<typeof firstOf<{ data: { project?: { dependencies?: string[] } } }>>,
-	rubyGemspec: MetadataContext['rubyGemspec'],
-	setupCfg: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>,
-	setupPy: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>,
+	arduino: ReturnType<
+		typeof firstOf<{ data: { depends: Array<{ name: string; versionConstraint?: string }> } }>
+	>
+	cargo: ReturnType<
+		typeof firstOf<{ data: { dependencies: Array<{ name: string; version?: string }> } }>
+	>
+	cinder: ReturnType<typeof firstOf<{ data: { requires: string[] } }>>
+	gem: ReturnType<
+		typeof firstOf<{
+			data: {
+				dependencies: Array<{
+					name: string
+					requirements: string[]
+					type: 'development' | 'runtime'
+				}>
+			}
+		}>
+	>
+	goGoMod: MetadataContext['goGoMod']
+	javaPomXml: MetadataContext['javaPomXml']
+	nodePackageJson: MetadataContext['nodePackageJson']
+	ofAddon: ReturnType<typeof firstOf<{ data: { dependencies: string[] } }>>
+	ofInstall: ReturnType<typeof firstOf<{ data: { requirements: string[] } }>>
+	pkgInfo: ReturnType<typeof firstOf<{ data: { requires_dist: string[] } }>>
+	publiccode: ReturnType<
+		typeof firstOf<{ data: { dependencies: Array<{ name: string; version?: string }> } }>
+	>
+	pyproject: ReturnType<typeof firstOf<{ data: { project?: { dependencies?: string[] } } }>>
+	rubyGemspec: MetadataContext['rubyGemspec']
+	setupCfg: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
+	setupPy: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
 }): CodemetaDependencyLd[] {
 	const deps: CodemetaDependencyLd[] = []
 
 	// Node package.json dependencies
 	deps.push(
-		...collectArrayField(sources.nodePackageJson, (d) =>
-			objectEntriesToDeps(d.dependencies),
-		),
+		...collectArrayField(sources.nodePackageJson, (d) => objectEntriesToDeps(d.dependencies)),
 	)
 
 	// Python pyproject.toml dependencies
@@ -700,17 +743,11 @@ function collectRuntimeDeps(sources: {
 	)
 
 	// Python setup.py / setup.cfg install_requires
-	deps.push(
-		...(sources.setupPy?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)),
-	)
-	deps.push(
-		...(sources.setupCfg?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)),
-	)
+	deps.push(...(sources.setupPy?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)))
+	deps.push(...(sources.setupCfg?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)))
 
 	// Python PKG-INFO requires_dist
-	deps.push(
-		...(sources.pkgInfo?.data.requires_dist ?? []).map((dep) => parsePep508Dep(dep)),
-	)
+	deps.push(...(sources.pkgInfo?.data.requires_dist ?? []).map((dep) => parsePep508Dep(dep)))
 
 	// Rust Cargo.toml dependencies
 	deps.push(
@@ -721,7 +758,7 @@ function collectRuntimeDeps(sources: {
 	deps.push(
 		...collectArrayField(sources.rubyGemspec, (d) =>
 			d.dependencies
-				?.filter((dep: { type: string }) => dep.type === 'runtime')
+				.filter((dep: { type: string }) => dep.type === 'runtime')
 				.map((dep: { name: string; requirements: string[] }) =>
 					toDependencyLd(dep.name, dep.requirements.join(', ')),
 				),
@@ -731,7 +768,7 @@ function collectRuntimeDeps(sources: {
 	// Java POM dependencies
 	deps.push(
 		...collectArrayField(sources.javaPomXml, (d) =>
-			d.dependencies?.map((dep: { artifactId: string; groupId: string; version?: string }) =>
+			d.dependencies.map((dep: { artifactId: string; groupId: string; version?: string }) =>
 				toDependencyLd(dep.artifactId, dep.version, `${dep.groupId}:${dep.artifactId}`),
 			),
 		),
@@ -740,7 +777,7 @@ function collectRuntimeDeps(sources: {
 	// Go go.mod dependencies
 	deps.push(
 		...collectArrayField(sources.goGoMod, (d) =>
-			d.dependencies?.map((dep: { module: string; version: string }) =>
+			d.dependencies.map((dep: { module: string; version: string }) =>
 				toDependencyLd(dep.module, dep.version),
 			),
 		),
@@ -748,27 +785,21 @@ function collectRuntimeDeps(sources: {
 
 	// Arduino depends
 	deps.push(
-		...(sources.arduino?.data.depends ?? []).map((d) => toDependencyLd(d.name, d.versionConstraint)),
+		...(sources.arduino?.data.depends ?? []).map((d) =>
+			toDependencyLd(d.name, d.versionConstraint),
+		),
 	)
 
 	// OpenFrameworks
-	deps.push(
-		...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)),
-	)
-	deps.push(
-		...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)),
-	)
+	deps.push(...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)))
+	deps.push(...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)))
 
 	// Cinder requires
-	deps.push(
-		...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)),
-	)
+	deps.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
 
-	// publiccode.yml dependencies
+	// Publiccode.yml dependencies
 	deps.push(
-		...(sources.publiccode?.data.dependencies ?? []).map((d) =>
-			toDependencyLd(d.name, d.version),
-		),
+		...(sources.publiccode?.data.dependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
 	return deps
@@ -777,20 +808,30 @@ function collectRuntimeDeps(sources: {
 /**
  * Collect dev dependencies from ecosystem sources.
  */
-function collectDevDeps(sources: {
-	cargo: ReturnType<typeof firstOf<{ data: { devDependencies: Array<{ name: string; version?: string }> } }>>,
-	gem: ReturnType<typeof firstOf<{ data: { dependencies: Array<{ name: string; requirements: string[]; type: 'development' | 'runtime' }> } }>>,
-	javaPomXml: MetadataContext['javaPomXml'],
-	nodePackageJson: MetadataContext['nodePackageJson'],
-	rubyGemspec: MetadataContext['rubyGemspec'],
+function collectDevelopmentDeps(sources: {
+	cargo: ReturnType<
+		typeof firstOf<{ data: { devDependencies: Array<{ name: string; version?: string }> } }>
+	>
+	gem: ReturnType<
+		typeof firstOf<{
+			data: {
+				dependencies: Array<{
+					name: string
+					requirements: string[]
+					type: 'development' | 'runtime'
+				}>
+			}
+		}>
+	>
+	javaPomXml: MetadataContext['javaPomXml']
+	nodePackageJson: MetadataContext['nodePackageJson']
+	rubyGemspec: MetadataContext['rubyGemspec']
 }): CodemetaDependencyLd[] {
 	const deps: CodemetaDependencyLd[] = []
 
 	// Node devDependencies
 	deps.push(
-		...collectArrayField(sources.nodePackageJson, (d) =>
-			objectEntriesToDeps(d.devDependencies),
-		),
+		...collectArrayField(sources.nodePackageJson, (d) => objectEntriesToDeps(d.devDependencies)),
 	)
 
 	// Rust dev-dependencies
@@ -802,7 +843,7 @@ function collectDevDeps(sources: {
 	deps.push(
 		...collectArrayField(sources.rubyGemspec, (d) =>
 			d.dependencies
-				?.filter((dep: { type: string }) => dep.type === 'development')
+				.filter((dep: { type: string }) => dep.type === 'development')
 				.map((dep: { name: string; requirements: string[] }) =>
 					toDependencyLd(dep.name, dep.requirements.join(', ')),
 				),
@@ -812,7 +853,7 @@ function collectDevDeps(sources: {
 	// Java POM devDependencies
 	deps.push(
 		...collectArrayField(sources.javaPomXml, (d) =>
-			d.devDependencies?.map((dep: { artifactId: string; groupId: string; version?: string }) =>
+			d.devDependencies.map((dep: { artifactId: string; groupId: string; version?: string }) =>
 				toDependencyLd(dep.artifactId, dep.version, `${dep.groupId}:${dep.artifactId}`),
 			),
 		),
@@ -837,20 +878,21 @@ function objectEntriesToDeps(
  * Parse a PEP 508 dependency string ("package>=1.0") into a CodemetaDependencyLd.
  */
 function parsePep508Dep(dep: string): CodemetaDependencyLd {
-	const match = /^([A-Za-z0-9_.-]+)\s*(.*)$/.exec(dep.trim())
-	if (match) {
-		const depVersion = match[2].trim()
-		return toDependencyLd(match[1], depVersion.length > 0 ? depVersion : undefined)
+	const trimmed = dep.trim()
+	const nameMatch = /^[\w.-]+/.exec(trimmed)
+	if (nameMatch) {
+		const depVersion = trimmed.slice(nameMatch[0].length).trim()
+		return toDependencyLd(nameMatch[0], depVersion.length > 0 ? depVersion : undefined)
 	}
 
-	return toDependencyLd(dep.trim())
+	return toDependencyLd(trimmed)
 }
 
 /**
  * Extract URL from package.json repository field (string or {url}).
  */
 function repositoryUrlFromPackageJson(
-	repository: { type: string; url: string } | string | undefined,
+	repository: string | undefined | { type: string; url: string },
 ): string | undefined {
 	if (repository === undefined) return undefined
 	if (typeof repository === 'string') return repository
@@ -861,7 +903,7 @@ function repositoryUrlFromPackageJson(
  * Extract URL from package.json bugs field.
  */
 function bugsUrlFromPackageJson(
-	bugs: { email?: string; url?: string } | { email: string; url?: string } | undefined,
+	bugs: undefined | { email: string; url?: string } | { email?: string; url?: string },
 ): string | undefined {
 	if (bugs === undefined) return undefined
 	return bugs.url
@@ -882,7 +924,7 @@ function firstPomLicense(
  * Can be a string (SPDX ID) or `{ spdx?: string; text?: string; file?: string }`.
  */
 function resolvePythonLicense(
-	pythonLicense: { file?: string; spdx?: string; text?: string } | string | undefined,
+	pythonLicense: string | undefined | { file?: string; spdx?: string; text?: string },
 ): string | undefined {
 	if (pythonLicense === undefined) return undefined
 	if (typeof pythonLicense === 'string') return pythonLicense
@@ -892,9 +934,7 @@ function resolvePythonLicense(
 /**
  * Resolve codemeta license field (string or string[]) to first string.
  */
-function resolveCmLicense(
-	cmLicense: string | string[] | undefined,
-): string | undefined {
+function resolveCmLicense(cmLicense: string | string[] | undefined): string | undefined {
 	if (cmLicense === undefined) return undefined
 	return Array.isArray(cmLicense) ? cmLicense[0] : cmLicense
 }
@@ -931,18 +971,20 @@ function toDateOnly(value: string | undefined): string | undefined {
  * Only called when `INFER_TARGET_PRODUCT` is enabled.
  */
 function inferTargetProduct(
-	pkg: ReturnType<typeof firstOf<{ data: { bin?: Record<string, string>; browser?: unknown } }>>,
+	package_: ReturnType<
+		typeof firstOf<{ data: { bin?: Record<string, string>; browser?: unknown } }>
+	>,
 	obsidian: ReturnType<typeof firstOf<{ data: { id: string } }>>,
 ): Record<string, string> | undefined {
 	if (obsidian !== undefined) {
 		return { '@type': 'DesktopApplication' }
 	}
 
-	if (pkg?.data.bin !== undefined && Object.keys(pkg.data.bin).length > 0) {
+	if (package_?.data.bin !== undefined && Object.keys(package_.data.bin).length > 0) {
 		return { '@type': 'CommandLineApplication' }
 	}
 
-	if (pkg?.data.browser !== undefined) {
+	if (package_?.data.browser !== undefined) {
 		return { '@type': 'WebApplication' }
 	}
 
@@ -960,7 +1002,7 @@ function readmeUrl(
 	defaultBranch: string | undefined,
 ): string | undefined {
 	if (readmeRecord === undefined) return undefined
-	const filename = readmeRecord.source
+	const filename = path.basename(readmeRecord.source)
 
 	// Build a web URL if we have a GitHub-style repo URL
 	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {

@@ -87,9 +87,7 @@ export function toPersonLd(options: {
  * Keeps the first occurrence, so callers should place higher-priority sources first.
  * Returns undefined if the result is empty.
  */
-export function deduplicatePersons(
-	persons: CodemetaPersonLd[],
-): CodemetaPersonLd[] | undefined {
+export function deduplicatePersons(persons: CodemetaPersonLd[]): CodemetaPersonLd[] | undefined {
 	const seen = new Map<string, CodemetaPersonLd>()
 	for (const person of persons) {
 		const key = (
@@ -97,7 +95,9 @@ export function deduplicatePersons(
 			([person.givenName, person.familyName].filter(Boolean).join(' ') || undefined) ??
 			person.email ??
 			''
-		).toLowerCase().trim()
+		)
+			.toLowerCase()
+			.trim()
 		if (key.length > 0 && !seen.has(key)) {
 			seen.set(key, person)
 		}
