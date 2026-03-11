@@ -517,7 +517,7 @@ function mapRepoData(
 		defaultBranch: data.defaultBranchRef?.name ?? undefined,
 		description: data.description ?? undefined,
 		discussionCount: data.discussions.totalCount,
-		diskUsageBytes: data.diskUsage === null ? undefined : data.diskUsage * 1024,
+		diskUsageBytes: data.diskUsage === null ? undefined : data.diskUsage * 1000,
 		forkCount: data.forkCount,
 		forkedFrom: data.parent?.url ?? undefined,
 		fundingLinks:

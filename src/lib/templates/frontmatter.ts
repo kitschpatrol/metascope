@@ -5,7 +5,9 @@
 import { defineTemplate } from '../metadata-types'
 import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import {
+	dependencyNames,
 	firstOf,
+	isValidUrl,
 	mixedStringsToArray,
 	REPLACEMENTS,
 	toAlias,
@@ -14,7 +16,6 @@ import {
 	toLocalUrl,
 	toMb,
 	toStatus,
-	usesSharedConfig,
 } from '../utilities/template-helpers'
 import { codemeta as codemetaTemplate } from './codemeta'
 
@@ -41,6 +42,14 @@ export const frontmatter = defineTemplate((context, templateData) => {
 	const obsidianPluginRegistry = firstOf(context.obsidianPluginRegistry)?.data
 	const pythonPypiRegistry = firstOf(context.pythonPypiRegistry)?.data
 
+	const primaryLanguages =
+		mixedStringsToArray(codemeta.programmingLanguage ?? github?.primaryLanguage, REPLACEMENTS) ??
+		null
+	const secondaryLanguages =
+		mixedStringsToArray(codeStats?.total?.languages, REPLACEMENTS)?.filter(
+			(value) => !primaryLanguages?.includes(value),
+		) ?? null
+
 	return {
 		/* eslint-disable perfectionist/sort-objects */
 
@@ -55,6 +64,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 			) ?? null,
 		Version: codemeta.version ?? null,
 		Public: !(github?.isPrivate ?? false),
+		Fork: github?.isFork ?? false,
 		Published: Boolean(
 			obsidianPluginRegistry?.url ?? nodeNpmRegistry?.url ?? pythonPypiRegistry?.url,
 		),
@@ -66,18 +76,16 @@ export const frontmatter = defineTemplate((context, templateData) => {
 				templateData.githubAccount,
 			) ?? null,
 		'GitHub Owner': github?.ownerLogin ?? null,
-		tags: codemeta.keywords ?? [], // Obsidian special field
-		License: toBasicLicenses(codemeta.license ?? github?.licenseSpdxId) ?? null,
-		Language:
-			mixedStringsToArray(codemeta.programmingLanguage ?? github?.primaryLanguage, REPLACEMENTS) ??
-			null,
-		'Secondary Language': codeStats?.total?.languages ?? null,
+		tags: codemeta.keywords ?? null, // Obsidian special field
+		License: toBasicLicenses(codemeta.license) ?? null,
+		Language: primaryLanguages,
+		'Secondary Language': secondaryLanguages,
 
 		// ── Local Repo ─────────────────────────────────────────────
 		'Repo Path': metascope?.options.path === undefined ? null : `file://${metascope.options.path}`,
-		'Readme Path': toLocalUrl(codemeta.readme, metascope?.options.path) ?? null,
 		'VS Code Path':
 			metascope?.options.path === undefined ? null : `vscode://file/${metascope.options.path}`,
+		'Readme Path': toLocalUrl(codemeta.readme, metascope?.options.path) ?? null,
 
 		// ── Links ─────────────────────────────────────────────
 		'Homepage URL':
@@ -85,10 +93,11 @@ export const frontmatter = defineTemplate((context, templateData) => {
 				? codemeta.url
 				: null,
 		'Repo URL': codemeta.codeRepository ?? github?.url ?? null,
+		'Issues URL': codemeta.issueTracker ?? null,
+		'Readme URL':
+			codemeta.readme !== undefined && isValidUrl(codemeta.readme) ? codemeta.readme : null,
 		'Package URL':
 			obsidianPluginRegistry?.url ?? nodeNpmRegistry?.url ?? pythonPypiRegistry?.url ?? null,
-		'Readme URL': codemeta.readme ?? null,
-		'Issues URL': codemeta.issueTracker ?? null,
 
 		// ── Timeline ──────────────────────────────────────────
 		Created: codemeta.dateCreated ?? null,
@@ -144,17 +153,18 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		'GitHub Size MB': toMb(github?.diskUsageBytes) ?? null,
 
 		// ── Dependencies ──────────────────────────────────────────
-		Runtime: codemeta.runtimePlatform ?? null,
-		'Operating System': codemeta.operatingSystem ?? null,
-		Dependencies: codemeta.softwareRequirements?.length ?? 0,
-		'Dev Dependencies': codemeta.softwareSuggestions?.length ?? 0,
+		Dependencies: dependencyNames(codemeta, 'prod') ?? null,
+		'Dev Dependencies': dependencyNames(codemeta, 'dev') ?? null,
 		'Major Updates': dependencyUpdates?.data.major?.length ?? 0,
 		'Minor Updates': dependencyUpdates?.data.minor?.length ?? 0,
 		'Patch Updates': dependencyUpdates?.data.patch?.length ?? 0,
 		'Total Updates': dependencyUpdates?.extra?.total ?? 0,
 		Libyears: dependencyUpdates?.extra?.libyears ?? 0,
-		// 'Uses PNPM': usesPnpm(packageJson),
-		'Shared Config': usesSharedConfig(codemeta),
+		// 'Shared Config': hasDependencyWithId('@kitschpatrol/shared-config', codemeta),
+		// Svelte: hasDependencyWithId('svelte', codemeta),
+		// Electron: hasDependencyWithId('electron', codemeta),
+		Runtime: codemeta.runtimePlatform ?? null,
+		'Operating System': codemeta.operatingSystem ?? null,
 
 		// ── Project Health ────────────────────────────────────
 		// 'Has Contributing': github.hasContributing,
@@ -173,7 +183,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// "Archived Date": github?.archivedAt ?? null,
 		// Archived: github.isArchived ?? false,
 		'Template From': github?.templateFrom ?? null,
-		'Template Repo': github?.isTemplate ?? false,
+		// 'Template Repo': github?.isTemplate ?? false,
 		Organization: github?.isInOrganization ?? false,
 		// 'Has Wiki': github.hasWikiEnabled,
 		// 'Has Pages': github.hasPages,

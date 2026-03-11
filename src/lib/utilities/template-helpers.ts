@@ -109,10 +109,11 @@ export function toMarkdownLink(value: string | undefined): string | undefined {
 
 /**
  * Convert bytes to megabytes (rounded).
+ * (MB, not MiB.)
  */
 export function toMb(bytes: unknown): number | undefined {
 	if (is.positiveNumber(bytes)) {
-		return Math.round(bytes / 1024 / 1024)
+		return Math.round((bytes / 1000 / 1000) * 100) / 100
 	}
 	return undefined
 }
@@ -301,17 +302,34 @@ export function toBasicNames(source: CodeMetaPersonOrOrg[] | undefined): string[
 
 // ─── Query Helpers ──────────────────────────────────────────────────
 
-function hasDependencyWithId(id: string, codemeta: CodeMetaJson): boolean {
+/**
+ * Check id a project uses a specific dependency
+ */
+export function hasDependencyWithId(id: string, codemeta: CodeMetaJson): boolean {
 	return [...(codemeta.softwareSuggestions ?? []), ...(codemeta.softwareRequirements ?? [])].some(
-		({ identifier }) => identifier === id,
+		({ identifier, name }) => identifier === id || name === id,
 	)
 }
 
 /**
- * Check if the project has `@kitschpatrol/shared-config` as a dependency.
+ * Simple list of all dependencies
  */
-export function usesSharedConfig(codemeta: CodeMetaJson): boolean {
-	return hasDependencyWithId('@kitschpatrol/shared-config', codemeta)
+export function dependencyNames(
+	codemeta: CodeMetaJson,
+	filter: 'all' | 'dev' | 'prod' = 'all',
+): string[] | undefined {
+	return nonEmpty(
+		[
+			...new Set(
+				[
+					...(filter === 'prod' ? [] : (codemeta.softwareSuggestions ?? [])),
+					...(filter === 'dev' ? [] : (codemeta.softwareRequirements ?? [])),
+				]
+					.map((value) => value.name ?? value.identifier ?? undefined)
+					.filter((value) => value !== undefined),
+			),
+		].toSorted(),
+	)
 }
 
 /**
@@ -384,28 +402,28 @@ export function toStatus(
 	authorName?: string | string[],
 	githubUserName?: string | string[],
 ):
-	| /** It's a fork on GitHub */
-	(| 'fork'
+	| (
+			| /** It's my fork on GitHub */
+			'fork'
 			/** I am original author, local or on github */
 			| 'source'
 			/** Someone else's local code */
 			| 'unmaintained'
 	  )
 	| undefined {
-	if (codeRepository === undefined || authorName === undefined || githubUserName === undefined) {
-		return undefined
-	}
-
 	const isAuthoredByAuthorName = isAuthoredBy(codemetaAuthorName, authorName)
 	const isOnGithub = isOnGithubAccountOf(codeRepository, githubUserName)
-
-	if (isAuthoredByAuthorName === undefined || isOnGithub === undefined) {
-		return undefined
-	}
 
 	return !isAuthoredByAuthorName && isOnGithub
 		? 'fork'
 		: isAuthoredByAuthorName
 			? 'source'
 			: 'unmaintained'
+}
+
+/**
+ * True if valid url
+ */
+export function isValidUrl(value: string): boolean {
+	return is.urlString(value)
 }

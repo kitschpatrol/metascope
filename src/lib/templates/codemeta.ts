@@ -64,6 +64,7 @@ export const codemeta = defineTemplate(
 		arduinoLibraryProperties,
 		cinderCinderblockXml,
 		codemetaJson: codemetaRaw,
+		codeStats,
 		github: githubRaw,
 		gitStats: gitRaw,
 		goGoMod,
@@ -111,6 +112,7 @@ export const codemeta = defineTemplate(
 		const xcode = firstOf(xcodeInfoPlist)
 		const obsidian = firstOf(obsidianPluginManifestJson)
 		const publiccode = firstOf(publiccodeYaml)
+		const loc = firstOf(codeStats)
 
 		// ── Identity ────────────────────────────────────────────────
 
@@ -407,7 +409,9 @@ export const codemeta = defineTemplate(
 			nonEmpty([
 				...(github?.data.primaryLanguage ? [github.data.primaryLanguage] : []),
 				...(cm?.data.programmingLanguage ?? []),
-			]) ?? nonEmpty(Object.keys(github?.data.languages ?? {}))
+			]) ??
+			nonEmpty(Object.keys(github?.data.languages ?? {})) ??
+			loc?.data.total?.languages.slice(0, 1)
 
 		const runtimePlatform = nonEmpty([
 			...Object.keys(package_?.data.engines ?? {}),

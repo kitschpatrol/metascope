@@ -4,13 +4,13 @@ import { defineTemplate } from '../metadata-types'
 import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import {
 	firstOf,
+	hasDependencyWithId,
 	isAuthoredBy,
 	isOnGithubAccountOf,
 	toBasicLicenses,
 	toLocalUrl,
 	toStatus,
 	usesPnpm,
-	usesSharedConfig,
 } from '../utilities/template-helpers'
 import { codemeta as codemetaTemplate } from './codemeta'
 
@@ -65,7 +65,7 @@ export const project = defineTemplate((context, templateData) => {
 			templateData.githubAccount,
 		),
 		usesPnpm: usesPnpm(nodePackageJson),
-		usesSharedConfig: usesSharedConfig(codemeta),
+		usesSharedConfig: hasDependencyWithId('@kitschpatrol/shared-config', codemeta),
 		version: codemeta.version,
 	}
 })
