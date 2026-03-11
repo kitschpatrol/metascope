@@ -5,7 +5,7 @@
 	id="com.kitschpatrol.yaml"
 	git="https://github.com/kitschpatrol/Cinder-Pango.git"
 	url="https://github.com/kitschpatrol/Cinder-Pango"
-	author="Eric Mika."
+	author="Eric Mika"
 	summary="YAML reading and writing for Cinder, based on the yaml-cpp library. Wraps some Cinder native types for convenience."
 	version="1.0.0"
 	library="https://github.com/jbeder/yaml-cpp"

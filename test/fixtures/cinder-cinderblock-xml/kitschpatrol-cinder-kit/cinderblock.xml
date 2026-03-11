@@ -5,7 +5,7 @@
 	id="com.kitschpatrol.kit"
 	git="https://github.com/kitschpatrol/Cinder-Kit.git"
 	url="https://github.com/kitschpatrol/Cinder-Kit"
-	author="Eric Mika."
+	author="Eric Mika"
 	summary="Odds and ends."
 	version="1.0.0"
 	license="MIT + MIT"

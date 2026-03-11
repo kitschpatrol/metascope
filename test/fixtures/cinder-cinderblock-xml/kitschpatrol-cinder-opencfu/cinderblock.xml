@@ -5,7 +5,7 @@
 	id="com.kitschpatrol.opencfu"
 	git="https://github.com/kitschpatrol/Cinder-OpenCFU.git"
 	url="https://github.com/kitschpatrol/Cinder-OpenCFU"
-	author="Quentin Geissmann, Eric Mika."
+	author="Quentin Geissmann, Eric Mika"
 	summary="Bacterial colony counting."
 	version="1.0.0"
 	library="http://opencfu.sourceforge.net"
