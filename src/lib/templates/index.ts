@@ -1,3 +1,6 @@
+import type { TemplateDataCodemeta } from './codemeta'
+import type { TemplateDataFrontmatter } from './frontmatter'
+import type { TemplateDataProject } from './project'
 import { codemeta } from './codemeta'
 import { frontmatter } from './frontmatter'
 import { project } from './project'
@@ -15,9 +18,9 @@ export const templates = {
  * Maps built-in template names to their return types.
  */
 export type TemplateMap = {
-	codemeta: ReturnType<typeof codemeta>
-	frontmatter: ReturnType<typeof frontmatter>
-	project: ReturnType<typeof project>
+	codemeta: TemplateDataCodemeta
+	frontmatter: TemplateDataFrontmatter
+	project: TemplateDataProject
 }
 
 /**

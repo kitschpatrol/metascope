@@ -57,6 +57,8 @@ const INFER_TARGET_PRODUCT = false as const
 
 // ─── Template ───────────────────────────────────────────────────────
 
+export type TemplateDataCodemeta = ReturnType<typeof codemeta>
+
 export const codemeta = defineTemplate(
 	({
 		arduinoLibraryProperties,

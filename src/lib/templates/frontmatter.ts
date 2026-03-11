@@ -18,6 +18,8 @@ import {
 } from '../utilities/template-helpers'
 import { codemeta as codemetaTemplate } from './codemeta'
 
+export type TemplateDataFrontmatter = ReturnType<typeof frontmatter>
+
 /**
  * A compact, non-nested, polyglot overview of the project.
  * Designed for Obsidian frontmatter — flat keys with natural language names,

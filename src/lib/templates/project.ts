@@ -14,6 +14,8 @@ import {
 } from '../utilities/template-helpers'
 import { codemeta as codemetaTemplate } from './codemeta'
 
+export type TemplateDataProject = ReturnType<typeof project>
+
 /**
  * Legacy structure used in AllWork desktop app
  */
