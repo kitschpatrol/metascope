@@ -37,7 +37,7 @@ describe('cinderCinderblockXml source', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.data.name).toBe('Syphon')
-		expect(result!.data.author).toBe('Anthony Stellato')
+		expect(result!.data.author).toEqual(['Anthony Stellato'])
 		expect(result!.data.supports).toEqual(['macOS'])
 		expect(result!.data.git).toBe('https://github.com/astellato/Cinder-Syphon.git')
 		expect(result!.source).toContain('cinderblock.xml')
@@ -55,7 +55,7 @@ describe('parse', () => {
 		expect(result).toBeDefined()
 		expect(result!.name).toBe('Syphon')
 		expect(result!.id).toBe('info.v002.syphon')
-		expect(result!.author).toBe('Anthony Stellato')
+		expect(result!.author).toEqual(['Anthony Stellato'])
 		expect(result!.summary).toBe('An implementation of the Syphon framework for Cinder')
 		expect(result!.version).toBe('Public Beta 2')
 		expect(result!.git).toBe('https://github.com/astellato/Cinder-Syphon.git')
@@ -74,7 +74,7 @@ describe('parse', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.name).toBe('Cinder-QRCodeGenerator')
-		expect(result!.author).toBe('Daniel Dormann')
+		expect(result!.author).toEqual(['Daniel Dormann'])
 		expect(result!.supports).toContain('Windows')
 		expect(result!.supports).toContain('macOS')
 	})

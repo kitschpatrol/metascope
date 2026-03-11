@@ -7,6 +7,7 @@ import { getMatches } from '../file-matching.js'
 import { parseConfigparser, splitMultiline } from '../parsers/configparser-parser.js'
 import { defineSource } from '../source.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -98,10 +99,7 @@ export function parse(source: string): SetupCfg {
 
 	// Keywords — comma-separated on a single line
 	if (metadata.keywords) {
-		data.keywords = metadata.keywords
-			.split(',')
-			.map((k) => k.trim())
-			.filter(Boolean)
+		data.keywords = splitCommaSeparated(metadata.keywords)
 	}
 
 	// Project URLs — multi-line "label = url" pairs in [metadata]

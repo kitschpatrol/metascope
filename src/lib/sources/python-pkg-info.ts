@@ -12,6 +12,7 @@ import {
 } from '../parsers/rfc822-header-parser'
 import { defineSource } from '../source.js'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives.js'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -113,9 +114,7 @@ export function parse(source: string): PkgInfo {
 
 	// Keywords — comma-separated
 	if (headers.Keywords && headers.Keywords !== 'UNKNOWN') {
-		data.keywords = headers.Keywords.split(',')
-			.map((k) => k.trim())
-			.filter(Boolean)
+		data.keywords = splitCommaSeparated(headers.Keywords)
 	}
 
 	// Classifiers — multi-value

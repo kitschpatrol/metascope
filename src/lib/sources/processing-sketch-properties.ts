@@ -6,6 +6,7 @@ import { getMatches } from '../file-matching'
 import { parseProperties } from '../parsers/properties-parser'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -114,10 +115,7 @@ export function parse(content: string): ProcessingSketchProperties {
 	const manifestSdkMin = manifestSdkMinRaw ? Number.parseInt(manifestSdkMinRaw, 10) : undefined
 
 	const permissionsRaw = raw['manifest.permissions'] ?? ''
-	const manifestPermissions = permissionsRaw
-		.split(',')
-		.map((s) => s.trim())
-		.filter((s) => s.length > 0)
+	const manifestPermissions = splitCommaSeparated(permissionsRaw)
 
 	return processingSketchPropertiesSchema.parse({
 		// eslint-disable-next-line ts/no-unnecessary-condition
@@ -223,10 +221,7 @@ function parseAuthors(value: string): ProcessingSketchPropertiesAuthorEntry[] {
 		const rawUrl = trimmed.slice(parenStart + 1, parenEnd).trim()
 		const url = nonEmpty(unescapeUrl(rawUrl))
 
-		const names = namesPart
-			.split(',')
-			.map((s) => s.trim())
-			.filter((s) => s.length > 0)
+		const names = splitCommaSeparated(namesPart)
 		for (const name of names) {
 			results.push({ name, url })
 		}

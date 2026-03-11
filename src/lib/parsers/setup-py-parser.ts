@@ -1,6 +1,7 @@
 /* eslint-disable ts/naming-convention */
 
 import type { Node } from 'web-tree-sitter'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -208,7 +209,7 @@ export async function parseSetupPy(source: string): Promise<Record<string, unkno
 				} else {
 					const string_ = extractString(valueNode)
 					if (string_) {
-						data.keywords = string_.split(',').map((k) => k.trim())
+						data.keywords = splitCommaSeparated(string_)
 					}
 				}
 

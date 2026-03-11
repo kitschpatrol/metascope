@@ -19,13 +19,13 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
-import { ensureArray } from '../utilities/template-helpers'
+import { ensureArray, splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
 const cinderCinderblockSchema = z.object({
-	/** Block author name. */
-	author: nonEmptyString,
+	/** Block author name(s), split from comma-separated values. */
+	author: stringArray,
 	/** Git repository URL. */
 	git: optionalUrl,
 	/** Block identifier (e.g. "info.v002.syphon"). */
@@ -90,7 +90,7 @@ export function parse(content: string): CinderCinderblock | undefined {
 	const { block } = cinder
 
 	return cinderCinderblockSchema.parse({
-		author: getAttribute(block, 'author'),
+		author: splitCommaSeparated(getAttribute(block, 'author')),
 		git: getAttribute(block, 'git'),
 		id: getAttribute(block, 'id'),
 		library: getAttribute(block, 'library') ?? getAttribute(block, 'libraryUrl'),

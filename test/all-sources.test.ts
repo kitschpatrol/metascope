@@ -42,7 +42,7 @@ describe('all-sources fixture', () => {
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('AllSourcesBlock')
 		expect(data!.id).toBe('com.example.all-sources')
-		expect(data!.author).toBe('Test Author')
+		expect(data!.author).toEqual(['Test Author'])
 		expect(data!.version).toBe('1.0.0')
 		expect(data!.license).toBe('MIT')
 		expect(data!.summary).toBe('A comprehensive test fixture for Cinder.')

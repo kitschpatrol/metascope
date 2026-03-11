@@ -25,6 +25,7 @@ import {
 	parseJsonRecord,
 	stringArray,
 } from '../utilities/schema-primitives'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -114,10 +115,7 @@ function normalizeRepoUrl(url: string): string {
 /** Parse keywords from an array of strings or a comma-delimited string. */
 function parseKeywords(value: unknown): string[] | undefined {
 	if (typeof value === 'string') {
-		const parsed = value
-			.split(',')
-			.map((k) => k.trim())
-			.filter(Boolean)
+		const parsed = splitCommaSeparated(value)
 		return parsed.length > 0 ? parsed : undefined
 	}
 

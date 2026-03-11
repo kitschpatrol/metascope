@@ -22,6 +22,7 @@ import { getMatches } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, parseJsonRecord } from '../utilities/schema-primitives'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Preprocess primitives ───────────────────────────────────────────
 
@@ -51,12 +52,7 @@ const codeMetaStringArray = z
 		if (value === undefined || value === null) return
 
 		if (typeof value === 'string') {
-			return value.includes(',')
-				? value
-						.split(',')
-						.map((s) => s.trim())
-						.filter(Boolean)
-				: [value]
+			return value.includes(',') ? splitCommaSeparated(value) : [value]
 		}
 
 		if (Array.isArray(value)) {

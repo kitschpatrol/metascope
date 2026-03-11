@@ -235,7 +235,7 @@ export const codemeta = defineTemplate(
 			...(ofInstall?.data.author ? [toPersonOrOrgLd({ name: ofInstall.data.author })] : []),
 
 			// Cinder
-			...(cinder?.data.author ? [toPersonOrOrgLd({ name: cinder.data.author })] : []),
+			...(cinder?.data.author ?? []).map((a) => toPersonOrOrgLd({ name: a })),
 
 			// Xcode
 			...(xcode?.data.author

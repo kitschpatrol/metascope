@@ -6,6 +6,7 @@ import { getMatches } from '../file-matching'
 import { parseProperties } from '../parsers/properties-parser'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -209,10 +210,7 @@ function parseAuthors(value: string): ProcessingLibraryPropertiesAuthorEntry[] {
 		const url = nonEmpty(unescapeUrl(rawUrl))
 
 		// Handle multiple names in one link: [Name1, Name2](url)
-		const names = namesPart
-			.split(',')
-			.map((s) => s.trim())
-			.filter((s) => s.length > 0)
+		const names = splitCommaSeparated(namesPart)
 		for (const name of names) {
 			results.push({ name, url })
 		}

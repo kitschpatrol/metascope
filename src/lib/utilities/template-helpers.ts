@@ -84,6 +84,18 @@ export function nonEmpty<T>(array: T[]): T[] | undefined {
 // ─── String Helpers ─────────────────────────────────────────────────
 
 /**
+ * Split a string on commas, trimming each part and filtering out empty strings.
+ * Returns an empty array for `undefined` or empty input.
+ */
+export function splitCommaSeparated(value: string | undefined): string[] {
+	if (value === undefined) return []
+	return value
+		.split(',')
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0)
+}
+
+/**
  * Join an array of strings with a delimiter, filtering out undefined values.
  */
 export function toDelimitedString(

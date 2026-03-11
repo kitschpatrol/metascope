@@ -6,6 +6,7 @@ import { getMatches } from '../file-matching'
 import { parseProperties } from '../parsers/properties-parser'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
+import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -95,12 +96,12 @@ export function parse(content: string): ArduinoLibraryProperties {
 	const includesValue = get(raw, 'includes')
 
 	return arduinoLibraryPropertiesSchema.parse({
-		architectures: splitTrimmed(get(raw, 'architectures') ?? '*'),
+		architectures: splitCommaSeparated(get(raw, 'architectures') ?? '*'),
 		authors: parsePersonList(get(raw, 'author') ?? ''),
 		category: normalizeCategory(get(raw, 'category')),
 		depends: parseDependencies(get(raw, 'depends') ?? get(raw, 'dependencies') ?? ''),
 		email: nonEmpty(get(raw, 'email')),
-		includes: includesValue ? splitTrimmed(includesValue) : [],
+		includes: includesValue ? splitCommaSeparated(includesValue) : [],
 		license: nonEmpty(get(raw, 'license')),
 		maintainer: parsePersonList(get(raw, 'maintainer') ?? '')[0],
 		name: nonEmpty(get(raw, 'name')),
@@ -222,15 +223,6 @@ function parseDependencies(value: string): ArduinoLibraryPropertiesDependencyEnt
 
 	return results
 }
-
-/** Split a comma-separated string into trimmed, non-empty parts. */
-function splitTrimmed(value: string): string[] {
-	return value
-		.split(',')
-		.map((s) => s.trim())
-		.filter((s) => s.length > 0)
-}
-
 // ─── Availability ───────────────────────────────────────────────────
 
 /**
