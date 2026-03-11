@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable ts/no-restricted-types */
 import is from '@sindresorhus/is'
 import { replaceCore } from 'case-police'

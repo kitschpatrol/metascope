@@ -1,5 +1,6 @@
 import type { ILogBasic, ILogLayer } from 'lognow'
 import { createLogger, injectionHelper } from 'lognow'
+import { name } from '../../package.json'
 
 /**
  * The default logger instance for the library.
@@ -8,7 +9,7 @@ export let log = createLogger({
 	logToConsole: {
 		showTime: false,
 	},
-	verbose: false,
+	name,
 })
 
 /**

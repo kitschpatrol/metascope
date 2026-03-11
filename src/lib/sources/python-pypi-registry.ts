@@ -163,7 +163,9 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 					return pypistatsRecentSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
-			fetchWithRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`)
+			fetchWithRetry(
+				`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`,
+			)
 				.then(async (response) => {
 					if (!response.ok) return
 					return pypistatsOverallSchema.parse(await response.json())

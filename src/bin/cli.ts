@@ -2,7 +2,7 @@
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { bin, version } from '../../package.json'
+import { bin, version, name } from '../../package.json'
 import { createLogger, getChildLogger } from 'lognow'
 import { DEFAULT_GET_METADATA_OPTIONS, getMetadata, setLogger, templates } from '../lib'
 import type { Template, TemplateData } from '../lib'
@@ -84,6 +84,7 @@ await yargsInstance
 				}),
 		async (argv) => {
 			const log = createLogger({
+				name: name,
 				verbose: argv.verbose ?? false,
 				logToConsole: { showTime: false },
 			})

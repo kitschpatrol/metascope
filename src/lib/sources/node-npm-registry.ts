@@ -61,8 +61,8 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 					packageJson.data.private === true ||
 					packageJson.data.publishConfig?.access === 'restricted'
 				) {
-					log.warn(
-						`Skipping NPM registry lookup for ${packageJson.data.name} because it is a private package`,
+					log.debug(
+						`Skipping NPM registry lookup for "${packageJson.data.name}" in "${context.options.path}" because it is a private package`,
 					)
 					return false
 				}
