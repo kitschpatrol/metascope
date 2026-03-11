@@ -2,6 +2,7 @@
 /* eslint-disable unicorn/no-null */
 /* eslint-disable ts/naming-convention */
 
+import is from '@sindresorhus/is'
 import { defineTemplate } from '../metadata-types'
 import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import {
@@ -9,6 +10,7 @@ import {
 	firstOf,
 	isValidUrl,
 	mixedStringsToArray,
+	nonEmpty,
 	REPLACEMENTS,
 	toAlias,
 	toBasicLicenses,
@@ -34,6 +36,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 	const codeStats = firstOf(context.codeStats)?.data
 	const dependencyUpdates = firstOf(context.dependencyUpdates)
 	const fileStats = firstOf(context.fileStats)?.data
+	const cinderCinderblockXml = firstOf(context.cinderCinderblockXml)?.data
 	const github = firstOf(context.github)?.data
 	const gitStats = firstOf(context.gitStats)?.data
 	const metascope = context.metascope?.data
@@ -50,33 +53,47 @@ export const frontmatter = defineTemplate((context, templateData) => {
 			(value) => !primaryLanguages?.includes(value),
 		) ?? null
 
+	const rawName =
+		codemeta.name === 'undefined'
+			? null
+			: cinderCinderblockXml === undefined
+				? codemeta.name
+				: // Special case prefix for Cinder addons
+					`Cinder ${codemeta.name}`
+
+	const id = codemeta.identifier ?? rawName
+	const name = is.nonEmptyString(rawName) ? toAlias(rawName) : undefined
+
+	// Only alias if different from name
+	const aliases = id === name ? undefined : id
+
 	return {
 		/* eslint-disable perfectionist/sort-objects */
 
 		// ── Identity ──────────────────────────────────────────
-		Name: codemeta.name ?? null,
-		alias: toAlias(codemeta.name) ?? null, // Obsidian special field
+		Name: name ?? null,
+		ID: id ?? null,
 		Description: codemeta.description ?? null,
-		Author:
-			mixedStringsToArray(
-				toBasicNames(codemeta.author),
-				new Map<string, string>([['Eric Mika', '[Eric Mika](/Contacts/Eric%20Mika)']]),
-			) ?? null,
+		Author: mixedStringsToArray(toBasicNames(codemeta.author)) ?? null,
+		Contributor: mixedStringsToArray(toBasicNames(codemeta.contributor)) ?? null,
+		Maintainer: mixedStringsToArray(toBasicNames(codemeta.maintainer)) ?? null,
 		Version: codemeta.version ?? null,
+		Account: github?.ownerLogin ?? null,
 		Public: !(github?.isPrivate ?? false),
 		Fork: github?.isFork ?? false,
 		Published: Boolean(
 			obsidianPluginRegistry?.url ?? nodeNpmRegistry?.url ?? pythonPypiRegistry?.url,
 		),
-		Status:
-			toStatus(
-				codemeta.codeRepository,
-				codemeta.author,
-				templateData.authorName,
-				templateData.githubAccount,
-			) ?? null,
-		'GitHub Owner': github?.ownerLogin ?? null,
-		tags: codemeta.keywords ?? null, // Obsidian special field
+		Status: toStatus(
+			codemeta.codeRepository,
+			codemeta.author,
+			[...(codemeta.contributor ?? []), ...(codemeta.maintainer ?? [])],
+			github?.isFork ?? false,
+			templateData.authorName,
+			templateData.githubAccount,
+		),
+		Tags: codemeta.keywords ?? null, // Obsidian special field
+		Aliases: nonEmpty([aliases]) ?? null, // Special Obsidian Field
 		License: toBasicLicenses(codemeta.license) ?? null,
 		Language: primaryLanguages,
 		'Secondary Language': secondaryLanguages,
@@ -125,8 +142,8 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		Contributors: github?.contributorCount ?? gitStats?.contributorCount ?? null,
 		Forks: github?.forkCount ?? null,
 		'Downloads Total':
-			obsidianPluginRegistry?.downloadCount ??
 			nodeNpmRegistry?.downloadsTotal ??
+			obsidianPluginRegistry?.downloadCount ??
 			pythonPypiRegistry?.downloads180Days ??
 			github?.releaseDownloadCount ??
 			null,
@@ -189,6 +206,10 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// 'Has Pages': github.hasPages,
 		// 'Has Discussions': github.hasDiscussionsEnabled,
 		// 'Issues': github.hasIssuesEnabled,
+		Monorepo:
+			metascope?.workspaceDirectories === undefined
+				? false
+				: metascope.workspaceDirectories.length > 0,
 
 		// ── Git Status ────────────────────────────────────────
 		// 'Git Clean': gitStats?.isClean ?? null,
@@ -212,7 +233,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// 'Merge Commit Allowed': github.settings?.mergeCommitAllowed,
 
 		// ── Meta ──────────────────────────────────────────────
-		'Metadata Scanned': metascope?.scannedAt ?? null,
+		// 'Metadata Scanned': metascope?.scannedAt ?? null,
 
 		/* eslint-enable perfectionist/sort-objects */
 	}

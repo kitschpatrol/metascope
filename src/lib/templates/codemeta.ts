@@ -65,6 +65,7 @@ export const codemeta = defineTemplate(
 		cinderCinderblockXml,
 		codemetaJson: codemetaRaw,
 		codeStats,
+		fileStats,
 		github: githubRaw,
 		gitStats: gitRaw,
 		goGoMod,
@@ -113,6 +114,8 @@ export const codemeta = defineTemplate(
 		const obsidian = firstOf(obsidianPluginManifestJson)
 		const publiccode = firstOf(publiccodeYaml)
 		const loc = firstOf(codeStats)
+		const readmeFileFirst = firstOf(readmeFile)
+		const fileStatsFirst = firstOf(fileStats)
 
 		// ── Identity ────────────────────────────────────────────────
 
@@ -134,7 +137,9 @@ export const codemeta = defineTemplate(
 			xcode?.data.name ??
 			obsidian?.data.name ??
 			publiccode?.data.name ??
-			cm?.data.name
+			cm?.data.name ??
+			readmeFileFirst?.data.name ??
+			fileStatsFirst?.data.folderName
 
 		const description =
 			package_?.data.description ??
@@ -180,6 +185,7 @@ export const codemeta = defineTemplate(
 			cinder?.data.id ??
 			obsidian?.data.id ??
 			xcode?.data.identifier ??
+			package_?.data.name ?? // Also has identifier value, but that has the version suffix
 			cm?.data.identifier
 
 		// ── Author ──────────────────────────────────────────────────
@@ -304,6 +310,14 @@ export const codemeta = defineTemplate(
 		// ── Maintainer ──────────────────────────────────────────────
 
 		const ecosystemMaintainers: Array<CodemetaPersonOrOrgLd | undefined> = [
+			// Node package.json maintainers
+			...collectArrayField(nodePackageJson, (d) =>
+				d.maintainers?.map((c) =>
+					is.plainObject(c)
+						? toPersonOrOrgLd({ email: c.email, name: c.name, url: c.url })
+						: toPersonOrOrgLd({ name: c }),
+				),
+			),
 			...(pyproject?.data.project?.maintainers ?? []).map((m) =>
 				is.plainObject(m)
 					? toPersonOrOrgLd({ email: m.email, name: m.name })

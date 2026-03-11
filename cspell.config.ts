@@ -9,6 +9,7 @@ export default cspellConfig({
 		'aeshirey',
 		'alexchantastic',
 		'ameli',
+		'NOASSERTION',
 		'amey',
 		'ankane',
 		'appsemble',

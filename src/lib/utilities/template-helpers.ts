@@ -143,7 +143,8 @@ export function stripNamespace(value: string): string {
  */
 export function toAlias(value: string | undefined): string | undefined {
 	if (is.nonEmptyString(value)) {
-		const result = titleCase(stripNamespace(value))
+		// Trim 2+ spaces to 1 space
+		const result = titleCase(stripNamespace(value)).replaceAll(/ {2,}/g, ' ').trim()
 		return replaceCore(result, casePoliceDict) ?? result
 	}
 	return undefined
@@ -406,31 +407,102 @@ export function isOnGithubAccountOf(
 }
 
 /**
- * Heuristic project status based on authorship and GitHub account.
+ * Legacy heuristic project status based on authorship and GitHub account.
  */
-export function toStatus(
+export function toStatusLegacy(
 	codeRepository?: string,
 	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	authorName?: string | string[],
 	githubUserName?: string | string[],
 ):
-	| (
-			| /** It's my fork on GitHub */
-			'fork'
+	| /** It's a fork on GitHub */
+	(| 'fork'
 			/** I am original author, local or on github */
 			| 'source'
 			/** Someone else's local code */
 			| 'unmaintained'
 	  )
 	| undefined {
+	if (codeRepository === undefined || authorName === undefined || githubUserName === undefined) {
+		return undefined
+	}
+
 	const isAuthoredByAuthorName = isAuthoredBy(codemetaAuthorName, authorName)
 	const isOnGithub = isOnGithubAccountOf(codeRepository, githubUserName)
+
+	if (isAuthoredByAuthorName === undefined || isOnGithub === undefined) {
+		return undefined
+	}
 
 	return !isAuthoredByAuthorName && isOnGithub
 		? 'fork'
 		: isAuthoredByAuthorName
 			? 'source'
 			: 'unmaintained'
+}
+
+/**
+ * Heuristic project status based on authorship and GitHub account.
+ */
+export function toStatus(
+	codeRepository?: string,
+	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
+	codemetaContributorOrMaintainerName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
+	isGitHubFork?: boolean,
+	myAuthorName?: string | string[],
+	myGithubUserName?: string | string[],
+):
+	| 'author' /** I wrote the repo */
+	| 'maintainer' /** I contribute or help maintain it */
+	| 'observer' /** I look at this repo */
+	| 'unknown' /** It's unclear */ {
+	const author = isAuthoredBy(codemetaAuthorName, myAuthorName)
+	const maintainer = isAuthoredBy(codemetaContributorOrMaintainerName, myAuthorName)
+	const githubStatus = isOnGithubAccountOf(codeRepository, myGithubUserName)
+
+	const github =
+		githubStatus === undefined
+			? 'missing'
+			: githubStatus
+				? isGitHubFork
+					? 'my-fork'
+					: 'my-source'
+				: isGitHubFork
+					? 'their-fork'
+					: 'their-source'
+
+	const me = author === true ? 'author' : maintainer === true ? 'maintainer' : 'missing'
+
+	// if (me === 'maintainer') return 'maintainer'
+	// if (me === 'author') return isGitHubFork ? 'maintainer' : 'author'
+
+	// // Me === 'missing'
+	// if (github === 'my-source') return 'author'
+	// if (github === 'missing') return 'unknown'
+
+	// return 'observer'
+
+	if (github === 'missing' && me === 'author') return 'author'
+	if (github === 'missing' && me === 'maintainer') return 'maintainer'
+	if (github === 'missing' && me === 'missing') return 'unknown' // Assume author?
+
+	if (github === 'my-fork' && me === 'author') return 'maintainer'
+	if (github === 'my-fork' && me === 'maintainer') return 'maintainer'
+	if (github === 'my-fork' && me === 'missing') return 'observer'
+
+	if (github === 'my-source' && me === 'author') return 'author'
+	if (github === 'my-source' && me === 'maintainer') return 'maintainer'
+	if (github === 'my-source' && me === 'missing') return 'author'
+
+	if (github === 'their-fork' && me === 'author') return 'maintainer'
+	if (github === 'their-fork' && me === 'maintainer') return 'maintainer'
+	if (github === 'their-fork' && me === 'missing') return 'observer'
+
+	if (github === 'their-source' && me === 'author') return 'author'
+	if (github === 'their-source' && me === 'maintainer') return 'maintainer'
+	if (github === 'their-source' && me === 'missing') return 'observer'
+
+	return 'unknown'
 }
 
 /**

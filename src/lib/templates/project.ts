@@ -9,7 +9,7 @@ import {
 	isOnGithubAccountOf,
 	toBasicLicenses,
 	toLocalUrl,
-	toStatus,
+	toStatusLegacy,
 	usesPnpm,
 } from '../utilities/template-helpers'
 import { codemeta as codemetaTemplate } from './codemeta'
@@ -58,7 +58,7 @@ export const project = defineTemplate((context, templateData) => {
 		semverUpdateList: undefined, // TODO, Not well supported by `updates` package
 		tags: codemeta.keywords,
 		title: codemeta.name,
-		type: toStatus(
+		type: toStatusLegacy(
 			codemeta.codeRepository,
 			codemeta.author,
 			templateData.authorName,
