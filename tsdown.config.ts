@@ -17,7 +17,7 @@ export default defineConfig([
 		deps: {
 			alwaysBundle: /.+/,
 			neverBundle: ['@kitschpatrol/tokei'],
-			onlyAllowBundle: false,
+			onlyBundle: false,
 		},
 		dts: false,
 		entry: 'src/bin/cli.ts',

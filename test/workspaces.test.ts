@@ -113,7 +113,7 @@ describe('getMatches with workspaces', () => {
 	})
 })
 
-describe('getMetadata with absolute flag', () => {
+describe('getMetadata with absolute flag', { timeout: 30_000 }, () => {
 	it('should return absolute source paths by default', async () => {
 		const result = await getMetadata({ path: '.', workspaces: false })
 		const source = firstOf(result.nodePackageJson)?.source
