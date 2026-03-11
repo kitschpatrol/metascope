@@ -221,7 +221,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				totalBehind,
 				trackedFileCount: trackedFiles.length,
 				trackedSizeBytes,
-				uncommittedFileCount: statusResult.files.length > 0 ? statusResult.files.length : undefined,
+				uncommittedFileCount: statusResult.files.length,
 			},
 			source: input,
 		}
