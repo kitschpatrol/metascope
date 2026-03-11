@@ -1,5 +1,5 @@
 import { stat } from 'node:fs/promises'
-import { dirname } from 'node:path'
+import path, { dirname } from 'node:path'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches, getWorkspaces } from '../file-matching'
 import { log } from '../log'
@@ -7,6 +7,8 @@ import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
 
 export type FileStats = {
+	/** Name of repo folder, possibly useful as a name fallback */
+	folderName?: string
 	/** Total number of directories (recursive). */
 	totalDirectoryCount?: number
 	/** Total number of files (recursive). */
@@ -70,6 +72,7 @@ export const fileStatsSource = defineSource<'fileStats'>({
 
 		return {
 			data: {
+				folderName: input.split(path.sep).at(-1),
 				totalDirectoryCount,
 				totalFileCount,
 				totalSizeBytes,
