@@ -4,6 +4,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
+import { fetchWithRetry } from '../utilities/fetch'
 import { ensureArray } from '../utilities/template-helpers'
 import { nodePackageJsonSource } from './node-package-json'
 
@@ -117,7 +118,7 @@ const npmDownloadsSchema = z.object({
 
 async function fetchDownloads(packageName: string, period: string): Promise<number | undefined> {
 	try {
-		const response = await fetch(
+		const response = await fetchWithRetry(
 			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
 		)
 		if (!response.ok) return undefined

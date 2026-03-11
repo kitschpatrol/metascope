@@ -4,6 +4,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
+import { fetchWithRetry } from '../utilities/fetch'
 import { ensureArray } from '../utilities/template-helpers'
 import { pythonPkgInfoSource } from './python-pkg-info'
 import { pythonPyprojectTomlSource } from './python-pyproject-toml'
@@ -150,19 +151,19 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		const name = input
 
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
-			fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
+			fetchWithRetry(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
 				.then(async (response) => {
 					if (!response.ok) return
 					return pypiResponseSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
-			fetch(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`)
+			fetchWithRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`)
 				.then(async (response) => {
 					if (!response.ok) return
 					return pypistatsRecentSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
-			fetch(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`)
+			fetchWithRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`)
 				.then(async (response) => {
 					if (!response.ok) return
 					return pypistatsOverallSchema.parse(await response.json())
