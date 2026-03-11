@@ -42,19 +42,33 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 			return []
 		}
 
-		// Try to get package name from context
-		let packageNames = ensureArray(context.metadata?.nodePackageJson).map(
-			(value) => value.data.name,
-		)
+		// Try to get packages from context
+		let packages = ensureArray(context.metadata?.nodePackageJson)
 
 		// Fall back to extracting it ourselves if the source hasn't run yet
-		if (packageNames.length === 0 && !context.completedSources?.has('nodePackageJson')) {
+		if (packages.length === 0 && !context.completedSources?.has('nodePackageJson')) {
 			log.warn(
 				`Missing nodePackageJson in source context metadata for ${context.options.path}, extracting it now...`,
 			)
 			const nodePackageJson = await nodePackageJsonSource.extract(context)
-			packageNames = ensureArray(nodePackageJson).map((value) => value.data.name)
+			packages = ensureArray(nodePackageJson)
 		}
+
+		// Now, only bother if the package is actually public...
+		const packageNames = packages
+			.filter((packageJson) => {
+				if (
+					packageJson.data.private === true ||
+					packageJson.data.publishConfig?.access === 'restricted'
+				) {
+					log.warn(
+						`Skipping NPM registry lookup for ${packageJson.data.name} because it is a private package`,
+					)
+					return false
+				}
+				return true
+			})
+			.map((packageJson) => packageJson.data.name)
 
 		return packageNames
 	},
