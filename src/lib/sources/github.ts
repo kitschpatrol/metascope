@@ -79,7 +79,7 @@ export type GitHubInfo = {
 	/** Languages used in the repo, keyed by name with size in bytes. */
 	languages?: Record<string, number>
 	/** License identifier (unused; codemeta provides this). */
-	license?: string
+	// license?: string
 	/** SPDX license key (e.g. "mit"). */
 	licenseKey?: string
 	/** Human-readable license name. */
@@ -545,10 +545,13 @@ function mapRepoData(
 		issueCountOpen: data.openIssues.totalCount,
 		isTemplate: data.isTemplate,
 		languages: extractLanguages(data),
-		license: undefined, // License from GitHub requires REST; codemeta already provides this
+		// License: undefined, // License from GitHub requires REST; codemeta already provides this
 		licenseKey: data.licenseInfo?.key ?? undefined,
 		licenseName: data.licenseInfo?.name ?? undefined,
-		licenseSpdxId: data.licenseInfo?.spdxId ?? undefined,
+		licenseSpdxId:
+			data.licenseInfo?.spdxId === 'NOASSERTION'
+				? undefined
+				: (data.licenseInfo?.spdxId ?? undefined),
 		licenseUrl: data.licenseInfo?.url ?? undefined,
 		mirrorUrl: data.mirrorUrl ?? undefined,
 		name: data.name,
