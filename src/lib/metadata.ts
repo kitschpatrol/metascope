@@ -62,7 +62,7 @@ const execFileAsync = promisify(execFile)
  * Lower phases run first, and their accumulated results are available to later phases
  * via `context` in `SourceContext`.
  */
-const sources: MetadataSource[] = [
+const sources: readonly MetadataSource[] = [
 	// Phase 1: File sources — discover and extract config from the local file system
 	arduinoLibraryPropertiesSource,
 	cinderCinderblockXmlSource,
@@ -99,7 +99,10 @@ const sources: MetadataSource[] = [
 	nodeNpmRegistrySource,
 	obsidianPluginRegistrySource,
 	pythonPypiRegistrySource,
-]
+] as const
+
+/** All available source key names, for runtime use (e.g. CLI choices). */
+export const sourceNames: SourceName[] = sources.map((s) => s.key)
 
 /**
  * Resolve GitHub token from multiple sources, in precedence order.
@@ -265,13 +268,18 @@ export async function getMetadata<T>(
 		xcodeProjectPbxproj: undefined,
 	}
 
+	// Filter sources if a whitelist is provided
+	const activeSources = resolvedOptions.sources
+		? sources.filter((s) => resolvedOptions.sources!.includes(s.key))
+		: sources
+
 	// Group sources by phase and run each phase sequentially.
 	// Within a phase, all sources run in parallel.
 	// Each phase receives the accumulated context from all previous phases.
 	const completedSources = new Set<SourceName>()
-	const phases = new Set(sources.map((s) => s.phase))
+	const phases = new Set(activeSources.map((s) => s.phase))
 	for (const phase of [...phases].toSorted((a, b) => a - b)) {
-		const phaseSources = sources.filter((s) => s.phase === phase)
+		const phaseSources = activeSources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
 			completedSources,

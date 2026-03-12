@@ -94,4 +94,20 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 		const result = await getMetadata({ path: '.', template })
 		expect(result).toEqual({ hasData: false })
 	})
+
+	it('should only run specified sources when sources option is provided', async () => {
+		const result = await getMetadata({
+			path: 'test/fixtures/all-sources',
+			sources: ['nodePackageJson', 'licenseFile'],
+		})
+
+		// Requested sources should be present
+		expect(result.nodePackageJson).toBeDefined()
+		expect(result.licenseFile).toBeDefined()
+
+		// Other sources that would match files in all-sources should be absent
+		expect(result.rustCargoToml).toBeUndefined()
+		expect(result.codemetaJson).toBeUndefined()
+		expect(result.pythonPyprojectToml).toBeUndefined()
+	})
 })

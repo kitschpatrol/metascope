@@ -4,8 +4,14 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { bin, version, name } from '../../package.json'
 import { createLogger, getChildLogger } from 'lognow'
-import { DEFAULT_GET_METADATA_OPTIONS, getMetadata, setLogger, templates } from '../lib'
-import type { Template, TemplateData } from '../lib'
+import {
+	DEFAULT_GET_METADATA_OPTIONS,
+	getMetadata,
+	setLogger,
+	sourceNames,
+	templates,
+} from '../lib'
+import type { SourceName, Template, TemplateData } from '../lib'
 import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
 import { isKeyOfTemplate } from '../lib/templates'
 
@@ -53,6 +59,13 @@ await yargsInstance
 					description: 'Skip sources requiring network requests',
 					type: 'boolean',
 					default: DEFAULT_GET_METADATA_OPTIONS.offline,
+				})
+				.option('sources', {
+					alias: 's',
+					array: true,
+					choices: sourceNames,
+					description: 'Only run specific metadata sources (defaults to all)',
+					type: 'string',
 				})
 				.option('no-ignore', {
 					description: 'Include files ignored by .gitignore in the file tree',
@@ -144,6 +157,7 @@ await yargsInstance
 					path: argv.path,
 					recursive: argv.recursive,
 					respectIgnored: argv.noIgnore ? false : undefined,
+					sources: argv.sources as SourceName[] | undefined,
 					templateData,
 					workspaces: argv.workspaces as boolean | string[] | undefined,
 				}

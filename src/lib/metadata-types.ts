@@ -143,6 +143,8 @@ export type GetMetadataBaseOptions = {
 	recursive?: boolean
 	/** Ignore files specified .gitignore in the file tree. Defaults to true. */
 	respectIgnored?: boolean
+	/** Only run these specific sources. Defaults to all sources when undefined. */
+	sources?: SourceName[]
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
 	/**
@@ -157,7 +159,7 @@ export type GetMetadataBaseOptions = {
  * Default values for optional fields in `GetMetadataBaseOptions`.
  */
 export const DEFAULT_GET_METADATA_OPTIONS: Required<
-	Omit<GetMetadataBaseOptions, 'credentials' | 'templateData'>
+	Omit<GetMetadataBaseOptions, 'credentials' | 'sources' | 'templateData'>
 > = {
 	absolute: true,
 	offline: false,
