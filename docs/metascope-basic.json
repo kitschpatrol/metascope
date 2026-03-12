@@ -4,9 +4,9 @@
 			"perLanguage": [
 				{
 					"language": "JSON",
-					"files": 190,
-					"lines": 36842,
-					"code": 36827,
+					"files": 191,
+					"lines": 36847,
+					"code": 36832,
 					"comments": 0,
 					"blanks": 15
 				},
@@ -21,10 +21,10 @@
 				{
 					"language": "TypeScript",
 					"files": 118,
-					"lines": 17636,
-					"code": 13183,
-					"comments": 2238,
-					"blanks": 2215
+					"lines": 17663,
+					"code": 13203,
+					"comments": 2241,
+					"blanks": 2219
 				},
 				{
 					"language": "XML",
@@ -84,10 +84,10 @@
 				}
 			],
 			"total": {
-				"blanks": 16790,
-				"code": 110316,
-				"comments": 26611,
-				"files": 1654,
+				"blanks": 16794,
+				"code": 110341,
+				"comments": 26614,
+				"files": 1655,
 				"languages": [
 					"JSON",
 					"YAML",
@@ -100,7 +100,7 @@
 					"Markdown",
 					"Plain Text"
 				],
-				"lines": 153717
+				"lines": 153749
 			}
 		},
 		"source": "/Users/Someone/metascope"
@@ -116,8 +116,8 @@
 		"data": {
 			"folderName": "metascope",
 			"totalDirectoryCount": 2530,
-			"totalFileCount": 2674,
-			"totalSizeBytes": 8671391
+			"totalFileCount": 2675,
+			"totalSizeBytes": 8662333
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -179,8 +179,8 @@
 			"issueCountOpen": 0,
 			"isTemplate": false,
 			"languages": {
-				"TypeScript": 563517,
-				"JavaScript": 5982
+				"TypeScript": 578660,
+				"JavaScript": 6302
 			},
 			"licenseKey": "mit",
 			"licenseName": "MIT License",
@@ -188,17 +188,17 @@
 			"licenseUrl": "http://choosealicense.com/licenses/mit/",
 			"name": "metascope",
 			"nameWithOwner": "kitschpatrol/metascope",
-			"openGraphImageUrl": "https://opengraph.githubassets.com/3e3c613feffe062064ebe37421aa443062c09f6673655671e6c1a8e971700722/kitschpatrol/metascope",
+			"openGraphImageUrl": "https://opengraph.githubassets.com/d968dc3485b28272578c1726865197328e9ae52eb45eb7cdfd861384de58457b/kitschpatrol/metascope",
 			"ownerLogin": "kitschpatrol",
 			"ownerType": "User",
 			"primaryLanguage": "TypeScript",
 			"pullRequestCountClosed": 0,
 			"pullRequestCountMerged": 0,
 			"pullRequestCountOpen": 0,
-			"pushedAt": "2026-03-10T23:02:44Z",
-			"releaseCount": 1,
-			"releaseDateLatest": "2026-03-10T23:02:43Z",
-			"releaseVersionLatest": "v0.1.0",
+			"pushedAt": "2026-03-12T02:54:48Z",
+			"releaseCount": 3,
+			"releaseDateLatest": "2026-03-12T02:39:26Z",
+			"releaseVersionLatest": "v0.2.1",
 			"settings": {
 				"allowUpdateBranch": false,
 				"autoMergeAllowed": false,
@@ -217,7 +217,7 @@
 			"stargazerCount": 0,
 			"submoduleCount": 0,
 			"topics": ["cli", "npm-package", "codemeta", "metadata"],
-			"updatedAt": "2026-03-10T23:02:46Z",
+			"updatedAt": "2026-03-12T02:54:52Z",
 			"url": "https://github.com/kitschpatrol/metascope",
 			"usesCustomOpenGraphImage": false,
 			"visibility": "PUBLIC",
@@ -230,30 +230,30 @@
 		"data": {
 			"branchCount": 2,
 			"branchCurrent": "main",
-			"commitCount": 141,
+			"commitCount": 146,
 			"commitDateFirst": "2026-02-24T12:07:53-05:00",
-			"commitDateLast": "2026-03-11T20:53:45-04:00",
+			"commitDateLast": "2026-03-11T22:54:44-04:00",
 			"contributorCount": 1,
 			"isClean": false,
 			"isDirty": true,
 			"remoteCount": 1,
 			"remoteStatus": {
 				"origin": {
-					"ahead": 16,
+					"ahead": 0,
 					"behind": 0
 				}
 			},
-			"tagCount": 1,
-			"tagDateLatest": "2026-03-10T19:02:43-04:00",
-			"tagNameLatest": "v0.1.0",
-			"tagReleaseCount": 1,
-			"tagVersionDateLatest": "2026-03-10T19:02:43-04:00",
-			"tagVersionLatest": "0.1.0",
-			"totalAhead": 16,
+			"tagCount": 3,
+			"tagDateLatest": "2026-03-11T22:39:26-04:00",
+			"tagNameLatest": "v0.2.1",
+			"tagReleaseCount": 3,
+			"tagVersionDateLatest": "2026-03-11T22:39:26-04:00",
+			"tagVersionLatest": "0.2.1",
+			"totalAhead": 0,
 			"totalBehind": 0,
-			"trackedFileCount": 3036,
-			"trackedSizeBytes": 9213994,
-			"uncommittedFileCount": 8
+			"trackedFileCount": 3038,
+			"trackedSizeBytes": 9206006,
+			"uncommittedFileCount": 2
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -266,7 +266,7 @@
 	},
 	"metascope": {
 		"data": {
-			"durationMs": 5298,
+			"durationMs": 6211,
 			"options": {
 				"absolute": true,
 				"offline": false,
@@ -275,26 +275,26 @@
 				"respectIgnored": true,
 				"workspaces": true
 			},
-			"scannedAt": "2026-03-12T01:16:07.108Z",
-			"version": "0.1.0"
+			"scannedAt": "2026-03-12T03:00:46.193Z",
+			"version": "0.2.1"
 		},
 		"source": "/Users/Someone/metascope"
 	},
 	"nodeNpmRegistry": {
 		"data": {
-			"fileCount": 16,
+			"fileCount": 120,
 			"hasTypes": true,
-			"publishDateLatest": "2026-03-10T23:02:54.917Z",
-			"unpackedSizeBytes": 10118204,
+			"publishDateLatest": "2026-03-12T02:39:37.136Z",
+			"unpackedSizeBytes": 10171363,
 			"url": "https://www.npmjs.com/package/metascope",
-			"versionLatest": "0.1.0"
+			"versionLatest": "0.2.1"
 		},
 		"source": "https://www.npmjs.com/package/metascope"
 	},
 	"nodePackageJson": {
 		"data": {
 			"name": "metascope",
-			"version": "0.1.0",
+			"version": "0.2.1",
 			"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 			"keywords": ["metadata", "codemeta", "cli", "npm-package"],
 			"homepage": "https://github.com/kitschpatrol/metascope",
@@ -333,7 +333,7 @@
 				"fix": "ksc fix",
 				"lint": "ksc lint",
 				"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
-				"pretest": "mkdir -p src/lib/grammars && cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/lib/grammars/tree-sitter-python.wasm",
+				"pretest": "mkdir -p src/grammars && cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/grammars/tree-sitter-python.wasm",
 				"test": "vitest run"
 			},
 			"dependencies": {
@@ -397,7 +397,7 @@
 				"node": ">=22.17.0"
 			},
 			"readme": "ERROR: No README data found!",
-			"_id": "metascope@0.1.0"
+			"_id": "metascope@0.2.1"
 		},
 		"source": "/Users/Someone/metascope/package.json"
 	},

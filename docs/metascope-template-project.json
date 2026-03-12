@@ -12,7 +12,7 @@
 	"isOnNpm": true,
 	"isPublic": true,
 	"issueCount": 0,
-	"lastCommitDate": "2026-03-11T20:53:45-04:00",
+	"lastCommitDate": "2026-03-11T22:54:44-04:00",
 	"license": "MIT",
 	"majorUpdateCount": 0,
 	"readmePath": "file:///Users/Someone/metascope/readme.md",
@@ -22,5 +22,5 @@
 	"type": "source",
 	"usesPnpm": true,
 	"usesSharedConfig": true,
-	"version": "0.1.0"
+	"version": "0.2.1"
 }

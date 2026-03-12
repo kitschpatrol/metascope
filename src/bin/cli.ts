@@ -63,9 +63,17 @@ await yargsInstance
 				.option('sources', {
 					alias: 's',
 					array: true,
-					choices: sourceNames,
 					description: 'Only run specific metadata sources (defaults to all)',
 					type: 'string',
+				})
+				.check((argv) => {
+					const invalid = argv.sources?.filter((s) => !sourceNames.includes(s as SourceName))
+					if (invalid && invalid.length > 0) {
+						throw new Error(
+							`Invalid source(s): ${invalid.join(', ')}. Valid sources: ${sourceNames.join(', ')}`,
+						)
+					}
+					return true
 				})
 				.option('no-ignore', {
 					description: 'Include files ignored by .gitignore in the file tree',

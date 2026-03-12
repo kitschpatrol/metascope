@@ -12,7 +12,7 @@
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
 	"dateModified": "2026-03-11",
-	"datePublished": "2026-03-10",
+	"datePublished": "2026-03-12",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
@@ -289,5 +289,5 @@
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.1.0"
+	"version": "0.2.1"
 }
