@@ -1,6 +1,6 @@
 {
 	"name": "metascope",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"keywords": [
 		"metadata",
