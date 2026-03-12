@@ -119,9 +119,12 @@ export const codemeta = defineTemplate(
 
 		// ── Identity ────────────────────────────────────────────────
 
+		const poetry = pyproject?.data.tool?.poetry
+
 		const name =
 			package_?.data.name ??
 			pyproject?.data.project?.name ??
+			poetry?.name ??
 			setupPy?.data.name ??
 			setupCfg?.data.name ??
 			pkgInfo?.data.name ??
@@ -144,6 +147,7 @@ export const codemeta = defineTemplate(
 		const description =
 			package_?.data.description ??
 			pyproject?.data.project?.description ??
+			poetry?.description ??
 			setupPy?.data.description ??
 			setupCfg?.data.description ??
 			pkgInfo?.data.summary ??
@@ -164,6 +168,7 @@ export const codemeta = defineTemplate(
 		const version =
 			package_?.data.version ??
 			pyproject?.data.project?.version ??
+			poetry?.version ??
 			setupPy?.data.version ??
 			setupCfg?.data.version ??
 			pkgInfo?.data.version ??
@@ -417,7 +422,9 @@ export const codemeta = defineTemplate(
 			arduino?.data.repository ??
 			cinder?.data.git ??
 			cm?.data.codeRepository ??
-			repositoryUrlFromPackageJson(package_?.data.repository)
+			repositoryUrlFromPackageJson(package_?.data.repository) ??
+			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
+			poetry?.repository
 
 		const programmingLanguage =
 			nonEmpty([
@@ -560,6 +567,7 @@ export const codemeta = defineTemplate(
 			deduplicateStrings([
 				...(package_?.data.keywords ?? []),
 				...(pyproject?.data.project?.keywords ?? []),
+				...(poetry?.keywords ?? []),
 				...(setupPy?.data.keywords ?? []),
 				...(setupCfg?.data.keywords ?? []),
 				...(pkgInfo?.data.keywords ?? []),
@@ -574,7 +582,9 @@ export const codemeta = defineTemplate(
 		// ── URLs ────────────────────────────────────────────────────
 
 		const url =
-			package_?.data.homepage ??
+			stripReadmeFragment(package_?.data.homepage) ??
+			caseInsensitiveLookup(pyproject?.data.project?.urls, 'homepage') ??
+			poetry?.homepage ??
 			cargo?.data.homepage ??
 			setupPy?.data.url ??
 			setupCfg?.data.url ??
@@ -589,7 +599,9 @@ export const codemeta = defineTemplate(
 			xcode?.data.url ??
 			publiccode?.data.landingUrl ??
 			github?.data.homepageUrl ??
-			cm?.data.url
+			cm?.data.url ??
+			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
+			poetry?.repository
 
 		const downloadUrl =
 			ofInstall?.data.downloadUrl ??
@@ -994,6 +1006,31 @@ function deduplicateStrings(strings: string[]): string[] {
 	}
 
 	return [...seen.values()]
+}
+
+/**
+ * Case-insensitive lookup in a string record (e.g. pyproject.toml `[project.urls]`).
+ */
+function caseInsensitiveLookup(
+	record: Record<string, string> | undefined,
+	key: string,
+): string | undefined {
+	if (record === undefined) return undefined
+	const lowerKey = key.toLowerCase()
+	for (const [k, v] of Object.entries(record)) {
+		if (k.toLowerCase() === lowerKey) return v
+	}
+
+	return undefined
+}
+
+/**
+ * Strip the `#readme` fragment that npm's normalize-package-data appends to
+ * homepage URLs derived from repository URLs.
+ */
+function stripReadmeFragment(url: string | undefined): string | undefined {
+	if (url === undefined) return undefined
+	return url.endsWith('#readme') ? url.slice(0, -7) : url
 }
 
 /**
