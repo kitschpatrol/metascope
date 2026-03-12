@@ -2,11 +2,11 @@
 /* eslint-disable ts/no-restricted-types */
 import is from '@sindresorhus/is'
 import { replaceCore } from 'case-police'
-import abbreviates from 'case-police/dict/abbreviates.json'
-import brands from 'case-police/dict/brands.json'
-import general from 'case-police/dict/general.json'
-import products from 'case-police/dict/products.json'
-import softwares from 'case-police/dict/softwares.json'
+import abbreviates from 'case-police/dict/abbreviates.json' with { type: 'json' }
+import brands from 'case-police/dict/brands.json' with { type: 'json' }
+import general from 'case-police/dict/general.json' with { type: 'json' }
+import products from 'case-police/dict/products.json' with { type: 'json' }
+import softwares from 'case-police/dict/softwares.json' with { type: 'json' }
 import path from 'node:path'
 import { titleCase } from 'scule'
 import type { CodeMetaJson } from '../sources/codemeta-json'

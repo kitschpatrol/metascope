@@ -2,7 +2,7 @@
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { bin, version, name } from '../../package.json'
+import { bin, version, name } from '../../package.json' with { type: 'json' }
 import { createLogger, getChildLogger } from 'lognow'
 import {
 	DEFAULT_GET_METADATA_OPTIONS,
