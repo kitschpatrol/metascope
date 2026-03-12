@@ -60,6 +60,7 @@ export default defineConfig([
 		entry: 'src/lib/index.ts',
 		fixedExtension: false,
 		outDir: 'dist/lib',
+		unbundle: true,
 		platform: 'node',
 		publint: true,
 		tsconfig: 'tsconfig.build.json',
