@@ -1,0 +1,12 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
+
+[project]
+name = "my-private-internal-tool"
+version = "1.0.0"
+description = "An internal tool not published to PyPI."
+classifiers = [
+	"Private :: Do Not Upload",
+	"Programming Language :: Python :: 3",
+]

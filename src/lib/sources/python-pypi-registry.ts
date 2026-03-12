@@ -76,12 +76,24 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 
 		// Try to get package name from pyproject.toml context
 		packageNames = ensureArray(context.metadata?.pythonPyprojectToml)
+			.filter(
+				(value) =>
+					!hasPrivateClassifier(
+						value.data.project?.classifiers,
+						value.data.project?.name,
+						context.options.path,
+					),
+			)
 			.map((value) => value.data.project?.name)
 			.filter((value) => value !== undefined)
 
 		// Try to get package name from setup.cfg context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonSetupCfg)
+				.filter(
+					(value) =>
+						!hasPrivateClassifier(value.data.classifiers, value.data.name, context.options.path),
+				)
 				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
@@ -89,6 +101,10 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		// Try to get package name from setup.py context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonSetupPy)
+				.filter(
+					(value) =>
+						!hasPrivateClassifier(value.data.classifiers, value.data.name, context.options.path),
+				)
 				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
@@ -96,6 +112,10 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		// Try to get package name from pkg-info context
 		if (packageNames.length === 0) {
 			packageNames = ensureArray(context.metadata?.pythonPkgInfo)
+				.filter(
+					(value) =>
+						!hasPrivateClassifier(value.data.classifiers, value.data.name, context.options.path),
+				)
 				.map((value) => value.data.name)
 				.filter((value) => value !== undefined)
 		}
@@ -117,12 +137,28 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 
 				const extraction = await pythonPyprojectTomlSource.extract(context)
 				packageNames = ensureArray(extraction)
+					.filter(
+						(value) =>
+							!hasPrivateClassifier(
+								value.data.project?.classifiers,
+								value.data.project?.name,
+								context.options.path,
+							),
+					)
 					.map((value) => value.data.project?.name)
 					.filter((value) => value !== undefined)
 
 				if (packageNames.length === 0) {
 					const setupCfg = await pythonSetupCfgSource.extract(context)
 					packageNames = ensureArray(setupCfg)
+						.filter(
+							(value) =>
+								!hasPrivateClassifier(
+									value.data.classifiers,
+									value.data.name,
+									context.options.path,
+								),
+						)
 						.map((value) => value.data.name)
 						.filter((value) => value !== undefined)
 				}
@@ -130,6 +166,14 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 				if (packageNames.length === 0) {
 					const setupPy = await pythonSetupPySource.extract(context)
 					packageNames = ensureArray(setupPy)
+						.filter(
+							(value) =>
+								!hasPrivateClassifier(
+									value.data.classifiers,
+									value.data.name,
+									context.options.path,
+								),
+						)
 						.map((value) => value.data.name)
 						.filter((value) => value !== undefined)
 				}
@@ -137,6 +181,14 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 				if (packageNames.length === 0) {
 					const pkgInfo = await pythonPkgInfoSource.extract(context)
 					packageNames = ensureArray(pkgInfo)
+						.filter(
+							(value) =>
+								!hasPrivateClassifier(
+									value.data.classifiers,
+									value.data.name,
+									context.options.path,
+								),
+						)
 						.map((value) => value.data.name)
 						.filter((value) => value !== undefined)
 				}
@@ -215,3 +267,24 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 	},
 	phase: 2,
 })
+
+// Helpers -----------------------
+
+/**
+ * Check if classifiers contain a "Private ::" prefix, which signals that the
+ * package is not intended for publication on PyPI. PyPI itself rejects uploads
+ * with this classifier.
+ */
+function hasPrivateClassifier(
+	classifiers: string[] | undefined,
+	packageName: string | undefined,
+	path: string,
+): boolean {
+	const isPrivate = classifiers?.some((c) => c.startsWith('Private :: ')) ?? false
+	if (isPrivate) {
+		log.debug(
+			`Skipping PyPI registry lookup for "${packageName}" in "${path}" because it has a "Private ::" classifier`,
+		)
+	}
+	return isPrivate
+}

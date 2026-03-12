@@ -6,6 +6,7 @@ import { pythonPypiRegistrySource } from '../../src/lib/sources/python-pypi-regi
 import { firstOf } from '../../src/lib/utilities/template-helpers'
 
 const fixturesDirectory = resolve('test/fixtures/pyproject')
+const pyprojectTomlFixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 
 describe('pythonPypiRegistry source', () => {
 	it('should not be available without pyproject.toml', async () => {
@@ -67,6 +68,14 @@ describe('pythonPypiRegistry source', () => {
 
 	it('should return undefined when no package name found', async () => {
 		const context = { options: { path: resolve('.') } }
+		const result = await pythonPypiRegistrySource.extract(context)
+		expect(result).toBeUndefined()
+	})
+
+	it('should skip registry lookup for packages with a "Private ::" classifier', async () => {
+		const context = {
+			options: { path: resolve(pyprojectTomlFixturesDirectory, 'private-package') },
+		}
 		const result = await pythonPypiRegistrySource.extract(context)
 		expect(result).toBeUndefined()
 	})

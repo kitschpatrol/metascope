@@ -147,6 +147,6 @@ describe('parse', () => {
 			parsedCount++
 		}
 
-		expect(parsedCount).toBe(22)
+		expect(parsedCount).toBe(23)
 	})
 })
