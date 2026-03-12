@@ -13,6 +13,23 @@ export default defineConfig([
 				rename: 'web-tree-sitter-LICENSE',
 				to: 'dist/bin',
 			},
+			{
+				from: [
+					'node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm',
+					'node_modules/tree-sitter-python/tree-sitter-python.wasm',
+				],
+				to: 'dist/grammars',
+			},
+			{
+				from: 'node_modules/tree-sitter-ruby/LICENSE',
+				rename: 'tree-sitter-ruby-LICENSE',
+				to: 'dist/grammars',
+			},
+			{
+				from: 'node_modules/tree-sitter-python/LICENSE',
+				rename: 'tree-sitter-python-LICENSE',
+				to: 'dist/grammars',
+			},
 		],
 		deps: {
 			alwaysBundle: /.+/,
