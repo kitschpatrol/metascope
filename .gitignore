@@ -21,6 +21,6 @@ vendor/
 
 # Customizations
 /.claude
-src/lib/grammars/*.wasm
+src/grammars/*.wasm
 /skills-lock.json
 /.agents

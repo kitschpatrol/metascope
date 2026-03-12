@@ -5,8 +5,8 @@
 				{
 					"language": "JSON",
 					"files": 190,
-					"lines": 36752,
-					"code": 36737,
+					"lines": 36842,
+					"code": 36827,
 					"comments": 0,
 					"blanks": 15
 				},
@@ -20,11 +20,11 @@
 				},
 				{
 					"language": "TypeScript",
-					"files": 117,
-					"lines": 17489,
-					"code": 13064,
-					"comments": 2223,
-					"blanks": 2202
+					"files": 118,
+					"lines": 17636,
+					"code": 13183,
+					"comments": 2238,
+					"blanks": 2215
 				},
 				{
 					"language": "XML",
@@ -69,10 +69,10 @@
 				{
 					"language": "Markdown",
 					"files": 81,
-					"lines": 7584,
+					"lines": 7594,
 					"code": 0,
-					"comments": 5993,
-					"blanks": 1591
+					"comments": 5999,
+					"blanks": 1595
 				},
 				{
 					"language": "Plain Text",
@@ -84,10 +84,10 @@
 				}
 			],
 			"total": {
-				"blanks": 16773,
-				"code": 110107,
-				"comments": 26590,
-				"files": 1653,
+				"blanks": 16790,
+				"code": 110316,
+				"comments": 26611,
+				"files": 1654,
 				"languages": [
 					"JSON",
 					"YAML",
@@ -100,7 +100,7 @@
 					"Markdown",
 					"Plain Text"
 				],
-				"lines": 153470
+				"lines": 153717
 			}
 		},
 		"source": "/Users/Someone/metascope"
@@ -116,8 +116,8 @@
 		"data": {
 			"folderName": "metascope",
 			"totalDirectoryCount": 2530,
-			"totalFileCount": 2673,
-			"totalSizeBytes": 8663907
+			"totalFileCount": 2674,
+			"totalSizeBytes": 8671391
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -230,16 +230,16 @@
 		"data": {
 			"branchCount": 2,
 			"branchCurrent": "main",
-			"commitCount": 138,
+			"commitCount": 141,
 			"commitDateFirst": "2026-02-24T12:07:53-05:00",
-			"commitDateLast": "2026-03-11T20:05:24-04:00",
+			"commitDateLast": "2026-03-11T20:53:45-04:00",
 			"contributorCount": 1,
-			"isClean": true,
-			"isDirty": false,
+			"isClean": false,
+			"isDirty": true,
 			"remoteCount": 1,
 			"remoteStatus": {
 				"origin": {
-					"ahead": 13,
+					"ahead": 16,
 					"behind": 0
 				}
 			},
@@ -249,11 +249,11 @@
 			"tagReleaseCount": 1,
 			"tagVersionDateLatest": "2026-03-10T19:02:43-04:00",
 			"tagVersionLatest": "0.1.0",
-			"totalAhead": 13,
+			"totalAhead": 16,
 			"totalBehind": 0,
 			"trackedFileCount": 3036,
-			"trackedSizeBytes": 9207584,
-			"uncommittedFileCount": 0
+			"trackedSizeBytes": 9213994,
+			"uncommittedFileCount": 8
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -266,7 +266,7 @@
 	},
 	"metascope": {
 		"data": {
-			"durationMs": 3406,
+			"durationMs": 5298,
 			"options": {
 				"absolute": true,
 				"offline": false,
@@ -275,7 +275,7 @@
 				"respectIgnored": true,
 				"workspaces": true
 			},
-			"scannedAt": "2026-03-12T00:06:20.507Z",
+			"scannedAt": "2026-03-12T01:16:07.108Z",
 			"version": "0.1.0"
 		},
 		"source": "/Users/Someone/metascope"

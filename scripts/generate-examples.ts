@@ -31,6 +31,9 @@ const report = await Promise.all([
 			githubAccount: 'kitschpatrol',
 		},
 	}),
+	generateExample('metascope-template-metadata', {
+		template: 'metadata',
+	}),
 	generateExample('metascope-template-project', {
 		template: 'project',
 		templateData: {

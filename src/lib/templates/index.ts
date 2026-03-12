@@ -1,8 +1,10 @@
 import type { TemplateDataCodemeta } from './codemeta'
 import type { TemplateDataFrontmatter } from './frontmatter'
+import type { TemplateDataMetadata } from './metadata'
 import type { TemplateDataProject } from './project'
 import { codemeta } from './codemeta'
 import { frontmatter } from './frontmatter'
+import { metadata } from './metadata'
 import { project } from './project'
 
 /**
@@ -11,6 +13,7 @@ import { project } from './project'
 export const templates = {
 	codemeta,
 	frontmatter,
+	metadata,
 	project,
 }
 
@@ -20,6 +23,7 @@ export const templates = {
 export type TemplateMap = {
 	codemeta: TemplateDataCodemeta
 	frontmatter: TemplateDataFrontmatter
+	metadata: TemplateDataMetadata
 	project: TemplateDataProject
 }
 

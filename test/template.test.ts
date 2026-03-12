@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
 import { defineTemplate } from '../src/lib/metadata-types'
 import { codemeta } from '../src/lib/templates/codemeta'
+import { metadata } from '../src/lib/templates/metadata'
 import { firstOf } from '../src/lib/utilities/template-helpers'
 
 const mockContext: MetadataContext = {
@@ -446,5 +447,78 @@ describe('codemeta template', () => {
 		expect(result['@type']).toBe('SoftwareSourceCode')
 		// Should just have the boilerplate, nothing else
 		expect(Object.keys(result)).toEqual(['@context', '@type'])
+	})
+})
+
+describe('metadata template', () => {
+	it('should produce description, homepage, and topics', () => {
+		const result = metadata(mockContext, {})
+		expect(result).toHaveProperty('description')
+		expect(result).toHaveProperty('homepage')
+		expect(result).toHaveProperty('topics')
+	})
+
+	it('should return codemeta description and undefined topics when no metadata file or keywords exist', () => {
+		const result = metadata(mockContext, {})
+		expect(result.description).toBe('A test package')
+		expect(result.topics).toBeUndefined()
+	})
+
+	it('should let metadata file override codemeta values', () => {
+		const contextWithMetadataFile: MetadataContext = {
+			...mockContext,
+			metadataFile: {
+				data: {
+					description: 'Override description',
+					homepage: 'https://example.com',
+					keywords: ['override-tag'],
+					repository: undefined,
+				},
+				source: 'metadata.json',
+			},
+		}
+		const result = metadata(contextWithMetadataFile, {})
+		expect(result.description).toBe('Override description')
+		expect(result.homepage).toBe('https://example.com')
+		expect(result.topics).toEqual(['override-tag'])
+	})
+
+	it('should use codemeta url or codeRepository for homepage', () => {
+		const contextWithRepo: MetadataContext = {
+			...mockContext,
+			nodePackageJson: {
+				data: {
+					// eslint-disable-next-line ts/naming-convention
+					_id: 'test@1.0.0',
+					homepage: 'https://my-site.com',
+					name: 'test',
+					readme: '',
+					version: '1.0.0',
+				},
+				source: 'package.json',
+			},
+		}
+		const result = metadata(contextWithRepo, {})
+		expect(result.homepage).toBe('https://my-site.com')
+	})
+
+	it('should return undefined for all fields when no sources are available', () => {
+		const emptyContext: MetadataContext = {
+			...mockContext,
+			codemetaJson: undefined,
+			codeStats: undefined,
+			fileStats: undefined,
+			gitConfig: undefined,
+			github: undefined,
+			gitStats: undefined,
+			licenseFile: undefined,
+			metascope: undefined,
+			nodeNpmRegistry: undefined,
+			nodePackageJson: undefined,
+		}
+		const result = metadata(emptyContext, {})
+		expect(result.description).toBeUndefined()
+		expect(result.homepage).toBeUndefined()
+		expect(result.topics).toBeUndefined()
 	})
 })

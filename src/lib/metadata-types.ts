@@ -174,7 +174,7 @@ export const DEFAULT_GET_METADATA_OPTIONS: Required<
  */
 export type GetMetadataOptions = GetMetadataBaseOptions & {
 	/** Built-in template name or omit for full output. */
-	template?: 'frontmatter' | 'project' | (string & {})
+	template?: 'frontmatter' | 'metadata' | 'project' | (string & {})
 }
 
 /**

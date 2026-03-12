@@ -21,7 +21,7 @@ let pythonLanguage: Language | undefined
 /** Get the Python language (cached after first load). */
 export async function getPythonLanguage(): Promise<Language> {
 	pythonLanguage ??= await Language.load(
-		fileURLToPath(new URL('../grammars/tree-sitter-python.wasm', import.meta.url)),
+		fileURLToPath(new URL('../../grammars/tree-sitter-python.wasm', import.meta.url)),
 	)
 	return pythonLanguage
 }
@@ -30,7 +30,7 @@ let rubyLanguage: Language | undefined
 /** Get the Ruby language (cached after first load). */
 export async function getRubyLanguage(): Promise<Language> {
 	rubyLanguage ??= await Language.load(
-		fileURLToPath(new URL('../grammars/tree-sitter-ruby.wasm', import.meta.url)),
+		fileURLToPath(new URL('../../grammars/tree-sitter-ruby.wasm', import.meta.url)),
 	)
 	return rubyLanguage
 }
