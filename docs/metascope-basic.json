@@ -5,26 +5,26 @@
 				{
 					"language": "JSON",
 					"files": 190,
-					"lines": 36788,
-					"code": 36773,
+					"lines": 36752,
+					"code": 36737,
 					"comments": 0,
 					"blanks": 15
 				},
 				{
 					"language": "YAML",
 					"files": 329,
-					"lines": 40323,
-					"code": 32786,
+					"lines": 40329,
+					"code": 32790,
 					"comments": 1912,
-					"blanks": 5625
+					"blanks": 5627
 				},
 				{
 					"language": "TypeScript",
-					"files": 116,
-					"lines": 17195,
-					"code": 12849,
-					"comments": 2180,
-					"blanks": 2166
+					"files": 117,
+					"lines": 17489,
+					"code": 13064,
+					"comments": 2223,
+					"blanks": 2202
 				},
 				{
 					"language": "XML",
@@ -69,10 +69,10 @@
 				{
 					"language": "Markdown",
 					"files": 81,
-					"lines": 7511,
+					"lines": 7584,
 					"code": 0,
-					"comments": 5941,
-					"blanks": 1570
+					"comments": 5993,
+					"blanks": 1591
 				},
 				{
 					"language": "Plain Text",
@@ -84,10 +84,10 @@
 				}
 			],
 			"total": {
-				"blanks": 16714,
-				"code": 109924,
-				"comments": 26495,
-				"files": 1652,
+				"blanks": 16773,
+				"code": 110107,
+				"comments": 26590,
+				"files": 1653,
 				"languages": [
 					"JSON",
 					"YAML",
@@ -100,7 +100,7 @@
 					"Markdown",
 					"Plain Text"
 				],
-				"lines": 153133
+				"lines": 153470
 			}
 		},
 		"source": "/Users/Someone/metascope"
@@ -114,9 +114,10 @@
 	},
 	"fileStats": {
 		"data": {
+			"folderName": "metascope",
 			"totalDirectoryCount": 2530,
-			"totalFileCount": 2672,
-			"totalSizeBytes": 8641944
+			"totalFileCount": 2673,
+			"totalSizeBytes": 8663907
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -141,7 +142,9 @@
 			},
 			"branch": {
 				"main": {
-					"vscode-merge-base": "origin/main"
+					"vscode-merge-base": "origin/main",
+					"remote": "origin",
+					"merge": "refs/heads/main"
 				}
 			}
 		},
@@ -152,16 +155,16 @@
 			"createdAt": "2026-02-25T08:29:15Z",
 			"databaseId": 1166446600,
 			"defaultBranch": "main",
-			"description": "Extract metadata from a code repository.",
+			"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 			"discussionCount": 0,
-			"diskUsageBytes": 165888,
+			"diskUsageBytes": 2736000,
 			"forkCount": 0,
 			"hasContributing": false,
 			"hasDiscussionsEnabled": false,
 			"hasIssuesEnabled": true,
 			"hasLfs": false,
 			"hasPages": false,
-			"hasProjectsEnabled": true,
+			"hasProjectsEnabled": false,
 			"hasSponsorshipsEnabled": false,
 			"hasVulnerabilityAlertsEnabled": true,
 			"hasWikiEnabled": false,
@@ -170,14 +173,14 @@
 			"isFork": false,
 			"isInOrganization": false,
 			"isMirror": false,
-			"isPrivate": true,
+			"isPrivate": false,
 			"isSecurityPolicyEnabled": false,
 			"issueCountClosed": 0,
 			"issueCountOpen": 0,
 			"isTemplate": false,
 			"languages": {
-				"TypeScript": 47273,
-				"JavaScript": 3136
+				"TypeScript": 563517,
+				"JavaScript": 5982
 			},
 			"licenseKey": "mit",
 			"licenseName": "MIT License",
@@ -185,14 +188,17 @@
 			"licenseUrl": "http://choosealicense.com/licenses/mit/",
 			"name": "metascope",
 			"nameWithOwner": "kitschpatrol/metascope",
-			"openGraphImageUrl": "https://avatars.githubusercontent.com/u/194164?s=400&v=4",
+			"openGraphImageUrl": "https://opengraph.githubassets.com/3e3c613feffe062064ebe37421aa443062c09f6673655671e6c1a8e971700722/kitschpatrol/metascope",
 			"ownerLogin": "kitschpatrol",
 			"ownerType": "User",
 			"primaryLanguage": "TypeScript",
 			"pullRequestCountClosed": 0,
 			"pullRequestCountMerged": 0,
 			"pullRequestCountOpen": 0,
-			"pushedAt": "2026-02-25T08:29:16Z",
+			"pushedAt": "2026-03-10T23:02:44Z",
+			"releaseCount": 1,
+			"releaseDateLatest": "2026-03-10T23:02:43Z",
+			"releaseVersionLatest": "v0.1.0",
 			"settings": {
 				"allowUpdateBranch": false,
 				"autoMergeAllowed": false,
@@ -210,12 +216,12 @@
 			"sshUrl": "git@github.com:kitschpatrol/metascope.git",
 			"stargazerCount": 0,
 			"submoduleCount": 0,
-			"topics": ["cli", "npm-package"],
-			"updatedAt": "2026-02-26T22:26:29Z",
+			"topics": ["cli", "npm-package", "codemeta", "metadata"],
+			"updatedAt": "2026-03-10T23:02:46Z",
 			"url": "https://github.com/kitschpatrol/metascope",
 			"usesCustomOpenGraphImage": false,
-			"visibility": "PRIVATE",
-			"vulnerabilityAlertCount": 8,
+			"visibility": "PUBLIC",
+			"vulnerabilityAlertCount": 0,
 			"watcherCount": 0
 		},
 		"source": "https://github.com/kitschpatrol/metascope"
@@ -224,25 +230,30 @@
 		"data": {
 			"branchCount": 2,
 			"branchCurrent": "main",
-			"commitCount": 118,
+			"commitCount": 138,
 			"commitDateFirst": "2026-02-24T12:07:53-05:00",
-			"commitDateLast": "2026-03-10T17:14:46-04:00",
+			"commitDateLast": "2026-03-11T20:05:24-04:00",
 			"contributorCount": 1,
-			"isClean": false,
-			"isDirty": true,
+			"isClean": true,
+			"isDirty": false,
 			"remoteCount": 1,
 			"remoteStatus": {
 				"origin": {
-					"ahead": 116,
+					"ahead": 13,
 					"behind": 0
 				}
 			},
-			"tagCount": 0,
-			"totalAhead": 116,
+			"tagCount": 1,
+			"tagDateLatest": "2026-03-10T19:02:43-04:00",
+			"tagNameLatest": "v0.1.0",
+			"tagReleaseCount": 1,
+			"tagVersionDateLatest": "2026-03-10T19:02:43-04:00",
+			"tagVersionLatest": "0.1.0",
+			"totalAhead": 13,
 			"totalBehind": 0,
-			"trackedFileCount": 3029,
-			"trackedSizeBytes": 8744130,
-			"uncommittedFileCount": 12
+			"trackedFileCount": 3036,
+			"trackedSizeBytes": 9207584,
+			"uncommittedFileCount": 0
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -255,7 +266,7 @@
 	},
 	"metascope": {
 		"data": {
-			"durationMs": 5105,
+			"durationMs": 3406,
 			"options": {
 				"absolute": true,
 				"offline": false,
@@ -264,16 +275,27 @@
 				"respectIgnored": true,
 				"workspaces": true
 			},
-			"scannedAt": "2026-03-10T22:13:24.070Z",
-			"version": "0.0.0"
+			"scannedAt": "2026-03-12T00:06:20.507Z",
+			"version": "0.1.0"
 		},
 		"source": "/Users/Someone/metascope"
+	},
+	"nodeNpmRegistry": {
+		"data": {
+			"fileCount": 16,
+			"hasTypes": true,
+			"publishDateLatest": "2026-03-10T23:02:54.917Z",
+			"unpackedSizeBytes": 10118204,
+			"url": "https://www.npmjs.com/package/metascope",
+			"versionLatest": "0.1.0"
+		},
+		"source": "https://www.npmjs.com/package/metascope"
 	},
 	"nodePackageJson": {
 		"data": {
 			"name": "metascope",
-			"version": "0.0.0",
-			"description": "A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.",
+			"version": "0.1.0",
+			"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 			"keywords": ["metadata", "codemeta", "cli", "npm-package"],
 			"homepage": "https://github.com/kitschpatrol/metascope",
 			"bugs": {
@@ -311,8 +333,8 @@
 				"fix": "ksc fix",
 				"lint": "ksc lint",
 				"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
-				"pretest": "cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/lib/grammars/tree-sitter-python.wasm",
-				"test": "vitest"
+				"pretest": "mkdir -p src/lib/grammars && cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/lib/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/lib/grammars/tree-sitter-python.wasm",
+				"test": "vitest run"
 			},
 			"dependencies": {
 				"@bacons/xcode": "1.0.0-alpha.33",
@@ -324,7 +346,7 @@
 				"@types/yargs": "^17.0.35",
 				"case-police": "^2.2.0",
 				"defu": "^6.1.4",
-				"fast-xml-parser": "^5.5.1",
+				"fast-xml-parser": "^5.5.3",
 				"find-workspaces": "^0.3.1",
 				"git-url-parse": "^16.1.0",
 				"jiti": "^2.6.1",
@@ -346,7 +368,7 @@
 				"tinyexec": "^1.0.2",
 				"tinyglobby": "^0.2.15",
 				"unified": "^11.0.5",
-				"updates": "^17.9.0",
+				"updates": "^17.9.1",
 				"web-tree-sitter": "^0.26.6",
 				"yaml": "^2.8.2",
 				"yargs": "^18.0.0",
@@ -365,16 +387,17 @@
 				"publint": "^0.3.18",
 				"tree-sitter-python": "^0.25.0",
 				"tree-sitter-ruby": "^0.23.1",
-				"tsdown": "^0.21.1",
+				"tsdown": "^0.21.2",
+				"tsx": "^4.21.0",
 				"typescript": "~5.9.3",
 				"vitest": "^4.0.18"
 			},
-			"packageManager": "pnpm@10.32.0",
+			"packageManager": "pnpm@10.32.1",
 			"engines": {
 				"node": ">=22.17.0"
 			},
 			"readme": "ERROR: No README data found!",
-			"_id": "metascope@0.0.0"
+			"_id": "metascope@0.1.0"
 		},
 		"source": "/Users/Someone/metascope/package.json"
 	},

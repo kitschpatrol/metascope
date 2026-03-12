@@ -11,8 +11,12 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-03-10",
-	"description": "A CLI tool and TypeScript library to easily extract all kinds of metadata from software projects.",
+	"dateModified": "2026-03-11",
+	"datePublished": "2026-03-10",
+	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
+	"downloadUrl": "https://www.npmjs.com/package/metascope",
+	"identifier": "metascope",
+	"isAccessibleForFree": true,
 	"issueTracker": "https://github.com/kitschpatrol/metascope/issues",
 	"keywords": ["metadata", "codemeta", "cli", "npm-package"],
 	"license": "https://spdx.org/licenses/MIT",
@@ -69,7 +73,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "fast-xml-parser",
-			"version": "^5.5.1"
+			"version": "^5.5.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -179,7 +183,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "updates",
-			"version": "^17.9.0"
+			"version": "^17.9.1"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -266,7 +270,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tsdown",
-			"version": "^0.21.1"
+			"version": "^0.21.2"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"name": "tsx",
+			"version": "^4.21.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -280,5 +289,5 @@
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.0.0"
+	"version": "0.1.0"
 }
