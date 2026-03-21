@@ -561,6 +561,10 @@ Metascope was built to support automated generation of project dashboards, badge
   A suite of CLI tools to automate software compliance checks (Kotlin)
 - [Git Truck](https://github.com/git-truck/git-truck)\
   Repository visualization. (TypeScript)
+- [Onefetch](https://github.com/o2sh/onefetch)
+  Offline command-line Git information tool (Rust)
+- [Sokrates](https://www.sokrates.dev/)
+  Polyglot source code examination tool (Java)
 
 ## Slop factor
 

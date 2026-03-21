@@ -6,6 +6,10 @@
 		"metadata",
 		"codemeta",
 		"cli",
+		"git",
+		"repository",
+		"software-analytics",
+		"metrics",
 		"npm-package"
 	],
 	"homepage": "https://github.com/kitschpatrol/metascope",
