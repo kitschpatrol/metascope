@@ -11,14 +11,23 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-03-11",
+	"dateModified": "2026-03-20",
 	"datePublished": "2026-03-12",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
 	"isAccessibleForFree": true,
 	"issueTracker": "https://github.com/kitschpatrol/metascope/issues",
-	"keywords": ["metadata", "codemeta", "cli", "npm-package"],
+	"keywords": [
+		"metadata",
+		"codemeta",
+		"cli",
+		"git",
+		"repository",
+		"software-analytics",
+		"metrics",
+		"npm-package"
+	],
 	"license": "https://spdx.org/licenses/MIT",
 	"name": "metascope",
 	"programmingLanguage": ["TypeScript"],
@@ -48,7 +57,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@types/node",
-			"version": "~24.1.0"
+			"version": "~22.17.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -73,7 +82,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "fast-xml-parser",
-			"version": "^5.5.3"
+			"version": "^5.5.9"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -108,7 +117,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "picomatch",
-			"version": "^4.0.3"
+			"version": "^4.0.4"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -158,7 +167,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "smol-toml",
-			"version": "^1.6.0"
+			"version": "^1.6.1"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -168,7 +177,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tinyexec",
-			"version": "^1.0.2"
+			"version": "^1.0.4"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -183,17 +192,17 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "updates",
-			"version": "^17.9.1"
+			"version": "^17.13.1"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "web-tree-sitter",
-			"version": "^0.26.6"
+			"version": "^0.26.7"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "yaml",
-			"version": "^2.8.2"
+			"version": "^2.8.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -220,7 +229,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@kitschpatrol/shared-config",
-			"version": "^6.0.3"
+			"version": "^6.1.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -240,7 +249,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "bumpp",
-			"version": "^10.4.1"
+			"version": "^11.0.1"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -270,7 +279,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tsdown",
-			"version": "^0.21.2"
+			"version": "^0.21.7"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -285,9 +294,9 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "vitest",
-			"version": "^4.0.18"
+			"version": "^4.1.2"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.2.1"
+	"version": "0.2.2"
 }

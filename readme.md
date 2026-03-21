@@ -35,7 +35,7 @@ Highlights:
   Metascope pulls project metadata from many available sources: `package.json`, `pyproject.toml`, NPM, PyPI, GitHub, git, filesystem stats, and [more](#sources).
 
 - **Graceful degradation**\
-  Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available.
+  Each source checks its own availability before extraction. Missing tools, unavailable APIs, or absent credentials are silently skipped — you always get back whatever data _is_ available within the constraints of the calling context.
 
 - **Parallel extraction**\
   After an initial codemeta pass for discovery hints (package name, repository URL, keywords), all remaining sources are checked and extracted concurrently.
