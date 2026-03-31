@@ -49,7 +49,8 @@
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
 		"pretest": "mkdir -p src/grammars && cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/grammars/tree-sitter-python.wasm",
-		"test": "vitest run"
+		"test": "vitest run",
+		"test:live": "METASCOPE_TEST_MOCK=false vitest run"
 	},
 	"dependencies": {
 		"@bacons/xcode": "1.0.0-alpha.33",
@@ -99,6 +100,7 @@
 		"bumpp": "^11.0.1",
 		"jsonld": "^9.0.0",
 		"mdat-plugin-cli-help": "^1.0.7",
+		"msw": "2.12.14",
 		"publint": "^0.3.18",
 		"tree-sitter-python": "^0.25.0",
 		"tree-sitter-ruby": "^0.23.1",

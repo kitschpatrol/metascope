@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { pythonPypiRegistrySource } from '../../src/lib/sources/python-pypi-registry'
 import { firstOf } from '../../src/lib/utilities/template-helpers'
 
-const fixturesDirectory = resolve('test/fixtures/pyproject')
+const fixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 const pyprojectTomlFixturesDirectory = resolve('test/fixtures/python-pyproject-toml')
 
 describe('pythonPypiRegistry source', () => {
@@ -18,45 +18,23 @@ describe('pythonPypiRegistry source', () => {
 	it('should extract data for a known package', async () => {
 		// Use a fixture with a pyproject.toml containing a known PyPI package
 		const context = { options: { path: resolve(fixturesDirectory, 'proycon-codemetapy') } }
-		let result: Awaited<ReturnType<typeof pythonPypiRegistrySource.extract>>
-		try {
-			result = await pythonPypiRegistrySource.extract(context)
-		} catch {
-			// Network failures should not fail the test
-			console.warn('Warning: PyPI API request failed, skipping test')
-			return
-		}
+		const result = await pythonPypiRegistrySource.extract(context)
 
-		if (result === undefined) {
-			// PyPI API may be unavailable or rate-limited
-			console.warn('Warning: PyPI API returned no data, skipping assertions')
-			return
-		}
-
+		expect(result).toBeDefined()
 		const record = firstOf(result)!
 		expect(record.data.versionLatest).toBeDefined()
 		expect(typeof record.data.versionLatest).toBe('string')
 		expect(record.data.releaseCount).toBeGreaterThan(0)
-		// Download fields depend on pypistats API which may be rate-limited
-		const downloadFields = [
-			'downloads180Days',
-			'downloadsDaily',
-			'downloadsWeekly',
-			'downloadsMonthly',
-		] as const
-		for (const field of downloadFields) {
-			expect(record.data[field] === undefined || typeof record.data[field] === 'number').toBe(true)
-		}
-
-		if (downloadFields.some((field) => record.data[field] === undefined)) {
-			console.warn('Warning: some pypistats download fields are undefined, likely rate-limited')
-		}
+		expect(typeof record.data.downloadsDaily).toBe('number')
+		expect(typeof record.data.downloadsWeekly).toBe('number')
+		expect(typeof record.data.downloadsMonthly).toBe('number')
+		expect(typeof record.data.downloads180Days).toBe('number')
 	})
 
 	it('should return undefined for nonexistent package', async () => {
 		// Create a temp directory with a fake pyproject.toml
 
-		const temporaryDirectory = mkdtempSync(join('/tmp', 'pypi-test-'))
+		const temporaryDirectory = mkdtempSync(join(tmpdir(), 'pypi-test-'))
 		writeFileSync(
 			join(temporaryDirectory, 'pyproject.toml'),
 			'[project]\nname = "this-package-definitely-does-not-exist-on-pypi-12345"',

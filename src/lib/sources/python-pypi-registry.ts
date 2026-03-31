@@ -72,6 +72,11 @@ const pypistatsOverallSchema = z.object({
 
 export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 	async discover(context) {
+		if (context.options.offline) {
+			log.warn("Skipping Python PyPI registry data source since we're in offline mode")
+			return []
+		}
+
 		let packageNames = []
 
 		// Try to get package name from pyproject.toml context

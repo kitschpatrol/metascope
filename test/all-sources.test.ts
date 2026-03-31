@@ -1,22 +1,28 @@
+/* eslint-disable ts/require-await */
+
 import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
-import { getMetadata } from '../src/lib/metadata'
+import { beforeAll, describe, expect, it } from 'vitest'
+import type { getMetadata } from '../src/lib/metadata'
 import { firstOf } from '../src/lib/utilities/template-helpers'
 
 const fixturesDirectory = resolve('test/fixtures/all-sources')
 
 describe('all-sources fixture', () => {
+	let result: Awaited<ReturnType<typeof getMetadata>>
+
 	// Run once with offline mode to avoid network calls, non-recursive to avoid ambiguity
-	const resultPromise = getMetadata({
-		offline: true,
-		path: fixturesDirectory,
-		workspaces: false,
-	})
+	beforeAll(async () => {
+		const { getMetadata } = await import('../src/lib/metadata')
+		result = await getMetadata({
+			offline: true,
+			path: fixturesDirectory,
+			workspaces: false,
+		})
+	}, 60_000)
 
 	// ── Phase 1: File sources ──────────────────────────────
 
 	it('should extract arduinoLibraryProperties', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.arduinoLibraryProperties)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('AllSourcesLib')
@@ -37,7 +43,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract cinderCinderblockXml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.cinderCinderblockXml)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('AllSourcesBlock')
@@ -56,7 +61,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract codemetaJson', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.codemetaJson)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('All Sources Fixture')
@@ -90,7 +94,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract goGoMod', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.goGoMod)?.data
 		expect(data).toBeDefined()
 		expect(data!.module).toBe('github.com/test-org/all-sources')
@@ -101,7 +104,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract goGoreleaserYaml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.goGoreleaserYaml)?.data
 		expect(data).toBeDefined()
 		expect(data!.project_name).toBe('all-sources-fixture')
@@ -117,7 +119,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract javaPomXml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.javaPomXml)?.data
 		expect(data).toBeDefined()
 		expect(data!.groupId).toBe('com.example')
@@ -139,7 +140,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract licenseFile', async () => {
-		const result = await resultPromise
 		const records = Array.isArray(result.licenseFile)
 			? result.licenseFile
 			: result.licenseFile
@@ -152,7 +152,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract metadataFile', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.metadataFile)?.data
 		expect(data).toBeDefined()
 		expect(data!.description).toBe('A comprehensive test fixture for metadata extraction.')
@@ -162,7 +161,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract metascope', async () => {
-		const result = await resultPromise
 		expect(result.metascope).toBeDefined()
 		expect(result.metascope!.data.version).toBeDefined()
 		expect(result.metascope!.data.scannedAt).toBeDefined()
@@ -171,7 +169,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract nodePackageJson', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.nodePackageJson)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
@@ -183,7 +180,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract obsidianPluginManifestJson', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.obsidianPluginManifestJson)?.data
 		expect(data).toBeDefined()
 		expect(data!.id).toBe('all-sources-plugin')
@@ -198,7 +194,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract openframeworksAddonConfigMk', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.openframeworksAddonConfigMk)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('ofxAllSources')
@@ -213,7 +208,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract openframeworksInstallXml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.openframeworksInstallXml)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('ofxAllSources')
@@ -230,7 +224,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract publiccodeYaml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.publiccodeYaml)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('All Sources Fixture')
@@ -266,7 +259,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract pythonPkgInfo', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.pythonPkgInfo)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
@@ -291,13 +283,11 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract pythonPyprojectToml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.pythonPyprojectToml)?.data
 		expect(data).toBeDefined()
 	})
 
 	it('should extract pythonSetupCfg', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.pythonSetupCfg)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
@@ -319,7 +309,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract pythonSetupPy', async () => {
-		const result = await resultPromise
 		// Setup.py parsing uses tree-sitter which may not support all grammar versions
 		// in all environments; skip if extraction failed gracefully
 		if (result.pythonSetupPy) {
@@ -340,14 +329,12 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract readmeFile', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.readmeFile)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('All Sources Fixture')
 	})
 
 	it('should extract rubyGemspec', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.rubyGemspec)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
@@ -376,7 +363,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract rustCargoToml', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.rustCargoToml)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
@@ -402,7 +388,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract xcodeInfoPlist', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.xcodeInfoPlist)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('All Sources App')
@@ -415,7 +400,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract xcodeProjectPbxproj', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.xcodeProjectPbxproj)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('All Sources App')
@@ -430,7 +414,6 @@ describe('all-sources fixture', () => {
 	// ── Phase 2: Tool/network sources ──────────────────────
 
 	it('should extract fileStats', async () => {
-		const result = await resultPromise
 		const data = firstOf(result.fileStats)?.data
 		expect(data).toBeDefined()
 		expect(data!.totalFileCount).toBeGreaterThan(0)
@@ -439,7 +422,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract codeStats', async () => {
-		const result = await resultPromise
 		const data = result.codeStats
 		// Code-statistics uses tokei, which may or may not be available
 		if (data) {
@@ -453,14 +435,12 @@ describe('all-sources fixture', () => {
 	// ── Skipped sources (require network or git) ───────────
 
 	it('should not extract registry sources in offline mode', async () => {
-		const result = await resultPromise
 		// These require network access to registries
 		expect(result.nodeNpmRegistry).toBeUndefined()
 		expect(result.pythonPypiRegistry).toBeUndefined()
 	})
 
 	it('should not extract git sources without a git repo', async () => {
-		const result = await resultPromise
 		// No .git directory in fixture
 		expect(result.gitConfig).toBeUndefined()
 		expect(result.gitStats).toBeUndefined()

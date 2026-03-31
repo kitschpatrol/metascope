@@ -600,6 +600,11 @@ function mapRepoData(
 
 export const githubSource = defineSource<'github'>({
 	async discover(context) {
+		if (context.options.offline) {
+			log.warn("Skipping GitHub data source since we're in offline mode")
+			return []
+		}
+
 		let gitRemotes = ensureArray(context.metadata?.gitConfig)
 			.map((config) => config.data.remote)
 			.filter((remote) => remote !== undefined)
