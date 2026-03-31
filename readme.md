@@ -6,10 +6,18 @@
 
 <!-- /title -->
 
-<!-- badges -->
+<!-- badges { custom: {
+    "CI": {
+      image: "https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml/badge.svg",
+      link: "https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml",
+    },
+  }
+}
+-->
 
 [![NPM Package metascope](https://img.shields.io/npm/v/metascope.svg)](https://npmjs.com/package/metascope)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml)
 
 <!-- /badges -->
 
