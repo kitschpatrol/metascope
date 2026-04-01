@@ -25,7 +25,7 @@ const pluginStatsSchema = z.record(z.string(), z.record(z.string(), z.number()))
 export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry'>({
 	async discover(context) {
 		if (context.options.offline) {
-			log.warn("Skipping Obsidian plugin registry data source since we're in offline mode")
+			log.debug("Skipping Obsidian plugin registry data source since we're in offline mode")
 			return []
 		}
 
@@ -36,7 +36,7 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 
 		// Fall back to extracting it ourselves if the source hasn't run yet
 		if (pluginIds.length === 0 && !context.completedSources?.has('obsidianPluginManifestJson')) {
-			log.warn(
+			log.debug(
 				`Missing obsidianPluginManifestJson in source context metadata for ${context.options.path}, extracting it now...`,
 			)
 			const extraction = await obsidianPluginManifestJsonSource.extract(context)

@@ -601,7 +601,7 @@ function mapRepoData(
 export const githubSource = defineSource<'github'>({
 	async discover(context) {
 		if (context.options.offline) {
-			log.warn("Skipping GitHub data source since we're in offline mode")
+			log.debug("Skipping GitHub data source since we're in offline mode")
 			return []
 		}
 
@@ -611,7 +611,7 @@ export const githubSource = defineSource<'github'>({
 
 		// Fall back to extracting it ourselves if the source hasn't run yet
 		if (gitRemotes.length === 0 && !context.completedSources?.has('gitConfig')) {
-			log.warn(
+			log.debug(
 				`Missing gitConfig in source context metadata for ${context.options.path}, extracting it now...`,
 			)
 			const gitConfig = await gitConfigSource.extract(context)

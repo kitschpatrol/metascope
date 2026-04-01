@@ -38,7 +38,7 @@ export type NodeNpmRegistryData = OneOrMany<SourceRecord<NodeNpmRegistryInfo>> |
 export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 	async discover(context) {
 		if (context.options.offline) {
-			log.warn("Skipping Node NPM registry data source since we're in offline mode")
+			log.debug("Skipping Node NPM registry data source since we're in offline mode")
 			return []
 		}
 
@@ -47,7 +47,7 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 
 		// Fall back to extracting it ourselves if the source hasn't run yet
 		if (packages.length === 0 && !context.completedSources?.has('nodePackageJson')) {
-			log.warn(
+			log.debug(
 				`Missing nodePackageJson in source context metadata for ${context.options.path}, extracting it now...`,
 			)
 			const nodePackageJson = await nodePackageJsonSource.extract(context)
