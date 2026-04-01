@@ -65,6 +65,7 @@
 		"fast-xml-parser": "^5.5.9",
 		"find-workspaces": "^0.3.1",
 		"git-url-parse": "^16.1.0",
+		"gray-matter-es": "^0.2.1",
 		"jiti": "^2.6.1",
 		"lognow": "^0.5.2",
 		"octokit": "^5.0.5",

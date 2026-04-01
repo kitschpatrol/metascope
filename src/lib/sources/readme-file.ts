@@ -7,6 +7,7 @@
  */
 
 import type { Nodes, PhrasingContent } from 'mdast'
+import { matter } from 'gray-matter-es'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import remarkParse from 'remark-parse'
@@ -19,6 +20,8 @@ import { defineSource } from '../source'
 // ─── Schema ─────────────────────────────────────────────────────────
 
 const readmeSchema = z.object({
+	/** YAML frontmatter key-value pairs, if present. */
+	frontmatter: z.record(z.string(), z.unknown()).optional(),
 	/** Project name extracted from the first H1 heading. */
 	name: z.string(),
 })
@@ -72,9 +75,14 @@ export const readmePattern = /^readme(\.\w+)?$/i
  * @returns Parsed metadata, or `undefined` if no H1 heading is found.
  */
 export function parse(content: string): Readme | undefined {
-	const name = extractFirstH1(content)
+	const { content: markdown, data } = matter(content)
+	const name = extractFirstH1(markdown)
 	if (!name) return undefined
-	return readmeSchema.parse({ name })
+
+	return readmeSchema.parse({
+		frontmatter: Object.keys(data).length > 0 ? data : undefined,
+		name,
+	})
 }
 
 // ─── Source ──────────────────────────────────────────────────────────
