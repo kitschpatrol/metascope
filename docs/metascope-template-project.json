@@ -12,11 +12,11 @@
 	"isOnNpm": true,
 	"isPublic": true,
 	"issueCount": 0,
-	"lastCommitDate": "2026-03-31T23:53:56-04:00",
+	"lastCommitDate": "2026-04-01T04:18:38-04:00",
 	"license": "MIT",
 	"majorUpdateCount": 1,
 	"majorUpdateList": ["typescript"],
-	"npmDownloadCount": 400,
+	"npmDownloadCount": 405,
 	"readmePath": "file:///Users/Someone/metascope/readme.md",
 	"repositoryPath": "file:///Users/Someone/metascope",
 	"tags": [
@@ -33,5 +33,5 @@
 	"type": "source",
 	"usesPnpm": true,
 	"usesSharedConfig": true,
-	"version": "0.2.3"
+	"version": "0.3.0"
 }

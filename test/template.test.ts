@@ -63,6 +63,7 @@ const mockContext: MetadataContext = {
 		},
 		source: 'test',
 	},
+	githubActions: undefined,
 	gitStats: {
 		data: {
 			branchCurrent: 'main',

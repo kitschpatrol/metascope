@@ -7,6 +7,7 @@ import type { FileStatsData } from './sources/file-stats'
 import type { GitConfigData } from './sources/git-config'
 import type { GitStatsData } from './sources/git-stats'
 import type { GitHubData } from './sources/github'
+import type { GitHubActionsData } from './sources/github-actions'
 import type { GoGoModData } from './sources/go-go-mod'
 import type { GoGoreleaserYamlData } from './sources/go-goreleaser-yaml'
 import type { JavaPomXmlData } from './sources/java-pom-xml'
@@ -48,6 +49,7 @@ export type MetadataContext = {
 	fileStats: FileStatsData
 	gitConfig: GitConfigData
 	github: GitHubData
+	githubActions: GitHubActionsData
 	gitStats: GitStatsData
 	goGoMod: GoGoModData
 	goGoreleaserYaml: GoGoreleaserYamlData

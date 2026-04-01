@@ -26,6 +26,7 @@ import { fileStatsSource } from './sources/file-stats.js'
 import { gitConfigSource } from './sources/git-config'
 import { gitStatsSource } from './sources/git-stats.js'
 import { githubSource } from './sources/github'
+import { githubActionsSource } from './sources/github-actions'
 import { goGoModSource } from './sources/go-go-mod'
 import { goGoreleaserYamlSource } from './sources/go-goreleaser-yaml'
 import { javaPomXmlSource } from './sources/java-pom-xml'
@@ -68,6 +69,7 @@ const sources: readonly MetadataSource[] = [
 	cinderCinderblockXmlSource,
 	codemetaJsonSource,
 	gitConfigSource,
+	githubActionsSource,
 	goGoModSource,
 	goGoreleaserYamlSource,
 	javaPomXmlSource,
@@ -240,6 +242,7 @@ export async function getMetadata<T>(
 		fileStats: undefined,
 		gitConfig: undefined,
 		github: undefined,
+		githubActions: undefined,
 		gitStats: undefined,
 		goGoMod: undefined,
 		goGoreleaserYaml: undefined,
