@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { coerce, diff } from 'semver'
 import { exec } from 'tinyexec'
@@ -53,26 +51,13 @@ const updatesOutputSchema = z.object({
 })
 
 /**
- * Resolve the path to the `updates` CLI binary from its installed package.
+ * Resolve the path to the `updates` CLI binary.
  *
- * Uses `import.meta.resolve` instead of `createRequire` so that resolution
- * works even when metascope's code is re-bundled by a downstream consumer
- * (where `import.meta.url` would point to the consumer's output, not to
- * metascope's node_modules).
+ * Consumers that bundle metascope must externalize it (e.g. via `neverBundle`)
+ * so that `import.meta.resolve` can find the `updates` dependency.
  */
 function resolveUpdatesBinary(): string {
-	const packageJsonUrl = import.meta.resolve('updates/package.json')
-	const packageJsonPath = fileURLToPath(packageJsonUrl)
-	const packageJson: unknown = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
-	const bin =
-		typeof packageJson === 'object' &&
-		packageJson !== null &&
-		'bin' in packageJson &&
-		typeof packageJson.bin === 'string'
-			? packageJson.bin
-			: undefined
-	if (!bin) throw new Error('Could not resolve updates binary path')
-	return join(dirname(packageJsonPath), bin)
+	return fileURLToPath(import.meta.resolve('updates/dist/index.js'))
 }
 
 /**
