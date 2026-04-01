@@ -119,7 +119,7 @@ metascope [path]
 
 | Option                 | Description                                                                                                                                                                | Type      | Default |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| `--template`<br>`-t`   | Built-in template name (`codemeta`, `codemetaJson`, `frontmatter`, `metadata`, `project`) or path to a custom template file                                                                | `string`  |         |
+| `--template`<br>`-t`   | Built-in template name (`codemeta`, `codemetaJson`, `frontmatter`, `metadata`, `project`) or path to a custom template file                                                | `string`  |         |
 | `--github-token`       | GitHub API token (or set `$GITHUB_TOKEN`)                                                                                                                                  | `string`  |         |
 | `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                  | `array`   |         |
 | `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                          | `array`   |         |
