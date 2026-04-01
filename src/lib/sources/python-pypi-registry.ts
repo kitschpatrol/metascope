@@ -136,7 +136,7 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 			const anyCompleted = pythonSources.some((key) => context.completedSources?.has(key))
 
 			if (!anyCompleted) {
-				log.warn(
+				log.debug(
 					`Missing python package names in source context metadata for ${context.options.path}, extracting them now...`,
 				)
 
