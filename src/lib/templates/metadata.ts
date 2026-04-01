@@ -1,7 +1,6 @@
 import { defineTemplate } from '../metadata-types'
-import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import { firstOf } from '../utilities/template-helpers'
-import { codemeta as codemetaTemplate } from './codemeta'
+import { codemetaJson as codemetaJsonTemplate } from './codemeta-json'
 
 export type TemplateDataMetadata = ReturnType<typeof metadata>
 
@@ -30,8 +29,7 @@ function normalizeGitUrl(url: string | undefined): string | undefined {
  * metadata.json source fields override the result.
  */
 export const metadata = defineTemplate((context, templateData) => {
-	const codemetaTemplateOutput = codemetaTemplate(context, templateData)
-	const codemeta = codeMetaJsonDataSchema.parse(codemetaTemplateOutput)
+	const codemeta = codemetaJsonTemplate(context, templateData)
 
 	const metadataFile = firstOf(context.metadataFile)?.data
 

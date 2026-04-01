@@ -4,7 +4,6 @@
 
 import is from '@sindresorhus/is'
 import { defineTemplate } from '../metadata-types'
-import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import {
 	dependencyNames,
 	firstOf,
@@ -19,7 +18,7 @@ import {
 	toMb,
 	toStatus,
 } from '../utilities/template-helpers'
-import { codemeta as codemetaTemplate } from './codemeta'
+import { codemetaJson as codemetaJsonTemplate } from './codemeta-json'
 
 export type TemplateDataFrontmatter = ReturnType<typeof frontmatter>
 
@@ -30,8 +29,7 @@ export type TemplateDataFrontmatter = ReturnType<typeof frontmatter>
  */
 export const frontmatter = defineTemplate((context, templateData) => {
 	// Let the codemeta template do the heavy aggregation...
-	const codemetaTemplateOutput = codemetaTemplate(context, templateData)
-	const codemeta = codeMetaJsonDataSchema.parse(codemetaTemplateOutput)
+	const codemeta = codemetaJsonTemplate(context, templateData)
 
 	const codeStats = firstOf(context.codeStats)?.data
 	const dependencyUpdates = firstOf(context.dependencyUpdates)

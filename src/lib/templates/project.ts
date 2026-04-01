@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 
 import { defineTemplate } from '../metadata-types'
-import { codeMetaJsonDataSchema } from '../sources/codemeta-json'
 import {
 	firstOf,
 	hasDependencyWithId,
@@ -12,7 +11,7 @@ import {
 	toStatusLegacy,
 	usesPnpm,
 } from '../utilities/template-helpers'
-import { codemeta as codemetaTemplate } from './codemeta'
+import { codemetaJson as codemetaJsonTemplate } from './codemeta-json'
 
 export type TemplateDataProject = ReturnType<typeof project>
 
@@ -21,8 +20,7 @@ export type TemplateDataProject = ReturnType<typeof project>
  */
 export const project = defineTemplate((context, templateData) => {
 	// Let the codemeta template do the heavy aggregation...
-	const codemetaTemplateOutput = codemetaTemplate(context, templateData)
-	const codemeta = codeMetaJsonDataSchema.parse(codemetaTemplateOutput)
+	const codemeta = codemetaJsonTemplate(context, templateData)
 
 	const dependencyUpdates = firstOf(context.dependencyUpdates)
 	const github = firstOf(context.github)?.data

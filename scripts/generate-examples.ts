@@ -24,6 +24,9 @@ const report = await Promise.all([
 	generateExample('metascope-template-codemeta', {
 		template: 'codemeta',
 	}),
+	generateExample('metascope-template-codemeta-json', {
+		template: 'codemetaJson',
+	}),
 	generateExample('metascope-template-frontmatter', {
 		template: 'frontmatter',
 		templateData: {

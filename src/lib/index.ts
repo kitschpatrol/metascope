@@ -13,6 +13,7 @@ export type {
 } from './metadata-types'
 export type { OneOrMany, SourceRecord } from './source'
 export type { TemplateDataCodemeta } from './templates/codemeta'
+export type { TemplateDataCodemetaJson } from './templates/codemeta-json'
 export type { TemplateDataFrontmatter } from './templates/frontmatter'
 export { templates } from './templates/index'
 export type { TemplateDataMetadata } from './templates/metadata'

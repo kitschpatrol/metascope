@@ -119,7 +119,7 @@ metascope [path]
 
 | Option                 | Description                                                                                                                                                                | Type      | Default |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| `--template`<br>`-t`   | Built-in template name (`codemeta`, `frontmatter`, `metadata`, `project`) or path to a custom template file                                                                | `string`  |         |
+| `--template`<br>`-t`   | Built-in template name (`codemeta`, `codemetaJson`, `frontmatter`, `metadata`, `project`) or path to a custom template file                                                                | `string`  |         |
 | `--github-token`       | GitHub API token (or set `$GITHUB_TOKEN`)                                                                                                                                  | `string`  |         |
 | `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                  | `array`   |         |
 | `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                          | `array`   |         |
@@ -434,7 +434,7 @@ Metascope provides a basic templating / output transformation functionality to c
 
 ### Built-in templates
 
-Four built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
+Five built-in templates are available by name. Pass the name as the `template` option on the CLI or in the API.
 
 #### `codemeta`
 
@@ -453,6 +453,16 @@ metascope --template codemeta
 ```
 
 _See an [output sample](./docs/metascope-template-codemeta.json) from the `codemeta` template run against this repository._
+
+#### `codemetaJson`
+
+A JSON-friendly derivation of the `codemeta` template. Produces the same aggregated metadata but parses it through a strict schema, stripping JSON-LD artifacts (like `@context` and `@type`) to yield plain JSON suitable for consumption by tools that don't understand JSON-LD.
+
+```sh
+metascope --template codemetaJson
+```
+
+_See an [output sample](./docs/metascope-template-codemeta-json.json) from the `codemetaJson` template run against this repository._
 
 #### `frontmatter`
 
