@@ -46,11 +46,14 @@ function extractText(nodes: Nodes[] | PhrasingContent[]): string {
 		.trim()
 }
 
+/** Reusable markdown parser — processor config is stateless, only the AST is per-call. */
+const markdownParser = unified().use(remarkParse)
+
 /**
  * Extract the text content of the first H1 heading from markdown.
  */
 function extractFirstH1(markdown: string): string | undefined {
-	const tree = unified().use(remarkParse).parse(markdown)
+	const tree = markdownParser.parse(markdown)
 
 	for (const node of tree.children) {
 		if (node.type === 'heading' && node.depth === 1) {

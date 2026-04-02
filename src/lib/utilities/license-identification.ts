@@ -62,6 +62,7 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 		if (score > bestScore) {
 			bestScore = score
 			bestMatch = { confidence: score, spdxId }
+			if (bestScore > 0.98) break
 		}
 	}
 

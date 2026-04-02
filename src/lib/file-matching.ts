@@ -209,5 +209,8 @@ export async function getMatches(
 	}
 
 	// Sort by depth (shallowest first), then alphabetically
-	return results.toSorted((a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b))
+	// Pre-compute depths to avoid repeated split('/') in the comparator
+	const decorated = results.map((p) => ({ depth: p.split('/').length, path: p }))
+	decorated.sort((a, b) => a.depth - b.depth || a.path.localeCompare(b.path))
+	return decorated.map((d) => d.path)
 }

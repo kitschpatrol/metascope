@@ -30,7 +30,7 @@ describe('getMetadata - per source (project root)', () => {
 			async () => {
 				await getMetadata({ offline: true, path: projectRoot, sources: [source] })
 			},
-			{ iterations: 10, warmupIterations: 1 },
+			{ iterations: 5, warmupIterations: 1 },
 		)
 	}
 })
@@ -42,7 +42,7 @@ describe('getMetadata - per source (all-sources fixture)', () => {
 			async () => {
 				await getMetadata({ offline: true, path: allSourcesFixture, sources: [source] })
 			},
-			{ iterations: 10, warmupIterations: 1 },
+			{ iterations: 5, warmupIterations: 1 },
 		)
 	}
 })

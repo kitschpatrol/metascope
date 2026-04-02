@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-await-expression-member */
 /* eslint-disable unicorn/no-useless-undefined */
 import { stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
@@ -117,70 +116,80 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				.catch(() => undefined),
 		])
 
-		const trackedSizeBytes = (
-			await batchMap(trackedFiles, async (file) => {
-				try {
-					const fileStat = await stat(join(context.options.path, file))
-					return fileStat.size
-				} catch {
-					return 0
-				}
-			})
-		).reduce((sum, size) => sum + size, 0)
-
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
-
-		let tagDateLatest: string | undefined
 		const tagNameLatest = tagResult.latest ?? undefined
-		if (tagNameLatest) {
-			try {
-				const tagDate = await git.raw(['log', '-1', '--format=%aI', tagNameLatest])
-				tagDateLatest = tagDate.trim() || undefined
-			} catch {
-				// Tag might not have associated commit info
-			}
-		}
 
-		// Find the latest tag matching a version pattern (v1.2.3, 1.2, etc.)
-		const versionTagPattern = VERSION_TAG_REGEX
-		let tagReleaseCount: number | undefined
-		let tagVersionLatest: string | undefined
-		let tagVersionDateLatest: string | undefined
-		try {
-			const tagsByDate = await git.raw(['tag', '--sort=-creatordate'])
-			const allTags = tagsByDate.trim().split('\n').filter(Boolean)
-			const versionTags = allTags.filter((tag) => versionTagPattern.test(tag))
-			tagReleaseCount = versionTags.length > 0 ? versionTags.length : undefined
-			const match = versionTags[0]
-			if (match) {
-				const tagDate = await git.raw(['log', '-1', '--format=%aI', match])
-				tagVersionLatest = match.replace(LEADING_V_REGEX, '')
-				tagVersionDateLatest = tagDate.trim() || undefined
-			}
-		} catch {
-			// No tags or git error
-		}
-
-		// Compare HEAD against each remote's main/master branch
-		const remoteStatusEntries = await Promise.all(
-			remotes.map(async (remote) => {
-				for (const branch of ['main', 'master']) {
-					const reference = `${remote.name}/${branch}`
+		// These four operations are independent — run them concurrently
+		const [trackedSizeBytes, tagDateLatest, versionTagInfo, remoteStatusEntries] =
+			await Promise.all([
+				// 1. Sum tracked file sizes
+				batchMap(trackedFiles, async (file) => {
 					try {
-						const output = await git.raw([
-							'rev-list',
-							'--left-right',
-							'--count',
-							`HEAD...${reference}`,
-						])
-						const [ahead, behind] = output.trim().split('\t').map(Number)
-						return [remote.name, { ahead, behind }] as const
+						const fileStat = await stat(join(context.options.path, file))
+						return fileStat.size
 					} catch {
-						// Branch doesn't exist on this remote
+						return 0
 					}
-				}
-			}),
-		)
+				}).then((sizes) => sizes.reduce((sum, size) => sum + size, 0)),
+				// 2. Latest tag date
+				(async (): Promise<string | undefined> => {
+					if (!tagNameLatest) return undefined
+					try {
+						const tagDate = await git.raw(['log', '-1', '--format=%aI', tagNameLatest])
+						return tagDate.trim() || undefined
+					} catch {
+						return undefined
+					}
+				})(),
+				// 3. Version tag discovery
+				(async () => {
+					try {
+						const tagsByDate = await git.raw(['tag', '--sort=-creatordate'])
+						const allTags = tagsByDate.trim().split('\n').filter(Boolean)
+						const versionTags = allTags.filter((tag) => VERSION_TAG_REGEX.test(tag))
+						const tagReleaseCount = versionTags.length > 0 ? versionTags.length : undefined
+						const match = versionTags[0]
+						if (match) {
+							const tagDate = await git.raw(['log', '-1', '--format=%aI', match])
+							return {
+								tagReleaseCount,
+								tagVersionDateLatest: tagDate.trim() || undefined,
+								tagVersionLatest: match.replace(LEADING_V_REGEX, ''),
+							}
+						}
+
+						return { tagReleaseCount, tagVersionDateLatest: undefined, tagVersionLatest: undefined }
+					} catch {
+						return {
+							tagReleaseCount: undefined,
+							tagVersionDateLatest: undefined,
+							tagVersionLatest: undefined,
+						}
+					}
+				})(),
+				// 4. Remote status comparison
+				Promise.all(
+					remotes.map(async (remote) => {
+						for (const branch of ['main', 'master']) {
+							const reference = `${remote.name}/${branch}`
+							try {
+								const output = await git.raw([
+									'rev-list',
+									'--left-right',
+									'--count',
+									`HEAD...${reference}`,
+								])
+								const [ahead, behind] = output.trim().split('\t').map(Number)
+								return [remote.name, { ahead, behind }] as const
+							} catch {
+								// Branch doesn't exist on this remote
+							}
+						}
+					}),
+				),
+			])
+
+		const { tagReleaseCount, tagVersionDateLatest, tagVersionLatest } = versionTagInfo
 
 		const remoteStatus: Record<string, { ahead: number; behind: number }> = {}
 		for (const entry of remoteStatusEntries) {

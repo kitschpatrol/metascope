@@ -164,6 +164,22 @@ export const REPLACEMENTS = new Map<string, string>([
 	['typescript', 'TypeScript'],
 ])
 
+/** Cache compiled regexes for replacement maps to avoid recompilation on each call. */
+const compiledReplacementsCache = new WeakMap<Map<string, string>, Array<[RegExp, string]>>()
+
+function getCompiledReplacements(replacements: Map<string, string>): Array<[RegExp, string]> {
+	let compiled = compiledReplacementsCache.get(replacements)
+	if (!compiled) {
+		compiled = Array.from(replacements, ([search, replace]) => [
+			new RegExp(escapeRegExp(search), 'gi'),
+			replace,
+		])
+		compiledReplacementsCache.set(replacements, compiled)
+	}
+
+	return compiled
+}
+
 /**
  * Takes any value and extracts all strings from it.
  * Returns string[] if any strings were found, or undefined otherwise.
@@ -177,14 +193,14 @@ export function mixedStringsToArray(
 		return undefined
 	}
 
+	const compiled = replacements ? getCompiledReplacements(replacements) : undefined
 	const array = ensureArray(value)
 	const filtered = array
 		.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
 		.map((item) => {
-			if (!replacements) return item
+			if (!compiled) return item
 			let result = item
-			for (const [search, replace] of replacements) {
-				const pattern = new RegExp(escapeRegExp(search), 'gi')
+			for (const [pattern, replace] of compiled) {
 				result = result.replace(pattern, replace)
 			}
 			return result
