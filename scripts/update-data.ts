@@ -18,6 +18,8 @@ import {
 	runPrettierOnFile,
 } from './utilities'
 
+const COMMA_OR_SLASH_REGEX = /[,/]/
+
 async function getAllContextUrlsFromFixtures(): Promise<Promise<string[]>> {
 	const MANDATORY_URLS = new Set([
 		'http://schema.org',
@@ -205,7 +207,7 @@ async function updateCrossWalkJson(
 
 				// Split on '/' or ',' and add each key to the record
 				const fullPropertyKey = `${parentType}/${codeMetaPropertyName}`
-				for (const key of sourceValue.split(/[,/]/)) {
+				for (const key of sourceValue.split(COMMA_OR_SLASH_REGEX)) {
 					const sourceKey = key.trim()
 
 					// Special handling for codemeta-V1 and V2, we only care if the value is an actual rename

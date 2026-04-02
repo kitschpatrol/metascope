@@ -1,3 +1,7 @@
+const SECTION_HEADER_REGEX = /^\[([^\]]+)\]/
+const LEADING_WHITESPACE_REGEX = /^\s/
+const KEY_VALUE_PAIR_REGEX = /^([^=:]+)[=:](.*)$/
+
 /**
  * Parse a ConfigParser-style INI file into sections with key-value pairs.
  * Handles Python ConfigParser conventions: multi-line values via indented
@@ -17,7 +21,7 @@ export function parseConfigparser(content: string): Record<string, Record<string
 		}
 
 		// Section header
-		const sectionMatch = /^\[([^\]]+)\]/.exec(trimmed)
+		const sectionMatch = SECTION_HEADER_REGEX.exec(trimmed)
 		if (sectionMatch) {
 			currentSection = sectionMatch[1]
 			sections[currentSection] ??= {}
@@ -26,7 +30,7 @@ export function parseConfigparser(content: string): Record<string, Record<string
 		}
 
 		// Continuation line (starts with whitespace and we have a current key)
-		if (/^\s/.test(line) && lastKey && currentSection) {
+		if (LEADING_WHITESPACE_REGEX.test(line) && lastKey && currentSection) {
 			const existing = sections[currentSection][lastKey]
 			const continuation = trimmed.trim()
 			if (continuation) {
@@ -37,7 +41,7 @@ export function parseConfigparser(content: string): Record<string, Record<string
 		}
 
 		// Key = value pair (supports both = and : as delimiters)
-		const kvMatch = /^([^=:]+)[=:](.*)$/.exec(trimmed)
+		const kvMatch = KEY_VALUE_PAIR_REGEX.exec(trimmed)
 		if (kvMatch && currentSection) {
 			const key = kvMatch[1].trim()
 			const value = kvMatch[2].trim()

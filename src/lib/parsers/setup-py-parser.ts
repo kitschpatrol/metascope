@@ -4,6 +4,8 @@ import type { Node } from 'web-tree-sitter'
 import { splitCommaSeparated } from '../utilities/template-helpers'
 import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
+const STRING_PREFIX_REGEX = /^[bfru]*/i
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /** Filter nulls from web-tree-sitter's `namedChildren` array. */
@@ -56,7 +58,7 @@ function extractString(node: Node): string | undefined {
 			// Fallback: strip quotes manually (b/f/r/u are Python string prefixes)
 			const raw = node.text
 			// eslint-disable-next-line capitalized-comments
-			const withoutPrefix = raw.replace(/^[bfru]*/i, '') // cspell:disable-line
+			const withoutPrefix = raw.replace(STRING_PREFIX_REGEX, '') // cspell:disable-line
 			if (withoutPrefix.startsWith('"""') || withoutPrefix.startsWith("'''")) {
 				return withoutPrefix.slice(3, -3)
 			}

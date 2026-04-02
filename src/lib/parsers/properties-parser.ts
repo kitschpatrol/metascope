@@ -11,13 +11,15 @@
  * See https://en.wikipedia.org/wiki/.properties
  */
 
+const LINE_BREAK_REGEX = /\r?\n/
+
 /**
  * Parse a `*.properties` content string into raw key-value pairs.
  */
 export function parseProperties(content: string): Record<string, string> {
 	const raw: Record<string, string> = {}
 
-	for (const rawLine of content.split(/\r?\n/)) {
+	for (const rawLine of content.split(LINE_BREAK_REGEX)) {
 		const line = rawLine.trim()
 		if (line.length === 0 || line.startsWith('#')) continue
 

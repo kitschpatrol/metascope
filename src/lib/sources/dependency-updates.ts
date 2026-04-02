@@ -6,6 +6,8 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
+const AGE_VALUE_UNIT_REGEX = /^(\d+)\s+(\w+)$/
+
 type DependencyUpdatesPackage = {
 	/** Human-readable age of the update (e.g. "3 months"). */
 	age?: string
@@ -69,7 +71,7 @@ function resolveUpdatesBinary(): string {
 function parseAgeToYears(age: string): number {
 	if (age === 'now') return 0
 
-	const match = /^(\d+)\s+(\w+)$/.exec(age.trim())
+	const match = AGE_VALUE_UNIT_REGEX.exec(age.trim())
 	if (!match) return 0
 
 	const value = Number(match[1])

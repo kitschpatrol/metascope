@@ -7,6 +7,9 @@ import jsonld from 'jsonld'
 import { log } from '../src/lib/log.ts'
 import contextCacheJson from './data/context-cache.json' with { type: 'json' }
 
+const TRAILING_SLASHES_REGEX = /\/+$/
+const PROTOCOL_PREFIX_REGEX = /^https?:\/\//
+
 /**
  * Clear the loader cache.
  * Used by the caching script
@@ -21,10 +24,7 @@ export function clearCache(): void {
  */
 export function toCacheKey(url: string): string {
 	// Strip trialing slash, strip http:// or https://
-	return url
-		.toLowerCase()
-		.replace(/\/+$/, '')
-		.replace(/^https?:\/\//, '')
+	return url.toLowerCase().replace(TRAILING_SLASHES_REGEX, '').replace(PROTOCOL_PREFIX_REGEX, '')
 }
 
 const loaderCache = new Map<string, RemoteDocument>(

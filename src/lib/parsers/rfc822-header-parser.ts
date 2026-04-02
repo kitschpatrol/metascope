@@ -1,5 +1,7 @@
 // ─── Header parser ──────────────────────────────────────────────────────────
 
+const LEADING_WHITESPACE_REGEX = /^\s/
+
 /** Multi-value headers that can appear multiple times. */
 const MULTI_VALUE_HEADERS = new Set([
 	'Classifier',
@@ -24,7 +26,7 @@ export function parseRfc822Headers(content: string): Record<string, string> {
 		if (line.trim() === '') break
 
 		// Continuation line (starts with whitespace)
-		if (/^\s/.test(line) && lastKey) {
+		if (LEADING_WHITESPACE_REGEX.test(line) && lastKey) {
 			const continuation = line.trim()
 			if (continuation) {
 				headers[lastKey] = `${headers[lastKey]}\n${continuation}`

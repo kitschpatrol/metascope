@@ -1,6 +1,12 @@
 /* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
 
+const MAJOR_VERSION_SUFFIX_REGEX = /\/v\d+$/
+const INDIRECT_COMMENT_REGEX = /\/\/\s*indirect/
+const MODULE_VERSION_REGEX = /^(\S+)\s+(\S+)/
+const INCOMPATIBLE_SUFFIX_REGEX = /\+incompatible$/
+const WHITESPACE_REGEX = /\s+/
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 type BlockState = 'none' | 'replace' | 'require' | 'skip' | 'tool'
@@ -31,7 +37,7 @@ function moduleToRepoUrl(modulePath: string): string | undefined {
 
 	let repoPath = segments.slice(0, needed).join('/')
 	// Strip /vN major-version suffix
-	repoPath = repoPath.replace(/\/v\d+$/, '')
+	repoPath = repoPath.replace(MAJOR_VERSION_SUFFIX_REGEX, '')
 
 	return `https://${repoPath}`
 }
@@ -44,7 +50,7 @@ function stripComment(line: string): string {
 
 /** Check whether a line has an `// indirect` comment. */
 function isIndirect(line: string): boolean {
-	return /\/\/\s*indirect/.test(line)
+	return INDIRECT_COMMENT_REGEX.test(line)
 }
 
 /** Parse a require-style line: `module version [// indirect]` */
@@ -53,9 +59,9 @@ function parseRequireLine(
 ): undefined | { indirect: boolean; module: string; version: string } {
 	const indirect = isIndirect(line)
 	const clean = stripComment(line)
-	const match = /^(\S+)\s+(\S+)/.exec(clean)
+	const match = MODULE_VERSION_REGEX.exec(clean)
 	if (!match) return undefined
-	const version = match[2].replace(/\+incompatible$/, '')
+	const version = match[2].replace(INCOMPATIBLE_SUFFIX_REGEX, '')
 	return { indirect, module: match[1], version }
 }
 
@@ -65,8 +71,8 @@ function parseReplaceLine(line: string): undefined | { from: string; to: Replace
 	const parts = clean.split('=>')
 	if (parts.length !== 2) return undefined
 
-	const left = parts[0].trim().split(/\s+/)
-	const right = parts[1].trim().split(/\s+/)
+	const left = parts[0].trim().split(WHITESPACE_REGEX)
+	const right = parts[1].trim().split(WHITESPACE_REGEX)
 
 	const from = left[0]
 	if (!from || right.length === 0) return undefined
@@ -79,14 +85,14 @@ function parseReplaceLine(line: string): undefined | { from: string; to: Replace
 	}
 
 	const version = right[1] ?? ''
-	return { from, to: { module: target, version: version.replace(/\+incompatible$/, '') } }
+	return { from, to: { module: target, version: version.replace(INCOMPATIBLE_SUFFIX_REGEX, '') } }
 }
 
 /** Parse a tool-style line: just a module path. */
 function parseToolLine(line: string): string | undefined {
 	const clean = stripComment(line).trim()
 	if (clean.length === 0) return undefined
-	return clean.split(/\s+/)[0] || undefined
+	return clean.split(WHITESPACE_REGEX)[0] || undefined
 }
 
 // ─── Main parser ─────────────────────────────────────────────────────────────

@@ -26,6 +26,7 @@ export default cspellConfig({
 		'basehead',
 		'bcos',
 		'bflb',
+		'bfru',
 		'bigbinary',
 		'bindir',
 		'biotools',

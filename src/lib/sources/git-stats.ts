@@ -9,6 +9,9 @@ import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
 
+const VERSION_TAG_REGEX = /^v?\d+(?:\.\d+){1,2}$/
+const LEADING_V_REGEX = /^v/
+
 export type GitStatsInfo = {
 	/** Total number of local branches. */
 	branchCount?: number
@@ -139,7 +142,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 		}
 
 		// Find the latest tag matching a version pattern (v1.2.3, 1.2, etc.)
-		const versionTagPattern = /^v?\d+(?:\.\d+){1,2}$/
+		const versionTagPattern = VERSION_TAG_REGEX
 		let tagReleaseCount: number | undefined
 		let tagVersionLatest: string | undefined
 		let tagVersionDateLatest: string | undefined
@@ -151,7 +154,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			const match = versionTags[0]
 			if (match) {
 				const tagDate = await git.raw(['log', '-1', '--format=%aI', match])
-				tagVersionLatest = match.replace(/^v/, '')
+				tagVersionLatest = match.replace(LEADING_V_REGEX, '')
 				tagVersionDateLatest = tagDate.trim() || undefined
 			}
 		} catch {

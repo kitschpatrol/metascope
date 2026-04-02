@@ -21,6 +21,12 @@ import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
+const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/i
+const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i
+const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/i
+const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/
+const PROCESSOR_ARCH_REGEX = /^(?:arm|x86|i386)/i
+
 // ─── Schema ─────────────────────────────────────────────────────────
 
 const infoPlistSchema = z.object({
@@ -195,18 +201,18 @@ function parseCopyright(data: PlistDict): {
 	if (!copyrightSource) return {}
 
 	// Extract year: look for 4-digit number (typically after ©)
-	const yearMatch = /(?:©|\(c\)|copyright)\s*(\d{4})/i.exec(copyrightSource)
+	const yearMatch = COPYRIGHT_YEAR_REGEX.exec(copyrightSource)
 	const copyrightYear = yearMatch?.[1]
 
 	// Extract holder: text after the year and optional punctuation/whitespace
 	// Common patterns: "Copyright © 2013 MICE Software. All rights reserved."
-	const holderMatch = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i.exec(copyrightSource)
+	const holderMatch = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)
 	let copyrightHolder: string | undefined
 	if (holderMatch) {
 		// Clean up trailing "All rights reserved." and similar
 		copyrightHolder = holderMatch[1]
-			.replace(/\.\s*all\s+rights\s+reserved\.?/i, '')
-			.replace(/[.,;]+$/, '')
+			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
+			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
 		if (copyrightHolder.length === 0) copyrightHolder = undefined
 	}
@@ -277,7 +283,7 @@ function parseProcessorRequirements(data: PlistDict): string[] {
 
 	const results: string[] = []
 	for (const c of capabilities) {
-		if (typeof c === 'string' && /^(?:arm|x86|i386)/i.test(c)) {
+		if (typeof c === 'string' && PROCESSOR_ARCH_REGEX.test(c)) {
 			results.push(c)
 		}
 	}

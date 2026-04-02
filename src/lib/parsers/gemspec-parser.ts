@@ -5,6 +5,8 @@ import type { Node } from 'web-tree-sitter'
 import is from '@sindresorhus/is'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
+const LEADING_COLON_REGEX = /^:/
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function emptySpec(): Record<string, unknown> {
@@ -67,7 +69,7 @@ function extractString(node: Node): string | undefined {
 			return node.text.trim()
 		}
 		case 'simple_symbol': {
-			return node.text.replace(/^:/, '')
+			return node.text.replace(LEADING_COLON_REGEX, '')
 		}
 		case 'string':
 		case 'string_content': {

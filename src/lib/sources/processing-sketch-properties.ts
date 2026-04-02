@@ -8,6 +8,8 @@ import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 import { splitCommaSeparated } from '../utilities/template-helpers'
 
+const AUTHOR_SEPARATOR_REGEX = /\band\b|,|&/
+
 // ─── Schema ─────────────────────────────────────────────────────────
 
 const processingSketchPropertiesAuthorEntrySchema = z.object({
@@ -237,7 +239,7 @@ function parseAuthors(value: string): ProcessingSketchPropertiesAuthorEntry[] {
  */
 function addPlainAuthors(text: string, results: ProcessingSketchPropertiesAuthorEntry[]): void {
 	const parts = text
-		.split(/\band\b|,|&/)
+		.split(AUTHOR_SEPARATOR_REGEX)
 		.map((s) => s.trim())
 		.filter((s) => s.length > 0 && s.toLowerCase() !== 'others')
 

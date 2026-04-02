@@ -21,6 +21,11 @@ import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
 
+const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/i
+const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i
+const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/i
+const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/
+
 // ─── Schema ─────────────────────────────────────────────────────────
 
 const pbxprojDependencySchema = z.object({
@@ -257,15 +262,15 @@ function parseCopyrightString(copyrightSource: string | undefined): {
 } {
 	if (!copyrightSource) return {}
 
-	const yearMatch = /(?:©|\(c\)|copyright)\s*(\d{4})/i.exec(copyrightSource)
+	const yearMatch = COPYRIGHT_YEAR_REGEX.exec(copyrightSource)
 	const copyrightYear = yearMatch?.[1]
 
-	const holderMatch = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i.exec(copyrightSource)
+	const holderMatch = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)
 	let copyrightHolder: string | undefined
 	if (holderMatch) {
 		copyrightHolder = holderMatch[1]
-			.replace(/\.\s*all\s+rights\s+reserved\.?/i, '')
-			.replace(/[.,;]+$/, '')
+			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
+			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
 		if (copyrightHolder.length === 0) copyrightHolder = undefined
 	}

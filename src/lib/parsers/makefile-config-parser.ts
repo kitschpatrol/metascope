@@ -11,6 +11,8 @@
  * by the openFrameworks Project Generator.
  */
 
+const INLINE_COMMENT_REGEX = /#.*$/
+
 /** Section header pattern: a word (with optional hyphens/slashes) followed by a colon. */
 const SECTION_RE = /^[\w/][\w/-]*:$/
 
@@ -36,7 +38,7 @@ export function parseMakefileConfig(content: string): Record<string, unknown> {
 
 	for (const rawLine of content.split('\n')) {
 		// Strip inline comments and trim
-		const line = rawLine.replace(/#.*$/, '').trim()
+		const line = rawLine.replace(INLINE_COMMENT_REGEX, '').trim()
 		if (line.length === 0) continue
 
 		// Section header

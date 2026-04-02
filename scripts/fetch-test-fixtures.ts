@@ -14,6 +14,19 @@ import { parseDocument as parseYaml } from 'yaml'
 import { z } from 'zod'
 import { execFileAsync } from './utilities'
 
+const NAME_FIELD_REGEX = /^name\s*=/im
+const VERSION_FIELD_REGEX = /^version\s*=/im
+const AUTHOR_FIELD_REGEX = /^author\s*=/im
+const ARCHITECTURES_FIELD_REGEX = /^architectures\s*=/im
+const MAINTAINER_FIELD_REGEX = /^maintainer\s*=/im
+const DEPENDS_FIELD_REGEX = /^depends\s*=/im
+const DOT_A_LINKAGE_FIELD_REGEX = /^dot_a_linkage\s*=/im
+const AUTHORS_FIELD_REGEX = /^authors\s*=/im
+const PRETTYVERSION_FIELD_REGEX = /^prettyversion\s*=/im
+const MINREVISION_FIELD_REGEX = /^minrevision\s*=/im
+const AUTHORLIST_FIELD_REGEX = /^authorlist\s*=/im
+const DEPENDENCIES_FIELD_REGEX = /^dependencies\s*=/im
+
 const gitHubSearchResultSchema = z.object({
 	path: z.string(),
 	repository: z.object({
@@ -164,20 +177,22 @@ function isValidArduinoLibraryProperties(filename: string, content: string): boo
 
 	// Arduino strictly uses the singular 'author' key
 	const hasBaseFields =
-		/^name\s*=/im.test(content) && /^version\s*=/im.test(content) && /^author\s*=/im.test(content)
+		NAME_FIELD_REGEX.test(content) &&
+		VERSION_FIELD_REGEX.test(content) &&
+		AUTHOR_FIELD_REGEX.test(content)
 
 	// Check for keys that only exist in the Arduino ecosystem
 	const hasArduinoSpecifics =
-		/^architectures\s*=/im.test(content) ||
-		/^maintainer\s*=/im.test(content) ||
-		/^depends\s*=/im.test(content) ||
-		/^dot_a_linkage\s*=/im.test(content)
+		ARCHITECTURES_FIELD_REGEX.test(content) ||
+		MAINTAINER_FIELD_REGEX.test(content) ||
+		DEPENDS_FIELD_REGEX.test(content) ||
+		DOT_A_LINKAGE_FIELD_REGEX.test(content)
 
 	// Ensure it doesn't accidentally have Processing-exclusive fields
 	const hasProcessingSpecifics =
-		/^authors\s*=/im.test(content) ||
-		/^prettyversion\s*=/im.test(content) ||
-		/^minrevision\s*=/im.test(content)
+		AUTHORS_FIELD_REGEX.test(content) ||
+		PRETTYVERSION_FIELD_REGEX.test(content) ||
+		MINREVISION_FIELD_REGEX.test(content)
 
 	return hasBaseFields && (hasArduinoSpecifics || !hasProcessingSpecifics)
 }
@@ -185,22 +200,23 @@ function isValidArduinoLibraryProperties(filename: string, content: string): boo
 function isValidProcessingLibraryProperties(filename: string, content: string): boolean {
 	if (!filename.endsWith('library.properties')) return false
 
-	const hasBaseFields = /^name\s*=/im.test(content) && /^version\s*=/im.test(content)
+	const hasBaseFields = NAME_FIELD_REGEX.test(content) && VERSION_FIELD_REGEX.test(content)
 
 	// Processing strictly uses the plural 'authors' (or 'authorList' in very old legacy libs)
-	const hasProcessingAuthors = /^authors\s*=/im.test(content) || /^authorlist\s*=/im.test(content)
+	const hasProcessingAuthors =
+		AUTHORS_FIELD_REGEX.test(content) || AUTHORLIST_FIELD_REGEX.test(content)
 
 	// Check for Processing's unique versioning system keys
 	const hasProcessingSpecifics =
-		/^prettyversion\s*=/im.test(content) ||
-		/^minrevision\s*=/im.test(content) ||
-		/^dependencies\s*=/im.test(content)
+		PRETTYVERSION_FIELD_REGEX.test(content) ||
+		MINREVISION_FIELD_REGEX.test(content) ||
+		DEPENDENCIES_FIELD_REGEX.test(content)
 
 	// Ensure it doesn't accidentally have Arduino-exclusive fields
 	const hasArduinoSpecifics =
-		/^architectures\s*=/im.test(content) ||
-		/^maintainer\s*=/im.test(content) ||
-		/^depends\s*=/im.test(content)
+		ARCHITECTURES_FIELD_REGEX.test(content) ||
+		MAINTAINER_FIELD_REGEX.test(content) ||
+		DEPENDS_FIELD_REGEX.test(content)
 
 	return hasBaseFields && (hasProcessingAuthors || hasProcessingSpecifics) && !hasArduinoSpecifics
 }
