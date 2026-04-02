@@ -69,7 +69,6 @@ const sources: readonly MetadataSource[] = [
 	cinderCinderblockXmlSource,
 	codemetaJsonSource,
 	gitConfigSource,
-	githubActionsSource,
 	goGoModSource,
 	goGoreleaserYamlSource,
 	javaPomXmlSource,
@@ -93,6 +92,7 @@ const sources: readonly MetadataSource[] = [
 	xcodeInfoPlistSource,
 	xcodeProjectPbxprojSource,
 	// Phase 2: Tool sources — run local tools or fetch from remote APIs
+	githubActionsSource,
 	codeStatsSource,
 	dependencyUpdatesSource,
 	fileStatsSource,
