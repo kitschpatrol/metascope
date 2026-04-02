@@ -25,17 +25,38 @@ import { gitConfigSource } from './git-config'
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
+const workflowRunStatus = z.enum([
+	'completed',
+	'in_progress',
+	'pending',
+	'queued',
+	'requested',
+	'waiting',
+])
+
+const workflowRunConclusion = z.enum([
+	'action_required',
+	'cancelled',
+	'failure',
+	'neutral',
+	'skipped',
+	'stale',
+	'startup_failure',
+	'success',
+	'timed_out',
+])
+
 const githubActionSchema = z.object({
 	/** Relative path to the workflow file. */
 	file: z.string(),
-	/** Conclusion of the latest run on the default branch (e.g. "success", "failure", "cancelled"). */
-	lastRunAt: z.string().optional(),
 	/** ISO 8601 timestamp of the latest completed run on the default branch. */
-	lastRunConclusion: z.string().optional(),
+	lastRunAt: z.string().optional(),
+	/** Conclusion of the latest run on the default branch. */
+	lastRunConclusion: workflowRunConclusion.optional(),
 	/** Duration of the latest run in milliseconds. */
 	lastRunDurationMs: z.number().optional(),
-	/** Status of the latest run on the default branch (e.g. "completed", "in_progress"). */
-	lastRunStatus: z.string().optional(),
+	/** Status of the latest run on the default branch. */
+	lastRunStatus: workflowRunStatus.optional(),
 	/** URL of the latest run on GitHub. */
 	lastRunUrl: z.string().optional(),
 	/** Workflow name from the `name` field. */
@@ -49,9 +70,9 @@ export type GitHubActionsData = OneOrMany<SourceRecord<GitHubAction>> | undefine
 // ─── Run data types ─────────────────────────────────────────────────
 
 type WorkflowRunInfo = {
-	conclusion: string
+	conclusion: z.infer<typeof workflowRunConclusion>
 	durationMs: number | undefined
-	status: string
+	status: z.infer<typeof workflowRunStatus>
 	updatedAt: string
 	url: string
 }
@@ -112,10 +133,14 @@ async function fetchWorkflowRuns(
 			durationMs = new Date(run.updated_at).getTime() - new Date(run.run_started_at).getTime()
 		}
 
+		const conclusion = workflowRunConclusion.safeParse(run.conclusion)
+		const status = workflowRunStatus.safeParse(run.status)
+		if (!conclusion.success || !status.success) continue
+
 		runsByPath.set(run.path, {
-			conclusion: run.conclusion ?? 'unknown',
+			conclusion: conclusion.data,
 			durationMs,
-			status: run.status ?? 'completed',
+			status: status.data,
 			updatedAt: run.updated_at,
 			url: run.html_url,
 		})

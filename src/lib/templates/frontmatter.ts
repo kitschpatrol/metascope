@@ -3,9 +3,11 @@
 /* eslint-disable ts/naming-convention */
 
 import is from '@sindresorhus/is'
+import { titleCase } from 'string-ts'
 import { defineTemplate } from '../metadata-types'
 import {
 	dependencyNames,
+	ensureArray,
 	firstOf,
 	isValidUrl,
 	mixedStringsToArray,
@@ -23,9 +25,9 @@ import { codemetaJson as codemetaJsonTemplate } from './codemeta-json'
 export type TemplateDataFrontmatter = ReturnType<typeof frontmatter>
 
 /**
- * A compact, non-nested, polyglot overview of the project.
- * Designed for Obsidian frontmatter — flat keys with natural language names,
- * blending all available sources into a single trackable snapshot.
+ * A compact, non-nested, polyglot overview of the project. Designed for
+ * Obsidian frontmatter — flat keys with natural language names, blending all
+ * available sources into a single trackable snapshot.
  */
 export const frontmatter = defineTemplate((context, templateData) => {
 	// Let the codemeta template do the heavy aggregation...
@@ -36,6 +38,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 	const fileStats = firstOf(context.fileStats)?.data
 	const cinderCinderblockXml = firstOf(context.cinderCinderblockXml)?.data
 	const github = firstOf(context.github)?.data
+	const { githubActions } = context
 	const gitStats = firstOf(context.gitStats)?.data
 	const metascope = context.metascope?.data
 	const nodeNpmRegistry = firstOf(context.nodeNpmRegistry)?.data
@@ -64,6 +67,12 @@ export const frontmatter = defineTemplate((context, templateData) => {
 
 	// Only alias if different from name
 	const aliases = id === name ? undefined : id
+
+	const ciData = ensureArray(githubActions).find(
+		(entry) => entry.data.name.toLowerCase() === 'ci',
+	)?.data
+	const ciStatus = ciData?.lastRunConclusion
+	const ciUrl = ciData?.lastRunUrl
 
 	return {
 		/* eslint-disable perfectionist/sort-objects */
@@ -149,6 +158,8 @@ export const frontmatter = defineTemplate((context, templateData) => {
 			nodeNpmRegistry?.downloadsMonthly ?? pythonPypiRegistry?.downloadsMonthly ?? null,
 
 		// ── Activity ──────────────────────────────────────────
+		CI: ciStatus ? titleCase(ciStatus) : null,
+		'CI URL': ciUrl ?? null,
 
 		Releases: github?.releaseCount ?? gitStats?.tagReleaseCount ?? null,
 		'Issues Open': github?.issueCountOpen ?? null,

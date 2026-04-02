@@ -8,7 +8,7 @@ import general from 'case-police/dict/general.json' with { type: 'json' }
 import products from 'case-police/dict/products.json' with { type: 'json' }
 import softwares from 'case-police/dict/softwares.json' with { type: 'json' }
 import path from 'node:path'
-import { titleCase } from 'scule'
+import { titleCase } from 'string-ts'
 import type { CodeMetaJson } from '../sources/codemeta-json'
 import type { NodePackageJsonData } from '../sources/node-package-json'
 
@@ -35,8 +35,8 @@ export function firstOf<T>(value: T | T[] | undefined): T | undefined {
 }
 
 /**
- * Wrap a value in an array if it isn't one already.
- * Returns an empty array for `undefined` or `null`.
+ * Wrap a value in an array if it isn't one already. Returns an empty array for
+ * `undefined` or `null`.
  */
 export function ensureArray<T>(value: null | T | T[] | undefined): T[] {
 	if (value === undefined || value === null) return []
@@ -45,10 +45,11 @@ export function ensureArray<T>(value: null | T | T[] | undefined): T[] {
 
 /**
  * Collect values from all records in a `OneOrMany<SourceRecord<D>>` source.
- * Runs the accessor on each record's `.data` and returns all non-undefined results.
+ * Runs the accessor on each record's `.data` and returns all non-undefined
+ * results.
  *
- * Useful for extracting a specific field from sources that may contain multiple records
- * (e.g. multiple Cargo.toml files in a workspace).
+ * Useful for extracting a specific field from sources that may contain multiple
+ * records (e.g. multiple Cargo.toml files in a workspace).
  */
 export function collectField<T extends { data: unknown }, R>(
 	source: T | T[] | undefined,
@@ -62,8 +63,9 @@ export function collectField<T extends { data: unknown }, R>(
 }
 
 /**
- * Collect and flatten array values from all records in a `OneOrMany<SourceRecord<D>>` source.
- * Runs the accessor on each record's `.data` and flattens the resulting arrays.
+ * Collect and flatten array values from all records in a
+ * `OneOrMany<SourceRecord<D>>` source. Runs the accessor on each record's
+ * `.data` and flattens the resulting arrays.
  */
 export function collectArrayField<T extends { data: unknown }, R>(
 	source: T | T[] | undefined,
@@ -75,8 +77,8 @@ export function collectArrayField<T extends { data: unknown }, R>(
 }
 
 /**
- * Return the array if non-empty, otherwise undefined.
- * Useful for converting empty collection results to undefined before `stripUndefined`.
+ * Return the array if non-empty, otherwise undefined. Useful for converting
+ * empty collection results to undefined before `stripUndefined`.
  */
 export function nonEmpty<T>(array: T[]): T[] | undefined {
 	return array.length > 0 ? array : undefined
@@ -121,8 +123,18 @@ export function toMarkdownLink(value: string | undefined): string | undefined {
 }
 
 /**
- * Convert bytes to megabytes (rounded).
- * (MB, not MiB.)
+ * Wrap a value in a markdown link if a URL is provided, otherwise return the
+ * value as-is.
+ */
+export function toOptionalMarkdownLink(name: string, url: string | undefined): string {
+	if (is.nonEmptyStringAndNotWhitespace(url)) {
+		return `[${name}](${url})`
+	}
+	return name
+}
+
+/**
+ * Convert bytes to megabytes (rounded). (MB, not MiB.)
  */
 export function toMb(bytes: unknown): number | undefined {
 	if (is.positiveNumber(bytes)) {
@@ -139,8 +151,8 @@ export function stripNamespace(value: string): string {
 }
 
 /**
- * Convert a package name to a human-friendly alias using title case
- * and brand-name corrections.
+ * Convert a package name to a human-friendly alias using title case and
+ * brand-name corrections.
  */
 export function toAlias(value: string | undefined): string | undefined {
 	if (is.nonEmptyString(value)) {
@@ -164,7 +176,10 @@ export const REPLACEMENTS = new Map<string, string>([
 	['typescript', 'TypeScript'],
 ])
 
-/** Cache compiled regexes for replacement maps to avoid recompilation on each call. */
+/**
+ * Cache compiled regexes for replacement maps to avoid recompilation on each
+ * call.
+ */
 const compiledReplacementsCache = new WeakMap<Map<string, string>, Array<[RegExp, string]>>()
 
 function getCompiledReplacements(replacements: Map<string, string>): Array<[RegExp, string]> {
@@ -181,9 +196,9 @@ function getCompiledReplacements(replacements: Map<string, string>): Array<[RegE
 }
 
 /**
- * Takes any value and extracts all strings from it.
- * Returns string[] if any strings were found, or undefined otherwise.
- * Optionally performs case-insensitive string replacement with `replacements`.
+ * Takes any value and extracts all strings from it. Returns string[] if any
+ * strings were found, or undefined otherwise. Optionally performs
+ * case-insensitive string replacement with `replacements`.
  */
 export function mixedStringsToArray(
 	value: unknown,
@@ -210,7 +225,8 @@ export function mixedStringsToArray(
 }
 
 /**
- * Convert a filename or relative path to a local `file://` URL rooted at `repoPath`.
+ * Convert a filename or relative path to a local `file://` URL rooted at
+ * `repoPath`.
  */
 export function toLocalUrl(
 	value: string | undefined,
@@ -227,10 +243,9 @@ export function toLocalUrl(
 // ─── Object Helpers ─────────────────────────────────────────────────
 
 /**
- * Recursively removes `undefined` values and empty objects from an object.
- * Only recurses into plain objects and arrays. Non-plain objects (like Date)
- * are preserved as-is.
- * Array elements that are `undefined` are also removed.
+ * Recursively removes `undefined` values and empty objects from an object. Only
+ * recurses into plain objects and arrays. Non-plain objects (like Date) are
+ * preserved as-is. Array elements that are `undefined` are also removed.
  * Returns `undefined` if the entire input becomes empty after stripping.
  */
 export function stripUndefined<T>(value: T): T {
@@ -282,7 +297,8 @@ export function toBasicLicense(source: string | undefined): string | undefined {
 }
 
 /**
- * Normalize one or more license values to plain SPDX identifiers, stripping URL prefixes.
+ * Normalize one or more license values to plain SPDX identifiers, stripping URL
+ * prefixes.
  */
 export function toBasicLicenses(
 	...sources: Array<string | string[] | undefined>
