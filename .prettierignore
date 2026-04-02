@@ -8,3 +8,4 @@ package-lock.json
 # Customizations
 test/fixtures/*
 .agents/*
+test/benchmarks/baseline.json
