@@ -100,6 +100,52 @@ export const githubGraphql: Record<string, unknown> = {
 }
 
 /** GitHub REST repos.get responses keyed by "owner/repo" */
-export const githubRest: Record<string, { has_pages: boolean }> = {
-	'kitschpatrol/metascope': { has_pages: false },
+export const githubRest: Record<string, { default_branch: string; has_pages: boolean }> = {
+	'kitschpatrol/metascope': { default_branch: 'main', has_pages: false },
+}
+
+/** GitHub REST actions/runs responses keyed by "owner/repo" */
+export const githubActionsRuns: Record<
+	string,
+	{
+		total_count: number
+		workflow_runs: Array<{
+			conclusion: string
+			html_url: string
+			path: string
+			run_started_at: string
+			status: string
+			updated_at: string
+		}>
+	}
+> = {
+	'kitschpatrol/metascope': {
+		total_count: 3,
+		workflow_runs: [
+			{
+				conclusion: 'success',
+				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12345',
+				path: '.github/workflows/ci.yml',
+				run_started_at: '2025-03-01T12:00:00Z',
+				status: 'completed',
+				updated_at: '2025-03-01T12:05:30Z',
+			},
+			{
+				conclusion: 'success',
+				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12344',
+				path: '.github/workflows/github-release.yml',
+				run_started_at: '2025-02-28T10:00:00Z',
+				status: 'completed',
+				updated_at: '2025-02-28T10:02:15Z',
+			},
+			{
+				conclusion: 'success',
+				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12343',
+				path: '.github/workflows/set-github-metadata.yml',
+				run_started_at: '2025-03-01T12:00:00Z',
+				status: 'completed',
+				updated_at: '2025-03-01T12:00:45Z',
+			},
+		],
+	},
 }

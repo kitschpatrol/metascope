@@ -1,4 +1,4 @@
-import { isAbsolute, resolve } from 'node:path'
+import { isAbsolute, resolve, sep } from 'node:path'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getMatches, getWorkspaces, resetMatchCache } from '../src/lib/file-matching'
 import { getMetadata } from '../src/lib/metadata'
@@ -20,7 +20,7 @@ describe('getWorkspaces', () => {
 		expect(locations).toHaveLength(2)
 		for (const location of locations) {
 			expect(isAbsolute(location)).toBe(true)
-			expect(location).toContain('packages/pkg-')
+			expect(location).toContain(`packages${sep}pkg-`)
 		}
 	})
 
@@ -106,7 +106,7 @@ describe('getMatches with workspaces', () => {
 		)
 
 		const sorted = matches.toSorted(
-			(a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b),
+			(a, b) => a.split(sep).length - b.split(sep).length || a.localeCompare(b),
 		)
 		expect(matches).toEqual(sorted)
 	})

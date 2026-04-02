@@ -2,7 +2,7 @@
 /* eslint-disable ts/no-unsafe-type-assertion */
 
 import { http, HttpResponse, passthrough } from 'msw'
-import { githubGraphql, githubRest } from './fixtures/github'
+import { githubActionsRuns, githubGraphql, githubRest } from './fixtures/github'
 import { npmDownloads, npmPackages } from './fixtures/npm'
 import { obsidianPluginStats } from './fixtures/obsidian'
 import { pypiPackages, pypistatsOverall, pypistatsRecent } from './fixtures/pypi'
@@ -71,6 +71,18 @@ export const handlers = [
 		const fixture = githubGraphql[key]
 		if (!fixture) return HttpResponse.json({ errors: [{ message: 'Not Found' }] }, { status: 200 })
 		return HttpResponse.json({ data: fixture })
+	}),
+
+	http.get('https://api.github.com/repos/:owner/:repo/actions/runs', ({ params }) => {
+		if (!shouldMock()) return passthrough()
+		// eslint-disable-next-line ts/restrict-template-expressions
+		const key = `${params.owner}/${params.repo}`
+
+		const fixture = githubActionsRuns[key]
+		// eslint-disable-next-line ts/no-unnecessary-condition
+		if (!fixture) return new HttpResponse(null, { status: 404 })
+
+		return HttpResponse.json(fixture)
 	}),
 
 	http.get('https://api.github.com/repos/:owner/:repo', ({ params }) => {

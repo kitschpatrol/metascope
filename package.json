@@ -50,7 +50,7 @@
 		"fix": "ksc fix",
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
-		"pretest": "mkdir -p src/grammars && cp node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm src/grammars/tree-sitter-ruby.wasm && cp node_modules/tree-sitter-python/tree-sitter-python.wasm src/grammars/tree-sitter-python.wasm",
+		"pretest": "tsx scripts/copy-grammars.ts",
 		"test": "vitest run",
 		"test:live": "METASCOPE_TEST_MOCK=false vitest run"
 	},

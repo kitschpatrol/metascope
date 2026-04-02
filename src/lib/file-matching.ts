@@ -2,7 +2,7 @@ import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
 import { existsSync } from 'node:fs'
-import { dirname, relative, resolve } from 'node:path'
+import { dirname, relative, resolve, sep } from 'node:path'
 import picomatch from 'picomatch'
 import { exec } from 'tinyexec'
 import { escapePath, glob } from 'tinyglobby'
@@ -209,8 +209,8 @@ export async function getMatches(
 	}
 
 	// Sort by depth (shallowest first), then alphabetically
-	// Pre-compute depths to avoid repeated split('/') in the comparator
-	const decorated = results.map((p) => ({ depth: p.split('/').length, path: p }))
+	// Pre-compute depths to avoid repeated splitting in the comparator
+	const decorated = results.map((p) => ({ depth: p.split(sep).length, path: p }))
 	decorated.sort((a, b) => a.depth - b.depth || a.path.localeCompare(b.path))
 	return decorated.map((d) => d.path)
 }
