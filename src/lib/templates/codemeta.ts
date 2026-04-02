@@ -55,6 +55,11 @@ import {
  */
 const INFER_TARGET_PRODUCT = false as const
 
+const PEP508_NAME_REGEX = /^[\w.-]+/
+const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/
+const DATETIME_DATE_REGEX = /^(\d{4}-\d{2}-\d{2})T/
+const TRAILING_DOT_GIT_REGEX = /\.git$/
+
 // ─── Template ───────────────────────────────────────────────────────
 
 export type TemplateDataCodemeta = ReturnType<typeof codemeta>
@@ -933,7 +938,7 @@ function objectEntriesToDeps(
  */
 function parsePep508Dep(dep: string): CodemetaDependencyLd {
 	const trimmed = dep.trim()
-	const nameMatch = /^[\w.-]+/.exec(trimmed)
+	const nameMatch = PEP508_NAME_REGEX.exec(trimmed)
 	if (nameMatch) {
 		const depVersion = trimmed.slice(nameMatch[0].length).trim()
 		return toDependencyLd(nameMatch[0], depVersion.length > 0 ? depVersion : undefined)
@@ -1039,8 +1044,8 @@ function stripReadmeFragment(url: string | undefined): string | undefined {
  */
 function toDateOnly(value: string | undefined): string | undefined {
 	if (value === undefined) return undefined
-	if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
-	const match = /^(\d{4}-\d{2}-\d{2})T/.exec(value)
+	if (DATE_ONLY_REGEX.test(value)) return value
+	const match = DATETIME_DATE_REGEX.exec(value)
 	if (match) return match[1]
 	return value
 }
@@ -1090,7 +1095,7 @@ function readmeUrl(
 	// Build a web URL if we have a GitHub-style repo URL
 	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {
 		const branch = defaultBranch ?? 'main'
-		const base = repoUrl.replace(/\.git$/, '')
+		const base = repoUrl.replace(TRAILING_DOT_GIT_REGEX, '')
 		return `${base}/blob/${branch}/${repoRelativePath}`
 	}
 

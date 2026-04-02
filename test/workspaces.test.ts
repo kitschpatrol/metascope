@@ -105,8 +105,7 @@ describe('getMatches with workspaces', () => {
 			['package.json'],
 		)
 
-		// eslint-disable-next-line unicorn/no-array-sort
-		const sorted = [...matches].sort(
+		const sorted = matches.toSorted(
 			(a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b),
 		)
 		expect(matches).toEqual(sorted)

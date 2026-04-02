@@ -201,7 +201,8 @@ export function parse(source: string): Goreleaser | undefined {
 		}
 	}
 
-	result.operating_systems = [...goosSet].map(
+	result.operating_systems = Array.from(
+		goosSet,
 		(os) => GOOS_MAP[os] ?? os.charAt(0).toUpperCase() + os.slice(1),
 	)
 

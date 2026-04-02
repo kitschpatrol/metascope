@@ -1,6 +1,8 @@
 import { relative } from 'node:path'
 import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 
+const URL_PROTOCOL_REGEX = /^[a-z]+:\/\//i
+
 // ─── Path Formatting ────────────────────────────────────────────────
 
 /**
@@ -14,7 +16,7 @@ export function formatPath(
 	absolute = DEFAULT_GET_METADATA_OPTIONS.absolute,
 ): string {
 	// Don't format URLs (roughly detected by protocol prefix)
-	if (/^[a-z]+:\/\//i.test(absolutePath)) return absolutePath
+	if (URL_PROTOCOL_REGEX.test(absolutePath)) return absolutePath
 
 	if (absolute) return absolutePath.replaceAll('\\', '/')
 

@@ -7,6 +7,7 @@ import { templates } from '../src/lib/templates'
 const projectRoot = resolve('.')
 const allSourcesFixture = resolve('test/fixtures/all-sources')
 
+// eslint-disable-next-line ts/no-unsafe-type-assertion
 const templateNames = Object.keys(templates) as TemplateName[]
 
 describe('getMetadata - per template (project root)', () => {
