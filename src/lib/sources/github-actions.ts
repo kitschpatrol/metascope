@@ -11,7 +11,7 @@
  */
 
 import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { relative } from 'node:path'
 import { Octokit } from 'octokit'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
@@ -161,21 +161,17 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 		const records: Array<SourceRecord<GitHubAction> & { rawPath: string }> = []
 		for (const input of inputs) {
 			try {
-				const content = await readFile(resolve(context.options.path, input), 'utf8')
+				const content = await readFile(input, 'utf8')
 				const parsed: unknown = parseYaml(content)
 				if (typeof parsed !== 'object' || parsed === null || !('name' in parsed)) continue
 				const { name } = parsed as Record<string, unknown>
 				if (typeof name !== 'string') continue
 
-				const file = formatPath(
-					resolve(context.options.path, input),
-					context.options.path,
-					context.options.absolute,
-				)
+				const file = formatPath(input, context.options.path, context.options.absolute)
 
 				records.push({
 					data: githubActionSchema.parse({ file, name }),
-					rawPath: input,
+					rawPath: relative(context.options.path, input).replaceAll('\\', '/'),
 					source: formatPath(input, context.options.path, context.options.absolute),
 				})
 			} catch (error) {
@@ -220,9 +216,7 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 					)
 
 					for (const record of records) {
-						// Normalize to forward slashes for cross-platform matching
-						const normalizedPath = record.rawPath.replaceAll('\\', '/')
-						const runInfo = runsByPath.get(normalizedPath)
+						const runInfo = runsByPath.get(record.rawPath)
 						if (runInfo) {
 							record.data.lastRunConclusion = runInfo.conclusion
 							record.data.lastRunStatus = runInfo.status
