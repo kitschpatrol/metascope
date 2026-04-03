@@ -151,7 +151,6 @@ export default cspellConfig({
 		'rocketuc',
 		'rubygems',
 		'schlenker',
-		'scule',
 		'sdkroot',
 		'sebastiendamaye',
 		'secread',
