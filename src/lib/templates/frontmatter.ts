@@ -86,7 +86,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		Maintainer: mixedStringsToArray(toBasicNames(codemeta.maintainer)) ?? null,
 		Version: codemeta.version ?? null,
 		Account: github?.ownerLogin ?? null,
-		Public: !(github?.isPrivate ?? false),
+		Public: github === undefined ? false : !github.isPrivate,
 		Fork: github?.isFork ?? false,
 		Published: Boolean(
 			obsidianPluginRegistry?.url ?? nodeNpmRegistry?.url ?? pythonPypiRegistry?.url,

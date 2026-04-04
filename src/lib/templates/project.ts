@@ -41,7 +41,7 @@ export const project = defineTemplate((context, templateData) => {
 		isAuthoredByMe: isAuthoredBy(codemeta.author, templateData.authorName),
 		isOnMyGitHub: isOnGithubAccountOf(codemeta.codeRepository, templateData.githubAccount),
 		isOnNpm: nodeNpmRegistry?.url !== undefined,
-		isPublic: !(github?.isPrivate ?? false),
+		isPublic: github === undefined ? false : !github.isPrivate,
 		isRemoteAhead: gitStats?.isRemoteAhead,
 		issueCount: github?.issueCountOpen,
 		lastCommitDate: gitStats?.commitDateLast,

@@ -3,8 +3,8 @@
 	"firstCommitDate": "2026-02-24T12:07:53-05:00",
 	"gitHubLink": "https://github.com/kitschpatrol/metascope",
 	"gitHubStarCount": 1,
-	"gitIsClean": false,
-	"gitIsDirty": true,
+	"gitIsClean": true,
+	"gitIsDirty": false,
 	"gitRemoteCount": 1,
 	"homepage": "https://github.com/kitschpatrol/metascope",
 	"isAuthoredByMe": true,
@@ -12,11 +12,11 @@
 	"isOnNpm": true,
 	"isPublic": true,
 	"issueCount": 0,
-	"lastCommitDate": "2026-04-02T20:04:01-04:00",
+	"lastCommitDate": "2026-04-04T15:08:12-04:00",
 	"license": "MIT",
 	"majorUpdateCount": 1,
 	"majorUpdateList": ["typescript"],
-	"npmDownloadCount": 786,
+	"npmDownloadCount": 1196,
 	"readmePath": "file:///Users/Someone/metascope/readme.md",
 	"repositoryPath": "file:///Users/Someone/metascope",
 	"tags": [
@@ -33,5 +33,5 @@
 	"type": "source",
 	"usesPnpm": true,
 	"usesSharedConfig": true,
-	"version": "0.5.0"
+	"version": "0.6.0"
 }
