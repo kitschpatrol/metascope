@@ -12,8 +12,8 @@ importers:
         specifier: 1.0.0-alpha.33
         version: 1.0.0-alpha.33
       '@kitschpatrol/tokei':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.1
+        version: 2.0.1
       '@sindresorhus/is':
         specifier: ^7.2.0
         version: 7.2.0
@@ -967,78 +967,78 @@ packages:
     engines: {node: '>=22.18.0'}
     hasBin: true
 
-  '@kitschpatrol/tokei-darwin-arm64@2.0.0':
-    resolution: {integrity: sha512-0kgfzn7F7sjYajyknUYRuFpjTpB67QE19xIE6Tr1gOf9g9l0O0OhhpSVuqb9jMLT2XfBrf1lo++H61c8BlKG6Q==}
+  '@kitschpatrol/tokei-darwin-arm64@2.0.1':
+    resolution: {integrity: sha512-nLtvxu9lXaF5mKWPfABoYdGOTMdWONRz03npwCz34FYWAIVi0KARhWCFGDd9NRjVB431f290WpBhI1nQg47Rrg==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [darwin]
 
-  '@kitschpatrol/tokei-darwin-x64@2.0.0':
-    resolution: {integrity: sha512-YbP8dqcit6gulJQlpXIakMKq+ULT+t0q+gJ6bugRdwbVOfRfRdTRoYEJ7MhWq2Y8V4b1mDo69Ya7kjMBl2ltoA==}
+  '@kitschpatrol/tokei-darwin-x64@2.0.1':
+    resolution: {integrity: sha512-Z+Bin/eDpQ9UWoVML9cPwOlbGoBfxK1gkEAIU2DYFQL/GHhAnQWdnCF4DiMAuI/vtCy7jdqDWlkg5ry+HJdkGQ==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [darwin]
 
-  '@kitschpatrol/tokei-freebsd-x64@2.0.0':
-    resolution: {integrity: sha512-xEMVg6Ea+Pgub+Qg0+NwiEayJ+XIYorNRo4hsxjKzeDnlUHIU5UZsEcqoJapzM9D3LkNRulg/gDoPIPUZJiqqw==}
+  '@kitschpatrol/tokei-freebsd-x64@2.0.1':
+    resolution: {integrity: sha512-pNI4Pycjfn9gLJJv1jb7D9khKygGCIeLPW0h7emYgBWrp/wR0lNfU6mmYjV038RurkSO5vTB6/cMdSfiwP27aw==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [freebsd]
 
-  '@kitschpatrol/tokei-linux-arm-gnueabihf@2.0.0':
-    resolution: {integrity: sha512-tm+wUg9JptcbrUvA8Ahom3+3Oq3dvex+miQFZnlFC6zqisf9inzl4LzkwPtxr7VqkjdCp7yxDBJLjotpMgB8xg==}
+  '@kitschpatrol/tokei-linux-arm-gnueabihf@2.0.1':
+    resolution: {integrity: sha512-HORclBs1rgm/yhxHlLkiHcbiyZgTDeFSJPZ02m3kt2RG19IuUmuxCsVYzrZYnnLwACGGn6LMpYzzKbJ/MoGJzQ==}
     engines: {node: '>= 18'}
     cpu: [arm]
     os: [linux]
 
-  '@kitschpatrol/tokei-linux-arm64-gnu@2.0.0':
-    resolution: {integrity: sha512-9OBkI30WdnRSF+YR+tDKazhQrBav06i0ipi6fxodiykT/DQLu/hgHCYYBL1n1KJe1It7RUyvmrUdeYox18TTYA==}
+  '@kitschpatrol/tokei-linux-arm64-gnu@2.0.1':
+    resolution: {integrity: sha512-StDQyejkyH12wzAtc6pHLAAeRw2JS/sTwVLMpDi9noZrPuc+n1jEqxuvQt5WfZBYV4Z56dfpMGqoGZzmEKHiRg==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@kitschpatrol/tokei-linux-arm64-musl@2.0.0':
-    resolution: {integrity: sha512-BVACm6BLN+vTGHlilP0HbVCGeXyVtaCO1H6Xo7sNgbiO4/Vbv9AR5/q8FdRGMBQzmK/CBJNMHz15XNpygh2PPw==}
+  '@kitschpatrol/tokei-linux-arm64-musl@2.0.1':
+    resolution: {integrity: sha512-DC8vYRtLPVrvseawzoG0Rf4jC79FnScU23SkAn/5MDxvKVGKbzZnfBx4fhXPuHictLKijophojUdO3peGN1uMQ==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@kitschpatrol/tokei-linux-x64-gnu@2.0.0':
-    resolution: {integrity: sha512-I/tm3pOZ7Y/Z6/xgL6qskZypp7CkyoQWsUKDy99br7UcFc0KQXPtqUiPUudu3wpkrnShGf8mJWMmeCcifhMeRw==}
+  '@kitschpatrol/tokei-linux-x64-gnu@2.0.1':
+    resolution: {integrity: sha512-PdpfBXmDQehbamcXBr35WnxpTwUGVuKPZ1FCbepTetZ0HwlgmExayj/5blF0Kzhfk/jKWntvw/ydeMq2GyUhzA==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@kitschpatrol/tokei-linux-x64-musl@2.0.0':
-    resolution: {integrity: sha512-5p+BzA1jTKaPqNPzghHWA7HT8VUaWN1rV93sVgX86djUesU2vbEts+asQ3d200763C1HO3sjFlzFAHj5nLBvcw==}
+  '@kitschpatrol/tokei-linux-x64-musl@2.0.1':
+    resolution: {integrity: sha512-nUqPJ/LoepjgozNGCFz3knf6ojGgp6IJ89hbpLY8jl75TphACWau+2aKHTVDzUHc3r2pzBtgrNGrQqvGJaNVfA==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@kitschpatrol/tokei-win32-arm64-msvc@2.0.0':
-    resolution: {integrity: sha512-UN9stCdZ70byPgQjSuMAaCjUpjknX9KFJY2Bd2cz5YWZeVNmcSrxv7evacTW0TvFgRezMMq1HPcxa6sWci8HMw==}
+  '@kitschpatrol/tokei-win32-arm64-msvc@2.0.1':
+    resolution: {integrity: sha512-H9qhCU/ICSZOZ56maAzm2ROh+EhrnRfpZt+lGEK2Os1hxgQCDDB2CFRLwof+yZ43+t2mRJOrCC2pT8shEfQeDA==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [win32]
 
-  '@kitschpatrol/tokei-win32-ia32-msvc@2.0.0':
-    resolution: {integrity: sha512-msTIRar0RSqnhJpFa5iQqqMLITnHarrSSRJuHKCmIIWhRQMnHhhWAkv+A89yjlgIcT4uVRGcagsZN8IhBMkwvA==}
+  '@kitschpatrol/tokei-win32-ia32-msvc@2.0.1':
+    resolution: {integrity: sha512-NgqNEvbIMSfjXYIDFZ3QNGEzaCkvfIYN6vhhoX/PP+rIPLk7CAP4uy2F8pLteCkHlAtQc2jNzdHBimz0FGhhMA==}
     engines: {node: '>= 18'}
     cpu: [ia32]
     os: [win32]
 
-  '@kitschpatrol/tokei-win32-x64-msvc@2.0.0':
-    resolution: {integrity: sha512-Qho7593Wxq7bQlfr3aisG60Fhcio3d4KbndJmsq4e8y4C+Au9SveX2TOZfpHln7mMdWu+h4QhJQt750cx6Mqjg==}
+  '@kitschpatrol/tokei-win32-x64-msvc@2.0.1':
+    resolution: {integrity: sha512-O+tv08OE6noZXCTjOYrutBLu316o3sD+9cXemCfuHoA52kISpqNv+JM6nG7UkmuN8q4aVDKkrncU8y3/v/ur8A==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [win32]
 
-  '@kitschpatrol/tokei@2.0.0':
-    resolution: {integrity: sha512-sdp77k1yFoUDQw4lLdajEMqc9UjSLogufAu7WdqbW8PWROH/CRJDBAiJjTv6Ejqn7AfcisTw9tUFG3xW9dpieQ==}
+  '@kitschpatrol/tokei@2.0.1':
+    resolution: {integrity: sha512-n04mvKAQs14OLTud13dNyNksatNgOLvEJfUkUyfbiZgP6ICshDKFstiEa7fT1N962y/z/bIX2dbaaAWgnaUgKA==}
     engines: {node: '>= 18'}
 
   '@kitschpatrol/typescript-config@7.0.2':
@@ -6995,52 +6995,52 @@ snapshots:
       - supports-color
       - typescript
 
-  '@kitschpatrol/tokei-darwin-arm64@2.0.0':
+  '@kitschpatrol/tokei-darwin-arm64@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-darwin-x64@2.0.0':
+  '@kitschpatrol/tokei-darwin-x64@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-freebsd-x64@2.0.0':
+  '@kitschpatrol/tokei-freebsd-x64@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-linux-arm-gnueabihf@2.0.0':
+  '@kitschpatrol/tokei-linux-arm-gnueabihf@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-linux-arm64-gnu@2.0.0':
+  '@kitschpatrol/tokei-linux-arm64-gnu@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-linux-arm64-musl@2.0.0':
+  '@kitschpatrol/tokei-linux-arm64-musl@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-linux-x64-gnu@2.0.0':
+  '@kitschpatrol/tokei-linux-x64-gnu@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-linux-x64-musl@2.0.0':
+  '@kitschpatrol/tokei-linux-x64-musl@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-win32-arm64-msvc@2.0.0':
+  '@kitschpatrol/tokei-win32-arm64-msvc@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-win32-ia32-msvc@2.0.0':
+  '@kitschpatrol/tokei-win32-ia32-msvc@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei-win32-x64-msvc@2.0.0':
+  '@kitschpatrol/tokei-win32-x64-msvc@2.0.1':
     optional: true
 
-  '@kitschpatrol/tokei@2.0.0':
+  '@kitschpatrol/tokei@2.0.1':
     optionalDependencies:
-      '@kitschpatrol/tokei-darwin-arm64': 2.0.0
-      '@kitschpatrol/tokei-darwin-x64': 2.0.0
-      '@kitschpatrol/tokei-freebsd-x64': 2.0.0
-      '@kitschpatrol/tokei-linux-arm-gnueabihf': 2.0.0
-      '@kitschpatrol/tokei-linux-arm64-gnu': 2.0.0
-      '@kitschpatrol/tokei-linux-arm64-musl': 2.0.0
-      '@kitschpatrol/tokei-linux-x64-gnu': 2.0.0
-      '@kitschpatrol/tokei-linux-x64-musl': 2.0.0
-      '@kitschpatrol/tokei-win32-arm64-msvc': 2.0.0
-      '@kitschpatrol/tokei-win32-ia32-msvc': 2.0.0
-      '@kitschpatrol/tokei-win32-x64-msvc': 2.0.0
+      '@kitschpatrol/tokei-darwin-arm64': 2.0.1
+      '@kitschpatrol/tokei-darwin-x64': 2.0.1
+      '@kitschpatrol/tokei-freebsd-x64': 2.0.1
+      '@kitschpatrol/tokei-linux-arm-gnueabihf': 2.0.1
+      '@kitschpatrol/tokei-linux-arm64-gnu': 2.0.1
+      '@kitschpatrol/tokei-linux-arm64-musl': 2.0.1
+      '@kitschpatrol/tokei-linux-x64-gnu': 2.0.1
+      '@kitschpatrol/tokei-linux-x64-musl': 2.0.1
+      '@kitschpatrol/tokei-win32-arm64-msvc': 2.0.1
+      '@kitschpatrol/tokei-win32-ia32-msvc': 2.0.1
+      '@kitschpatrol/tokei-win32-x64-msvc': 2.0.1
 
   '@kitschpatrol/typescript-config@7.0.2(@types/node@22.17.2)(typescript@5.9.3)':
     dependencies:
@@ -10436,7 +10436,7 @@ snapshots:
   metascope@0.6.0:
     dependencies:
       '@bacons/xcode': 1.0.0-alpha.33
-      '@kitschpatrol/tokei': 2.0.0
+      '@kitschpatrol/tokei': 2.0.1
       '@sindresorhus/is': 7.2.0
       '@types/mdast': 4.0.4
       '@types/node': 22.17.2

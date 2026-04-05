@@ -56,7 +56,7 @@
 	},
 	"dependencies": {
 		"@bacons/xcode": "1.0.0-alpha.33",
-		"@kitschpatrol/tokei": "^2.0.0",
+		"@kitschpatrol/tokei": "^2.0.1",
 		"@sindresorhus/is": "^7.2.0",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "~22.17.2",
