@@ -3,22 +3,34 @@
  * Provides singleton initialization and cached language loading.
  */
 
-import { dirname, resolve } from 'node:path'
+import { dirname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Language, Parser } from 'web-tree-sitter'
 
 let initialized = false
 
-/** Resolve a grammar WASM file path relative to the dist/ directory. */
-function resolveGrammar(filename: string): string {
-	const thisDirectory = dirname(fileURLToPath(import.meta.url))
+/**
+ * Find the grammar directory from a module's directory path.
+ * Exported for testing — not part of the public API.
+ */
+export function findGrammarDirectory(moduleDirectory: string): string {
 	// Walk up to find the dist/ directory, then resolve grammars/ within it.
 	// Works from both dist/lib/utilities/ (unbundled library) and dist/bin/ (bundled CLI).
 	// Falls back to ../../grammars/ for source/test context (src/lib/utilities/).
-	const distributionDirectory = thisDirectory.includes('/dist/')
-		? thisDirectory.slice(0, thisDirectory.indexOf('/dist/') + '/dist'.length)
-		: resolve(thisDirectory, '..', '..')
-	return resolve(distributionDirectory, 'grammars', filename)
+	const distributionSegment = `${sep}dist${sep}`
+	const distributionDirectory = moduleDirectory.includes(distributionSegment)
+		? moduleDirectory.slice(
+				0,
+				moduleDirectory.indexOf(distributionSegment) + distributionSegment.length - 1,
+			)
+		: resolve(moduleDirectory, '..', '..')
+	return resolve(distributionDirectory, 'grammars')
+}
+
+/** Resolve a grammar WASM file path relative to the dist/ directory. */
+function resolveGrammar(filename: string): string {
+	const thisDirectory = dirname(fileURLToPath(import.meta.url))
+	return resolve(findGrammarDirectory(thisDirectory), filename)
 }
 
 /** Initialize web-tree-sitter (idempotent) and return a new Parser instance. */
