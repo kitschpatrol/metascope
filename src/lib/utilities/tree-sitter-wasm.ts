@@ -1,6 +1,6 @@
 /**
- * Shared WASM loader for web-tree-sitter.
- * Provides singleton initialization and cached language loading.
+ * Shared WASM loader for web-tree-sitter. Provides singleton initialization and
+ * cached language loading.
  */
 
 import { dirname, resolve, sep } from 'node:path'
@@ -8,10 +8,19 @@ import { fileURLToPath } from 'node:url'
 import { Language, Parser } from 'web-tree-sitter'
 
 let initialized = false
+let grammarDirectoryOverride: string | undefined
 
 /**
- * Find the grammar directory from a module's directory path.
- * Exported for testing — not part of the public API.
+ * Override the directory where tree-sitter WASM grammars are loaded from. Can
+ * be useful in commonjs projects.
+ */
+export function setGrammarDirectory(directory: string): void {
+	grammarDirectoryOverride = directory
+}
+
+/**
+ * Find the grammar directory from a module's directory path. Exported for
+ * testing — not part of the public API.
  */
 export function findGrammarDirectory(moduleDirectory: string): string {
 	// Walk up to find the dist/ directory, then resolve grammars/ within it.
@@ -29,6 +38,10 @@ export function findGrammarDirectory(moduleDirectory: string): string {
 
 /** Resolve a grammar WASM file path relative to the dist/ directory. */
 function resolveGrammar(filename: string): string {
+	if (grammarDirectoryOverride) {
+		return resolve(grammarDirectoryOverride, filename)
+	}
+
 	const thisDirectory = dirname(fileURLToPath(import.meta.url))
 	return resolve(findGrammarDirectory(thisDirectory), filename)
 }

@@ -1,6 +1,6 @@
 export { setLogger } from './log'
-
 export { getMetadata, sourceNames } from './metadata'
+
 export { DEFAULT_GET_METADATA_OPTIONS, defineTemplate } from './metadata-types'
 export type {
 	Credentials,
@@ -18,5 +18,6 @@ export type { TemplateDataFrontmatter } from './templates/frontmatter'
 export { templates } from './templates/index'
 export type { TemplateDataMetadata } from './templates/metadata'
 export type { TemplateDataProject } from './templates/project'
-
 export * as helpers from './utilities/template-helpers'
+
+export { setGrammarDirectory } from './utilities/tree-sitter-wasm'
