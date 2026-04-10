@@ -1,6 +1,5 @@
-import { fileURLToPath } from 'node:url'
 import { coerce, diff } from 'semver'
-import { exec } from 'tinyexec'
+import { updates } from 'updates'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
@@ -53,20 +52,11 @@ const updatesOutputSchema = z.object({
 })
 
 /**
- * Resolve the path to the `updates` CLI binary.
+ * Parse an age string from the `updates` CLI (via the `timerel` library) into
+ * fractional years.
  *
- * Consumers that bundle metascope must externalize it (e.g. via `neverBundle`)
- * so that `import.meta.resolve` can find the `updates` dependency.
- */
-function resolveUpdatesBinary(): string {
-	return fileURLToPath(import.meta.resolve('updates/dist/index.js'))
-}
-
-/**
- * Parse an age string from the `updates` CLI (via the `timerel` library) into fractional years.
- *
- * Possible formats: "now", "<n> sec(s)", "<n> min(s)", "<n> hour(s)",
- * "<n> day(s)", "<n> week(s)", "<n> month(s)", "<n> year(s)"
+ * Possible formats: "now", "<n> sec(s)", "<n> min(s)", "<n> hour(s)", "<n>
+ * day(s)", "<n> week(s)", "<n> month(s)", "<n> year(s)"
  */
 function parseAgeToYears(age: string): number {
 	if (age === 'now') return 0
@@ -120,8 +110,8 @@ function parseAgeToYears(age: string): number {
 }
 
 /**
- * Classify a version bump as major, minor, or patch using semver.
- * Falls back to 'major' for non-semver versions (e.g. GitHub Actions tags).
+ * Classify a version bump as major, minor, or patch using semver. Falls back to
+ * 'major' for non-semver versions (e.g. GitHub Actions tags).
  */
 function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor' | 'patch' {
 	const oldSemver = coerce(oldVersion)
@@ -145,12 +135,16 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 	async parse(input) {
 		log.debug('Extracting dependency update information via updates...')
 
-		const updatesBinary = resolveUpdatesBinary()
-		const result = await exec('node', [updatesBinary, '--file', input, '--json'])
+		// Thanks to @silverwind for implementing the API version of this tool
+		// https://github.com/silverwind/updates/issues/122
+		const result = await updates({
+			files: [input],
+			json: true,
+		})
 
 		let parsed: z.infer<typeof updatesOutputSchema>
 		try {
-			parsed = updatesOutputSchema.parse(JSON.parse(result.stdout))
+			parsed = updatesOutputSchema.parse(result)
 		} catch {
 			log.debug('No dependency files found for updates analysis.')
 			return
