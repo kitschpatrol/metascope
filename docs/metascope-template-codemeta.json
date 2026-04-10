@@ -11,8 +11,8 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-04-04",
-	"datePublished": "2026-04-03",
+	"dateModified": "2026-04-09",
+	"datePublished": "2026-04-07",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
@@ -42,12 +42,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@kitschpatrol/tokei",
-			"version": "^2.0.0"
+			"version": "^2.0.1"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "@sindresorhus/is",
-			"version": "^7.2.0"
+			"version": "^8.0.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -77,12 +77,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "defu",
-			"version": "^6.1.6"
+			"version": "^6.1.7"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "fast-xml-parser",
-			"version": "^5.5.10"
+			"version": "^5.5.11"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -107,7 +107,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "lognow",
-			"version": "^0.6.0"
+			"version": "^0.6.1"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -147,7 +147,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "read-pyproject",
-			"version": "^0.3.1"
+			"version": "^0.3.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -162,7 +162,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "simple-git",
-			"version": "^3.33.0"
+			"version": "^3.35.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -182,12 +182,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tinyexec",
-			"version": "^1.0.4"
+			"version": "^1.1.1"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "tinyglobby",
-			"version": "^0.2.15"
+			"version": "^0.2.16"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -197,7 +197,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "updates",
-			"version": "^17.13.5"
+			"version": "^17.14.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -234,7 +234,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@kitschpatrol/shared-config",
-			"version": "^7.0.2"
+			"version": "^7.3.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -264,7 +264,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "mdat-plugin-cli-help",
-			"version": "^2.0.2"
+			"version": "^2.1.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -275,6 +275,11 @@
 			"@type": "SoftwareApplication",
 			"name": "publint",
 			"version": "^0.3.18"
+		},
+		{
+			"@type": "SoftwareApplication",
+			"name": "shx",
+			"version": "^0.4.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -299,14 +304,14 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "typescript",
-			"version": "~5.9.3"
+			"version": "~6.0.2"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "vitest",
-			"version": "^4.1.2"
+			"version": "^4.1.4"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.6.0"
+	"version": "0.6.3"
 }
