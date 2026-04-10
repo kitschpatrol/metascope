@@ -69,6 +69,8 @@ describe('identifyLicense', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.spdxId).toBe('BSD-3-Clause')
+		expect(result!.name).toBe('BSD 3-Clause "New" or "Revised" License')
+		expect(result!.osiApproved).toBe(true)
 		expect(result!.confidence).toBeGreaterThanOrEqual(0.75)
 		expect(result!.spdxUrl).toBe('https://opensource.org/licenses/BSD-3-Clause')
 	})
@@ -82,6 +84,8 @@ describe('identifyLicense', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.spdxId).toBe('AGPL-3.0-only')
+		expect(result!.name).toBe('GNU Affero General Public License v3.0 only')
+		expect(result!.osiApproved).toBe(true)
 		expect(result!.confidence).toBe(1)
 		expect(result!.spdxUrl).toBe('https://www.gnu.org/licenses/agpl.txt')
 	})
@@ -106,6 +110,10 @@ describe('identifyLicense', () => {
 
 		expect(result).toBeDefined()
 		expect(result?.spdxId).toBe('CC-BY-NC-SA-3.0')
+		expect(result?.name).toBe(
+			'Creative Commons Attribution Non Commercial Share Alike 3.0 Unported',
+		)
+		expect(result?.osiApproved).toBe(false)
 		expect(result?.confidence).toBe(1)
 		expect(result?.spdxUrl).toBe('https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode')
 	})
@@ -115,6 +123,8 @@ describe('identifyLicense', () => {
 
 		expect(result).toBeDefined()
 		expect(result?.spdxId).toBe('MIT')
+		expect(result?.name).toBe('MIT License')
+		expect(result?.osiApproved).toBe(true)
 		expect(result?.confidence).toBe(1)
 		expect(result?.spdxUrl).toBe('https://opensource.org/license/mit/')
 	})

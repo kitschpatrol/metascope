@@ -21,6 +21,10 @@ import spdxLicenseList from 'spdx-license-list/full.js'
 export type LicenseMatch = {
 	/** Dice coefficient confidence score (0–1). */
 	confidence: number
+	/** Full license name (e.g. "MIT License", "Apache License 2.0"). */
+	name: string
+	/** Whether the license is OSI approved. */
+	osiApproved: boolean
 	/** SPDX license identifier (e.g. "MIT", "Apache-2.0"). */
 	spdxId: string
 	/** SPDX license URL. */
@@ -62,15 +66,15 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	let bestMatch: LicenseMatch | undefined
 	let bestScore = 0
 
-	for (const { bigramsMap, normalized, spdxId, spdxUrl, totalBigrams } of getNormalizedLicenses()) {
+	for (const { bigramsMap, normalized, spdxId, totalBigrams } of getNormalizedLicenses()) {
 		if (normalizedInput === normalized) {
-			return { confidence: 1, spdxId, spdxUrl }
+			return buildMatch(spdxId, 1)
 		}
 
 		const score = diceCoefficientCached(inputBigramsMap, inputTotal, bigramsMap, totalBigrams)
 		if (score > bestScore) {
 			bestScore = score
-			bestMatch = { confidence: score, spdxId, spdxUrl }
+			bestMatch = buildMatch(spdxId, score)
 			if (bestScore > 0.98) break
 		}
 	}
@@ -80,6 +84,20 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	}
 
 	return undefined
+}
+
+/**
+ * Build a LicenseMatch for the given SPDX ID with the supplied confidence.
+ */
+function buildMatch(spdxId: string, confidence: number): LicenseMatch {
+	const entry = spdxLicenseList[spdxId]
+	return {
+		confidence,
+		name: entry.name,
+		osiApproved: entry.osiApproved,
+		spdxId,
+		spdxUrl: getLicenseUrl(spdxId),
+	}
 }
 
 /**
@@ -173,7 +191,6 @@ type NormalizedLicense = {
 	bigramsMap: Map<string, number>
 	normalized: string
 	spdxId: string
-	spdxUrl: string
 	totalBigrams: number
 }
 
@@ -186,7 +203,6 @@ function getNormalizedLicenses(): NormalizedLicense[] {
 			bigramsMap: computeBigrams(normalized),
 			normalized,
 			spdxId,
-			spdxUrl: getLicenseUrl(spdxId),
 			totalBigrams: normalized.length - 1,
 		}
 	})
@@ -237,7 +253,7 @@ function identifyByHeader(text: string): LicenseMatch | undefined {
 	const header = text.slice(0, 500)
 	for (const { pattern, spdxId } of HEADER_PATTERNS) {
 		if (pattern.test(header)) {
-			return { confidence: 1, spdxId, spdxUrl: getLicenseUrl(spdxId) }
+			return buildMatch(spdxId, 1)
 		}
 	}
 
@@ -344,7 +360,7 @@ function identifyByUrl(text: string): LicenseMatch | undefined {
 		if (!normalized) continue
 
 		const spdxId = index.get(normalized)
-		if (spdxId) return { confidence: 1, spdxId, spdxUrl: getLicenseUrl(spdxId) }
+		if (spdxId) return buildMatch(spdxId, 1)
 	}
 
 	return undefined
