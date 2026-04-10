@@ -2,6 +2,7 @@
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import { kebabCase } from 'string-ts'
 import { bin, version, name } from '../../package.json' with { type: 'json' }
 import { createLogger, getChildLogger } from 'lognow'
 import {
@@ -18,6 +19,19 @@ import { isKeyOfTemplate } from '../lib/templates'
 const cliCommandName = Object.keys(bin).at(0)!
 const builtInTemplateNames = Object.keys(templates)
 const yargsInstance = yargs(hideBin(process.argv))
+
+// Source names are camelCase internally (the programmatic API), but the CLI
+// accepts the more idiomatic kebab-case form. Both are accepted silently; the
+// help text only shows the kebab-case form.
+const kebabToCamelSource = new Map<string, SourceName>(
+	sourceNames.map((name) => [kebabCase(name), name]),
+)
+const kebabSourceNames = [...kebabToCamelSource.keys()]
+
+function resolveSourceArg(argument: string): SourceName | undefined {
+	if (sourceNames.includes(argument as SourceName)) return argument as SourceName
+	return kebabToCamelSource.get(argument)
+}
 
 await yargsInstance
 	.scriptName(cliCommandName)
@@ -63,14 +77,15 @@ await yargsInstance
 				.option('sources', {
 					alias: 's',
 					array: true,
-					description: 'Only run specific metadata sources (defaults to all)',
+					coerce: (values: string[]) => values.map((v) => resolveSourceArg(v) ?? v),
+					description: `Only run specific metadata sources (${kebabSourceNames.map((n) => `\`${n}\``).join(', ')}); defaults to all`,
 					type: 'string',
 				})
 				.check((argv) => {
 					const invalid = argv.sources?.filter((s) => !sourceNames.includes(s as SourceName))
 					if (invalid && invalid.length > 0) {
 						throw new Error(
-							`Invalid source(s): ${invalid.join(', ')}. Valid sources: ${sourceNames.join(', ')}`,
+							`Invalid source(s): ${invalid.join(', ')}. Valid sources: ${kebabSourceNames.join(', ')}`,
 						)
 					}
 					return true
