@@ -70,6 +70,7 @@ describe('identifyLicense', () => {
 		expect(result).toBeDefined()
 		expect(result!.spdxId).toBe('BSD-3-Clause')
 		expect(result!.confidence).toBeGreaterThanOrEqual(0.75)
+		expect(result!.spdxUrl).toBe('https://opensource.org/licenses/BSD-3-Clause')
 	})
 
 	it('should identify an AGPL-3.0 license from a full GPL text', async () => {
@@ -82,6 +83,7 @@ describe('identifyLicense', () => {
 		expect(result).toBeDefined()
 		expect(result!.spdxId).toBe('AGPL-3.0-only')
 		expect(result!.confidence).toBe(1)
+		expect(result!.spdxUrl).toBe('https://www.gnu.org/licenses/agpl.txt')
 	})
 
 	it('should return undefined for empty text', () => {
@@ -90,6 +92,49 @@ describe('identifyLicense', () => {
 
 	it('should return undefined for non-license text', () => {
 		expect(identifyLicense('This is just a readme file with no license text.')).toBeUndefined()
+	})
+
+	it('should identify a pointer-style CC license file by URL', () => {
+		const text = [
+			'Copyright (c) 2009-2026 Eric Mika',
+			'',
+			'This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.',
+			'',
+			'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+		].join('\n')
+		const result = identifyLicense(text)
+
+		expect(result).toBeDefined()
+		expect(result?.spdxId).toBe('CC-BY-NC-SA-3.0')
+		expect(result?.confidence).toBe(1)
+		expect(result?.spdxUrl).toBe('https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode')
+	})
+
+	it('should identify a license by its canonical spdx.org URL', () => {
+		const result = identifyLicense('See https://spdx.org/licenses/MIT for the full text.')
+
+		expect(result).toBeDefined()
+		expect(result?.spdxId).toBe('MIT')
+		expect(result?.confidence).toBe(1)
+		expect(result?.spdxUrl).toBe('https://opensource.org/license/mit/')
+	})
+
+	it('should identify a license by its /legalcode URL variant', () => {
+		const result = identifyLicense(
+			'Licensed under https://creativecommons.org/licenses/by/4.0/legalcode.',
+		)
+
+		expect(result).toBeDefined()
+		expect(result?.spdxId).toBe('CC-BY-4.0')
+	})
+
+	it('should prefer modern SPDX IDs over deprecated forms on URL collision', () => {
+		// Several GNU license URLs are shared between deprecated (e.g. `GPL-3.0`,
+		// `GPL-3.0+`) and current (`GPL-3.0-only`, `GPL-3.0-or-later`) IDs. The
+		// URL index should resolve to the `-only` form.
+		const result = identifyLicense('https://www.gnu.org/licenses/gpl-3.0-standalone.html')
+
+		expect(result?.spdxId).toBe('GPL-3.0-only')
 	})
 })
 

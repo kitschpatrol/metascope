@@ -6,21 +6,25 @@
  * SPDX license URL (e.g. "https://spdx.org/licenses/MIT").
  *
  * Handles:
- *   - Standard license texts (MIT, BSD, Apache, etc.)
- *   - GNU family licenses via header pattern matching (LGPL, AGPL)
- *   - Markdown-formatted license files (strips headings, tables, links)
- *   - YAML front matter stripping
+ *
+ * - Canonical SPDX / vendor URLs embedded in pointer-style license files
+ * - Standard license texts (MIT, BSD, Apache, etc.)
+ * - GNU family licenses via header pattern matching (LGPL, AGPL)
+ * - Markdown-formatted license files (strips headings, tables, links)
+ * - YAML front matter stripping
  */
 
 import spdxLicenseList from 'spdx-license-list/full.js'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-type LicenseMatch = {
+export type LicenseMatch = {
 	/** Dice coefficient confidence score (0–1). */
 	confidence: number
 	/** SPDX license identifier (e.g. "MIT", "Apache-2.0"). */
 	spdxId: string
+	/** SPDX license URL. */
+	spdxUrl: string
 }
 
 // ─── Constants ──────────────────────────────────────────────────────
@@ -33,11 +37,16 @@ const CONFIDENCE_THRESHOLD = 0.75
 // ─── Public API ─────────────────────────────────────────────────────
 
 /**
- * Identify the SPDX license that best matches the given text.
- * Returns the best match with confidence score, or undefined if no match
- * exceeds the confidence threshold.
+ * Identify the SPDX license that best matches the given text. Returns the best
+ * match with confidence score, or undefined if no match exceeds the confidence
+ * threshold.
  */
 export function identifyLicense(text: string): LicenseMatch | undefined {
+	// Short circuit for pointer-style license files that only reference
+	// a canonical SPDX or vendor URL (e.g. CC license deeds)
+	const urlMatch = identifyByUrl(text)
+	if (urlMatch) return urlMatch
+
 	// Quick header-based check for GNU licenses whose SPDX templates
 	// include combined texts that don't match real-world standalone files
 	const headerMatch = identifyByHeader(text)
@@ -53,15 +62,15 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	let bestMatch: LicenseMatch | undefined
 	let bestScore = 0
 
-	for (const { bigramsMap, normalized, spdxId, totalBigrams } of getNormalizedLicenses()) {
+	for (const { bigramsMap, normalized, spdxId, spdxUrl, totalBigrams } of getNormalizedLicenses()) {
 		if (normalizedInput === normalized) {
-			return { confidence: 1, spdxId }
+			return { confidence: 1, spdxId, spdxUrl }
 		}
 
 		const score = diceCoefficientCached(inputBigramsMap, inputTotal, bigramsMap, totalBigrams)
 		if (score > bestScore) {
 			bestScore = score
-			bestMatch = { confidence: score, spdxId }
+			bestMatch = { confidence: score, spdxId, spdxUrl }
 			if (bestScore > 0.98) break
 		}
 	}
@@ -78,6 +87,18 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
  */
 export function spdxIdToUrl(spdxId: string): string {
 	return `${SPDX_BASE_URL}${spdxId}`
+}
+
+/**
+ * Resolve the canonical URL for an SPDX license ID. Prefers the upstream URL
+ * recorded in the SPDX list (e.g. `https://opensource.org/license/mit/`) and
+ * falls back to the SPDX registry URL for the handful of entries whose upstream
+ * URL is missing at runtime.
+ */
+function getLicenseUrl(spdxId: string): string {
+	// Some actually are undefined?
+	// eslint-disable-next-line ts/no-unnecessary-condition
+	return spdxLicenseList[spdxId]?.url ?? spdxIdToUrl(spdxId)
 }
 
 // ─── Text normalization ─────────────────────────────────────────────
@@ -97,9 +118,8 @@ function stripFrontMatter(text: string): string {
 }
 
 /**
- * Normalize license text for comparison.
- * Follows SPDX matching guidelines: collapse whitespace, strip copyright lines,
- * remove URLs, lowercase.
+ * Normalize license text for comparison. Follows SPDX matching guidelines:
+ * collapse whitespace, strip copyright lines, remove URLs, lowercase.
  */
 function normalizeText(text: string): string {
 	return (
@@ -126,8 +146,8 @@ function normalizeText(text: string): string {
 }
 
 /**
- * Normalize input text (user-provided license file).
- * Applies additional cleanup beyond what reference texts need.
+ * Normalize input text (user-provided license file). Applies additional cleanup
+ * beyond what reference texts need.
  */
 function normalizeInput(text: string): string {
 	return normalizeText(stripFrontMatter(text))
@@ -153,6 +173,7 @@ type NormalizedLicense = {
 	bigramsMap: Map<string, number>
 	normalized: string
 	spdxId: string
+	spdxUrl: string
 	totalBigrams: number
 }
 
@@ -165,6 +186,7 @@ function getNormalizedLicenses(): NormalizedLicense[] {
 			bigramsMap: computeBigrams(normalized),
 			normalized,
 			spdxId,
+			spdxUrl: getLicenseUrl(spdxId),
 			totalBigrams: normalized.length - 1,
 		}
 	})
@@ -196,10 +218,10 @@ function diceCoefficientCached(
 
 /**
  * Title-based identification for GNU licenses whose SPDX templates embed
- * combined texts (e.g. LGPL-3.0-only = LGPL supplement + full GPL), making
- * Dice coefficient unreliable against real-world standalone files.
- * Only checks the first 500 characters to avoid matching references in
- * unrelated license texts (e.g. CeCILL-2.1 mentions AGPL in its body).
+ * combined texts (e.g. LGPL-3.0-only = LGPL supplement + full GPL), making Dice
+ * coefficient unreliable against real-world standalone files. Only checks the
+ * first 500 characters to avoid matching references in unrelated license texts
+ * (e.g. CeCILL-2.1 mentions AGPL in its body).
  */
 const HEADER_PATTERNS: Array<{ pattern: RegExp; spdxId: string }> = [
 	{ pattern: /gnu lesser general public license\s+version 3/i, spdxId: 'LGPL-3.0-only' },
@@ -215,8 +237,114 @@ function identifyByHeader(text: string): LicenseMatch | undefined {
 	const header = text.slice(0, 500)
 	for (const { pattern, spdxId } of HEADER_PATTERNS) {
 		if (pattern.test(header)) {
-			return { confidence: 1, spdxId }
+			return { confidence: 1, spdxId, spdxUrl: getLicenseUrl(spdxId) }
 		}
+	}
+
+	return undefined
+}
+
+// ─── URL-based matching ─────────────────────────────────────────────
+
+/**
+ * Extracts `http(s)://...` URLs from the raw text, stripping trailing
+ * punctuation that commonly follows a URL in prose (`.`, `,`, `)`, `]`, etc.)
+ * but is not part of the URL itself.
+ */
+const URL_REGEX = /https?:\/\/[^\s<>"')\]}]+/gi
+
+/** Leading `www.` subdomain. */
+const WWW_PREFIX_REGEX = /^www\./
+
+/** Trailing `/legalcode` or `/legalcode.<ext>` on Creative Commons URLs. */
+const LEGALCODE_SUFFIX_REGEX = /\/legalcode(?:\.[a-z]+)?$/
+
+/** Trailing slashes. */
+const TRAILING_SLASH_REGEX = /\/+$/
+
+/** Trailing prose punctuation after a URL extracted from text. */
+const TRAILING_PUNCTUATION_REGEX = /[.,;:!?]+$/
+
+/**
+ * Normalize a URL for comparison: lowercase host+path, drop scheme, strip
+ * `www.`, strip trailing slashes, and strip trailing `/legalcode(.ext)?`
+ * suffixes used by Creative Commons canonical URLs.
+ */
+function normalizeUrl(url: string): string | undefined {
+	let parsed: URL
+	try {
+		parsed = new URL(url.trim())
+	} catch {
+		return undefined
+	}
+
+	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return undefined
+
+	const host = parsed.hostname.toLowerCase().replace(WWW_PREFIX_REGEX, '')
+	let path = parsed.pathname.toLowerCase().replace(LEGALCODE_SUFFIX_REGEX, '')
+	path = path.replace(TRAILING_SLASH_REGEX, '')
+	return `${host}${path}`
+}
+
+/**
+ * Rank an SPDX ID by how "current" its form is, higher is preferred. Used to
+ * break ties when multiple IDs share a canonical URL.
+ */
+function scoreSpdxId(id: string): number {
+	if (id.endsWith('+')) return 0 // Deprecated `+` syntax
+	if (id.endsWith('-only')) return 3
+	if (id.endsWith('-or-later')) return 2
+	return 1 // Bare version, e.g. `GPL-3.0` (also deprecated but still valid)
+}
+
+/**
+ * When multiple SPDX IDs share a canonical URL (typically deprecated legacy
+ * forms alongside current `-only` / `-or-later` variants), pick the current
+ * non-deprecated form.
+ */
+function preferSpdxId(a: string, b: string): string {
+	const sa = scoreSpdxId(a)
+	const sb = scoreSpdxId(b)
+	if (sa !== sb) return sa > sb ? a : b
+	return a < b ? a : b
+}
+
+/** Lazy index of normalized URL → preferred SPDX ID. */
+let urlIndex: Map<string, string> | undefined
+
+function getUrlIndex(): Map<string, string> {
+	if (urlIndex) return urlIndex
+
+	const index = new Map<string, string>()
+
+	for (const [spdxId, entry] of Object.entries(spdxLicenseList)) {
+		// Always include the canonical spdx.org URL for every listed ID
+		index.set(`spdx.org/licenses/${spdxId.toLowerCase()}`, spdxId)
+
+		if (!entry.url) continue
+		const normalized = normalizeUrl(entry.url)
+		if (!normalized) continue
+
+		const existing = index.get(normalized)
+		index.set(normalized, existing ? preferSpdxId(existing, spdxId) : spdxId)
+	}
+
+	urlIndex = index
+	return index
+}
+
+function identifyByUrl(text: string): LicenseMatch | undefined {
+	const matches = text.match(URL_REGEX)
+	if (!matches) return undefined
+
+	const index = getUrlIndex()
+	for (const raw of matches) {
+		const cleaned = raw.replace(TRAILING_PUNCTUATION_REGEX, '')
+		const normalized = normalizeUrl(cleaned)
+		if (!normalized) continue
+
+		const spdxId = index.get(normalized)
+		if (spdxId) return { confidence: 1, spdxId, spdxUrl: getLicenseUrl(spdxId) }
 	}
 
 	return undefined

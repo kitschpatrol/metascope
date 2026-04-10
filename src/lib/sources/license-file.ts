@@ -1,18 +1,12 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { OneOrMany, SourceRecord } from '../source'
+import type { LicenseMatch } from '../utilities/license-identification'
 import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { identifyLicense } from '../utilities/license-identification'
 
 // ─── Types ──────────────────────────────────────────────────────────
-
-export type LicenseMatch = {
-	/** Match confidence between 0 and 1. */
-	confidence: number
-	/** SPDX license identifier (e.g. "MIT"). */
-	spdxId: string
-}
 
 export type LicenseFileData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
 
@@ -26,7 +20,7 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 		const match = identifyLicense(content)
 		if (!match) return
 		return {
-			data: { confidence: match.confidence, spdxId: match.spdxId },
+			data: match,
 			source: input,
 		}
 	},
