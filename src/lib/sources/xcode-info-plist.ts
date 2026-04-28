@@ -68,6 +68,9 @@ type PlistDict = Record<string, unknown>
 /** Xcode build variable pattern: $(VAR) or ${VAR}. */
 const XCODE_VARIABLE_RE = /\$[({][^)}]+[)}]/
 
+/** XML comment, including malformed ones with `--` inside. */
+const XML_COMMENT_RE = /<!--[\s\S]*?-->/g
+
 /**
  * Map DTPlatformName / CFBundleSupportedPlatforms values to human-readable OS
  * names.
@@ -90,15 +93,14 @@ const PLATFORM_NAME_MAP: Record<string, string> = {
  * undefined if the plist is malformed or not a dictionary.
  */
 export function parse(content: string): InfoPlist | undefined {
-	let data: PlistDict
-	try {
-		const parsed = plist.parse(content)
-		if (!is.plainObject(parsed)) {
-			return undefined
-		}
-
-		data = parsed
-	} catch {
+	// Some real-world Info.plists trip xmldom (>=0.9): comments with `--`
+	// inside, or leading whitespace/comments before the `<?xml ?>` declaration.
+	// Retry with comments stripped and leading whitespace trimmed — plist
+	// itself ignores comment nodes, so this changes nothing for well-formed
+	// input.
+	const data =
+		tryParsePlist(content) ?? tryParsePlist(content.replaceAll(XML_COMMENT_RE, '').trimStart())
+	if (!data) {
 		return undefined
 	}
 
@@ -143,6 +145,19 @@ export function parse(content: string): InfoPlist | undefined {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
+
+/**
+ * Run `plist.parse` and return the result only if it is a plain-object dict.
+ * Returns undefined on any throw or non-dict root.
+ */
+function tryParsePlist(content: string): PlistDict | undefined {
+	try {
+		const parsed = plist.parse(content)
+		return is.plainObject(parsed) ? parsed : undefined
+	} catch {
+		return undefined
+	}
+}
 
 /**
  * Get a string value from a plist dict, returning undefined for empty strings,

@@ -163,12 +163,21 @@ function isValidYaml(_filename: string, content: string): boolean {
 }
 
 function isValidPlist(_filename: string, content: string): boolean {
-	try {
-		plist.parse(content)
-		return true
-	} catch {
-		return false
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const tryParse = (input: string): boolean => {
+		try {
+			plist.parse(input)
+			return true
+		} catch {
+			return false
+		}
 	}
+
+	// Match parser fallback: xmldom (>=0.9) rejects comments containing `--`
+	// or leading whitespace before the `<?xml ?>` declaration. plist ignores
+	// comment nodes anyway, so retry with them stripped and leading
+	// whitespace trimmed.
+	return tryParse(content) || tryParse(content.replaceAll(/<!--[\s\S]*?-->/g, '').trimStart())
 }
 
 function isValidArduinoLibraryProperties(filename: string, content: string): boolean {
