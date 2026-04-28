@@ -38,15 +38,24 @@ export type ReadmeFileData = OneOrMany<SourceRecord<Readme>> | undefined
 function extractText(nodes: Nodes[] | PhrasingContent[]): string {
 	return nodes
 		.map((node) => {
-			if ('value' in node) return node.value
-			if ('children' in node) return extractText(node.children)
+			if ('value' in node) {
+				return node.value
+			}
+
+			if ('children' in node) {
+				return extractText(node.children)
+			}
+
 			return ''
 		})
 		.join('')
 		.trim()
 }
 
-/** Reusable markdown parser — processor config is stateless, only the AST is per-call. */
+/**
+ * Reusable markdown parser — processor config is stateless, only the AST is
+ * per-call.
+ */
 const markdownParser = unified().use(remarkParse)
 
 /**
@@ -74,13 +83,17 @@ export const readmePattern = /^readme(\.\w+)?$/i
 
 /**
  * Parse a README file's content.
+ *
  * @param content - Raw file content (markdown).
+ *
  * @returns Parsed metadata, or `undefined` if no H1 heading is found.
  */
 export function parse(content: string): Readme | undefined {
 	const { content: markdown, data } = matter(content)
 	const name = extractFirstH1(markdown)
-	if (!name) return undefined
+	if (!name) {
+		return undefined
+	}
 
 	return readmeSchema.parse({
 		frontmatter: Object.keys(data).length > 0 ? data : undefined,

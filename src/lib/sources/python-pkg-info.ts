@@ -70,8 +70,8 @@ const HEADER_MAP: Record<string, keyof PkgInfo> = {
  * Parse a PKG-INFO or METADATA file and return structured metadata.
  *
  * Handles RFC 822-style headers with multi-value fields (Classifier,
- * Requires-Dist, Project-URL, Platform), continuation lines, and
- * the body section as long_description.
+ * Requires-Dist, Project-URL, Platform), continuation lines, and the body
+ * section as long_description.
  */
 export function parse(source: string): PkgInfo {
 	const headers = parseRfc822Headers(source)

@@ -9,8 +9,8 @@
  * content is actually an openFrameworks addon by checking for the `<install>`
  * root element and the presence of "addons" in the file content.
  *
- * Uses `fast-xml-parser` with attribute parsing enabled to read `<lib os="...">`
- * attributes for operating system inference.
+ * Uses `fast-xml-parser` with attribute parsing enabled to read `<lib
+ * os="...">` attributes for operating system inference.
  */
 
 import is from '@sindresorhus/is'
@@ -67,9 +67,9 @@ const LIB_OS_MAP: Record<string, string> = {
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a legacy openFrameworks `install.xml` content string into a structured object.
- * Returns undefined if the XML is malformed, missing the `<install>` root element,
- * or does not appear to be an openFrameworks addon.
+ * Parse a legacy openFrameworks `install.xml` content string into a structured
+ * object. Returns undefined if the XML is malformed, missing the `<install>`
+ * root element, or does not appear to be an openFrameworks addon.
  */
 export function parse(content: string): OpenframeworksInstallXml | undefined {
 	// Validate: must contain "addons" (appears in oF addon file paths)
@@ -89,14 +89,20 @@ export function parse(content: string): OpenframeworksInstallXml | undefined {
 	let data: Record<string, unknown>
 	try {
 		const parsed: unknown = parser.parse(fixedContent)
-		if (!is.plainObject(parsed)) return undefined
+		if (!is.plainObject(parsed)) {
+			return undefined
+		}
+
 		data = parsed
 	} catch {
 		return undefined
 	}
 
 	// Validate: must have <install> root element
-	if (!is.plainObject(data.install)) return undefined
+	if (!is.plainObject(data.install)) {
+		return undefined
+	}
+
 	const { install } = data
 
 	return openframeworksInstallXmlSchema.parse({
@@ -116,25 +122,30 @@ export function parse(content: string): OpenframeworksInstallXml | undefined {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 /**
- * Get a trimmed non-empty string from a parsed XML value.
- * Returns undefined for empty strings, non-strings, or whitespace-only values.
+ * Get a trimmed non-empty string from a parsed XML value. Returns undefined for
+ * empty strings, non-strings, or whitespace-only values.
  */
 function getString(value: unknown): string | undefined {
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
- * Extract software requirements from `<requires>`.
- * Handles three variants:
+ * Extract software requirements from `<requires>`. Handles three variants:
+ *
  * 1. Empty — skip
  * 2. Free text — emit as-is
  * 3. Structured `<addon>` children — emit each separately
  */
 function parseRequirements(install: Record<string, unknown>): string[] {
 	const { requires } = install
-	if (requires === undefined || requires === null) return []
+	if (requires === undefined || requires === null) {
+		return []
+	}
 
 	// Free text: <requires>some text</requires>
 	if (typeof requires === 'string') {
@@ -159,20 +170,29 @@ function parseRequirements(install: Record<string, unknown>): string[] {
 }
 
 /**
- * Extract operating system information from `<lib os="...">` attributes
- * found within `<add><link>` sections.
+ * Extract operating system information from `<lib os="...">` attributes found
+ * within `<add><link>` sections.
  */
 function parseOperatingSystems(install: Record<string, unknown>): string[] {
-	if (!is.plainObject(install.add)) return []
+	if (!is.plainObject(install.add)) {
+		return []
+	}
+
 	const { add } = install
-	if (!is.plainObject(add.link)) return []
+	if (!is.plainObject(add.link)) {
+		return []
+	}
+
 	const { link } = add
 
 	const results: string[] = []
 	const seen = new Set<string>()
 
 	for (const library of ensureArray(link.lib)) {
-		if (!is.plainObject(library)) continue
+		if (!is.plainObject(library)) {
+			continue
+		}
+
 		const os = getString(library['@_os'])
 		if (os) {
 			const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os

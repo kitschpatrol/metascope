@@ -53,7 +53,9 @@ describe('parseGemspec', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const gemspecFile = files.find((name) => name.endsWith('.gemspec'))
-			if (!gemspecFile) continue
+			if (!gemspecFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, gemspecFile), 'utf8')
 			await expect(parseGemspec(content)).resolves.toBeDefined()

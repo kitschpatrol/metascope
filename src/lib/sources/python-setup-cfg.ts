@@ -56,8 +56,8 @@ const STRING_ATTRS = new Set<keyof SetupCfg>([
 /**
  * Parse a setup.cfg file and return structured metadata.
  *
- * Extracts fields from the `[metadata]` and `[options]` sections,
- * including multi-line values like classifiers and install_requires.
+ * Extracts fields from the `[metadata]` and `[options]` sections, including
+ * multi-line values like classifiers and install_requires.
  */
 export function parse(source: string): SetupCfg {
 	const sections: Partial<Record<string, Record<string, string>>> = parseConfigparser(source)

@@ -18,7 +18,10 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const match = identifyLicense(content)
-		if (!match) return
+		if (!match) {
+			return
+		}
+
 		return {
 			data: match,
 			source: input,

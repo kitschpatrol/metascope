@@ -109,7 +109,9 @@ describe('parse', () => {
 			const goreleaserFile = files.find(
 				(name) => name === '.goreleaser.yaml' || name === '.goreleaser.yml',
 			)
-			if (!goreleaserFile) continue
+			if (!goreleaserFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, goreleaserFile), 'utf8')
 			const result = parseGoreleaser(content)

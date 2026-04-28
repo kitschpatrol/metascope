@@ -2,11 +2,11 @@
 /* eslint-disable ts/naming-convention */
 
 /**
- * Minimal PyPI API response fixtures conforming to Zod schemas
- * in src/lib/sources/python-pypi-registry.ts.
+ * Minimal PyPI API response fixtures conforming to Zod schemas in
+ * src/lib/sources/python-pypi-registry.ts.
  */
 
-/** pypi.org/pypi/{name}/json — conforms to pypiResponseSchema */
+/** Pypi.org/pypi/{name}/json — conforms to pypiResponseSchema */
 export const pypiPackages: Record<string, unknown> = {
 	codemetapy: {
 		info: {
@@ -28,7 +28,10 @@ export const pypiPackages: Record<string, unknown> = {
 	},
 }
 
-/** The pypistats.org/api/packages/{name}/recent — conforms to pypistatsRecentSchema */
+/**
+ * The pypistats.org/api/packages/{name}/recent — conforms to
+ * pypistatsRecentSchema
+ */
 export const pypistatsRecent: Record<string, unknown> = {
 	codemetapy: {
 		data: {
@@ -39,7 +42,10 @@ export const pypistatsRecent: Record<string, unknown> = {
 	},
 }
 
-/** The pypistats.org/api/packages/{name}/overall — conforms to pypistatsOverallSchema */
+/**
+ * The pypistats.org/api/packages/{name}/overall — conforms to
+ * pypistatsOverallSchema
+ */
 export const pypistatsOverall: Record<string, unknown> = {
 	codemetapy: {
 		data: [

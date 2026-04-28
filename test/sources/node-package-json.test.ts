@@ -123,7 +123,9 @@ describe('parse', () => {
 		for (const directory of directories) {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
-			if (!files.includes('package.json')) continue
+			if (!files.includes('package.json')) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, 'package.json'), 'utf8')
 

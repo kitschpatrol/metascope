@@ -57,28 +57,39 @@ function extractString(node: Node): string | undefined {
 			const method = node.childForFieldName('method')
 			if (method && IDENTITY_METHODS.has(method.text)) {
 				const receiver = node.childForFieldName('receiver')
-				if (receiver) return extractString(receiver)
+				if (receiver) {
+					return extractString(receiver)
+				}
 			}
+
 			return undefined
 		}
+
 		case 'float':
 		case 'integer': {
 			return node.text
 		}
+
 		case 'heredoc_body': {
 			return node.text.trim()
 		}
+
 		case 'simple_symbol': {
 			return node.text.replace(LEADING_COLON_REGEX, '')
 		}
+
 		case 'string':
 		case 'string_content': {
 			// A string node wraps string_content children; grab all content fragments
 			const parts = children(node).filter((c) => c.type === 'string_content')
-			if (parts.length > 0) return parts.map((p) => p.text).join('')
+			if (parts.length > 0) {
+				return parts.map((p) => p.text).join('')
+			}
+
 			// Simple string with no interpolation
 			return node.text.replaceAll(/^["']|["']$/g, '')
 		}
+
 		default: {
 			return undefined
 		}
@@ -92,35 +103,52 @@ function extractStringArray(node: Node): string[] {
 			.map((element) => extractString(element))
 			.filter((s): s is string => s !== undefined)
 	}
+
 	// %w[] word arrays appear as string_array
 	if (node.type === 'string_array') {
 		return children(node).map((c) => (c.type === 'bare_string' ? c.text : c.text))
 	}
+
 	// Single value → wrap in array
 	const single = extractString(node)
 	return single === undefined ? [] : [single]
 }
 
 /**
- * Attempt to extract a usable value from an arbitrary RHS node.
- * Returns string | string[] | null — we intentionally skip expressions
- * we can't statically evaluate (method calls, constants, etc.).
+ * Attempt to extract a usable value from an arbitrary RHS node. Returns string
+ *
+ * | string[] | null — we intentionally skip expressions we can't statically
+ *
+ * Evaluate (method calls, constants, etc.).
  */
 function extractValue(node: Node): string | string[] | undefined {
 	if (node.type === 'array' || node.type === 'string_array') {
 		return extractStringArray(node)
 	}
+
 	// Handle [].freeze — unwrap identity methods on arrays
 	if (node.type === 'call') {
 		const method = node.childForFieldName('method')
 		if (method && IDENTITY_METHODS.has(method.text)) {
 			const receiver = node.childForFieldName('receiver')
-			if (receiver) return extractValue(receiver)
+			if (receiver) {
+				return extractValue(receiver)
+			}
 		}
 	}
-	if (node.type === 'true') return 'true'
-	if (node.type === 'false') return 'false'
-	if (node.type === 'nil') return undefined
+
+	if (node.type === 'true') {
+		return 'true'
+	}
+
+	if (node.type === 'false') {
+		return 'false'
+	}
+
+	if (node.type === 'nil') {
+		return undefined
+	}
+
 	return extractString(node)
 }
 
@@ -131,6 +159,7 @@ function resolveAttribute(node: Node): string | undefined {
 		const methodNode = node.childForFieldName('method')
 		return methodNode?.text ?? undefined
 	}
+
 	return undefined
 }
 
@@ -146,10 +175,14 @@ function tryParseDependency(
 	node: Node,
 ): undefined | { name: string; requirements: string[]; type: 'development' | 'runtime' } {
 	// We're looking for:  spec.add_dependency "name", "~> 1.0"
-	if (node.type !== 'call' && node.type !== 'method_call') return undefined
+	if (node.type !== 'call' && node.type !== 'method_call') {
+		return undefined
+	}
 
 	const methodNode = node.childForFieldName('method')
-	if (!methodNode) return undefined
+	if (!methodNode) {
+		return undefined
+	}
 
 	// Method is itself a `call` node like `spec.add_dependency`
 	let methodName: string | undefined
@@ -166,7 +199,9 @@ function tryParseDependency(
 	// Check if this is a plain `call` with the dep method at the top level
 	if (!methodName) {
 		const topMethod = node.childForFieldName('method')
-		if (topMethod?.type === 'identifier') methodName = topMethod.text
+		if (topMethod?.type === 'identifier') {
+			methodName = topMethod.text
+		}
 	}
 
 	// For the pattern `s.add_dependency "name", "ver"` tree-sitter-ruby parses as:
@@ -188,18 +223,26 @@ function tryParseDependency(
 	}
 
 	// eslint-disable-next-line ts/no-unnecessary-condition
-	if (!methodName || !DEP_METHODS[methodName]) return undefined
+	if (!methodName || !DEP_METHODS[methodName]) {
+		return undefined
+	}
 
 	const depType = DEP_METHODS[methodName]
 
 	const arguments_ = node.childForFieldName('arguments')
-	if (!arguments_) return undefined
+	if (!arguments_) {
+		return undefined
+	}
 
 	const argumentNodes = children(arguments_)
-	if (argumentNodes.length === 0) return undefined
+	if (argumentNodes.length === 0) {
+		return undefined
+	}
 
 	const depName = extractString(argumentNodes[0])
-	if (!depName) return undefined
+	if (!depName) {
+		return undefined
+	}
 
 	const requirements = argumentNodes
 		.slice(1)
@@ -213,16 +256,26 @@ function tryParseDependency(
 
 function extractHash(node: Node): Record<string, string> {
 	const result: Record<string, string> = {}
-	if (node.type !== 'hash') return result
+	if (node.type !== 'hash') {
+		return result
+	}
 
 	for (const pair of children(node)) {
-		if (pair.type !== 'pair') continue
+		if (pair.type !== 'pair') {
+			continue
+		}
+
 		const key = pair.childForFieldName('key')
 		const value = pair.childForFieldName('value')
-		if (!key || !value) continue
+		if (!key || !value) {
+			continue
+		}
+
 		const k = extractString(key)
 		const v = extractString(value)
-		if (k && v) result[k] = v
+		if (k && v) {
+			result[k] = v
+		}
 	}
 
 	return result
@@ -242,12 +295,12 @@ function setArrayAttribute(spec: Record<string, unknown>, key: string, value: st
  * Parse a `.gemspec` file's contents and return a plain object with the
  * extracted fields.
  *
- * Uses tree-sitter with the Ruby grammar to walk the AST, so it can handle
- * most real-world gemspec patterns without executing Ruby.
+ * Uses tree-sitter with the Ruby grammar to walk the AST, so it can handle most
+ * real-world gemspec patterns without executing Ruby.
  *
  * Fields that reference Ruby constants (e.g. `Foo::VERSION`) or dynamic
- * expressions (e.g. `Dir.glob(...)`) will be `null` / empty — the parser
- * only extracts statically determinable values.
+ * expressions (e.g. `Dir.glob(...)`) will be `null` / empty — the parser only
+ * extracts statically determinable values.
  */
 export async function parseGemspec(source: string): Promise<Record<string, unknown>> {
 	const parser = await initParser()
@@ -255,7 +308,10 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 	parser.setLanguage(ruby)
 
 	const tree = parser.parse(source)
-	if (!tree) throw new Error('Failed to parse gemspec source')
+	if (!tree) {
+		throw new Error('Failed to parse gemspec source')
+	}
+
 	const spec = emptySpec()
 
 	/** Map of simple attribute names → setter logic */
@@ -306,7 +362,10 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 			// Email can be string or array
 			if (attribute === 'email') {
 				const value = extractValue(rhs)
-				if (value !== undefined) spec.email = value
+				if (value !== undefined) {
+					spec.email = value
+				}
+
 				return
 			}
 
@@ -316,26 +375,36 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 					const existing = is.plainObject(spec.metadata) ? spec.metadata : {}
 					spec.metadata = { ...existing, ...extractHash(rhs) }
 				}
+
 				return
 			}
 
 			// String attributes
 			if (STRING_ATTRS.has(attribute)) {
 				const value = extractString(rhs)
-				if (value !== undefined) setStringAttribute(spec, attribute, value)
+				if (value !== undefined) {
+					setStringAttribute(spec, attribute, value)
+				}
+
 				return
 			}
 
 			// Array attributes
 			if (ARRAY_ATTRS.has(attribute)) {
 				const array = extractStringArray(rhs)
-				if (array.length > 0) setArrayAttribute(spec, attribute, array)
+				if (array.length > 0) {
+					setArrayAttribute(spec, attribute, array)
+				}
+
 				return
 			}
 
 			// Anything else → stash in extra
 			const value = extractValue(rhs)
-			if (value !== undefined && is.plainObject(spec.extra)) spec.extra[attribute] = value
+			if (value !== undefined && is.plainObject(spec.extra)) {
+				spec.extra[attribute] = value
+			}
+
 			return
 		}
 
@@ -343,7 +412,10 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 		if (node.type === 'call' || node.type === 'method_call') {
 			const dep = tryParseDependency(node)
 			if (dep) {
-				if (Array.isArray(spec.dependencies)) spec.dependencies.push(dep)
+				if (Array.isArray(spec.dependencies)) {
+					spec.dependencies.push(dep)
+				}
+
 				return
 			}
 		}

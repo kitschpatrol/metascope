@@ -2,9 +2,9 @@
 /* eslint-disable unicorn/no-null */
 
 /**
- * Minimal GitHub API response fixtures.
- * GraphQL response conforms to gitHubRepoSchema in src/lib/sources/github.ts.
- * REST response conforms to what octokit.rest.repos.get returns.
+ * Minimal GitHub API response fixtures. GraphQL response conforms to
+ * gitHubRepoSchema in src/lib/sources/github.ts. REST response conforms to what
+ * octokit.rest.repos.get returns.
  */
 
 /** GitHub GraphQL responses keyed by "owner/repo" */

@@ -65,8 +65,8 @@ const OS_MAP: Record<string, string> = {
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a `cinderblock.xml` content string into a structured object.
- * Returns undefined if the XML is malformed or missing the expected structure.
+ * Parse a `cinderblock.xml` content string into a structured object. Returns
+ * undefined if the XML is malformed or missing the expected structure.
  */
 export function parse(content: string): CinderCinderblock | undefined {
 	const parser = new XMLParser({
@@ -78,15 +78,24 @@ export function parse(content: string): CinderCinderblock | undefined {
 	let data: Record<string, unknown>
 	try {
 		const parsed: unknown = parser.parse(content)
-		if (!is.plainObject(parsed)) return undefined
+		if (!is.plainObject(parsed)) {
+			return undefined
+		}
+
 		data = parsed
 	} catch {
 		return undefined
 	}
 
-	if (!is.plainObject(data.cinder)) return undefined
+	if (!is.plainObject(data.cinder)) {
+		return undefined
+	}
+
 	const { cinder } = data
-	if (!is.plainObject(cinder.block)) return undefined
+	if (!is.plainObject(cinder.block)) {
+		return undefined
+	}
+
 	const { block } = cinder
 
 	return cinderCinderblockSchema.parse({
@@ -107,25 +116,32 @@ export function parse(content: string): CinderCinderblock | undefined {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 /**
- * Get a trimmed string attribute from a parsed XML element.
- * fast-xml-parser stores attributes with the `@_` prefix.
+ * Get a trimmed string attribute from a parsed XML element. fast-xml-parser
+ * stores attributes with the `@_` prefix.
  */
 function getAttribute(element: Record<string, unknown>, name: string): string | undefined {
 	const value = element[`@_${name}`]
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
- * Extract deduplicated, mapped operating system names from `<supports os="...">` elements.
+ * Extract deduplicated, mapped operating system names from `<supports
+ * os="...">` elements.
  */
 function parseOperatingSystems(block: Record<string, unknown>): string[] {
 	const results: string[] = []
 	const seen = new Set<string>()
 
 	for (const support of ensureArray(block.supports)) {
-		if (!is.plainObject(support)) continue
+		if (!is.plainObject(support)) {
+			continue
+		}
+
 		const os = getAttribute(support, 'os')
 		if (os) {
 			const mapped = OS_MAP[os.toLowerCase()] ?? os
@@ -146,7 +162,10 @@ function parseDependencies(block: Record<string, unknown>): string[] {
 	const results: string[] = []
 
 	for (const dep of ensureArray(block.requires)) {
-		if (typeof dep !== 'string') continue
+		if (typeof dep !== 'string') {
+			continue
+		}
+
 		const trimmed = dep.trim()
 		if (trimmed.length > 0) {
 			results.push(trimmed)

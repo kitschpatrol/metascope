@@ -53,7 +53,9 @@ describe('parseSetupPy', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const setupPyFile = files.find((name) => name === 'setup.py')
-			if (!setupPyFile) continue
+			if (!setupPyFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, setupPyFile), 'utf8')
 			await expect(parseSetupPy(content)).resolves.toBeDefined()

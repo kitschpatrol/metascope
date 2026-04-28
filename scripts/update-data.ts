@@ -136,7 +136,9 @@ function softwareTypesTermsMutation(content: string): string {
 		'@context': {
 			...json['@context'],
 			/**
-			 * Terms from the software-types vocabulary, not included in the codemeta context.
+			 * Terms from the software-types vocabulary, not included in the codemeta
+			 * context.
+			 *
 			 * @see https://github.com/codemeta/codemeta/issues/271
 			 */
 			CommandLineApplication: { '@id': 'stypes:CommandLineApplication' },
@@ -167,6 +169,7 @@ function resolveToUri(prefix: string): string {
 /**
  * Downloads the crosswalk CSV from GitHub, builds a map of various project
  * metadata formats to CodeMeta source keys, and saves it as a JSON file.
+ *
  * @returns File path of the new JSON file
  */
 async function updateCrossWalkJson(
@@ -219,6 +222,7 @@ async function updateCrossWalkJson(
 							if (schemaContext === undefined) {
 								throw new Error(`Invalid schema context for parentType: ${parentType}`)
 							}
+
 							const uri = resolveToUri(schemaContext)
 							crosswalkRecords.maps[source][`${uri}${sourceKey}`] = `${uri}${codeMetaPropertyName}`
 						}
@@ -310,7 +314,9 @@ async function downloadData(
 	includeSoftwareTypes: boolean,
 ) {
 	/**
-	 * Terms from the software-types vocabulary, not included in the codemeta context.
+	 * Terms from the software-types vocabulary, not included in the codemeta
+	 * context.
+	 *
 	 * @see https://github.com/codemeta/codemeta/issues/271
 	 */
 

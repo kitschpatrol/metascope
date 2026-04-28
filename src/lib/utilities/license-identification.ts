@@ -49,16 +49,22 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	// Short circuit for pointer-style license files that only reference
 	// a canonical SPDX or vendor URL (e.g. CC license deeds)
 	const urlMatch = identifyByUrl(text)
-	if (urlMatch) return urlMatch
+	if (urlMatch) {
+		return urlMatch
+	}
 
 	// Quick header-based check for GNU licenses whose SPDX templates
 	// include combined texts that don't match real-world standalone files
 	const headerMatch = identifyByHeader(text)
-	if (headerMatch) return headerMatch
+	if (headerMatch) {
+		return headerMatch
+	}
 
 	const normalizedInput = normalizeInput(text)
 
-	if (normalizedInput.length < 2) return undefined
+	if (normalizedInput.length < 2) {
+		return undefined
+	}
 
 	const inputBigramsMap = computeBigrams(normalizedInput)
 	const inputTotal = normalizedInput.length - 1
@@ -75,7 +81,9 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 		if (score > bestScore) {
 			bestScore = score
 			bestMatch = buildMatch(spdxId, score)
-			if (bestScore > 0.98) break
+			if (bestScore > 0.98) {
+				break
+			}
 		}
 	}
 
@@ -294,7 +302,9 @@ function normalizeUrl(url: string): string | undefined {
 		return undefined
 	}
 
-	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return undefined
+	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+		return undefined
+	}
 
 	const host = parsed.hostname.toLowerCase().replace(WWW_PREFIX_REGEX, '')
 	let path = parsed.pathname.toLowerCase().replace(LEGALCODE_SUFFIX_REGEX, '')
@@ -307,9 +317,18 @@ function normalizeUrl(url: string): string | undefined {
  * break ties when multiple IDs share a canonical URL.
  */
 function scoreSpdxId(id: string): number {
-	if (id.endsWith('+')) return 0 // Deprecated `+` syntax
-	if (id.endsWith('-only')) return 3
-	if (id.endsWith('-or-later')) return 2
+	if (id.endsWith('+')) {
+		return 0
+	} // Deprecated `+` syntax
+
+	if (id.endsWith('-only')) {
+		return 3
+	}
+
+	if (id.endsWith('-or-later')) {
+		return 2
+	}
+
 	return 1 // Bare version, e.g. `GPL-3.0` (also deprecated but still valid)
 }
 
@@ -321,7 +340,10 @@ function scoreSpdxId(id: string): number {
 function preferSpdxId(a: string, b: string): string {
 	const sa = scoreSpdxId(a)
 	const sb = scoreSpdxId(b)
-	if (sa !== sb) return sa > sb ? a : b
+	if (sa !== sb) {
+		return sa > sb ? a : b
+	}
+
 	return a < b ? a : b
 }
 
@@ -329,7 +351,9 @@ function preferSpdxId(a: string, b: string): string {
 let urlIndex: Map<string, string> | undefined
 
 function getUrlIndex(): Map<string, string> {
-	if (urlIndex) return urlIndex
+	if (urlIndex) {
+		return urlIndex
+	}
 
 	const index = new Map<string, string>()
 
@@ -337,9 +361,14 @@ function getUrlIndex(): Map<string, string> {
 		// Always include the canonical spdx.org URL for every listed ID
 		index.set(`spdx.org/licenses/${spdxId.toLowerCase()}`, spdxId)
 
-		if (!entry.url) continue
+		if (!entry.url) {
+			continue
+		}
+
 		const normalized = normalizeUrl(entry.url)
-		if (!normalized) continue
+		if (!normalized) {
+			continue
+		}
 
 		const existing = index.get(normalized)
 		index.set(normalized, existing ? preferSpdxId(existing, spdxId) : spdxId)
@@ -351,16 +380,22 @@ function getUrlIndex(): Map<string, string> {
 
 function identifyByUrl(text: string): LicenseMatch | undefined {
 	const matches = text.match(URL_REGEX)
-	if (!matches) return undefined
+	if (!matches) {
+		return undefined
+	}
 
 	const index = getUrlIndex()
 	for (const raw of matches) {
 		const cleaned = raw.replace(TRAILING_PUNCTUATION_REGEX, '')
 		const normalized = normalizeUrl(cleaned)
-		if (!normalized) continue
+		if (!normalized) {
+			continue
+		}
 
 		const spdxId = index.get(normalized)
-		if (spdxId) return buildMatch(spdxId, 1)
+		if (spdxId) {
+			return buildMatch(spdxId, 1)
+		}
 	}
 
 	return undefined

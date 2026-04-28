@@ -30,7 +30,10 @@ const casePoliceDict: Record<string, string> = {
  * regardless of cardinality.
  */
 export function firstOf<T>(value: T | T[] | undefined): T | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
+
 	return Array.isArray(value) ? value[0] : value
 }
 
@@ -39,7 +42,10 @@ export function firstOf<T>(value: T | T[] | undefined): T | undefined {
  * `undefined` or `null`.
  */
 export function ensureArray<T>(value: null | T | T[] | undefined): T[] {
-	if (value === undefined || value === null) return []
+	if (value === undefined || value === null) {
+		return []
+	}
+
 	return Array.isArray(value) ? value : [value]
 }
 
@@ -55,7 +61,10 @@ export function collectField<T extends { data: unknown }, R>(
 	source: T | T[] | undefined,
 	accessor: (data: T['data']) => R | undefined,
 ): R[] {
-	if (source === undefined) return []
+	if (source === undefined) {
+		return []
+	}
+
 	const records = Array.isArray(source) ? source : [source]
 	return records
 		.map((record) => accessor(record.data))
@@ -71,7 +80,10 @@ export function collectArrayField<T extends { data: unknown }, R>(
 	source: T | T[] | undefined,
 	accessor: (data: T['data']) => R[] | undefined,
 ): R[] {
-	if (source === undefined) return []
+	if (source === undefined) {
+		return []
+	}
+
 	const records = Array.isArray(source) ? source : [source]
 	return records.flatMap((record) => accessor(record.data) ?? [])
 }
@@ -91,7 +103,10 @@ export function nonEmpty<T>(array: T[]): T[] | undefined {
  * Returns an empty array for `undefined` or empty input.
  */
 export function splitCommaSeparated(value: string | undefined): string[] {
-	if (value === undefined) return []
+	if (value === undefined) {
+		return []
+	}
+
 	return value
 		.split(',')
 		.map((s) => s.trim())
@@ -105,11 +120,15 @@ export function toDelimitedString(
 	source: Array<string | undefined> | string | string[] | undefined,
 	delimiter = ', ',
 ): string | undefined {
-	if (source === undefined) return undefined
+	if (source === undefined) {
+		return undefined
+	}
+
 	if (Array.isArray(source)) {
 		const filtered = source.filter((s): s is string => s !== undefined)
 		return filtered.length > 0 ? filtered.join(delimiter) : undefined
 	}
+
 	return source
 }
 
@@ -130,6 +149,7 @@ export function toOptionalMarkdownLink(name: string, url: string | undefined): s
 	if (is.nonEmptyStringAndNotWhitespace(url)) {
 		return `[${name}](${url})`
 	}
+
 	return name
 }
 
@@ -140,6 +160,7 @@ export function toMb(bytes: unknown): number | undefined {
 	if (is.positiveNumber(bytes)) {
 		return Math.round((bytes / 1000 / 1000) * 100) / 100
 	}
+
 	return undefined
 }
 
@@ -160,6 +181,7 @@ export function toAlias(value: string | undefined): string | undefined {
 		const result = titleCase(stripNamespace(value)).replaceAll(/ {2,}/g, ' ').trim()
 		return replaceCore(result, casePoliceDict) ?? result
 	}
+
 	return undefined
 }
 
@@ -213,11 +235,15 @@ export function mixedStringsToArray(
 	const filtered = array
 		.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
 		.map((item) => {
-			if (!compiled) return item
+			if (!compiled) {
+				return item
+			}
+
 			let result = item
 			for (const [pattern, replace] of compiled) {
 				result = result.replace(pattern, replace)
 			}
+
 			return result
 		})
 
@@ -273,8 +299,10 @@ export function stripUndefined<T>(value: T): T {
 			}
 		}
 
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
-		if (!hasKeys) return undefined as T
+		if (!hasKeys) {
+			// eslint-disable-next-line ts/no-unsafe-type-assertion
+			return undefined as T
+		}
 
 		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		return result as T
@@ -383,7 +411,10 @@ export function dependencyNames(
  */
 export function usesPnpm(packageJson: NodePackageJsonData): boolean {
 	const first = firstOf(packageJson)
-	if (!first) return false
+	if (!first) {
+		return false
+	}
+
 	return (
 		first.data.packageManager?.toLowerCase().startsWith('pnpm') ??
 		Object.hasOwn(first.data.engines ?? {}, 'pnpm')
@@ -515,25 +546,65 @@ export function toStatus(
 
 	// return 'observer'
 
-	if (github === 'missing' && me === 'author') return 'author'
-	if (github === 'missing' && me === 'maintainer') return 'maintainer'
-	if (github === 'missing' && me === 'missing') return 'unknown' // Assume author?
+	if (github === 'missing' && me === 'author') {
+		return 'author'
+	}
 
-	if (github === 'my-fork' && me === 'author') return 'maintainer'
-	if (github === 'my-fork' && me === 'maintainer') return 'maintainer'
-	if (github === 'my-fork' && me === 'missing') return 'observer'
+	if (github === 'missing' && me === 'maintainer') {
+		return 'maintainer'
+	}
 
-	if (github === 'my-source' && me === 'author') return 'author'
-	if (github === 'my-source' && me === 'maintainer') return 'maintainer'
-	if (github === 'my-source' && me === 'missing') return 'author'
+	if (github === 'missing' && me === 'missing') {
+		return 'unknown'
+	} // Assume author?
 
-	if (github === 'their-fork' && me === 'author') return 'maintainer'
-	if (github === 'their-fork' && me === 'maintainer') return 'maintainer'
-	if (github === 'their-fork' && me === 'missing') return 'observer'
+	if (github === 'my-fork' && me === 'author') {
+		return 'maintainer'
+	}
 
-	if (github === 'their-source' && me === 'author') return 'author'
-	if (github === 'their-source' && me === 'maintainer') return 'maintainer'
-	if (github === 'their-source' && me === 'missing') return 'observer'
+	if (github === 'my-fork' && me === 'maintainer') {
+		return 'maintainer'
+	}
+
+	if (github === 'my-fork' && me === 'missing') {
+		return 'observer'
+	}
+
+	if (github === 'my-source' && me === 'author') {
+		return 'author'
+	}
+
+	if (github === 'my-source' && me === 'maintainer') {
+		return 'maintainer'
+	}
+
+	if (github === 'my-source' && me === 'missing') {
+		return 'author'
+	}
+
+	if (github === 'their-fork' && me === 'author') {
+		return 'maintainer'
+	}
+
+	if (github === 'their-fork' && me === 'maintainer') {
+		return 'maintainer'
+	}
+
+	if (github === 'their-fork' && me === 'missing') {
+		return 'observer'
+	}
+
+	if (github === 'their-source' && me === 'author') {
+		return 'author'
+	}
+
+	if (github === 'their-source' && me === 'maintainer') {
+		return 'maintainer'
+	}
+
+	if (github === 'their-source' && me === 'missing') {
+		return 'observer'
+	}
 
 	return 'unknown'
 }

@@ -3,13 +3,14 @@
 /**
  * Source and parser for Xcode `.pbxproj` project files.
  *
- * Uses the `@bacons/xcode` package to parse the binary/ASCII plist format
- * and navigate the Xcode project object graph.
+ * Uses the `@bacons/xcode` package to parse the binary/ASCII plist format and
+ * navigate the Xcode project object graph.
  *
  * Extracts metadata from:
- *   - Project-level attributes (organizationName)
- *   - Build settings on the main app target (Release config preferred)
- *   - Swift Package Manager dependencies
+ *
+ * - Project-level attributes (organizationName)
+ * - Build settings on the main app target (Release config preferred)
+ * - Swift Package Manager dependencies
  */
 
 import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
@@ -89,8 +90,8 @@ const DEPLOYMENT_TARGETS: Array<{ key: string; os: string }> = [
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a `.pbxproj` file into a structured object.
- * Returns undefined if the file is malformed or cannot be parsed.
+ * Parse a `.pbxproj` file into a structured object. Returns undefined if the
+ * file is malformed or cannot be parsed.
  */
 export function parse(filePath: string): Pbxproj | undefined {
 	let project: InstanceType<typeof XcodeProject>
@@ -204,15 +205,27 @@ export function parse(filePath: string): Pbxproj | undefined {
 type BuildSettings = Record<string, unknown>
 
 /**
- * Get a string build setting, filtering out empty strings and unresolved
- * Xcode variable placeholders. Handles both string and numeric values.
+ * Get a string build setting, filtering out empty strings and unresolved Xcode
+ * variable placeholders. Handles both string and numeric values.
  */
 function cleanString(value: unknown): string | undefined {
-	if (typeof value === 'number') return String(value)
-	if (typeof value !== 'string') return undefined
+	if (typeof value === 'number') {
+		return String(value)
+	}
+
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return undefined
-	if (XCODE_VARIABLE_RE.test(trimmed)) return undefined
+	if (trimmed.length === 0) {
+		return undefined
+	}
+
+	if (XCODE_VARIABLE_RE.test(trimmed)) {
+		return undefined
+	}
+
 	return trimmed
 }
 
@@ -225,7 +238,9 @@ function getSetting(
 	key: string,
 ): string | undefined {
 	const targetValue = cleanString(targetSettings?.[key])
-	if (targetValue !== undefined) return targetValue
+	if (targetValue !== undefined) {
+		return targetValue
+	}
 
 	return cleanString(projectSettings?.[key])
 }
@@ -244,7 +259,9 @@ function getResolvedSetting(
 		try {
 			const resolved = config.resolveBuildSetting(key)
 			const cleaned = cleanString(resolved)
-			if (cleaned !== undefined) return cleaned
+			if (cleaned !== undefined) {
+				return cleaned
+			}
 		} catch {
 			// Fall through to raw value
 		}
@@ -260,7 +277,9 @@ function parseCopyrightString(copyrightSource: string | undefined): {
 	copyrightHolder?: string
 	copyrightYear?: string
 } {
-	if (!copyrightSource) return {}
+	if (!copyrightSource) {
+		return {}
+	}
 
 	const yearMatch = COPYRIGHT_YEAR_REGEX.exec(copyrightSource)
 	const copyrightYear = yearMatch?.[1]
@@ -272,7 +291,9 @@ function parseCopyrightString(copyrightSource: string | undefined): {
 			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
 			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
-		if (copyrightHolder.length === 0) copyrightHolder = undefined
+		if (copyrightHolder.length === 0) {
+			copyrightHolder = undefined
+		}
 	}
 
 	return { copyrightHolder, copyrightYear }
@@ -304,7 +325,9 @@ function parseOperatingSystems(
 		const sdkroot = getSetting(targetSettings, projectSettings, 'SDKROOT')
 		if (sdkroot && sdkroot !== 'auto') {
 			const os = SDKROOT_MAP[sdkroot]
-			if (os) results.push(os)
+			if (os) {
+				results.push(os)
+			}
 		}
 	}
 
@@ -321,7 +344,10 @@ function parseDependencies(
 	const results: PbxprojDependency[] = []
 
 	for (const packageReference of packageReferences) {
-		if (!XCRemoteSwiftPackageReference.is(packageReference)) continue
+		if (!XCRemoteSwiftPackageReference.is(packageReference)) {
+			continue
+		}
+
 		const url = cleanString(packageReference.props.repositoryURL)
 		if (url) {
 			results.push({ url })

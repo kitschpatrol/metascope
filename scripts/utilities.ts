@@ -10,6 +10,7 @@ export const execFileAsync = promisify(execFile)
 
 /**
  * Get a column map from a CSV URL.
+ *
  * @returns A promise that resolves to a column map.
  */
 export async function getColumnMapFromCsvUrl(url: string): Promise<Record<string, string[]>> {
@@ -32,7 +33,9 @@ export async function getColumnMapFromCsvUrl(url: string): Promise<Record<string
 			})
 			.on('headers', (headers: string[]) => {
 				// 2. Pre-initialize our map keys once headers are detected
-				for (const h of headers) columnMap[h] = []
+				for (const h of headers) {
+					columnMap[h] = []
+				}
 			})
 			.on('data', (row: Record<string, string>) => {
 				// 3. Push each row's value into the corresponding header array
@@ -54,7 +57,9 @@ export async function runPrettierOnFile(filePath: string): Promise<void> {
 }
 
 /**
- * Download a file from a URL and save it to a destination directory, optionally with a specified file name.
+ * Download a file from a URL and save it to a destination directory, optionally
+ * with a specified file name.
+ *
  * @returns File path
  */
 export async function downloadUrlToFile(
@@ -82,7 +87,9 @@ export async function downloadUrlToFile(
 }
 
 /**
- * Transform the contents of a file according to a callback function, and save the result back to the file.
+ * Transform the contents of a file according to a callback function, and save
+ * the result back to the file.
+ *
  * @returns File path
  */
 export async function mutateFile(
@@ -97,6 +104,7 @@ export async function mutateFile(
 
 /**
  * Enforce an array.
+ *
  * @returns An array.
  */
 export function enforceArray<T>(value: T | T[]): T[] {
@@ -105,6 +113,7 @@ export function enforceArray<T>(value: T | T[]): T[] {
 
 /**
  * Extract all string values from a POJO.
+ *
  * @returns An array of string values.
  */
 export function extractAllStringValuesFromPojo(
@@ -122,5 +131,6 @@ export function extractAllStringValuesFromPojo(
 			extractAllStringValuesFromPojo(item, accumulator)
 		}
 	}
+
 	return accumulator
 }

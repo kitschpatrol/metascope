@@ -94,8 +94,8 @@ type PomXmlOrganization = NonNullable<PomXml['organization']>
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a Maven `pom.xml` content string into a structured object.
- * Returns undefined if the XML is malformed or missing the `<project>` root element.
+ * Parse a Maven `pom.xml` content string into a structured object. Returns
+ * undefined if the XML is malformed or missing the `<project>` root element.
  */
 export function parse(content: string): PomXml | undefined {
 	const parser = new XMLParser({
@@ -107,13 +107,19 @@ export function parse(content: string): PomXml | undefined {
 	let data: Record<string, unknown>
 	try {
 		const parsed: unknown = parser.parse(content)
-		if (!is.plainObject(parsed)) return undefined
+		if (!is.plainObject(parsed)) {
+			return undefined
+		}
+
 		data = parsed
 	} catch {
 		return undefined
 	}
 
-	if (!is.plainObject(data.project)) return undefined
+	if (!is.plainObject(data.project)) {
+		return undefined
+	}
+
 	const { project } = data
 
 	const groupId = getString(project.groupId)
@@ -146,13 +152,19 @@ export function parse(content: string): PomXml | undefined {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 /**
- * Get a trimmed non-empty string from a parsed XML value.
- * Returns undefined for empty strings, non-strings, whitespace-only, or Maven variable references.
+ * Get a trimmed non-empty string from a parsed XML value. Returns undefined for
+ * empty strings, non-strings, whitespace-only, or Maven variable references.
  */
 function getString(value: unknown): string | undefined {
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return undefined
+	if (trimmed.length === 0) {
+		return undefined
+	}
+
 	return trimmed
 }
 
@@ -161,7 +173,10 @@ function getString(value: unknown): string | undefined {
  */
 function getCleanString(value: unknown): string | undefined {
 	const s = getString(value)
-	if (s?.includes('$')) return undefined
+	if (s?.includes('$')) {
+		return undefined
+	}
+
 	return s
 }
 
@@ -174,7 +189,9 @@ function resolveName(
 	artifactId: string | undefined,
 ): string | undefined {
 	const name = getString(project.name)
-	if (!name) return undefined
+	if (!name) {
+		return undefined
+	}
 
 	let resolved = name
 	if (groupId) {
@@ -193,11 +210,15 @@ function resolveName(
 }
 
 /**
- * Extract a URL from a nested object (e.g. `<ciManagement><url>...</url></ciManagement>`).
- * Filters out Maven variable references.
+ * Extract a URL from a nested object (e.g.
+ * `<ciManagement><url>...</url></ciManagement>`). Filters out Maven variable
+ * references.
  */
 function getNestedUrl(container: unknown): string | undefined {
-	if (!is.plainObject(container)) return undefined
+	if (!is.plainObject(container)) {
+		return undefined
+	}
+
 	return getCleanString(container.url)
 }
 
@@ -205,13 +226,22 @@ function getNestedUrl(container: unknown): string | undefined {
  * Parse person entries (developers or contributors) from POM XML.
  */
 function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonEntry[] {
-	if (!is.plainObject(container)) return []
+	if (!is.plainObject(container)) {
+		return []
+	}
+
 	const children = container[childKey]
 	const results: PomXmlPersonEntry[] = []
 	for (const entry of ensureArray(children)) {
-		if (!is.plainObject(entry)) continue
+		if (!is.plainObject(entry)) {
+			continue
+		}
+
 		const name = getString(entry.name)
-		if (!name) continue
+		if (!name) {
+			continue
+		}
+
 		results.push({
 			email: getString(entry.email),
 			name,
@@ -219,6 +249,7 @@ function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonE
 			url: getString(entry.url),
 		})
 	}
+
 	return results
 }
 
@@ -226,16 +257,23 @@ function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonE
  * Parse license entries from `<licenses><license>...</license></licenses>`.
  */
 function parseLicenses(project: Record<string, unknown>): PomXmlLicenseEntry[] {
-	if (!is.plainObject(project.licenses)) return []
+	if (!is.plainObject(project.licenses)) {
+		return []
+	}
+
 	const results: PomXmlLicenseEntry[] = []
 	for (const entry of ensureArray(project.licenses.license)) {
-		if (!is.plainObject(entry)) continue
+		if (!is.plainObject(entry)) {
+			continue
+		}
+
 		const name = getString(entry.name)
 		const url = getString(entry.url)
 		if (name ?? url) {
 			results.push({ name, url })
 		}
 	}
+
 	return results
 }
 
@@ -252,11 +290,18 @@ function parseDependencies(project: Record<string, unknown>): {
 	if (!is.plainObject(project.dependencies)) {
 		return { dependencies, devDependencies }
 	}
+
 	for (const entry of ensureArray(project.dependencies.dependency)) {
-		if (!is.plainObject(entry)) continue
+		if (!is.plainObject(entry)) {
+			continue
+		}
+
 		const groupId = getString(entry.groupId)
 		const artifactId = getString(entry.artifactId)
-		if (!groupId || !artifactId) continue
+		if (!groupId || !artifactId) {
+			continue
+		}
+
 		const dep: PomXmlDependencyEntry = {
 			artifactId,
 			groupId,
@@ -276,7 +321,10 @@ function parseDependencies(project: Record<string, unknown>): {
  * Parse SCM URL, filtering out Maven variable references.
  */
 function parseScmUrl(project: Record<string, unknown>): string | undefined {
-	if (!is.plainObject(project.scm)) return undefined
+	if (!is.plainObject(project.scm)) {
+		return undefined
+	}
+
 	return getCleanString(project.scm.url)
 }
 
@@ -284,9 +332,15 @@ function parseScmUrl(project: Record<string, unknown>): string | undefined {
  * Parse organization from `<organization>` element.
  */
 function parseOrganization(project: Record<string, unknown>): PomXmlOrganization | undefined {
-	if (!is.plainObject(project.organization)) return undefined
+	if (!is.plainObject(project.organization)) {
+		return undefined
+	}
+
 	const name = getString(project.organization.name)
-	if (!name) return undefined
+	if (!name) {
+		return undefined
+	}
+
 	return {
 		name,
 		url: getString(project.organization.url),
@@ -294,11 +348,14 @@ function parseOrganization(project: Record<string, unknown>): PomXmlOrganization
 }
 
 /**
- * Extract Java version from project properties.
- * Checks `java.version`, `maven.compiler.source`, and `java.compiler.source`.
+ * Extract Java version from project properties. Checks `java.version`,
+ * `maven.compiler.source`, and `java.compiler.source`.
  */
 function parseJavaVersion(project: Record<string, unknown>): string | undefined {
-	if (!is.plainObject(project.properties)) return undefined
+	if (!is.plainObject(project.properties)) {
+		return undefined
+	}
+
 	return (
 		getCleanString(project.properties['java.version']) ??
 		getCleanString(project.properties['maven.compiler.source']) ??

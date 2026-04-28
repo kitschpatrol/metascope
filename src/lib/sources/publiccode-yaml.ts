@@ -5,8 +5,8 @@
  * Source and parser for `publiccode.yml` / `publiccode.yaml` files.
  *
  * Publiccode.yml is a metadata standard for public software repositories,
- * primarily used in Europe (Italy, Netherlands, etc.).
- * See: https://yml.publiccode.tools/
+ * primarily used in Europe (Italy, Netherlands, etc.). See:
+ * https://yml.publiccode.tools/
  *
  * Extracts project metadata including name, version, license, contacts,
  * multi-language descriptions, dependencies, and categorization.
@@ -128,9 +128,18 @@ type PubliccodeDescription = NonNullable<Publiccode['description']>
 
 /** Coerce YAML values that may be parsed as non-strings back to strings. */
 function toString(value: unknown): string | undefined {
-	if (typeof value === 'string') return value
-	if (typeof value === 'number') return String(value)
-	if (value instanceof Date) return value.toISOString().slice(0, 10)
+	if (typeof value === 'string') {
+		return value
+	}
+
+	if (typeof value === 'number') {
+		return String(value)
+	}
+
+	if (value instanceof Date) {
+		return value.toISOString().slice(0, 10)
+	}
+
 	return undefined
 }
 
@@ -148,7 +157,10 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 /** Extract string array from a YAML value, filtering non-strings. */
 function toStringArray(value: unknown): string[] {
-	if (!Array.isArray(value)) return []
+	if (!Array.isArray(value)) {
+		return []
+	}
+
 	return value.filter((item): item is string => typeof item === 'string')
 }
 
@@ -186,8 +198,11 @@ function parseDescription(data: Record<string, unknown>): PubliccodeDescription 
 
 /**
  * Parse a publiccode.yml / publiccode.yaml file content.
+ *
  * @param content - Raw YAML file content.
- * @returns Parsed publiccode metadata, or `undefined` if the content is invalid.
+ *
+ * @returns Parsed publiccode metadata, or `undefined` if the content is
+ *   invalid.
  */
 export function parse(content: string): Publiccode | undefined {
 	let data: unknown
@@ -197,10 +212,14 @@ export function parse(content: string): Publiccode | undefined {
 		return undefined
 	}
 
-	if (!isPlainObject(data)) return undefined
+	if (!isPlainObject(data)) {
+		return undefined
+	}
 
 	// Basic validation: must have at least a name or url
-	if (!isNonEmptyString(data.name) && !isNonEmptyString(data.url)) return undefined
+	if (!isNonEmptyString(data.name) && !isNonEmptyString(data.url)) {
+		return undefined
+	}
 
 	// ─── Descriptions ──────────────────────────────────────────
 	const descriptions: Record<string, PubliccodeDescription> = {}
@@ -229,9 +248,18 @@ export function parse(content: string): Publiccode | undefined {
 			for (const contact of maintenance.contacts) {
 				if (isPlainObject(contact) && isNonEmptyString(contact.name)) {
 					const entry: PubliccodeContactEntry = { name: contact.name }
-					if (isNonEmptyString(contact.email)) entry.email = contact.email
-					if (isNonEmptyString(contact.phone)) entry.phone = contact.phone
-					if (isNonEmptyString(contact.affiliation)) entry.affiliation = contact.affiliation
+					if (isNonEmptyString(contact.email)) {
+						entry.email = contact.email
+					}
+
+					if (isNonEmptyString(contact.phone)) {
+						entry.phone = contact.phone
+					}
+
+					if (isNonEmptyString(contact.affiliation)) {
+						entry.affiliation = contact.affiliation
+					}
+
 					contacts.push(entry)
 				}
 			}
@@ -247,8 +275,14 @@ export function parse(content: string): Publiccode | undefined {
 				if (isPlainObject(contractor) && isNonEmptyString(contractor.name)) {
 					const entry: PubliccodeContractorEntry = { name: contractor.name }
 					const until = toString(contractor.until)
-					if (until) entry.until = until
-					if (isNonEmptyString(contractor.website)) entry.website = contractor.website
+					if (until) {
+						entry.until = until
+					}
+
+					if (isNonEmptyString(contractor.website)) {
+						entry.website = contractor.website
+					}
+
 					contractors.push(entry)
 				}
 			}
@@ -275,15 +309,23 @@ export function parse(content: string): Publiccode | undefined {
 						}
 
 						const version = toString(dep.version)
-						if (version) entry.version = version
+						if (version) {
+							entry.version = version
+						}
 
 						const versionMin = toString(dep.versionMin)
-						if (versionMin) entry.versionMin = versionMin
+						if (versionMin) {
+							entry.versionMin = versionMin
+						}
 
 						const versionMax = toString(dep.versionMax)
-						if (versionMax) entry.versionMax = versionMax
+						if (versionMax) {
+							entry.versionMax = versionMax
+						}
 
-						if (typeof dep.optional === 'boolean') entry.optional = dep.optional
+						if (typeof dep.optional === 'boolean') {
+							entry.optional = dep.optional
+						}
 
 						dependencies.push(entry)
 					}
@@ -309,9 +351,17 @@ export function parse(content: string): Publiccode | undefined {
 	let repoOwner: string | undefined
 	if (isPlainObject(data.legal)) {
 		const { legal } = data
-		if (isNonEmptyString(legal.license)) license = legal.license
-		if (isNonEmptyString(legal.mainCopyrightOwner)) mainCopyrightOwner = legal.mainCopyrightOwner
-		if (isNonEmptyString(legal.repoOwner)) repoOwner = legal.repoOwner
+		if (isNonEmptyString(legal.license)) {
+			license = legal.license
+		}
+
+		if (isNonEmptyString(legal.mainCopyrightOwner)) {
+			mainCopyrightOwner = legal.mainCopyrightOwner
+		}
+
+		if (isNonEmptyString(legal.repoOwner)) {
+			repoOwner = legal.repoOwner
+		}
 	}
 
 	// ─── Assemble result ───────────────────────────────────────

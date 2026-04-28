@@ -173,7 +173,9 @@ function isValidPlist(_filename: string, content: string): boolean {
 
 function isValidArduinoLibraryProperties(filename: string, content: string): boolean {
 	// Quick guard clause if your scanner passes the full filename/path
-	if (!filename.endsWith('library.properties')) return false
+	if (!filename.endsWith('library.properties')) {
+		return false
+	}
 
 	// Arduino strictly uses the singular 'author' key
 	const hasBaseFields =
@@ -198,7 +200,9 @@ function isValidArduinoLibraryProperties(filename: string, content: string): boo
 }
 
 function isValidProcessingLibraryProperties(filename: string, content: string): boolean {
-	if (!filename.endsWith('library.properties')) return false
+	if (!filename.endsWith('library.properties')) {
+		return false
+	}
 
 	const hasBaseFields = NAME_FIELD_REGEX.test(content) && VERSION_FIELD_REGEX.test(content)
 

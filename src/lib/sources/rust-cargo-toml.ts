@@ -1,10 +1,11 @@
 /**
- * Source for Rust `Cargo.toml` manifest files.
- * These are TOML files used by the Cargo package manager. Metadata lives
- * primarily in the `[package]` table, with dependencies in `[dependencies]`,
- * `[dev-dependencies]`, and `[build-dependencies]`.
+ * Source for Rust `Cargo.toml` manifest files. These are TOML files used by the
+ * Cargo package manager. Metadata lives primarily in the `[package]` table,
+ * with dependencies in `[dependencies]`, `[dev-dependencies]`, and
+ * `[build-dependencies]`.
  *
  * Uses `smol-toml` for TOML parsing.
+ *
  * @see https://doc.rust-lang.org/cargo/reference/manifest.html
  */
 
@@ -77,14 +78,17 @@ type CargoTomlDependencyEntry = CargoToml['dependencies'][number]
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a `Cargo.toml` content string into a structured object.
- * Returns undefined if the TOML is malformed.
+ * Parse a `Cargo.toml` content string into a structured object. Returns
+ * undefined if the TOML is malformed.
  */
 export function parse(content: string): CargoToml | undefined {
 	let data: Record<string, unknown>
 	try {
 		const parsed: unknown = parseToml(content)
-		if (!is.plainObject(parsed)) return undefined
+		if (!is.plainObject(parsed)) {
+			return undefined
+		}
+
 		data = parsed
 	} catch {
 		return undefined
@@ -123,14 +127,20 @@ export function parse(content: string): CargoToml | undefined {
 
 /** Return a trimmed string, or undefined if not a non-empty string. */
 function nonEmpty(value: unknown): string | undefined {
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /** Convert an unknown value to a string array, filtering non-strings. */
 function toStringArray(value: unknown): string[] {
-	if (!Array.isArray(value)) return []
+	if (!Array.isArray(value)) {
+		return []
+	}
+
 	return value.filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
 }
 
@@ -138,13 +148,20 @@ function toStringArray(value: unknown): string[] {
  * Parse `authors` field entries. Each entry is `"Name <email>"` or `"Name"`.
  */
 function parseAuthors(value: unknown): CargoTomlAuthorEntry[] {
-	if (!Array.isArray(value)) return []
+	if (!Array.isArray(value)) {
+		return []
+	}
 
 	const results: CargoTomlAuthorEntry[] = []
 	for (const entry of value) {
-		if (typeof entry !== 'string') continue
+		if (typeof entry !== 'string') {
+			continue
+		}
+
 		const trimmed = entry.trim()
-		if (trimmed.length === 0) continue
+		if (trimmed.length === 0) {
+			continue
+		}
 
 		const bracketIndex = trimmed.indexOf('<')
 		if (bracketIndex !== -1) {
@@ -167,8 +184,8 @@ function parseAuthors(value: unknown): CargoTomlAuthorEntry[] {
 }
 
 /**
- * Parse a dependencies table into name/version entries.
- * Handles both `dep = "version"` and `dep = { version = "..." }` forms.
+ * Parse a dependencies table into name/version entries. Handles both `dep =
+ * "version"` and `dep = { version = "..." }` forms.
  */
 function parseDependencies(table: Record<string, unknown>): CargoTomlDependencyEntry[] {
 	const results: CargoTomlDependencyEntry[] = []

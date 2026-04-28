@@ -58,10 +58,10 @@ import { stripUndefined } from './utilities/template-helpers'
 const execFileAsync = promisify(execFile)
 
 /**
- * All registered metadata sources.
- * Each source declares its `phase` number. Sources with the same phase run in parallel.
- * Lower phases run first, and their accumulated results are available to later phases
- * via `context` in `SourceContext`.
+ * All registered metadata sources. Each source declares its `phase` number.
+ * Sources with the same phase run in parallel. Lower phases run first, and
+ * their accumulated results are available to later phases via `context` in
+ * `SourceContext`.
  */
 const sources: readonly MetadataSource[] = [
 	// Phase 1: File sources — discover and extract config from the local file system
@@ -111,17 +111,23 @@ export const sourceNames: SourceName[] = sources.map((s) => s.key)
  */
 async function resolveCredentials(credentials?: Credentials): Promise<Credentials> {
 	// Explicit credentials take priority
-	if (credentials?.githubToken) return credentials
+	if (credentials?.githubToken) {
+		return credentials
+	}
 
 	// Environment variable
 	const environmentToken = process.env.GITHUB_TOKEN
-	if (environmentToken) return { ...credentials, githubToken: environmentToken }
+	if (environmentToken) {
+		return { ...credentials, githubToken: environmentToken }
+	}
 
 	// Fall back to `gh auth token`
 	try {
 		const { stdout } = await execFileAsync('gh', ['auth', 'token'])
 		const token = stdout.trim()
-		if (token) return { ...credentials, githubToken: token }
+		if (token) {
+			return { ...credentials, githubToken: token }
+		}
 	} catch {
 		// Gh CLI not available or not authenticated
 	}
@@ -130,14 +136,19 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
 }
 
 /**
- * Resolve a template option to a template function.
- * Accepts a built-in template name (string) or a template function.
+ * Resolve a template option to a template function. Accepts a built-in template
+ * name (string) or a template function.
  */
 function resolveTemplate(
 	template: string | Template<unknown> | undefined,
 ): Template<unknown> | undefined {
-	if (template === undefined) return undefined
-	if (typeof template === 'function') return template
+	if (template === undefined) {
+		return undefined
+	}
+
+	if (typeof template === 'function') {
+		return template
+	}
 
 	if (isKeyOfTemplate(template)) {
 		return templates[template]

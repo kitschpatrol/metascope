@@ -37,8 +37,8 @@ import type { XcodeProjectPbxprojData } from './sources/xcode-project-pbxproj'
 // ── Aggregate Context ──────────────────────────────────
 
 /**
- * The complete metadata context assembled from all sources.
- * Each key corresponds to a metadata source.
+ * The complete metadata context assembled from all sources. Each key
+ * corresponds to a metadata source.
  */
 export type MetadataContext = {
 	arduinoLibraryProperties: ArduinoLibraryPropertiesData
@@ -87,7 +87,8 @@ export type SourceName = keyof MetadataContext
 
 /**
  * User-supplied data passed to templates for parameterized ownership checks.
- * All fields are optional; templates that don't need them can ignore the argument.
+ * All fields are optional; templates that don't need them can ignore the
+ * argument.
  */
 export type TemplateData = {
 	[key: string]: unknown
@@ -96,23 +97,22 @@ export type TemplateData = {
 }
 
 /**
- * A template function that transforms MetadataContext into a custom shape.
- * The optional second argument provides user-supplied template data.
+ * A template function that transforms MetadataContext into a custom shape. The
+ * optional second argument provides user-supplied template data.
  */
 export type Template<T> = (context: MetadataContext, templateData: TemplateData) => T
 
 /**
- * Identity wrapper for type inference in config files.
- * Use this in `metascope.config.ts` to get autocomplete on available fields.
- * @example
- * ```typescript
- * import { defineTemplate } from 'metascope'
+ * Identity wrapper for type inference in config files. Use this in
+ * `metascope.config.ts` to get autocomplete on available fields.
  *
- * export default defineTemplate(({ codemetaJson, github }) => ({
- *   name: codemetaJson?.data.name,
- *   stars: github?.data.stargazerCount,
- * }))
- * ```
+ * @example
+ * 	import { defineTemplate } from 'metascope'
+ *
+ * 	export default defineTemplate(({ codemetaJson, github }) => ({
+ * 		name: codemetaJson?.data.name,
+ * 		stars: github?.data.stargazerCount,
+ * 	}))
  */
 export function defineTemplate<T>(transform: Template<T>): Template<T> {
 	return transform
@@ -133,13 +133,20 @@ export type Credentials = {
  * Base options shared by all `getMetadata` overloads.
  */
 export type GetMetadataBaseOptions = {
-	/** When true (the default), all paths in the output (source, workspaceDirectories, etc.) are absolute. When false, paths are relative to the project directory. */
+	/**
+	 * When true (the default), all paths in the output (source,
+	 * workspaceDirectories, etc.) are absolute. When false, paths are relative to
+	 * the project directory.
+	 */
 	absolute?: boolean
 	/** API credentials for remote sources. */
 	credentials?: Credentials
 	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
 	offline?: boolean
-	/** Project directory path. Defaults to `'.'` (resolved to `process.cwd()` via `path.resolve`). */
+	/**
+	 * Project directory path. Defaults to `'.'` (resolved to `process.cwd()` via
+	 * `path.resolve`).
+	 */
 	path: string
 	/** Search for metadata files recursively in subdirectories. Defaults to false. */
 	recursive?: boolean
@@ -150,9 +157,10 @@ export type GetMetadataBaseOptions = {
 	/** User-supplied data passed to templates. */
 	templateData?: TemplateData
 	/**
-	 * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment
-	 * Never includes the root path!
-	 * False is disable, true is auto-discover which turns into string[], string[] is manual list relative to the project directory path...
+	 * Directories to any monorepo workspaces... only supports yarn, npm, pnpm,
+	 * lerna, and bolt at the moment Never includes the root path! False is
+	 * disable, true is auto-discover which turns into string[], string[] is
+	 * manual list relative to the project directory path...
 	 */
 	workspaces?: boolean | string[]
 }
@@ -172,7 +180,8 @@ export const DEFAULT_GET_METADATA_OPTIONS: Required<
 }
 
 /**
- * Options for `getMetadata` without a template (returns full `MetadataContext`).
+ * Options for `getMetadata` without a template (returns full
+ * `MetadataContext`).
  */
 export type GetMetadataOptions = GetMetadataBaseOptions & {
 	/** Built-in template name or omit for full output. */
@@ -180,7 +189,8 @@ export type GetMetadataOptions = GetMetadataBaseOptions & {
 }
 
 /**
- * Options for `getMetadata` with a template function (returns the template's return type).
+ * Options for `getMetadata` with a template function (returns the template's
+ * return type).
  */
 export type GetMetadataTemplateOptions<T> = GetMetadataBaseOptions & {
 	/** Template function that transforms MetadataContext into a custom shape. */

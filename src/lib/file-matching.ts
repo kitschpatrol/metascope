@@ -14,8 +14,8 @@ const matchCache = new Map<string, string[]>()
 const workspaceCache = new Map<string, string[]>()
 
 /**
- * Clear the memoized file tree and workspace caches. Call between test runs
- * or when the same path needs to be re-scanned.
+ * Clear the memoized file tree and workspace caches. Call between test runs or
+ * when the same path needs to be re-scanned.
  */
 export function resetMatchCache(): void {
 	matchCache.clear()
@@ -34,8 +34,9 @@ const DEFAULT_IGNORE = [
 ]
 
 /**
- * Get the full recursive file tree for a directory, memoized by path + respectIgnored.
- * Returns relative POSIX paths (internal to tinyglobby; callers receive absolute paths via getMatches).
+ * Get the full recursive file tree for a directory, memoized by path +
+ * respectIgnored. Returns relative POSIX paths (internal to tinyglobby; callers
+ * receive absolute paths via getMatches).
  */
 export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
@@ -114,17 +115,21 @@ function validateWorkspaces(directory: string, workspaces: unknown[]): string[] 
 }
 
 /**
- * Get workspace locations for a directory, memoized by directory path.
- * Returns all found workspace location paths as absolute paths.
+ * Get workspace locations for a directory, memoized by directory path. Returns
+ * all found workspace location paths as absolute paths.
  *
- * Directories to any monorepo workspaces... only supports yarn, npm, pnpm, lerna, and bolt at the moment.
- * Never includes the root path!
+ * Directories to any monorepo workspaces... only supports yarn, npm, pnpm,
+ * lerna, and bolt at the moment. Never includes the root path!
+ *
  * @param directory - The root directory to search from
- * @param workspaces - `false` to disable, `true` to auto-discover, `string[]` for a manual list
+ * @param workspaces - `false` to disable, `true` to auto-discover, `string[]`
+ *   for a manual list
  */
 export function getWorkspaces(directory: string, workspaces: boolean | string[] = true): string[] {
 	// User opts out
-	if (workspaces === false) return []
+	if (workspaces === false) {
+		return []
+	}
 
 	let locations = workspaceCache.get(directory)
 	if (!locations) {
@@ -164,11 +169,15 @@ const DEFAULT_MATCH_OPTIONS: Required<Omit<MatchOptions, 'path'>> & { path: stri
  * - Memoizes the file tree internally (keyed by path + respectIgnored)
  * - Auto-prepends `**\/` to patterns when `options.recursive` is true
  * - Always uses case-insensitive matching
- * - When `options.workspaces` is set, also matches files in workspace directories dynamically.
- * @param options - Must include `path`; optionally `recursive`, `respectIgnored`, and `workspaces`
- * @param patterns - Root-relative glob patterns (e.g. `['package.json']`, `['*.gemspec']`)
+ * - When `options.workspaces` is set, also matches files in workspace directories
+ *   dynamically.
+ *
+ * @param options - Must include `path`; optionally `recursive`,
+ *   `respectIgnored`, and `workspaces`
+ * @param patterns - Root-relative glob patterns (e.g. `['package.json']`,
+ *   `['*.gemspec']`)
  * @param patternsRecursive - Optionally explicitly specify recursive pattern
- * variation, otherwise  `**\/` is prepended automatically
+ *   variation, otherwise `**\/` is prepended automatically
  */
 export async function getMatches(
 	options: MatchOptions,

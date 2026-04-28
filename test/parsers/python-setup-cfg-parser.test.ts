@@ -45,7 +45,9 @@ describe('parseConfigparser', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const setupCfgFile = files.find((name) => name === 'setup.cfg')
-			if (!setupCfgFile) continue
+			if (!setupCfgFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, setupCfgFile), 'utf8')
 			expect(

@@ -8,7 +8,10 @@ export type TemplateDataMetadata = ReturnType<typeof metadata>
  * Strip `git+` prefix and `.git` suffix from a URL.
  */
 function normalizeGitUrl(url: string | undefined): string | undefined {
-	if (url === undefined) return undefined
+	if (url === undefined) {
+		return undefined
+	}
+
 	let normalized = url
 	if (normalized.startsWith('git+')) {
 		normalized = normalized.slice(4)
@@ -22,8 +25,8 @@ function normalizeGitUrl(url: string | undefined): string | undefined {
 }
 
 /**
- * A minimal metadata template for populating a GitHub repository's
- * description, homepage, and topics via metadata.json / metadata.yaml.
+ * A minimal metadata template for populating a GitHub repository's description,
+ * homepage, and topics via metadata.json / metadata.yaml.
  *
  * Builds on the codemeta template for baseline values, then lets any
  * metadata.json source fields override the result.

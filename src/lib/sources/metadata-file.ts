@@ -1,14 +1,13 @@
 /**
- * Source and parser for custom `metadata.json` / `metadata.yaml` / `metadata.yml` files.
+ * Source and parser for custom `metadata.json` / `metadata.yaml` /
+ * `metadata.yml` files.
  *
- * This is a simple custom format with synonymous field names for common
- * project metadata. It supports JSON and YAML formats.
+ * This is a simple custom format with synonymous field names for common project
+ * metadata. It supports JSON and YAML formats.
  *
- * Field mapping (with fallback chains):
- *   description                                        → description
- *   homepage | url | repository (normalized) | website → homepage
- *   keywords | tags | topics                           → keywords
- *   repository (normalized)                            → repository
+ * Field mapping (with fallback chains): description → description homepage |
+ * url | repository (normalized) | website → homepage keywords | tags | topics →
+ * keywords repository (normalized) → repository
  */
 
 import is from '@sindresorhus/is'
@@ -47,9 +46,9 @@ export type MetadataFileData = OneOrMany<SourceRecord<Metadata>> | undefined
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse a metadata file content string into a structured object.
- * The `format` parameter determines whether to parse as JSON or YAML.
- * Returns undefined if the content is malformed or not an object.
+ * Parse a metadata file content string into a structured object. The `format`
+ * parameter determines whether to parse as JSON or YAML. Returns undefined if
+ * the content is malformed or not an object.
  */
 export function parse(content: string, format: 'json' | 'yaml'): Metadata | undefined {
 	let data: Record<string, unknown> | undefined
@@ -88,7 +87,10 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 
 /** Return a trimmed string if the value is a non-empty string, else undefined. */
 function nonEmpty(value: unknown): string | undefined {
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
@@ -131,8 +133,14 @@ function parseKeywords(value: unknown): string[] | undefined {
 
 /** Determine the format of a metadata file by its extension. */
 function getFormat(file: string): 'json' | 'yaml' | undefined {
-	if (file.endsWith('.json')) return 'json'
-	if (file.endsWith('.yaml') || file.endsWith('.yml')) return 'yaml'
+	if (file.endsWith('.json')) {
+		return 'json'
+	}
+
+	if (file.endsWith('.yaml') || file.endsWith('.yml')) {
+		return 'yaml'
+	}
+
 	return undefined
 }
 

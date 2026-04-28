@@ -133,7 +133,10 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				}).then((sizes) => sizes.reduce((sum, size) => sum + size, 0)),
 				// 2. Latest tag date
 				(async (): Promise<string | undefined> => {
-					if (!tagNameLatest) return undefined
+					if (!tagNameLatest) {
+						return undefined
+					}
+
 					try {
 						const tagDate = await git.raw(['log', '-1', '--format=%aI', tagNameLatest])
 						return tagDate.trim() || undefined

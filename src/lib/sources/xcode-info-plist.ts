@@ -4,9 +4,10 @@
  * Source and parser for Apple `Info.plist` files.
  *
  * Handles three flavors of Info.plist:
- *   - Standard Apple app/framework bundles (CFBundle* keys)
- *   - Alfred workflow plists (name, createdby, bundleid, etc.)
- *   - TextMate bundle plists (name, contactName, contactEmailRot13, etc.)
+ *
+ * - Standard Apple app/framework bundles (CFBundle* keys)
+ * - Alfred workflow plists (name, createdby, bundleid, etc.)
+ * - TextMate bundle plists (name, contactName, contactEmailRot13, etc.)
  *
  * Uses the `plist` npm package to parse XML plist format.
  */
@@ -68,7 +69,8 @@ type PlistDict = Record<string, unknown>
 const XCODE_VARIABLE_RE = /\$[({][^)}]+[)}]/
 
 /**
- * Map DTPlatformName / CFBundleSupportedPlatforms values to human-readable OS names.
+ * Map DTPlatformName / CFBundleSupportedPlatforms values to human-readable OS
+ * names.
  */
 const PLATFORM_NAME_MAP: Record<string, string> = {
 	appletvos: 'tvOS',
@@ -84,8 +86,8 @@ const PLATFORM_NAME_MAP: Record<string, string> = {
 // ─── Core parser ────────────────────────────────────────────────────
 
 /**
- * Parse an `Info.plist` content string into a structured object.
- * Returns undefined if the plist is malformed or not a dictionary.
+ * Parse an `Info.plist` content string into a structured object. Returns
+ * undefined if the plist is malformed or not a dictionary.
  */
 export function parse(content: string): InfoPlist | undefined {
 	let data: PlistDict
@@ -143,15 +145,24 @@ export function parse(content: string): InfoPlist | undefined {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 /**
- * Get a string value from a plist dict, returning undefined for
- * empty strings, whitespace-only strings, and Xcode variable placeholders.
+ * Get a string value from a plist dict, returning undefined for empty strings,
+ * whitespace-only strings, and Xcode variable placeholders.
  */
 function getString(data: PlistDict, key: string): string | undefined {
 	const value = data[key]
-	if (typeof value !== 'string') return undefined
+	if (typeof value !== 'string') {
+		return undefined
+	}
+
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return undefined
-	if (XCODE_VARIABLE_RE.test(trimmed)) return undefined
+	if (trimmed.length === 0) {
+		return undefined
+	}
+
+	if (XCODE_VARIABLE_RE.test(trimmed)) {
+		return undefined
+	}
+
 	return trimmed
 }
 
@@ -166,12 +177,14 @@ function rot13(value: string): string {
 }
 
 /**
- * Convert an Apple UTI application category to a human-readable string.
- * e.g. "public.app-category.developer-tools" → "Developer Tools"
+ * Convert an Apple UTI application category to a human-readable string. e.g.
+ * "public.app-category.developer-tools" → "Developer Tools"
  */
 function humanizeCategory(uti: string): string {
 	const PREFIX = 'public.app-category.'
-	if (!uti.startsWith(PREFIX)) return uti
+	if (!uti.startsWith(PREFIX)) {
+		return uti
+	}
 
 	const slug = uti.slice(PREFIX.length)
 	return slug
@@ -185,12 +198,16 @@ function humanizeCategory(uti: string): string {
  */
 function parseApplicationCategory(data: PlistDict): string | undefined {
 	const category = getString(data, 'LSApplicationCategoryType')
-	if (!category) return undefined
+	if (!category) {
+		return undefined
+	}
+
 	return humanizeCategory(category)
 }
 
 /**
- * Parse copyright information from NSHumanReadableCopyright or CFBundleGetInfoString.
+ * Parse copyright information from NSHumanReadableCopyright or
+ * CFBundleGetInfoString.
  */
 function parseCopyright(data: PlistDict): {
 	copyrightHolder?: string
@@ -198,7 +215,9 @@ function parseCopyright(data: PlistDict): {
 } {
 	const copyrightSource =
 		getString(data, 'NSHumanReadableCopyright') ?? getString(data, 'CFBundleGetInfoString')
-	if (!copyrightSource) return {}
+	if (!copyrightSource) {
+		return {}
+	}
 
 	// Extract year: look for 4-digit number (typically after ©)
 	const yearMatch = COPYRIGHT_YEAR_REGEX.exec(copyrightSource)
@@ -214,7 +233,9 @@ function parseCopyright(data: PlistDict): {
 			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
 			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
-		if (copyrightHolder.length === 0) copyrightHolder = undefined
+		if (copyrightHolder.length === 0) {
+			copyrightHolder = undefined
+		}
 	}
 
 	return { copyrightHolder, copyrightYear }
@@ -246,13 +267,17 @@ function parseOperatingSystems(data: PlistDict): string[] {
 	}
 
 	// If we already emitted versioned strings, no need for bare platform names
-	if (results.length > 0) return results
+	if (results.length > 0) {
+		return results
+	}
 
 	// DTPlatformName
 	const platformName = getString(data, 'DTPlatformName')
 	if (platformName) {
 		const os = PLATFORM_NAME_MAP[platformName.toLowerCase()]
-		if (os) add(os)
+		if (os) {
+			add(os)
+		}
 	}
 
 	// CFBundleSupportedPlatforms
@@ -261,7 +286,9 @@ function parseOperatingSystems(data: PlistDict): string[] {
 		for (const p of supportedPlatforms) {
 			if (typeof p === 'string') {
 				const os = PLATFORM_NAME_MAP[p.toLowerCase()]
-				if (os) add(os)
+				if (os) {
+					add(os)
+				}
 			}
 		}
 	}
@@ -275,11 +302,14 @@ function parseOperatingSystems(data: PlistDict): string[] {
 }
 
 /**
- * Extract processor architecture requirements from UIRequiredDeviceCapabilities.
+ * Extract processor architecture requirements from
+ * UIRequiredDeviceCapabilities.
  */
 function parseProcessorRequirements(data: PlistDict): string[] {
 	const capabilities = data.UIRequiredDeviceCapabilities
-	if (!Array.isArray(capabilities)) return []
+	if (!Array.isArray(capabilities)) {
+		return []
+	}
 
 	const results: string[] = []
 	for (const c of capabilities) {

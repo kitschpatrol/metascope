@@ -1,27 +1,30 @@
 /**
  * Parser for Makefile-style configuration files.
  *
- * These files use a GNU Makefile-like syntax with section headers (lines
- * ending in `:`) and variable assignments (`VAR = value` or `VAR += value`).
- * This parser extracts metadata from the `meta:` section and structural
- * information (dependencies, platform sections) from the rest of the file.
+ * These files use a GNU Makefile-like syntax with section headers (lines ending
+ * in `:`) and variable assignments (`VAR = value` or `VAR += value`). This
+ * parser extracts metadata from the `meta:` section and structural information
+ * (dependencies, platform sections) from the rest of the file.
  *
- * The parser is intentionally simple — no Make variable expansion, no
- * includes, no conditionals. It mirrors the line-by-line algorithm used
- * by the openFrameworks Project Generator.
+ * The parser is intentionally simple — no Make variable expansion, no includes,
+ * no conditionals. It mirrors the line-by-line algorithm used by the
+ * openFrameworks Project Generator.
  */
 
 const INLINE_COMMENT_REGEX = /#.*$/
 
-/** Section header pattern: a word (with optional hyphens/slashes) followed by a colon. */
+/**
+ * Section header pattern: a word (with optional hyphens/slashes) followed by a
+ * colon.
+ */
 const SECTION_RE = /^[\w/][\w/-]*:$/
 
-/** Variable assignment pattern: VARNAME = value  or  VARNAME += value */
+/** Variable assignment pattern: VARNAME = value or VARNAME += value */
 const ASSIGNMENT_RE = /^(\w+)\s*(\+?=)\s*(.*)/
 
 /**
- * Sections that are not platform-specific and should be excluded
- * from operatingSystem inference.
+ * Sections that are not platform-specific and should be excluded from
+ * operatingSystem inference.
  */
 const NON_PLATFORM_SECTIONS = new Set(['all', 'common', 'meta'])
 
@@ -39,7 +42,9 @@ export function parseMakefileConfig(content: string): Record<string, unknown> {
 	for (const rawLine of content.split('\n')) {
 		// Strip inline comments and trim
 		const line = rawLine.replace(INLINE_COMMENT_REGEX, '').trim()
-		if (line.length === 0) continue
+		if (line.length === 0) {
+			continue
+		}
 
 		// Section header
 		if (SECTION_RE.test(line)) {
@@ -55,7 +60,9 @@ export function parseMakefileConfig(content: string): Record<string, unknown> {
 
 		// Variable assignment
 		const match = ASSIGNMENT_RE.exec(line)
-		if (!match) continue
+		if (!match) {
+			continue
+		}
 
 		const [, variableName, operator, rawValue] = match
 		currentSectionHasAssignment = true
@@ -97,25 +104,30 @@ export function parseMakefileConfig(content: string): Record<string, unknown> {
 }
 
 /**
- * Get a single string value from the meta variables map.
- * Joins multiple tokens with spaces (for values split across `+=` lines).
- * Returns undefined for empty/whitespace-only results.
+ * Get a single string value from the meta variables map. Joins multiple tokens
+ * with spaces (for values split across `+=` lines). Returns undefined for
+ * empty/whitespace-only results.
  */
 function singleValue(variables: Map<string, string[]>, key: string): string | undefined {
 	const values = variables.get(key)
-	if (!values || values.length === 0) return undefined
+	if (!values || values.length === 0) {
+		return undefined
+	}
+
 	const joined = values.join(' ').trim()
 	return joined.length > 0 ? joined : undefined
 }
 
 /**
  * Tokenize a value string, handling both bare tokens and "quoted multi-word"
- * tokens. For example:
- *   `"computer vision" "opencv" bare` → `["computer vision", "opencv", "bare"]`
+ * tokens. For example: `"computer vision" "opencv" bare` → `["computer vision",
+ * "opencv", "bare"]`
  */
 function tokenizeValues(raw: string): string[] {
 	const trimmed = raw.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const values: string[] = []
 	// Match quoted "multi-word" tokens or bare tokens

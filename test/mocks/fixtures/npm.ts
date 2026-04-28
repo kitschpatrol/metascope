@@ -1,11 +1,13 @@
 /**
- * Minimal npm registry and downloads API response fixtures.
- * Registry response conforms to what `package-json` expects.
- * Downloads response conforms to npmDownloadsSchema in
- * src/lib/sources/node-npm-registry.ts.
+ * Minimal npm registry and downloads API response fixtures. Registry response
+ * conforms to what `package-json` expects. Downloads response conforms to
+ * npmDownloadsSchema in src/lib/sources/node-npm-registry.ts.
  */
 
-/** registry.npmjs.org/{name} — npm registry metadata (used by package-json library) */
+/**
+ * Registry.npmjs.org/{name} — npm registry metadata (used by package-json
+ * library)
+ */
 export const npmPackages: Record<string, unknown> = {
 	metascope: {
 		'dist-tags': { latest: '0.2.2' },
@@ -30,7 +32,10 @@ export const npmPackages: Record<string, unknown> = {
 	},
 }
 
-/** The api.npmjs.org/downloads/point/{period}/{name} — conforms to npmDownloadsSchema */
+/**
+ * The api.npmjs.org/downloads/point/{period}/{name} — conforms to
+ * npmDownloadsSchema
+ */
 export const npmDownloads: Record<string, number> = {
 	metascope: 500,
 }

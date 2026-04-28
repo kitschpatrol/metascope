@@ -57,7 +57,9 @@ describe('parseGoMod', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const goModFile = files.find((name) => name === 'go.mod')
-			if (!goModFile) continue
+			if (!goModFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, goModFile), 'utf8')
 			expect(() => parseGoMod(content), `fixture "${directory.name}" should parse`).not.toThrow()

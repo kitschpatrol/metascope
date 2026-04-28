@@ -66,6 +66,7 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 					)
 					return false
 				}
+
 				return true
 			})
 			.map((packageJson) => packageJson.data.name)
@@ -90,7 +91,9 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 				fetchDownloads(name, '2005-01-01:3000-01-01'),
 			])
 
-		if (!metadata) return
+		if (!metadata) {
+			return
+		}
 
 		// Check for TypeScript types
 		const hasTypes = Boolean(
@@ -135,7 +138,10 @@ async function fetchDownloads(packageName: string, period: string): Promise<numb
 		const response = await fetchWithRetry(
 			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
 		)
-		if (!response.ok) return undefined
+		if (!response.ok) {
+			return undefined
+		}
+
 		const data = npmDownloadsSchema.parse(await response.json())
 		return data.downloads
 	} catch {

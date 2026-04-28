@@ -279,7 +279,9 @@ describe('parse', () => {
 			const publiccodeFile = files.find(
 				(name) => name === 'publiccode.yml' || name === 'publiccode.yaml',
 			)
-			if (!publiccodeFile) continue
+			if (!publiccodeFile) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, publiccodeFile), 'utf8')
 			const result = parse(content)

@@ -60,7 +60,8 @@ function isNonEmptyString(value: unknown): value is string {
 
 /**
  * Get the first non-empty string value of a given field from an array of
- * package-manager section entries. Skips Go template strings (containing `{{`).
+ * package-manager section entries. Skips Go template strings (containing
+ * `{{`).
  */
 function firstString(sections: unknown[], field: string): string | undefined {
 	for (const section of sections) {
@@ -76,8 +77,8 @@ function firstString(sections: unknown[], field: string): string | undefined {
 }
 
 /**
- * Collect all section entries for a given key, handling both v1 singular
- * and v2 plural forms.
+ * Collect all section entries for a given key, handling both v1 singular and v2
+ * plural forms.
  */
 function collectSections(data: Record<string, unknown>, ...keys: string[]): unknown[] {
 	const result: unknown[] = []
@@ -110,7 +111,9 @@ export function parse(source: string): Goreleaser | undefined {
 		return undefined
 	}
 
-	if (!isPlainObject(data)) return undefined
+	if (!isPlainObject(data)) {
+		return undefined
+	}
 
 	const result: Goreleaser = {
 		description: undefined,

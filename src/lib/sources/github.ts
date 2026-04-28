@@ -428,7 +428,9 @@ async function getUpstreamComparison(
 	parent: NonNullable<GitHubRepoData['parent']>,
 ): Promise<undefined | { ahead: number; behind: number }> {
 	const parentBranch = parent.defaultBranchRef?.name
-	if (!parentBranch) return undefined
+	if (!parentBranch) {
+		return undefined
+	}
 
 	try {
 		const response = await octokit.rest.repos.compareCommitsWithBasehead({
@@ -443,13 +445,19 @@ async function getUpstreamComparison(
 }
 
 function countSubmodules(gitmodulesText: string | undefined): number {
-	if (!gitmodulesText) return 0
+	if (!gitmodulesText) {
+		return 0
+	}
+
 	const matches = gitmodulesText.match(/\[submodule\s/g)
 	return matches?.length ?? 0
 }
 
 function detectLfs(gitattributesText: string | undefined): boolean {
-	if (!gitattributesText) return false
+	if (!gitattributesText) {
+		return false
+	}
+
 	return gitattributesText.includes('filter=lfs')
 }
 

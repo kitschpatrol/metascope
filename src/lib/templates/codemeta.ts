@@ -12,14 +12,14 @@
  * ## Cascade strategy
  *
  * For **ecosystem-derived fields** (name, version, description, author,
- * license, dependencies, keywords, …) the ecosystem manifest is canonical.
- * This keeps the output fresh when e.g. a new dependency is added to
- * package.json, and makes the round-trip stable: generate → save as
- * codemeta.json → regenerate → identical output.
+ * license, dependencies, keywords, …) the ecosystem manifest is canonical. This
+ * keeps the output fresh when e.g. a new dependency is added to package.json,
+ * and makes the round-trip stable: generate → save as codemeta.json →
+ * regenerate → identical output.
  *
  * For **codemeta-specific fields** that only exist in codemeta.json
- * (developmentStatus, funding, buildInstructions, …) the existing
- * codemeta.json is the source of truth.
+ * (developmentStatus, funding, buildInstructions, …) the existing codemeta.json
+ * is the source of truth.
  *
  * ## Software type inference
  *
@@ -709,14 +709,16 @@ export const codemeta = defineTemplate(
 // ─── Person Helpers ─────────────────────────────────────────────────
 
 /**
- * Extract authors from a gemspec record.
- * Gemspec has `authors: string[]` and a separate `email: string | string[]`.
- * We pair them by index where possible.
+ * Extract authors from a gemspec record. Gemspec has `authors: string[]` and a
+ * separate `email: string | string[]`. We pair them by index where possible.
  */
 function gemspecAuthors(
 	gem: ReturnType<typeof firstOf<{ data: { authors: string[]; email?: string | string[] } }>>,
 ): Array<CodemetaPersonOrOrgLd | undefined> {
-	if (gem === undefined) return []
+	if (gem === undefined) {
+		return []
+	}
+
 	const emails =
 		gem.data.email === undefined
 			? []
@@ -730,9 +732,9 @@ function gemspecAuthors(
 }
 
 /**
- * Takes ecosystem persons (which may include undefined) and codemeta fallback persons.
- * Uses ecosystem if any are present, otherwise falls back.
- * Always deduplicates by name.
+ * Takes ecosystem persons (which may include undefined) and codemeta fallback
+ * persons. Uses ecosystem if any are present, otherwise falls back. Always
+ * deduplicates by name.
  */
 function resolvePersonsOrOrgs(
 	ecosystemPersons: Array<CodemetaPersonOrOrgLd | undefined>,
@@ -929,12 +931,16 @@ function collectDevelopmentDeps(sources: {
 function objectEntriesToDeps(
 	deps: Record<string, string> | undefined,
 ): CodemetaDependencyLd[] | undefined {
-	if (deps === undefined) return undefined
+	if (deps === undefined) {
+		return undefined
+	}
+
 	return Object.entries(deps).map(([depName, depVersion]) => toDependencyLd(depName, depVersion))
 }
 
 /**
- * Parse a PEP 508 dependency string ("package>=1.0") into a CodemetaDependencyLd.
+ * Parse a PEP 508 dependency string ("package>=1.0") into a
+ * CodemetaDependencyLd.
  */
 function parsePep508Dep(dep: string): CodemetaDependencyLd {
 	const trimmed = dep.trim()
@@ -953,8 +959,14 @@ function parsePep508Dep(dep: string): CodemetaDependencyLd {
 function repositoryUrlFromPackageJson(
 	repository: string | undefined | { type: string; url: string },
 ): string | undefined {
-	if (repository === undefined) return undefined
-	if (typeof repository === 'string') return repository
+	if (repository === undefined) {
+		return undefined
+	}
+
+	if (typeof repository === 'string') {
+		return repository
+	}
+
 	return repository.url
 }
 
@@ -964,7 +976,10 @@ function repositoryUrlFromPackageJson(
 function bugsUrlFromPackageJson(
 	bugs: undefined | { email: string; url?: string } | { email?: string; url?: string },
 ): string | undefined {
-	if (bugs === undefined) return undefined
+	if (bugs === undefined) {
+		return undefined
+	}
+
 	return bugs.url
 }
 
@@ -979,14 +994,20 @@ function firstPomLicense(
 }
 
 /**
- * Resolve Python pyproject.toml license field to a string.
- * Can be a string (SPDX ID) or `{ spdx?: string; text?: string; file?: string }`.
+ * Resolve Python pyproject.toml license field to a string. Can be a string
+ * (SPDX ID) or `{ spdx?: string; text?: string; file?: string }`.
  */
 function resolvePythonLicense(
 	pythonLicense: string | undefined | { file?: string; spdx?: string; text?: string },
 ): string | undefined {
-	if (pythonLicense === undefined) return undefined
-	if (typeof pythonLicense === 'string') return pythonLicense
+	if (pythonLicense === undefined) {
+		return undefined
+	}
+
+	if (typeof pythonLicense === 'string') {
+		return pythonLicense
+	}
+
 	return pythonLicense.spdx ?? pythonLicense.text
 }
 
@@ -994,7 +1015,10 @@ function resolvePythonLicense(
  * Resolve codemeta license field (string or string[]) to first string.
  */
 function resolveCmLicense(cmLicense: string | string[] | undefined): string | undefined {
-	if (cmLicense === undefined) return undefined
+	if (cmLicense === undefined) {
+		return undefined
+	}
+
 	return Array.isArray(cmLicense) ? cmLicense[0] : cmLicense
 }
 
@@ -1014,16 +1038,22 @@ function deduplicateStrings(strings: string[]): string[] {
 }
 
 /**
- * Case-insensitive lookup in a string record (e.g. pyproject.toml `[project.urls]`).
+ * Case-insensitive lookup in a string record (e.g. pyproject.toml
+ * `[project.urls]`).
  */
 function caseInsensitiveLookup(
 	record: Record<string, string> | undefined,
 	key: string,
 ): string | undefined {
-	if (record === undefined) return undefined
+	if (record === undefined) {
+		return undefined
+	}
+
 	const lowerKey = key.toLowerCase()
 	for (const [k, v] of Object.entries(record)) {
-		if (k.toLowerCase() === lowerKey) return v
+		if (k.toLowerCase() === lowerKey) {
+			return v
+		}
 	}
 
 	return undefined
@@ -1034,7 +1064,10 @@ function caseInsensitiveLookup(
  * homepage URLs derived from repository URLs.
  */
 function stripReadmeFragment(url: string | undefined): string | undefined {
-	if (url === undefined) return undefined
+	if (url === undefined) {
+		return undefined
+	}
+
 	return url.endsWith('#readme') ? url.slice(0, -7) : url
 }
 
@@ -1043,16 +1076,25 @@ function stripReadmeFragment(url: string | undefined): string | undefined {
  * CodeMeta dates are `schema:Date`, not `schema:DateTime`.
  */
 function toDateOnly(value: string | undefined): string | undefined {
-	if (value === undefined) return undefined
-	if (DATE_ONLY_REGEX.test(value)) return value
+	if (value === undefined) {
+		return undefined
+	}
+
+	if (DATE_ONLY_REGEX.test(value)) {
+		return value
+	}
+
 	const match = DATETIME_DATE_REGEX.exec(value)
-	if (match) return match[1]
+	if (match) {
+		return match[1]
+	}
+
 	return value
 }
 
 /**
- * Infer a `targetProduct` from available package signals.
- * Only called when `INFER_TARGET_PRODUCT` is enabled.
+ * Infer a `targetProduct` from available package signals. Only called when
+ * `INFER_TARGET_PRODUCT` is enabled.
  */
 function inferTargetProduct(
 	package_: ReturnType<
@@ -1076,9 +1118,9 @@ function inferTargetProduct(
 }
 
 /**
- * Build a URL for the project's README.
- * Prefers a web URL on the remote service (e.g. GitHub blob link) when a
- * code repository URL is available, otherwise falls back to the local source path.
+ * Build a URL for the project's README. Prefers a web URL on the remote service
+ * (e.g. GitHub blob link) when a code repository URL is available, otherwise
+ * falls back to the local source path.
  */
 function readmeUrl(
 	readmeRecord: ReturnType<typeof firstOf<{ source: string }>>,
@@ -1086,7 +1128,10 @@ function readmeUrl(
 	defaultBranch: string | undefined,
 	basePath: string | undefined,
 ): string | undefined {
-	if (readmeRecord === undefined) return undefined
+	if (readmeRecord === undefined) {
+		return undefined
+	}
+
 	const repoRelativePath =
 		basePath === undefined
 			? basename(readmeRecord.source)

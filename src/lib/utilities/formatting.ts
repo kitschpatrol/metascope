@@ -6,9 +6,10 @@ const URL_PROTOCOL_REGEX = /^[a-z]+:\/\//i
 // ─── Path Formatting ────────────────────────────────────────────────
 
 /**
- * Format an absolute path as either absolute or relative, based on the `absolute` option.
- * When relative, paths identical to `basePath` are returned as `'.'`.
- * Correctly handles Windows paths (normalizes to POSIX) and ignores URLs.
+ * Format an absolute path as either absolute or relative, based on the
+ * `absolute` option. When relative, paths identical to `basePath` are returned
+ * as `'.'`. Correctly handles Windows paths (normalizes to POSIX) and ignores
+ * URLs.
  */
 export function formatPath(
 	absolutePath: string,
@@ -16,9 +17,13 @@ export function formatPath(
 	absolute = DEFAULT_GET_METADATA_OPTIONS.absolute,
 ): string {
 	// Don't format URLs (roughly detected by protocol prefix)
-	if (URL_PROTOCOL_REGEX.test(absolutePath)) return absolutePath
+	if (URL_PROTOCOL_REGEX.test(absolutePath)) {
+		return absolutePath
+	}
 
-	if (absolute) return absolutePath.replaceAll('\\', '/')
+	if (absolute) {
+		return absolutePath.replaceAll('\\', '/')
+	}
 
 	const relativePath = relative(basePath, absolutePath).replaceAll('\\', '/')
 	return relativePath === '' ? '.' : relativePath
@@ -40,5 +45,6 @@ export async function batchMap<T, R>(
 		const chunkResults = await Promise.all(chunk.map(async (item) => mapper(item)))
 		results.push(...chunkResults)
 	}
+
 	return results
 }

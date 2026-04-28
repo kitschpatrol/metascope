@@ -3,15 +3,21 @@ import { log } from './log'
 import { formatPath } from './utilities/formatting'
 
 /**
- * Context provided to each metadata source during extraction.
- * Options may be partial — `defineSource` resolves defaults internally.
+ * Context provided to each metadata source during extraction. Options may be
+ * partial — `defineSource` resolves defaults internally.
  */
 export type SourceContext = {
-	/** Source keys that have already been extracted (regardless of whether they produced data). */
+	/**
+	 * Source keys that have already been extracted (regardless of whether they
+	 * produced data).
+	 */
 	completedSources?: ReadonlySet<SourceName>
 	/** Accumulated results from earlier phases. Empty for phase 1 sources. */
 	metadata?: Partial<MetadataContext>
-	/** Options passed to `getMetadata`. May be partial; defaults are resolved by `defineSource`. */
+	/**
+	 * Options passed to `getMetadata`. May be partial; defaults are resolved by
+	 * `defineSource`.
+	 */
 	options: GetMetadataBaseOptions
 }
 
@@ -24,6 +30,7 @@ export type OneOrMany<T> = T | T[]
 
 /**
  * A unified record returned by every metadata source.
+ *
  * @template D The shape of the primary data extracted from the source.
  * @template E The shape of any additional computed/derived fields.
  */
@@ -42,8 +49,9 @@ export type SourceRecord<
 // ─── Source Record Extraction ────────────────────────────────────────
 
 /**
- * Extract the concrete `SourceRecord<D, E>` from a `MetadataContext[K]` value type.
- * Unwraps `OneOrMany<SourceRecord<D, E>> | undefined` → `SourceRecord<D, E>`.
+ * Extract the concrete `SourceRecord<D, E>` from a `MetadataContext[K]` value
+ * type. Unwraps `OneOrMany<SourceRecord<D, E>> | undefined` → `SourceRecord<D,
+ * E>`.
  */
 type SourceRecordOf<K extends SourceName> = [MetadataContext[K]] extends [
 	OneOrMany<infer R> | undefined,
@@ -56,24 +64,30 @@ type SourceRecordOf<K extends SourceName> = [MetadataContext[K]] extends [
 // ─── Source Interface ───────────────────────────────────────────────
 
 /**
- * Interface for a metadata source module.
- * Each source populates a specific top-level key in MetadataContext.
+ * Interface for a metadata source module. Each source populates a specific
+ * top-level key in MetadataContext.
  *
- * Sources that use `defineSource` get `discover` and `parse` wired
- * into `extract` automatically. Sources with custom extraction logic can
- * implement `extract` directly.
+ * Sources that use `defineSource` get `discover` and `parse` wired into
+ * `extract` automatically. Sources with custom extraction logic can implement
+ * `extract` directly.
  */
 /* eslint-disable perfectionist/sort-object-types -- ts/member-ordering requires properties before methods */
 export type MetadataSource<K extends SourceName = SourceName> = {
 	/** The top-level key this source populates in MetadataContext. */
 	key: K
-	/** The execution phase. Sources with the same phase run in parallel. Lower phases run first. */
+	/**
+	 * The execution phase. Sources with the same phase run in parallel. Lower
+	 * phases run first.
+	 */
 	phase: number
 	/** Discover inputs for this source. Returns file paths, URLs, or identifiers. */
 	discover?(context: SourceContext): Promise<string[]>
 	/** Parse a single input and return a single result, or undefined to skip. */
 	parse?(input: string, context: SourceContext): Promise<SourceRecordOf<K> | undefined>
-	/** Extract metadata from this source. Returns undefined if the source is not available. */
+	/**
+	 * Extract metadata from this source. Returns undefined if the source is not
+	 * available.
+	 */
 	extract(context: SourceContext): Promise<MetadataContext[K]>
 }
 /* eslint-enable perfectionist/sort-object-types */
@@ -105,8 +119,9 @@ type SourceConfig<K extends SourceName> = {
 }
 
 /**
- * Define a metadata source with `discover` + `parse`.
- * Automatically wires them into an `extract` implementation that handles:
+ * Define a metadata source with `discover` + `parse`. Automatically wires them
+ * into an `extract` implementation that handles:
+ *
  * - Empty input check (returns undefined)
  * - Per-input try/catch with log.warn
  * - Filtering undefined results from parse
@@ -122,7 +137,11 @@ export function defineSource<K extends SourceName>(
 		...config,
 		async extract(context: SourceContext): Promise<MetadataContext[K]> {
 			const inputs = await config.discover(context)
-			if (inputs.length === 0) return undefined as MetadataContext[K]
+			if (inputs.length === 0) {
+				// Cast required: TS can't verify undefined ↔ MetadataContext[K] for generic K (TS2590)
+				// eslint-disable-next-line ts/no-unnecessary-type-assertion
+				return undefined as MetadataContext[K]
+			}
 
 			// Running this concurrently with Promise.all was actually slower
 			const results: SourceRecord[] = []
@@ -144,7 +163,12 @@ export function defineSource<K extends SourceName>(
 				}
 			}
 
-			if (results.length === 0) return undefined as MetadataContext[K]
+			if (results.length === 0) {
+				// eslint-disable-next-line ts/no-unnecessary-type-assertion
+				return undefined as MetadataContext[K]
+			}
+
+			// eslint-disable-next-line ts/no-unnecessary-type-assertion
 			return (results.length === 1 ? results[0] : results) as MetadataContext[K]
 		},
 	}

@@ -19,7 +19,10 @@ const processingSketchPropertiesAuthorEntrySchema = z.object({
 
 const processingSketchPropertiesSchema = z.object({
 	// ── Unofficial keys (borrowed from library.properties) ─────────
-	/** Parsed author entries with optional URLs. _Unofficial: borrowed from library.properties_ */
+	/**
+	 * Parsed author entries with optional URLs. _Unofficial: borrowed from
+	 * library.properties_
+	 */
 	authors: z.array(processingSketchPropertiesAuthorEntrySchema),
 	// ── Other observed keys ────────────────────────────────────────
 	/** Contributed component type. */
@@ -32,7 +35,10 @@ const processingSketchPropertiesSchema = z.object({
 	// ── Android manifest keys ──────────────────────────────────────
 	/** Android app label. From `manifest.label`. */
 	manifestLabel: nonEmptyString,
-	/** Android screen orientation, e.g. "unspecified". From `manifest.orientation`. */
+	/**
+	 * Android screen orientation, e.g. "unspecified". From
+	 * `manifest.orientation`.
+	 */
 	manifestOrientation: nonEmptyString,
 	/** Android package name. From `manifest.package`. */
 	manifestPackage: nonEmptyString,
@@ -46,9 +52,15 @@ const processingSketchPropertiesSchema = z.object({
 	manifestVersionCode: z.number().optional(),
 	/** Android version name string. From `manifest.version.name`. */
 	manifestVersionName: nonEmptyString,
-	/** Maximum Processing revision, or 0 for no upper constraint. _Unofficial: borrowed from library.properties_ */
+	/**
+	 * Maximum Processing revision, or 0 for no upper constraint. _Unofficial:
+	 * borrowed from library.properties_
+	 */
 	maxRevision: z.number(),
-	/** Minimum Processing revision, or 0 for no lower constraint. _Unofficial: borrowed from library.properties_ */
+	/**
+	 * Minimum Processing revision, or 0 for no lower constraint. _Unofficial:
+	 * borrowed from library.properties_
+	 */
 	minRevision: z.number(),
 	/** Mode display name, e.g. "Java", "REPL Mode". */
 	mode: nonEmptyString,
@@ -56,9 +68,15 @@ const processingSketchPropertiesSchema = z.object({
 	modeId: nonEmptyString,
 	/** Sketch name. _Unofficial: borrowed from library.properties_ */
 	name: nonEmptyString,
-	/** Extended description paragraph. _Unofficial: borrowed from library.properties_ */
+	/**
+	 * Extended description paragraph. _Unofficial: borrowed from
+	 * library.properties_
+	 */
 	paragraph: nonEmptyString,
-	/** Human-readable version string. _Unofficial: borrowed from library.properties_ */
+	/**
+	 * Human-readable version string. _Unofficial: borrowed from
+	 * library.properties_
+	 */
 	prettyVersion: nonEmptyString,
 	/** Raw key-value pairs. */
 	raw: z.record(z.string(), z.string()),
@@ -85,7 +103,8 @@ export type ProcessingSketchPropertiesData =
 // ─── Parse ──────────────────────────────────────────────────────────
 
 /**
- * Parse a Processing `sketch.properties` content string into a structured object.
+ * Parse a Processing `sketch.properties` content string into a structured
+ * object.
  */
 export function parse(content: string): ProcessingSketchProperties {
 	const raw = parseProperties(content)
@@ -155,14 +174,17 @@ export function parse(content: string): ProcessingSketchProperties {
 
 /** Return a trimmed string, or undefined if empty/whitespace-only. */
 function nonEmpty(value: string | undefined): string | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
- * Strip trailing inline comments from a value.
- * Matches the pattern ` # comment text` (space-hash-space).
+ * Strip trailing inline comments from a value. Matches the pattern ` # comment
+ * text` (space-hash-space).
  */
 function stripInlineComment(value: string): string {
 	const index = value.indexOf(' # ')
@@ -183,7 +205,9 @@ function unescapeUrl(value: string): string {
  */
 function parseAuthors(value: string): ProcessingSketchPropertiesAuthorEntry[] {
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const results: ProcessingSketchPropertiesAuthorEntry[] = []
 	let cursor = 0
@@ -235,7 +259,7 @@ function parseAuthors(value: string): ProcessingSketchPropertiesAuthorEntry[] {
 }
 
 /**
- * Split plain text on ` and `, `,`, `&` to extract author names.
+ * Split plain text on `and`, `,`, `&` to extract author names.
  */
 function addPlainAuthors(text: string, results: ProcessingSketchPropertiesAuthorEntry[]): void {
 	const parts = text
@@ -251,8 +275,8 @@ function addPlainAuthors(text: string, results: ProcessingSketchPropertiesAuthor
 // ─── Availability ───────────────────────────────────────────────────
 
 /**
- * Validate that a sketch.properties file is a Processing sketch.
- * Checks for at least one known Processing sketch key.
+ * Validate that a sketch.properties file is a Processing sketch. Checks for at
+ * least one known Processing sketch key.
  */
 function isProcessingSketchProperties(content: string): boolean {
 	const raw = parseProperties(content)
@@ -273,6 +297,7 @@ export const processingSketchPropertiesSource = defineSource<'processingSketchPr
 		if (!isProcessingSketchProperties(content)) {
 			return
 		}
+
 		return { data: parse(content), source: input }
 	},
 	phase: 1,

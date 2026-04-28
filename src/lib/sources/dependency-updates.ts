@@ -59,10 +59,14 @@ const updatesOutputSchema = z.object({
  * day(s)", "<n> week(s)", "<n> month(s)", "<n> year(s)"
  */
 function parseAgeToYears(age: string): number {
-	if (age === 'now') return 0
+	if (age === 'now') {
+		return 0
+	}
 
 	const match = AGE_VALUE_UNIT_REGEX.exec(age.trim())
-	if (!match) return 0
+	if (!match) {
+		return 0
+	}
 
 	const value = Number(match[1])
 	const unit = match[2]
@@ -116,13 +120,23 @@ function parseAgeToYears(age: string): number {
 function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor' | 'patch' {
 	const oldSemver = coerce(oldVersion)
 	const newSemver = coerce(newVersion)
-	if (!oldSemver || !newSemver) return 'major'
+	if (!oldSemver || !newSemver) {
+		return 'major'
+	}
 
 	const result = diff(oldSemver, newSemver)
-	if (!result) return 'major'
+	if (!result) {
+		return 'major'
+	}
 
-	if (result.startsWith('major') || result === 'premajor') return 'major'
-	if (result.startsWith('minor') || result === 'preminor') return 'minor'
+	if (result.startsWith('major') || result === 'premajor') {
+		return 'major'
+	}
+
+	if (result.startsWith('minor') || result === 'preminor') {
+		return 'minor'
+	}
+
 	return 'patch'
 }
 
@@ -158,7 +172,9 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 		for (const mode of Object.values(parsed.results)) {
 			for (const depGroup of Object.values(mode)) {
 				for (const [name, dep] of Object.entries(depGroup)) {
-					if (name === '@types/node') continue
+					if (name === '@types/node') {
+						continue
+					}
 
 					if (dep.age) {
 						libyears += parseAgeToYears(dep.age)
@@ -170,8 +186,13 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 						old: dep.old,
 					}
 
-					if (dep.age) packageStatus.age = dep.age
-					if (dep.info) packageStatus.info = dep.info
+					if (dep.age) {
+						packageStatus.age = dep.age
+					}
+
+					if (dep.info) {
+						packageStatus.info = dep.info
+					}
 
 					const bump = classifyBump(dep.old, dep.new)
 					switch (bump) {

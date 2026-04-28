@@ -191,7 +191,9 @@ describe('parse', () => {
 		for (const directory of directories) {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
-			if (!files.includes('codemeta.json')) continue
+			if (!files.includes('codemeta.json')) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, 'codemeta.json'), 'utf8')
 			const result = parseCodemetaJson(content)

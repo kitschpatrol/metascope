@@ -97,7 +97,9 @@ async function resolveOwnerRepo(
 
 	for (const remotes of gitRemotes) {
 		const result = getGitHubRemoteFromConfig(remotes)
-		if (result) return result
+		if (result) {
+			return result
+		}
 	}
 
 	return undefined
@@ -126,7 +128,9 @@ async function fetchWorkflowRuns(
 	// API returns newest-first — first occurrence per path is the latest run
 	const runsByPath = new Map<string, WorkflowRunInfo>()
 	for (const run of response.data.workflow_runs) {
-		if (runsByPath.has(run.path)) continue
+		if (runsByPath.has(run.path)) {
+			continue
+		}
 
 		let durationMs: number | undefined
 		if (run.run_started_at) {
@@ -135,7 +139,9 @@ async function fetchWorkflowRuns(
 
 		const conclusion = workflowRunConclusion.safeParse(run.conclusion)
 		const status = workflowRunStatus.safeParse(run.status)
-		if (!conclusion.success || !status.success) continue
+		if (!conclusion.success || !status.success) {
+			continue
+		}
 
 		runsByPath.set(run.path, {
 			conclusion: conclusion.data,
@@ -155,7 +161,9 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 	async extract(context: SourceContext): Promise<GitHubActionsData> {
 		// Step 1: Discover local workflow files
 		const inputs = await getMatches(context.options, ['.github/workflows/*.{yml,yaml}'])
-		if (inputs.length === 0) return undefined
+		if (inputs.length === 0) {
+			return undefined
+		}
 
 		// Step 2: Parse each YAML file locally
 		const records: Array<SourceRecord<GitHubAction> & { rawPath: string }> = []
@@ -163,9 +171,14 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 			try {
 				const content = await readFile(input, 'utf8')
 				const parsed: unknown = parseYaml(content)
-				if (typeof parsed !== 'object' || parsed === null || !('name' in parsed)) continue
+				if (typeof parsed !== 'object' || parsed === null || !('name' in parsed)) {
+					continue
+				}
+
 				const { name } = parsed as Record<string, unknown>
-				if (typeof name !== 'string') continue
+				if (typeof name !== 'string') {
+					continue
+				}
 
 				const file = formatPath(input, context.options.path, context.options.absolute)
 
@@ -181,7 +194,9 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 			}
 		}
 
-		if (records.length === 0) return undefined
+		if (records.length === 0) {
+			return undefined
+		}
 
 		// Step 3: Enrich with run data when online
 		if (context.options.offline) {
@@ -237,7 +252,7 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 		const results: Array<SourceRecord<GitHubAction>> = records.map(
 			({ rawPath: _, ...rest }) => rest,
 		)
-		return (results.length === 1 ? results[0] : results) as GitHubActionsData
+		return results.length === 1 ? results[0] : results
 	},
 	key: 'githubActions',
 	phase: 2,

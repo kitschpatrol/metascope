@@ -88,7 +88,8 @@ export type ProcessingLibraryPropertiesData =
 // ─── Parse ──────────────────────────────────────────────────────────
 
 /**
- * Parse a Processing `library.properties` content string into a structured object.
+ * Parse a Processing `library.properties` content string into a structured
+ * object.
  */
 export function parse(content: string): ProcessingLibraryProperties {
 	const raw = parseProperties(content)
@@ -132,14 +133,17 @@ function get(raw: Record<string, string>, key: string): string | undefined {
 
 /** Return a trimmed string, or undefined if empty/whitespace-only. */
 function nonEmpty(value: string | undefined): string | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
- * Strip trailing inline comments from a value.
- * Matches the pattern ` # comment text` (space-hash-space).
+ * Strip trailing inline comments from a value. Matches the pattern ` # comment
+ * text` (space-hash-space).
  */
 function stripInlineComment(value: string): string {
 	const index = value.indexOf(' # ')
@@ -147,8 +151,8 @@ function stripInlineComment(value: string): string {
 }
 
 /**
- * Unescape backslash-escaped colons in URLs.
- * Some Processing fixtures use `https\://` instead of `https://`.
+ * Unescape backslash-escaped colons in URLs. Some Processing fixtures use
+ * `https\://` instead of `https://`.
  */
 function unescapeUrl(value: string): string {
 	return value.replaceAll(String.raw`\:`, ':')
@@ -157,12 +161,14 @@ function unescapeUrl(value: string): string {
 // ─── Author parsing ────────────────────────────────────────────────
 
 /**
- * Parse a Processing authors/authorList value into AuthorEntry[].
- * Preserves original order of appearance.
+ * Parse a Processing authors/authorList value into AuthorEntry[]. Preserves
+ * original order of appearance.
  */
 function parseAuthors(value: string): ProcessingLibraryPropertiesAuthorEntry[] {
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const results: ProcessingLibraryPropertiesAuthorEntry[] = []
 
@@ -224,8 +230,8 @@ function parseAuthors(value: string): ProcessingLibraryPropertiesAuthorEntry[] {
 }
 
 /**
- * Split plain text on ` and `, `,`, `&` to extract author names.
- * Filters out bare "others" entries.
+ * Split plain text on `and`, `,`, `&` to extract author names. Filters out bare
+ * "others" entries.
  */
 function addPlainAuthors(text: string, results: ProcessingLibraryPropertiesAuthorEntry[]): void {
 	const parts = text
@@ -245,17 +251,23 @@ function addPlainAuthors(text: string, results: ProcessingLibraryPropertiesAutho
  */
 function parseCategories(value: string): ProcessingLibraryPropertiesCategory[] {
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const results: ProcessingLibraryPropertiesCategory[] = []
 
 	for (const part of trimmed.split(',')) {
 		// Strip surrounding quotes
 		const stripped = part.trim().replaceAll(/^"|"$/g, '').trim()
-		if (stripped.length === 0) continue
+		if (stripped.length === 0) {
+			continue
+		}
 
 		const key = stripped.replaceAll(/[^a-z0-9]/gi, '').toLowerCase()
-		if (key.length === 0) continue
+		if (key.length === 0) {
+			continue
+		}
 
 		const canonical = CATEGORY_MAP.get(key)
 		if (canonical && !results.includes(canonical)) {
@@ -288,16 +300,22 @@ function isProcessingLibraryProperties(content: string): boolean {
 	const keys = new Set(Object.keys(raw).map((k) => k.toLowerCase()))
 
 	// Must have base fields
-	if (!keys.has('name') || !keys.has('version')) return false
+	if (!keys.has('name') || !keys.has('version')) {
+		return false
+	}
 
 	// If any Arduino-exclusive field is present, it's not Processing
 	for (const field of ARDUINO_EXCLUSIVE_FIELDS) {
-		if (keys.has(field)) return false
+		if (keys.has(field)) {
+			return false
+		}
 	}
 
 	// Must have at least one Processing-specific field
 	for (const field of PROCESSING_SPECIFIC_FIELDS) {
-		if (keys.has(field)) return true
+		if (keys.has(field)) {
+			return true
+		}
 	}
 
 	return false
@@ -313,6 +331,7 @@ export const processingLibraryPropertiesSource = defineSource<'processingLibrary
 		if (!isProcessingLibraryProperties(content)) {
 			return
 		}
+
 		return { data: parse(content), source: input }
 	},
 	phase: 1,

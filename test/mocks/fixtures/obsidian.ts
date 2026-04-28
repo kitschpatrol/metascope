@@ -1,6 +1,6 @@
 /**
- * Minimal Obsidian community plugin stats fixture.
- * Conforms to pluginStatsSchema in src/lib/sources/obsidian-plugin-registry.ts:
+ * Minimal Obsidian community plugin stats fixture. Conforms to
+ * pluginStatsSchema in src/lib/sources/obsidian-plugin-registry.ts:
  * z.record(z.string(), z.record(z.string(), z.number()))
  */
 

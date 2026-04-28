@@ -52,6 +52,7 @@ export async function initParser(): Promise<Parser> {
 		await Parser.init()
 		initialized = true
 	}
+
 	return new Parser()
 }
 

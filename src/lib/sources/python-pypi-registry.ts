@@ -210,13 +210,19 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
 			fetchWithRetry(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
 				.then(async (response) => {
-					if (!response.ok) return
+					if (!response.ok) {
+						return
+					}
+
 					return pypiResponseSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
 			fetchWithRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`)
 				.then(async (response) => {
-					if (!response.ok) return
+					if (!response.ok) {
+						return
+					}
+
 					return pypistatsRecentSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
@@ -224,13 +230,18 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 				`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`,
 			)
 				.then(async (response) => {
-					if (!response.ok) return
+					if (!response.ok) {
+						return
+					}
+
 					return pypistatsOverallSchema.parse(await response.json())
 				})
 				.catch((): undefined => undefined),
 		])
 
-		if (!pypiResult) return
+		if (!pypiResult) {
+			return
+		}
 
 		// Find latest release upload time from urls
 		const latestUploadTime = pypiResult.urls[0]?.upload_time_iso_8601
@@ -291,5 +302,6 @@ function hasPrivateClassifier(
 			`Skipping PyPI registry lookup for "${packageName}" in "${path}" because it has a "Private ::" classifier`,
 		)
 	}
+
 	return isPrivate
 }

@@ -140,7 +140,9 @@ describe('parse', () => {
 		for (const directory of directories) {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
-			if (!files.includes('pyproject.toml')) continue
+			if (!files.includes('pyproject.toml')) {
+				continue
+			}
 
 			const content = readFileSync(resolve(directoryPath, 'pyproject.toml'), 'utf8')
 			expect(() => parse(content), `fixture "${directory.name}" should parse`).not.toThrow()

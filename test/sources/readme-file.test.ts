@@ -111,7 +111,9 @@ describe('parse', () => {
 		for (const directory of directories) {
 			const content = readFileSync(resolve(fixturesDirectory, directory.name, 'README.md'), 'utf8')
 			const result = parse(content)
-			if (result) withH1++
+			if (result) {
+				withH1++
+			}
 		}
 
 		// At least some fixtures should have H1 headings

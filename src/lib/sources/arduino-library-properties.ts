@@ -88,7 +88,8 @@ export type ArduinoLibraryPropertiesData =
 // ─── Parse ──────────────────────────────────────────────────────────
 
 /**
- * Parse an Arduino `library.properties` content string into a structured object.
+ * Parse an Arduino `library.properties` content string into a structured
+ * object.
  */
 export function parse(content: string): ArduinoLibraryProperties {
 	const raw = parseProperties(content)
@@ -123,29 +124,43 @@ function get(raw: Record<string, string>, key: string): string | undefined {
 
 /** Return a trimmed string, or undefined if empty/whitespace-only. */
 function nonEmpty(value: string | undefined): string | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
+
 	const trimmed = value.trim()
 	return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
- * Normalize a category string to the canonical Arduino category.
- * Strips all non-letter characters, lowercases, and matches against the canonical map.
- * For comma-separated values (e.g. "Sensors, Timing"), takes the first valid match.
+ * Normalize a category string to the canonical Arduino category. Strips all
+ * non-letter characters, lowercases, and matches against the canonical map. For
+ * comma-separated values (e.g. "Sensors, Timing"), takes the first valid
+ * match.
  */
 function normalizeCategory(
 	value: string | undefined,
 ): ArduinoLibraryPropertiesCategory | undefined {
-	if (value === undefined) return undefined
+	if (value === undefined) {
+		return undefined
+	}
+
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return undefined
+	if (trimmed.length === 0) {
+		return undefined
+	}
 
 	// Split on commas first (handles "Sensors, Timing" edge case)
 	for (const part of trimmed.split(',')) {
 		const key = part.replaceAll(/[^a-z]/gi, '').toLowerCase()
-		if (key.length === 0) continue
+		if (key.length === 0) {
+			continue
+		}
+
 		const canonical = CATEGORY_MAP.get(key)
-		if (canonical) return canonical
+		if (canonical) {
+			return canonical
+		}
 	}
 
 	return undefined
@@ -156,7 +171,9 @@ function normalizeCategory(
  */
 function parsePersonList(value: string): ArduinoLibraryPropertiesPersonEntry[] {
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const results: ArduinoLibraryPropertiesPersonEntry[] = []
 	for (const entry of trimmed.split(',')) {
@@ -187,18 +204,22 @@ function parsePersonList(value: string): ArduinoLibraryPropertiesPersonEntry[] {
 }
 
 /**
- * Parse a comma-separated list of dependencies with optional version constraints.
- * e.g. "ArduinoHttpClient (>=1.0.0), ArduinoJson" →
- *   [{ name: "ArduinoHttpClient", versionConstraint: ">=1.0.0" }, ...]
+ * Parse a comma-separated list of dependencies with optional version
+ * constraints. e.g. "ArduinoHttpClient (>=1.0.0), ArduinoJson" → [{ name:
+ * "ArduinoHttpClient", versionConstraint: ">=1.0.0" }, ...]
  */
 function parseDependencies(value: string): ArduinoLibraryPropertiesDependencyEntry[] {
 	const trimmed = value.trim()
-	if (trimmed.length === 0) return []
+	if (trimmed.length === 0) {
+		return []
+	}
 
 	const results: ArduinoLibraryPropertiesDependencyEntry[] = []
 	for (const entry of trimmed.split(',')) {
 		const trimmedEntry = entry.trim()
-		if (trimmedEntry.length === 0) continue
+		if (trimmedEntry.length === 0) {
+			continue
+		}
 
 		// Match "Name (constraint)" pattern
 		const parenIndex = trimmedEntry.indexOf('(')
@@ -226,8 +247,8 @@ function parseDependencies(value: string): ArduinoLibraryPropertiesDependencyEnt
 // ─── Availability ───────────────────────────────────────────────────
 
 /**
- * Arduino-specific fields that distinguish library.properties from
- * Processing's identically-named format.
+ * Arduino-specific fields that distinguish library.properties from Processing's
+ * identically-named format.
  */
 const ARDUINO_SPECIFIC_FIELDS = new Set(['architectures', 'depends', 'dot_a_linkage', 'maintainer'])
 
@@ -235,25 +256,31 @@ const ARDUINO_SPECIFIC_FIELDS = new Set(['architectures', 'depends', 'dot_a_link
 const PROCESSING_EXCLUSIVE_FIELDS = new Set(['authors', 'minrevision', 'prettyversion'])
 
 /**
- * Validate that a library.properties file is Arduino (not Processing).
- * Requires name=, version=, author= and either an Arduino-specific field
- * or no Processing-exclusive fields.
+ * Validate that a library.properties file is Arduino (not Processing). Requires
+ * name=, version=, author= and either an Arduino-specific field or no
+ * Processing-exclusive fields.
  */
 function isArduinoLibraryProperties(content: string): boolean {
 	const raw = parseProperties(content)
 	const keys = new Set(Object.keys(raw))
 
 	// Must have the three base fields
-	if (!keys.has('name') || !keys.has('version') || !keys.has('author')) return false
+	if (!keys.has('name') || !keys.has('version') || !keys.has('author')) {
+		return false
+	}
 
 	// If any Arduino-specific field is present, it's Arduino
 	for (const field of ARDUINO_SPECIFIC_FIELDS) {
-		if (keys.has(field)) return true
+		if (keys.has(field)) {
+			return true
+		}
 	}
 
 	// If any Processing-exclusive field is present, it's not Arduino
 	for (const field of PROCESSING_EXCLUSIVE_FIELDS) {
-		if (keys.has(field)) return false
+		if (keys.has(field)) {
+			return false
+		}
 	}
 
 	// Ambiguous but default to Arduino

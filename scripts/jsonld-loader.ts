@@ -11,16 +11,14 @@ const TRAILING_SLASHES_REGEX = /\/+$/
 const PROTOCOL_PREFIX_REGEX = /^https?:\/\//
 
 /**
- * Clear the loader cache.
- * Used by the caching script
+ * Clear the loader cache. Used by the caching script
  */
 export function clearCache(): void {
 	loaderCache.clear()
 }
 
 /**
- * Convert a URL to a cache key.
- * Exported for use by file caching script
+ * Convert a URL to a cache key. Exported for use by file caching script
  */
 export function toCacheKey(url: string): string {
 	// Strip trialing slash, strip http:// or https://
@@ -33,11 +31,10 @@ const loaderCache = new Map<string, RemoteDocument>(
 )
 
 /**
- * Custom loader uses cache from data folder, and creates in-memory cache at runtime
- * Special header handling for certain URLs
- * Fixes "invalid remote context" errors
- * Certain URLs need accept headers
- * Pass into options at jsonld call sites, e.g. `jsonld.expand(doc, { documentLoader: customLoader })`
+ * Custom loader uses cache from data folder, and creates in-memory cache at
+ * runtime Special header handling for certain URLs Fixes "invalid remote
+ * context" errors Certain URLs need accept headers Pass into options at jsonld
+ * call sites, e.g. `jsonld.expand(doc, { documentLoader: customLoader })`
  * Alternately set globally: `jsonld.documentLoader = customLoader;`
  */
 export async function customLoader(url: string): Promise<RemoteDocument> {

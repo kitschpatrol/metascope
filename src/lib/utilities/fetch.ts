@@ -1,8 +1,8 @@
 import { log } from '../log'
 
 /**
- * Fetch with automatic retries and exponential backoff.
- * Retries on network errors and 429/5xx responses.
+ * Fetch with automatic retries and exponential backoff. Retries on network
+ * errors and 429/5xx responses.
  */
 export async function fetchWithRetry(
 	url: string,
@@ -47,7 +47,9 @@ function getDelay(attempt: number, response?: Response): number {
 	const retryAfter = response?.headers.get('retry-after')
 	if (retryAfter) {
 		const seconds = Number(retryAfter)
-		if (!Number.isNaN(seconds)) return Math.max(seconds * 1000, backoff)
+		if (!Number.isNaN(seconds)) {
+			return Math.max(seconds * 1000, backoff)
+		}
 	}
 
 	return backoff

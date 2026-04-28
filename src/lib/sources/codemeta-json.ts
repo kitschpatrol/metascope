@@ -2,15 +2,17 @@
  * CodeMeta JSON metadata source.
  *
  * Reads a codemeta.json file (v1, v2, or v3) and normalizes it into a
- * consistent shape with predictable types. No enrichment, no JSON-LD
- * expansion — just an honest representation of what's in the file.
+ * consistent shape with predictable types. No enrichment, no JSON-LD expansion
+ * — just an honest representation of what's in the file.
  *
  * Uses Zod preprocess schemas to handle v1/v2/v3 normalization:
- *   - `@`-prefixed JSON-LD keys stripped, v1 property names remapped
- *   - `{"@type": "xsd:anyURI", "@value": "..."}` unwrapped to plain strings
- *   - Person/org objects normalized (`@type`→`type`, `@id`→`id`, affiliation-as-object)
- *   - Comma-separated strings split to arrays, `{"name":"..."}` objects unwrapped
- *   - Dependencies normalized (string → `{name: string}`)
+ *
+ * - `@`-prefixed JSON-LD keys stripped, v1 property names remapped
+ * - `{"@type": "xsd:anyURI", "@value": "..."}` unwrapped to plain strings
+ * - Person/org objects normalized (`@type`→`type`, `@id`→`id`,
+ *   affiliation-as-object)
+ * - Comma-separated strings split to arrays, `{"name":"..."}` objects unwrapped
+ * - Dependencies normalized (string → `{name: string}`)
  */
 
 import is from '@sindresorhus/is'
@@ -31,25 +33,39 @@ import { splitCommaSeparated } from '../utilities/template-helpers'
  * Empty/whitespace strings become undefined via `nonEmptyString`.
  */
 const codeMetaString = z.preprocess((value) => {
-	if (typeof value === 'string') return value
-	if (is.plainObject(value) && typeof value['@value'] === 'string') return value['@value']
+	if (typeof value === 'string') {
+		return value
+	}
+
+	if (is.plainObject(value) && typeof value['@value'] === 'string') {
+		return value['@value']
+	}
 }, nonEmptyString)
 
 /** Same as codeMetaString but semantically a URL field. */
 const codeMetaUrl = z.preprocess((value) => {
-	if (typeof value === 'string') return value
-	if (is.plainObject(value) && typeof value['@value'] === 'string') return value['@value']
+	if (typeof value === 'string') {
+		return value
+	}
+
+	if (is.plainObject(value) && typeof value['@value'] === 'string') {
+		return value['@value']
+	}
 }, optionalUrl)
 
 /**
  * A string array that handles CodeMeta's polymorphic inputs:
- *   - Single comma-separated string → split to array (common in v1)
- *   - Array of strings → pass through
- *   - Array of `{"name":"..."}` objects → extract name strings (e.g. programmingLanguage)
+ *
+ * - Single comma-separated string → split to array (common in v1)
+ * - Array of strings → pass through
+ * - Array of `{"name":"..."}` objects → extract name strings (e.g.
+ *   programmingLanguage)
  */
 const codeMetaStringArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return
+		if (value === undefined || value === null) {
+			return
+		}
 
 		if (typeof value === 'string') {
 			return value.includes(',') ? splitCommaSeparated(value) : [value]
@@ -61,9 +77,11 @@ const codeMetaStringArray = z
 					if (typeof item === 'string') {
 						return item.trim()
 					}
+
 					if (is.plainObject(item)) {
 						return typeof item.name === 'string' ? item.name.trim() : ''
 					}
+
 					log.warn('Invalid type found in codemeta json parser')
 					return ''
 				})
@@ -78,7 +96,10 @@ const codeMetaStringArray = z
 const codeMetaLicense = z
 	.preprocess(
 		(value) => {
-			if (typeof value === 'string') return value
+			if (typeof value === 'string') {
+				return value
+			}
+
 			if (Array.isArray(value)) {
 				const filtered = value.filter((l): l is string => typeof l === 'string')
 				return filtered.length > 0 ? filtered : undefined
@@ -102,9 +123,9 @@ const codeMetaPersonOrOrgSchema = z.object({
 })
 
 /**
- * Preprocess a raw person/org value into a normalized shape.
- * Handles: plain string → {name: string}, `@type`→`type`, `@id`→`id`,
- * affiliation-as-object → affiliation string.
+ * Preprocess a raw person/org value into a normalized shape. Handles: plain
+ * string → {name: string}, `@type`→`type`, `@id`→`id`, affiliation-as-object →
+ * affiliation string.
  */
 function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
@@ -120,25 +141,45 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
 	// Normalize @type → type
 	if (typeof value['@type'] === 'string') {
 		const rawType = value['@type'].toLowerCase()
-		if (rawType === 'person') result.type = 'Person'
-		else if (rawType === 'organization') result.type = 'Organization'
+		if (rawType === 'person') {
+			result.type = 'Person'
+		} else if (rawType === 'organization') {
+			result.type = 'Organization'
+		}
 	}
 
 	// Normalize @id → id
-	if (typeof value['@id'] === 'string') result.id = value['@id']
+	if (typeof value['@id'] === 'string') {
+		result.id = value['@id']
+	}
 
 	// Pass through standard fields
-	if (typeof value.name === 'string') result.name = value.name
-	if (typeof value.givenName === 'string') result.givenName = value.givenName
-	if (typeof value.familyName === 'string') result.familyName = value.familyName
-	if (typeof value.email === 'string') result.email = value.email
-	if (typeof value.url === 'string') result.url = value.url
+	if (typeof value.name === 'string') {
+		result.name = value.name
+	}
+
+	if (typeof value.givenName === 'string') {
+		result.givenName = value.givenName
+	}
+
+	if (typeof value.familyName === 'string') {
+		result.familyName = value.familyName
+	}
+
+	if (typeof value.email === 'string') {
+		result.email = value.email
+	}
+
+	if (typeof value.url === 'string') {
+		result.url = value.url
+	}
 
 	// Normalize affiliation: string or {name: string}
 	if (typeof value.affiliation === 'string') {
 		result.affiliation = value.affiliation
-	} else if (is.plainObject(value.affiliation) && typeof value.affiliation.name === 'string')
+	} else if (is.plainObject(value.affiliation) && typeof value.affiliation.name === 'string') {
 		result.affiliation = value.affiliation.name
+	}
 
 	// Only return if we have some identifying info
 	if (result.name ?? result.givenName ?? result.familyName ?? result.email) {
@@ -149,12 +190,14 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
 }
 
 /**
- * A person/org array that normalizes single values to arrays,
- * and each element through `preprocessPersonOrOrg`.
+ * A person/org array that normalizes single values to arrays, and each element
+ * through `preprocessPersonOrOrg`.
  */
 const codeMetaPersonArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return
+		if (value === undefined || value === null) {
+			return
+		}
 
 		const items = Array.isArray(value) ? value : [value]
 		const normalized = items
@@ -175,8 +218,8 @@ const codeMetaDependencySchema = z.object({
 })
 
 /**
- * Preprocess a raw dependency value into a normalized shape.
- * Handles: plain string → {name: string}.
+ * Preprocess a raw dependency value into a normalized shape. Handles: plain
+ * string → {name: string}.
  */
 function preprocessDependency(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
@@ -189,10 +232,21 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 
 	const dep: Record<string, unknown> = {}
 
-	if (typeof value.name === 'string') dep.name = value.name
-	if (typeof value.identifier === 'string') dep.identifier = value.identifier
-	if (typeof value.version === 'string') dep.version = value.version
-	if (typeof value.runtimePlatform === 'string') dep.runtimePlatform = value.runtimePlatform
+	if (typeof value.name === 'string') {
+		dep.name = value.name
+	}
+
+	if (typeof value.identifier === 'string') {
+		dep.identifier = value.identifier
+	}
+
+	if (typeof value.version === 'string') {
+		dep.version = value.version
+	}
+
+	if (typeof value.runtimePlatform === 'string') {
+		dep.runtimePlatform = value.runtimePlatform
+	}
 
 	if (dep.name ?? dep.identifier) {
 		return dep
@@ -202,12 +256,14 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 }
 
 /**
- * A dependency array that normalizes single values to arrays,
- * and each element through `preprocessDependency`.
+ * A dependency array that normalizes single values to arrays, and each element
+ * through `preprocessDependency`.
  */
 const codeMetaDependencyArray = z
 	.preprocess((value) => {
-		if (value === undefined || value === null) return
+		if (value === undefined || value === null) {
+			return
+		}
 
 		const items = Array.isArray(value) ? value : [value]
 		const normalized = items
@@ -230,7 +286,10 @@ export const codeMetaJsonDataSchema = z.object({
 	contributor: codeMetaPersonArray,
 	copyrightHolder: codeMetaPersonArray,
 	copyrightYear: z.preprocess((v) => {
-		if (typeof v === 'number') return v
+		if (typeof v === 'number') {
+			return v
+		}
+
 		if (typeof v === 'string') {
 			const parsed = Number.parseInt(v, 10)
 			return Number.isNaN(parsed) ? undefined : parsed
@@ -288,7 +347,9 @@ const v1PropertyMap: Record<string, string> = {
  */
 export function parse(content: string): CodeMetaJson | undefined {
 	const raw = parseJsonRecord(content)
-	if (!raw) return undefined
+	if (!raw) {
+		return undefined
+	}
 
 	const migrated = migrateV1Properties(raw)
 
@@ -308,13 +369,17 @@ export function parse(content: string): CodeMetaJson | undefined {
 function migrateV1Properties(raw: Record<string, unknown>): Record<string, unknown> {
 	const result: Record<string, unknown> = {}
 	for (const [key, value] of Object.entries(raw)) {
-		if (key.startsWith('@')) continue
+		if (key.startsWith('@')) {
+			continue
+		}
+
 		const mappedKey = v1PropertyMap[key] ?? key
 		// Don't overwrite if already set (prefer v2/v3 names)
 		if (!(mappedKey in result)) {
 			result[mappedKey] = value
 		}
 	}
+
 	return result
 }
 

@@ -30,10 +30,14 @@ const HOST_SEGMENTS: Record<string, number> = {
 function moduleToRepoUrl(modulePath: string): string | undefined {
 	const segments = modulePath.split('/')
 	const host = segments[0]
-	if (!host) return undefined
+	if (!host) {
+		return undefined
+	}
 
 	const needed = HOST_SEGMENTS[host]
-	if (!needed || segments.length < needed) return undefined
+	if (!needed || segments.length < needed) {
+		return undefined
+	}
 
 	let repoPath = segments.slice(0, needed).join('/')
 	// Strip /vN major-version suffix
@@ -60,25 +64,37 @@ function parseRequireLine(
 	const indirect = isIndirect(line)
 	const clean = stripComment(line)
 	const match = MODULE_VERSION_REGEX.exec(clean)
-	if (!match) return undefined
+	if (!match) {
+		return undefined
+	}
+
 	const version = match[2].replace(INCOMPATIBLE_SUFFIX_REGEX, '')
 	return { indirect, module: match[1], version }
 }
 
-/** Parse a replace-style line: `old [version] => new version` or `old [version] => ./local` */
+/**
+ * Parse a replace-style line: `old [version] => new version` or `old [version]
+ * => ./local`
+ */
 function parseReplaceLine(line: string): undefined | { from: string; to: Replacement } {
 	const clean = stripComment(line)
 	const parts = clean.split('=>')
-	if (parts.length !== 2) return undefined
+	if (parts.length !== 2) {
+		return undefined
+	}
 
 	const left = parts[0].trim().split(WHITESPACE_REGEX)
 	const right = parts[1].trim().split(WHITESPACE_REGEX)
 
 	const from = left[0]
-	if (!from || right.length === 0) return undefined
+	if (!from || right.length === 0) {
+		return undefined
+	}
 
 	const target = right[0]
-	if (!target) return undefined
+	if (!target) {
+		return undefined
+	}
 
 	if (target.startsWith('./') || target.startsWith('../') || target.startsWith('/')) {
 		return { from, to: 'local' }
@@ -91,7 +107,10 @@ function parseReplaceLine(line: string): undefined | { from: string; to: Replace
 /** Parse a tool-style line: just a module path. */
 function parseToolLine(line: string): string | undefined {
 	const clean = stripComment(line).trim()
-	if (clean.length === 0) return undefined
+	if (clean.length === 0) {
+		return undefined
+	}
+
 	return clean.split(WHITESPACE_REGEX)[0] || undefined
 }
 
@@ -100,8 +119,8 @@ function parseToolLine(line: string): string | undefined {
 /**
  * Parse a go.mod file and return structured metadata.
  *
- * Extracts module identity, Go version, direct dependencies (skipping
- * indirect ones), tool dependencies, and applies replace directives.
+ * Extracts module identity, Go version, direct dependencies (skipping indirect
+ * ones), tool dependencies, and applies replace directives.
  */
 export function parseGoMod(source: string): Record<string, unknown> {
 	const data: {
@@ -128,7 +147,9 @@ export function parseGoMod(source: string): Record<string, unknown> {
 		const line = rawLine.trim()
 
 		// Skip empty lines and pure comments outside blocks
-		if (line === '' || (line.startsWith('//') && blockState === 'none')) continue
+		if (line === '' || (line.startsWith('//') && blockState === 'none')) {
+			continue
+		}
 
 		// Block close
 		if (line === ')' || line.startsWith(')')) {
@@ -141,13 +162,19 @@ export function parseGoMod(source: string): Record<string, unknown> {
 			switch (blockState) {
 				case 'replace': {
 					const rep = parseReplaceLine(line)
-					if (rep) replacements.set(rep.from, rep.to)
+					if (rep) {
+						replacements.set(rep.from, rep.to)
+					}
+
 					break
 				}
 
 				case 'require': {
 					const dep = parseRequireLine(line)
-					if (dep && !dep.indirect) directDeps[dep.module] = dep.version
+					if (dep && !dep.indirect) {
+						directDeps[dep.module] = dep.version
+					}
+
 					break
 				}
 
@@ -157,7 +184,10 @@ export function parseGoMod(source: string): Record<string, unknown> {
 
 				case 'tool': {
 					const tool = parseToolLine(line)
-					if (tool) toolDeps.push(tool)
+					if (tool) {
+						toolDeps.push(tool)
+					}
+
 					break
 				}
 			}
@@ -175,21 +205,27 @@ export function parseGoMod(source: string): Record<string, unknown> {
 				blockState = 'require'
 			} else {
 				const dep = parseRequireLine(line.slice('require '.length))
-				if (dep && !dep.indirect) directDeps[dep.module] = dep.version
+				if (dep && !dep.indirect) {
+					directDeps[dep.module] = dep.version
+				}
 			}
 		} else if (line.startsWith('replace ')) {
 			if (line.includes('(')) {
 				blockState = 'replace'
 			} else {
 				const rep = parseReplaceLine(line.slice('replace '.length))
-				if (rep) replacements.set(rep.from, rep.to)
+				if (rep) {
+					replacements.set(rep.from, rep.to)
+				}
 			}
 		} else if (line.startsWith('tool ')) {
 			if (line.includes('(')) {
 				blockState = 'tool'
 			} else {
 				const tool = parseToolLine(line.slice('tool '.length))
-				if (tool) toolDeps.push(tool)
+				if (tool) {
+					toolDeps.push(tool)
+				}
 			}
 		} else if (
 			(line.startsWith('exclude ') ||

@@ -87,7 +87,9 @@ describe('parse', () => {
 		for (const directory of directories) {
 			const xcodeDirectory = await readdir(resolve(fixturesDirectory, directory.name))
 			const xcodeprojDirectory = xcodeDirectory.find((name) => name.endsWith('.xcodeproj'))
-			if (!xcodeprojDirectory) continue
+			if (!xcodeprojDirectory) {
+				continue
+			}
 
 			const filePath = resolve(
 				fixturesDirectory,

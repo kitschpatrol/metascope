@@ -169,7 +169,9 @@ describe('fixture coverage', () => {
 			const licenseFile = files[0]
 			const content = await readFile(resolve(directoryPath, licenseFile), 'utf8')
 			const result = identifyLicense(content)
-			if (result) identified++
+			if (result) {
+				identified++
+			}
 		}
 
 		// Most fixtures should be identifiable

@@ -4,6 +4,8 @@ export default knipConfig({
 	entry: [
 		// Many exported helpers not yet used elsewhere...
 		'./src/lib/utilities/*.ts',
+		// Many exported types...
+		'./src/lib/sources/*.ts',
 	],
 	ignoreDependencies: ['tree-sitter-ruby', 'tree-sitter-python'],
 })

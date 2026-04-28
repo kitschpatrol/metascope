@@ -46,15 +46,20 @@ function extractString(node: Node): string | undefined {
 				.filter((s): s is string => s !== undefined)
 			return parts.length > 0 ? parts.join('') : undefined
 		}
+
 		case 'float':
 		case 'integer': {
 			return node.text
 		}
+
 		case 'string': {
 			// Python strings: 'value', "value", '''value''', """value"""
 			// Only match string_content — string_start/string_end are just quote chars
 			const content = children(node).find((c) => c.type === 'string_content')
-			if (content) return content.text
+			if (content) {
+				return content.text
+			}
+
 			// Fallback: strip quotes manually (b/f/r/u are Python string prefixes)
 			const raw = node.text
 			// eslint-disable-next-line capitalized-comments
@@ -62,11 +67,14 @@ function extractString(node: Node): string | undefined {
 			if (withoutPrefix.startsWith('"""') || withoutPrefix.startsWith("'''")) {
 				return withoutPrefix.slice(3, -3)
 			}
+
 			return withoutPrefix.slice(1, -1)
 		}
+
 		case 'string_content': {
 			return node.text
 		}
+
 		default: {
 			return undefined
 		}
@@ -96,16 +104,26 @@ function extractStringList(node: Node): string[] {
 /** Extract a dict literal into a Record<string, string>. */
 function extractStringDict(node: Node): Record<string, string> {
 	const result: Record<string, string> = {}
-	if (node.type !== 'dictionary') return result
+	if (node.type !== 'dictionary') {
+		return result
+	}
 
 	for (const pair of children(node)) {
-		if (pair.type !== 'pair') continue
+		if (pair.type !== 'pair') {
+			continue
+		}
+
 		const key = pair.childForFieldName('key')
 		const value = pair.childForFieldName('value')
-		if (!key || !value) continue
+		if (!key || !value) {
+			continue
+		}
+
 		const k = extractString(key)
 		const v = extractString(value)
-		if (k && v) result[k] = v
+		if (k && v) {
+			result[k] = v
+		}
 	}
 
 	return result
@@ -114,15 +132,25 @@ function extractStringDict(node: Node): Record<string, string> {
 /** Extract a dict of string lists (for extras_require). */
 function extractStringListDict(node: Node): Record<string, string[]> {
 	const result: Record<string, string[]> = {}
-	if (node.type !== 'dictionary') return result
+	if (node.type !== 'dictionary') {
+		return result
+	}
 
 	for (const pair of children(node)) {
-		if (pair.type !== 'pair') continue
+		if (pair.type !== 'pair') {
+			continue
+		}
+
 		const key = pair.childForFieldName('key')
 		const value = pair.childForFieldName('value')
-		if (!key || !value) continue
+		if (!key || !value) {
+			continue
+		}
+
 		const k = extractString(key)
-		if (k) result[k] = extractStringList(value)
+		if (k) {
+			result[k] = extractStringList(value)
+		}
 	}
 
 	return result
@@ -149,10 +177,9 @@ const STRING_ATTRS = new Set<string>([
 /**
  * Parse a setup.py file and return structured metadata.
  *
- * Uses tree-sitter with the Python grammar to find the `setup()` call
- * and extract keyword arguments. Only statically determinable values
- * (string/list literals) are extracted — variables and dynamic expressions
- * are skipped.
+ * Uses tree-sitter with the Python grammar to find the `setup()` call and
+ * extract keyword arguments. Only statically determinable values (string/list
+ * literals) are extracted — variables and dynamic expressions are skipped.
  */
 export async function parseSetupPy(source: string): Promise<Record<string, unknown>> {
 	const parser = await initParser()
@@ -160,23 +187,34 @@ export async function parseSetupPy(source: string): Promise<Record<string, unkno
 	parser.setLanguage(python)
 
 	const tree = parser.parse(source)
-	if (!tree) throw new Error('Failed to parse setup.py source')
+	if (!tree) {
+		throw new Error('Failed to parse setup.py source')
+	}
+
 	const data = emptySetupPyData()
 
 	// Find the setup() call in the AST
 	const setupCall = findSetupCall(tree.rootNode)
-	if (!setupCall) return data
+	if (!setupCall) {
+		return data
+	}
 
 	// Extract keyword arguments from the setup() call
 	const argumentChildren = setupCall.childForFieldName('arguments')
-	if (!argumentChildren) return data
+	if (!argumentChildren) {
+		return data
+	}
 
 	for (const child of children(argumentChildren)) {
-		if (child.type !== 'keyword_argument') continue
+		if (child.type !== 'keyword_argument') {
+			continue
+		}
 
 		const nameNode = child.childForFieldName('name')
 		const valueNode = child.childForFieldName('value')
-		if (!nameNode || !valueNode) continue
+		if (!nameNode || !valueNode) {
+			continue
+		}
 
 		const argumentName = nameNode.text
 
@@ -196,14 +234,17 @@ export async function parseSetupPy(source: string): Promise<Record<string, unkno
 				data.classifiers = extractStringList(valueNode)
 				break
 			}
+
 			case 'extras_require': {
 				data.extras_require = extractStringListDict(valueNode)
 				break
 			}
+
 			case 'install_requires': {
 				data.install_requires = extractStringList(valueNode)
 				break
 			}
+
 			case 'keywords': {
 				// Keywords can be a list or a comma-separated string
 				if (valueNode.type === 'list' || valueNode.type === 'tuple') {
@@ -217,6 +258,7 @@ export async function parseSetupPy(source: string): Promise<Record<string, unkno
 
 				break
 			}
+
 			case 'project_urls': {
 				data.project_urls = extractStringDict(valueNode)
 				break
@@ -252,7 +294,9 @@ function findSetupCall(node: Node): Node | undefined {
 
 	for (const child of children(node)) {
 		const result = findSetupCall(child)
-		if (result) return result
+		if (result) {
+			return result
+		}
 	}
 
 	return undefined

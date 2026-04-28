@@ -1,8 +1,9 @@
 /**
  * Helpers for building codemeta JSON-LD objects.
  *
- * Provides type-safe constructors for Person/Organization and SoftwareApplication
- * dependency nodes, plus deduplication and license URL normalization.
+ * Provides type-safe constructors for Person/Organization and
+ * SoftwareApplication dependency nodes, plus deduplication and license URL
+ * normalization.
  */
 
 import is from '@sindresorhus/is'
@@ -45,8 +46,9 @@ export type CodemetaDependencyLd = {
 // ─── Person Construction ────────────────────────────────────────────
 
 /**
- * Build a codemeta JSON-LD Person or Organization from flexible inputs.
- * Returns undefined if no identifying information (name, givenName+familyName, or email) is present.
+ * Build a codemeta JSON-LD Person or Organization from flexible inputs. Returns
+ * undefined if no identifying information (name, givenName+familyName, or
+ * email) is present.
  *
  * Works with person shapes from any metascope source — the caller maps
  * source-specific field names into this common parameter object.
@@ -66,15 +68,35 @@ export function toPersonOrOrgLd(options: {
 	const hasFamilyName = is.nonEmptyStringAndNotWhitespace(options.familyName)
 	const hasEmail = is.nonEmptyStringAndNotWhitespace(options.email)
 
-	if (!hasName && !hasGivenName && !hasFamilyName && !hasEmail) return undefined
+	if (!hasName && !hasGivenName && !hasFamilyName && !hasEmail) {
+		return undefined
+	}
 
 	const person: CodemetaPersonOrOrgLd = { '@type': options.type ?? 'Person' }
-	if (is.nonEmptyStringAndNotWhitespace(options.id)) person['@id'] = options.id
-	if (hasName) person.name = options.name
-	if (hasGivenName) person.givenName = options.givenName
-	if (hasFamilyName) person.familyName = options.familyName
-	if (hasEmail) person.email = options.email
-	if (is.nonEmptyStringAndNotWhitespace(options.url)) person.url = options.url
+	if (is.nonEmptyStringAndNotWhitespace(options.id)) {
+		person['@id'] = options.id
+	}
+
+	if (hasName) {
+		person.name = options.name
+	}
+
+	if (hasGivenName) {
+		person.givenName = options.givenName
+	}
+
+	if (hasFamilyName) {
+		person.familyName = options.familyName
+	}
+
+	if (hasEmail) {
+		person.email = options.email
+	}
+
+	if (is.nonEmptyStringAndNotWhitespace(options.url)) {
+		person.url = options.url
+	}
+
 	if (is.nonEmptyStringAndNotWhitespace(options.affiliation)) {
 		person.affiliation = { '@type': 'Organization', name: options.affiliation }
 	}
@@ -83,9 +105,9 @@ export function toPersonOrOrgLd(options: {
 }
 
 /**
- * Deduplicate persons by name (case-insensitive, trimmed).
- * Keeps the first occurrence, so callers should place higher-priority sources first.
- * Returns undefined if the result is empty.
+ * Deduplicate persons by name (case-insensitive, trimmed). Keeps the first
+ * occurrence, so callers should place higher-priority sources first. Returns
+ * undefined if the result is empty.
  */
 export function deduplicatePersonsOrOrgs(
 	persons: CodemetaPersonOrOrgLd[],
@@ -121,8 +143,14 @@ export function toDependencyLd(
 	runtimePlatform?: string,
 ): CodemetaDependencyLd {
 	const dep: CodemetaDependencyLd = { '@type': 'SoftwareApplication', name }
-	if (is.nonEmptyStringAndNotWhitespace(version)) dep.version = version
-	if (is.nonEmptyStringAndNotWhitespace(identifier)) dep.identifier = identifier
+	if (is.nonEmptyStringAndNotWhitespace(version)) {
+		dep.version = version
+	}
+
+	if (is.nonEmptyStringAndNotWhitespace(identifier)) {
+		dep.identifier = identifier
+	}
+
 	if (is.nonEmptyStringAndNotWhitespace(runtimePlatform)) {
 		dep.runtimePlatform = runtimePlatform
 	}
@@ -131,8 +159,8 @@ export function toDependencyLd(
 }
 
 /**
- * Deduplicate dependencies by name (case-insensitive).
- * Keeps the first occurrence. Returns undefined if the result is empty.
+ * Deduplicate dependencies by name (case-insensitive). Keeps the first
+ * occurrence. Returns undefined if the result is empty.
  */
 export function deduplicateDependencies(
 	deps: CodemetaDependencyLd[],
@@ -152,8 +180,8 @@ export function deduplicateDependencies(
 // ─── License ────────────────────────────────────────────────────────
 
 /**
- * Normalize a license identifier to an SPDX URL.
- * Handles bare SPDX IDs ("MIT") and existing SPDX URLs.
+ * Normalize a license identifier to an SPDX URL. Handles bare SPDX IDs ("MIT")
+ * and existing SPDX URLs.
  */
 export function toSpdxLicenseUrl(spdxId: string): string {
 	const cleaned = spdxId
