@@ -12,17 +12,20 @@ import is from '@sindresorhus/is'
 import { z } from 'zod'
 
 /**
- * A string that treats empty or whitespace-only values as undefined. Use
- * `.optional()` on the result for optional fields.
+ * A string that treats empty or whitespace-only values as undefined. The outer
+ * `.optional()` lets the field be absent in parent objects (zod 4.4+ no longer
+ * bubbles inner-schema optionality through `z.preprocess`).
  */
-export const nonEmptyString = z.preprocess((value) => {
-	if (typeof value !== 'string') {
-		return
-	}
+export const nonEmptyString = z
+	.preprocess((value) => {
+		if (typeof value !== 'string') {
+			return
+		}
 
-	const trimmed = value.trim()
-	return trimmed.length > 0 ? trimmed : undefined
-}, z.string().optional())
+		const trimmed = value.trim()
+		return trimmed.length > 0 ? trimmed : undefined
+	}, z.string().optional())
+	.optional()
 
 /**
  * A URL string that treats empty/whitespace as undefined. Does not reject
@@ -32,15 +35,20 @@ export const nonEmptyString = z.preprocess((value) => {
 export const optionalUrl = nonEmptyString.describe('A URL string')
 
 /**
- * An array of strings, filtering out empty/whitespace-only elements.
+ * An array of strings, filtering out empty/whitespace-only elements. Defaults
+ * to `[]` so absent/non-array fields parse cleanly under zod 4.4+.
  */
-export const stringArray = z.preprocess((value) => {
-	if (!Array.isArray(value)) {
-		return []
-	}
+export const stringArray = z
+	.preprocess((value) => {
+		if (!Array.isArray(value)) {
+			return []
+		}
 
-	return value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
-}, z.array(z.string()))
+		return value.filter(
+			(item): item is string => typeof item === 'string' && item.trim().length > 0,
+		)
+	}, z.array(z.string()))
+	.default([])
 
 /**
  * Parse a JSON string into a plain object. Returns `undefined` for malformed

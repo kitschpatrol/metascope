@@ -32,26 +32,30 @@ import { splitCommaSeparated } from '../utilities/template-helpers'
  * A string that also unwraps `{"@value": "..."}` JSON-LD typed values.
  * Empty/whitespace strings become undefined via `nonEmptyString`.
  */
-const codeMetaString = z.preprocess((value) => {
-	if (typeof value === 'string') {
-		return value
-	}
+const codeMetaString = z
+	.preprocess((value) => {
+		if (typeof value === 'string') {
+			return value
+		}
 
-	if (is.plainObject(value) && typeof value['@value'] === 'string') {
-		return value['@value']
-	}
-}, nonEmptyString)
+		if (is.plainObject(value) && typeof value['@value'] === 'string') {
+			return value['@value']
+		}
+	}, nonEmptyString)
+	.optional()
 
 /** Same as codeMetaString but semantically a URL field. */
-const codeMetaUrl = z.preprocess((value) => {
-	if (typeof value === 'string') {
-		return value
-	}
+const codeMetaUrl = z
+	.preprocess((value) => {
+		if (typeof value === 'string') {
+			return value
+		}
 
-	if (is.plainObject(value) && typeof value['@value'] === 'string') {
-		return value['@value']
-	}
-}, optionalUrl)
+		if (is.plainObject(value) && typeof value['@value'] === 'string') {
+			return value['@value']
+		}
+	}, optionalUrl)
+	.optional()
 
 /**
  * A string array that handles CodeMeta's polymorphic inputs:
@@ -285,16 +289,18 @@ export const codeMetaJsonDataSchema = z.object({
 	continuousIntegration: codeMetaUrl,
 	contributor: codeMetaPersonArray,
 	copyrightHolder: codeMetaPersonArray,
-	copyrightYear: z.preprocess((v) => {
-		if (typeof v === 'number') {
-			return v
-		}
+	copyrightYear: z
+		.preprocess((v) => {
+			if (typeof v === 'number') {
+				return v
+			}
 
-		if (typeof v === 'string') {
-			const parsed = Number.parseInt(v, 10)
-			return Number.isNaN(parsed) ? undefined : parsed
-		}
-	}, z.number().optional()),
+			if (typeof v === 'string') {
+				const parsed = Number.parseInt(v, 10)
+				return Number.isNaN(parsed) ? undefined : parsed
+			}
+		}, z.number().optional())
+		.optional(),
 	dateCreated: codeMetaString,
 	dateModified: codeMetaString,
 	datePublished: codeMetaString,

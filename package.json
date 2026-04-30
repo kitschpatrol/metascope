@@ -84,14 +84,14 @@
 		"smol-toml": "^1.6.1",
 		"spdx-license-list": "^6.11.0",
 		"string-ts": "^2.3.1",
-		"tinyexec": "^1.1.1",
+		"tinyexec": "^1.1.2",
 		"tinyglobby": "^0.2.16",
 		"unified": "^11.0.5",
-		"updates": "^17.16.6",
+		"updates": "^17.16.7",
 		"web-tree-sitter": "^0.26.8",
 		"yaml": "^2.8.3",
 		"yargs": "^18.0.0",
-		"zod": "^4.3.6"
+		"zod": "^4.4.1"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.2",
