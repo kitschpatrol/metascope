@@ -146,7 +146,7 @@ importers:
         version: 9.0.0
       mdat-plugin-cli-help:
         specifier: ^3.0.0
-        version: 3.0.0(mdat@2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3))
+        version: 3.0.0(mdat@2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3))
       msw:
         specifier: 2.12.14
         version: 2.12.14(@types/node@22.17.2)(typescript@6.0.3)
@@ -4087,8 +4087,8 @@ packages:
     peerDependencies:
       mdat: ^2.0.0
 
-  mdat@2.3.1:
-    resolution: {integrity: sha512-vBrm0xyALd7Y1nc53L7zr9BYA211dfRa/9TIfIDdNS3YssFzbX3RqrwaM0bnWerFWusvCkxr9BaUk4Y6VfiQjg==}
+  mdat@2.3.2:
+    resolution: {integrity: sha512-KCcnN9emN8Sa6p2ggnR121mm6aY8WYI00h5Ik1xYMzM67pSOFVH7iLbtQdcIqN9jcIBNgKhTXA8XXz/Fw9Fz0A==}
     engines: {node: '>=22.17.0'}
     hasBin: true
     peerDependencies:
@@ -4108,8 +4108,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  metascope@0.7.1:
-    resolution: {integrity: sha512-wH19xoJWJbWqiz1mMq47ERPgZEALxvzhPnsK+DhM+/Wz1G0xkJrH84gZMYR8Y66O1+lW3ZaPae9lIR8lSN5GxA==}
+  metascope@0.7.2:
+    resolution: {integrity: sha512-7QAYW8KKUbapbpzNSNqpUBC1vCu5sDYhYpzgOfTXP5wKt7VRIMic0ZFcHwyQOmSTiko+BtBfG1ZTA+6WCjWpbQ==}
     engines: {node: '>=22.17.0'}
     hasBin: true
 
@@ -4952,8 +4952,8 @@ packages:
   remark-lint@10.0.1:
     resolution: {integrity: sha512-1+PYGFziOg4pH7DDf1uMd4AR3YuO2EMnds/SdIWMPGT7CAfDRSnAmpxPsJD0Ds3IKpn97h3d5KPGf1WFOg6hXQ==}
 
-  remark-mdat@2.2.1:
-    resolution: {integrity: sha512-16k6EbmC1MTOOOQ5nKzBecrkyNlaVynAtEcFse07laMHqNteeNBvtSi0Td41K0nYTQxB0/oQbFiraMJwDHtdHg==}
+  remark-mdat@2.2.2:
+    resolution: {integrity: sha512-435gqEqK+PjvtFQVw0+PdWVdTBgRcMTH6dFqvtQgFWw5szRIn75gQxPyPcol81zvxD0fQfd0jtMkS6Jxk+74Gg==}
     engines: {node: '>=20.19.6'}
 
   remark-mdx@3.1.1:
@@ -6885,7 +6885,7 @@ snapshots:
       find-workspaces: 0.3.1
       fs-extra: 11.3.4
       json-stringify-pretty-compact: 4.0.0
-      mdat: 2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
+      mdat: 2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
       package-up: 5.0.0
       picocolors: 1.1.1
       prettier: 3.8.3
@@ -7064,7 +7064,7 @@ snapshots:
       fs-extra: 11.3.4
       globby: 16.2.0
       json-stringify-pretty-compact: 4.0.0
-      mdat: 2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
+      mdat: 2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
       package-up: 5.0.0
       picocolors: 1.1.1
       prettier: 3.8.3
@@ -10552,20 +10552,20 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit: 5.1.0
 
-  mdat-plugin-cli-help@3.0.0(mdat@2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)):
+  mdat-plugin-cli-help@3.0.0(mdat@2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)):
     dependencies:
       '@types/which': 3.0.4
       chevrotain: 12.0.0
       execa: 9.6.1
       lognow: 0.6.1
-      mdat: 2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
+      mdat: 2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3)
       type-fest: 5.6.0
       which: 6.0.1
       zod: 4.4.1
     transitivePeerDependencies:
       - electron
 
-  mdat@2.3.1(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3):
+  mdat@2.3.2(@types/node@22.17.2)(prettier@3.8.3)(typescript@6.0.3):
     dependencies:
       '@clack/prompts': 1.3.0
       cosmiconfig: 9.0.1(typescript@6.0.3)
@@ -10574,7 +10574,7 @@ snapshots:
       globby: 16.2.0
       lognow: 0.6.1
       mdast-util-toc: 7.1.0
-      metascope: 0.7.1
+      metascope: 0.7.2
       path-type: 6.0.0
       picocolors: 1.1.1
       plur: 6.0.0
@@ -10582,7 +10582,7 @@ snapshots:
       pretty-ms: 9.3.0
       remark: 15.0.1
       remark-gfm: 4.0.1
-      remark-mdat: 2.2.1
+      remark-mdat: 2.2.2
       to-vfile: 8.0.0
       type-fest: 5.6.0
       unified-engine: 11.2.2
@@ -10605,7 +10605,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  metascope@0.7.1:
+  metascope@0.7.2:
     dependencies:
       '@bacons/xcode': 1.0.0-alpha.33
       '@kitschpatrol/tokei': 2.0.1
@@ -11871,7 +11871,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-mdat@2.2.1:
+  remark-mdat@2.2.2:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
