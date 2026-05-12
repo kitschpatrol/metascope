@@ -405,7 +405,7 @@ You can skip network calls by passing `--offline` to the CLI.
 
 ### About metadata.json
 
-Metascope supports a minimalist `metadata.json` (or `.yaml`) file is supported, which can capture the minimal metadata required to populate a GitHub project's repository page's description, homepage, and topics.
+Metascope supports a minimalist `metadata.json` (or `.yaml`) file, which can capture the minimal metadata required to populate a GitHub project's repository page's description, homepage, and topics.
 
 This is a non-standard format that exists primarily for use in combination with [github-action-repo-sync](https://github.com/kitschpatrol/github-action-repo-sync).
 
