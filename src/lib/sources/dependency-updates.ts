@@ -167,6 +167,7 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 		const major: DependencyUpdatesPackage[] = []
 		const minor: DependencyUpdatesPackage[] = []
 		const patch: DependencyUpdatesPackage[] = []
+		const seen = new Set<string>()
 		let libyears = 0
 
 		for (const mode of Object.values(parsed.results)) {
@@ -175,6 +176,12 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 					if (name === '@types/node') {
 						continue
 					}
+
+					if (seen.has(name)) {
+						continue
+					}
+
+					seen.add(name)
 
 					if (dep.age) {
 						libyears += parseAgeToYears(dep.age)

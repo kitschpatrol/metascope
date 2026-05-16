@@ -9,8 +9,8 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-04-09",
-	"datePublished": "2026-04-07",
+	"dateModified": "2026-05-16",
+	"datePublished": "2026-05-12",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
@@ -42,7 +42,7 @@
 		},
 		{
 			"name": "@sindresorhus/is",
-			"version": "^8.0.0"
+			"version": "^8.1.0"
 		},
 		{
 			"name": "@types/mdast",
@@ -62,7 +62,7 @@
 		},
 		{
 			"name": "case-police",
-			"version": "^2.2.0"
+			"version": "^2.2.1"
 		},
 		{
 			"name": "defu",
@@ -70,7 +70,7 @@
 		},
 		{
 			"name": "fast-xml-parser",
-			"version": "^5.5.11"
+			"version": "^5.8.0"
 		},
 		{
 			"name": "find-workspaces",
@@ -86,11 +86,11 @@
 		},
 		{
 			"name": "jiti",
-			"version": "^2.6.1"
+			"version": "^2.7.0"
 		},
 		{
 			"name": "lognow",
-			"version": "^0.6.1"
+			"version": "^0.6.2"
 		},
 		{
 			"name": "octokit",
@@ -106,11 +106,11 @@
 		},
 		{
 			"name": "pkg-types",
-			"version": "^2.3.0"
+			"version": "^2.3.1"
 		},
 		{
 			"name": "plist",
-			"version": "^3.1.0"
+			"version": "^3.1.1"
 		},
 		{
 			"name": "pretty-ms",
@@ -130,11 +130,11 @@
 		},
 		{
 			"name": "semver",
-			"version": "^7.7.4"
+			"version": "^7.8.0"
 		},
 		{
 			"name": "simple-git",
-			"version": "^3.35.2"
+			"version": "^3.36.0"
 		},
 		{
 			"name": "smol-toml",
@@ -150,7 +150,7 @@
 		},
 		{
 			"name": "tinyexec",
-			"version": "^1.1.1"
+			"version": "^1.1.2"
 		},
 		{
 			"name": "tinyglobby",
@@ -162,7 +162,7 @@
 		},
 		{
 			"name": "updates",
-			"version": "^17.14.0"
+			"version": "^17.16.12"
 		},
 		{
 			"name": "web-tree-sitter",
@@ -170,7 +170,7 @@
 		},
 		{
 			"name": "yaml",
-			"version": "^2.8.3"
+			"version": "^2.9.0"
 		},
 		{
 			"name": "yargs",
@@ -178,7 +178,7 @@
 		},
 		{
 			"name": "zod",
-			"version": "^4.3.6"
+			"version": "^4.4.3"
 		}
 	],
 	"softwareSuggestions": [
@@ -188,11 +188,11 @@
 		},
 		{
 			"name": "@fast-csv/parse",
-			"version": "^5.0.5"
+			"version": "^5.0.7"
 		},
 		{
 			"name": "@kitschpatrol/shared-config",
-			"version": "^7.3.0"
+			"version": "^7.6.0"
 		},
 		{
 			"name": "@types/jsonld",
@@ -208,7 +208,7 @@
 		},
 		{
 			"name": "bumpp",
-			"version": "^11.0.1"
+			"version": "^11.1.0"
 		},
 		{
 			"name": "jsonld",
@@ -216,7 +216,7 @@
 		},
 		{
 			"name": "mdat-plugin-cli-help",
-			"version": "^2.1.2"
+			"version": "^3.0.0"
 		},
 		{
 			"name": "msw",
@@ -224,7 +224,7 @@
 		},
 		{
 			"name": "publint",
-			"version": "^0.3.18"
+			"version": "^0.3.21"
 		},
 		{
 			"name": "shx",
@@ -240,21 +240,21 @@
 		},
 		{
 			"name": "tsdown",
-			"version": "^0.21.7"
+			"version": "^0.22.0"
 		},
 		{
 			"name": "tsx",
-			"version": "^4.21.0"
+			"version": "^4.22.0"
 		},
 		{
 			"name": "typescript",
-			"version": "~6.0.2"
+			"version": "~6.0.3"
 		},
 		{
 			"name": "vitest",
-			"version": "^4.1.4"
+			"version": "^4.1.6"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.6.3"
+	"version": "0.7.4"
 }
