@@ -147,8 +147,9 @@ describe('all-sources fixture', () => {
 				: []
 		expect(records.length).toBeGreaterThan(0)
 		const { data } = records[0]
-		expect(data.spdxId).toBe('MIT')
-		expect(data.confidence).toBeGreaterThan(0)
+		expect(data.match).toBeDefined()
+		expect(data.match!.spdxId).toBe('MIT')
+		expect(data.match!.confidence).toBeGreaterThan(0)
 	})
 
 	it('should extract metadataFile', async () => {

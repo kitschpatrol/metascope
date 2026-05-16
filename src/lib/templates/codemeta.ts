@@ -35,6 +35,7 @@ import { defineTemplate } from '../metadata-types'
 import {
 	deduplicateDependencies,
 	deduplicatePersonsOrOrgs,
+	isProprietaryLicenseSentinel,
 	toDependencyLd,
 	toPersonOrOrgLd,
 	toSpdxLicenseUrl,
@@ -556,11 +557,13 @@ export const codemeta = defineTemplate(
 			cinder?.data.license ??
 			publiccode?.data.license ??
 			github?.data.licenseSpdxId ??
-			collectField(licenseFile, (d) => d.spdxId)[0] ??
+			collectField(licenseFile, (d) => d.match?.spdxId)[0] ??
 			resolveCmLicense(cm?.data.license)
 
 		const license = is.nonEmptyStringAndNotWhitespace(rawLicense)
-			? toSpdxLicenseUrl(rawLicense)
+			? isProprietaryLicenseSentinel(rawLicense)
+				? rawLicense
+				: toSpdxLicenseUrl(rawLicense)
 			: undefined
 
 		const isAccessibleForFree =

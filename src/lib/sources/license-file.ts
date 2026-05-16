@@ -8,7 +8,17 @@ import { identifyLicense } from '../utilities/license-identification'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-export type LicenseFileData = OneOrMany<SourceRecord<LicenseMatch>> | undefined
+/**
+ * A license file record. `match` is `undefined` when a license file was
+ * discovered on disk but its contents do not map to an SPDX template (e.g.
+ * proprietary "All Rights Reserved" notices). The `source` path on the
+ * surrounding record is still useful to downstream consumers — preserve it.
+ */
+export type LicenseFileRecord = {
+	match?: LicenseMatch
+}
+
+export type LicenseFileData = OneOrMany<SourceRecord<LicenseFileRecord>> | undefined
 
 export const licenseFileSource = defineSource<'licenseFile'>({
 	async discover(context) {
@@ -17,13 +27,8 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 	key: 'licenseFile',
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
-		const match = identifyLicense(content)
-		if (!match) {
-			return
-		}
-
 		return {
-			data: match,
+			data: { match: identifyLicense(content) },
 			source: input,
 		}
 	},

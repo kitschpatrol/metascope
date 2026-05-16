@@ -48,8 +48,18 @@ describe('licenseFile source', () => {
 		})
 
 		expect(result).toBeDefined()
-		expect(result!.data.spdxId).toContain('BSD')
+		expect(result!.data.match?.spdxId).toContain('BSD')
 		expect(result!.source).toBeDefined()
+	})
+
+	it('should preserve the file path when the contents are not SPDX-identifiable', async () => {
+		const result = await licenseFileSource.parse('license.txt', {
+			options: { path: resolve(fixturesDirectory, '_proprietary') },
+		})
+
+		expect(result).toBeDefined()
+		expect(result!.source).toBe('license.txt')
+		expect(result!.data.match).toBeUndefined()
 	})
 
 	it('should return multiple records from multiple license files', async () => {

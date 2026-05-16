@@ -321,6 +321,67 @@ describe('codemeta template', () => {
 		expect(result.license).toBe('https://spdx.org/licenses/MIT')
 	})
 
+	it('should pass through UNLICENSED as a literal proprietary sentinel', () => {
+		const contextWithLicense: MetadataContext = {
+			...mockContext,
+			nodePackageJson: {
+				data: {
+					// eslint-disable-next-line ts/naming-convention
+					_id: 'test@1.0.0',
+					license: 'UNLICENSED',
+					name: 'test',
+					readme: '',
+					version: '1.0.0',
+				},
+				source: 'package.json',
+			},
+		}
+		const result = codemeta(contextWithLicense, {})
+		expect(result.license).toBe('UNLICENSED')
+	})
+
+	it('should pass through "SEE LICENSE IN <file>" as a literal sentinel', () => {
+		const contextWithLicense: MetadataContext = {
+			...mockContext,
+			nodePackageJson: {
+				data: {
+					// eslint-disable-next-line ts/naming-convention
+					_id: 'test@1.0.0',
+					license: 'SEE LICENSE IN LICENSE.md',
+					name: 'test',
+					readme: '',
+					version: '1.0.0',
+				},
+				source: 'package.json',
+			},
+		}
+		const result = codemeta(contextWithLicense, {})
+		expect(result.license).toBe('SEE LICENSE IN LICENSE.md')
+	})
+
+	it('should tolerate a licenseFile record with no SPDX match (unidentified file)', () => {
+		const contextWithUnidentifiedLicenseFile: MetadataContext = {
+			...mockContext,
+			licenseFile: {
+				data: {},
+				source: 'license.txt',
+			},
+			nodePackageJson: {
+				data: {
+					// eslint-disable-next-line ts/naming-convention
+					_id: 'test@1.0.0',
+					license: 'UNLICENSED',
+					name: 'test',
+					readme: '',
+					version: '1.0.0',
+				},
+				source: 'package.json',
+			},
+		}
+		const result = codemeta(contextWithUnidentifiedLicenseFile, {})
+		expect(result.license).toBe('UNLICENSED')
+	})
+
 	it('should truncate dates to date-only format', () => {
 		const contextWithDates: MetadataContext = {
 			...mockContext,

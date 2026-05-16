@@ -189,3 +189,18 @@ export function toSpdxLicenseUrl(spdxId: string): string {
 		.replace('http://spdx.org/licenses/', '')
 	return `https://spdx.org/licenses/${cleaned}`
 }
+
+const SEE_LICENSE_IN_REGEX = /^see license in /i
+
+/**
+ * Detect npm package.json sentinel license values that are not SPDX
+ * identifiers: `"UNLICENSED"` (proprietary, all rights reserved) and `"SEE
+ * LICENSE IN <file>"` (defer to a license file). These should be passed through
+ * as literal strings, not wrapped in a fabricated SPDX URL.
+ *
+ * @see https://docs.npmjs.com/cli/v11/configuring-npm/package-json#license
+ */
+export function isProprietaryLicenseSentinel(value: string): boolean {
+	const trimmed = value.trim()
+	return trimmed.toLowerCase() === 'unlicensed' || SEE_LICENSE_IN_REGEX.test(trimmed)
+}
