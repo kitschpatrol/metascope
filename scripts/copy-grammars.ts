@@ -6,6 +6,7 @@
 import { copyFile, mkdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+// eslint-disable-next-line node/no-unsupported-features/node-builtins
 const projectRoot = resolve(import.meta.dirname, '..')
 const destinationDirectory = resolve(projectRoot, 'src/grammars')
 

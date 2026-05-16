@@ -1,13 +1,6 @@
 packages:
   - '.'
   - '!test/fixtures/**'
-
-onlyBuiltDependencies:
-  - esbuild
-  - tree-sitter-python
-  - tree-sitter-ruby
-  - unrs-resolver
-
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
   - '@kitschpatrol/typescript-config'
@@ -19,3 +12,9 @@ publicHoistPattern:
   - '*prettier*'
   - '*remark*'
   - '*stylelint*'
+allowBuilds:
+  esbuild: true
+  msw: true
+  tree-sitter-python: true
+  tree-sitter-ruby: true
+  unrs-resolver: true
