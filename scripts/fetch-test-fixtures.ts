@@ -8,7 +8,7 @@ import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import plist from 'plist'
+import { parse as parsePlist } from 'plist'
 import { parse as parseToml } from 'smol-toml'
 import { parseDocument as parseYaml } from 'yaml'
 import { z } from 'zod'
@@ -166,7 +166,7 @@ function isValidPlist(_filename: string, content: string): boolean {
 	// eslint-disable-next-line unicorn/consistent-function-scoping
 	const tryParse = (input: string): boolean => {
 		try {
-			plist.parse(input)
+			parsePlist(input)
 			return true
 		} catch {
 			return false

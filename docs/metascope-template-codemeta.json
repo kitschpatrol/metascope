@@ -11,8 +11,8 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-05-16",
-	"datePublished": "2026-05-12",
+	"dateModified": "2026-05-17",
+	"datePublished": "2026-05-16",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
@@ -58,11 +58,6 @@
 			"@type": "SoftwareApplication",
 			"name": "@types/node",
 			"version": "~22.17.2"
-		},
-		{
-			"@type": "SoftwareApplication",
-			"name": "@types/plist",
-			"version": "^3.0.5"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -132,7 +127,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "plist",
-			"version": "^3.1.1"
+			"version": "^5.0.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -147,7 +142,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "read-pyproject",
-			"version": "^0.3.2"
+			"version": "^0.3.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -299,12 +294,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tsx",
-			"version": "^4.22.0"
+			"version": "^4.22.1"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "typescript",
-			"version": "~6.0.3"
+			"version": "~5.9.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -313,5 +308,5 @@
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.7.4"
+	"version": "0.7.5"
 }

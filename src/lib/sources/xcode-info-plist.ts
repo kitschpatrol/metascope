@@ -15,7 +15,7 @@
 import is from '@sindresorhus/is'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import plist from 'plist'
+import { parse as parsePlist } from 'plist'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { getMatches } from '../file-matching'
@@ -152,7 +152,7 @@ export function parse(content: string): InfoPlist | undefined {
  */
 function tryParsePlist(content: string): PlistDict | undefined {
 	try {
-		const parsed = plist.parse(content)
+		const parsed = parsePlist(content)
 		return is.plainObject(parsed) ? parsed : undefined
 	} catch {
 		return undefined
