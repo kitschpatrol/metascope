@@ -18,3 +18,6 @@ allowBuilds:
   tree-sitter-python: true
   tree-sitter-ruby: true
   unrs-resolver: true
+overrides:
+  # Possibly related: https://github.com/101arrowz/fflate/discussions/209
+  fflate: 0.8.2

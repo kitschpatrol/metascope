@@ -61,6 +61,7 @@ export default cspellConfig({
 		'enes',
 		'enescakir',
 		'esparklines',
+		'fflate',
 		'fisco',
 		'fyralabs',
 		'gazu',
