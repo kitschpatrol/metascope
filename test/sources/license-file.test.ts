@@ -48,6 +48,7 @@ describe('licenseFile source', () => {
 		})
 
 		expect(result).toBeDefined()
+		expect(result!.data.type).toBe('spdx')
 		expect(result!.data.match?.spdxId).toContain('BSD')
 		expect(result!.source).toBeDefined()
 	})
@@ -57,8 +58,14 @@ describe('licenseFile source', () => {
 			options: { path: resolve(fixturesDirectory, '_proprietary') },
 		})
 
+		// A license file whose contents do not match any SPDX template (e.g.
+		// proprietary "All Rights Reserved" notices) records `type: 'unknown'`
+		// and omits `match`. The `type` discriminator keeps `data` non-empty so
+		// the framework's deep-strip preserves the full record (including
+		// `source` for downstream consumers).
 		expect(result).toBeDefined()
 		expect(result!.source).toBe('license.txt')
+		expect(result!.data.type).toBe('unknown')
 		expect(result!.data.match).toBeUndefined()
 	})
 

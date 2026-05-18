@@ -9,13 +9,21 @@ import { identifyLicense } from '../utilities/license-identification'
 // ─── Types ──────────────────────────────────────────────────────────
 
 /**
- * A license file record. `match` is `undefined` when a license file was
- * discovered on disk but its contents do not map to an SPDX template (e.g.
- * proprietary "All Rights Reserved" notices). The `source` path on the
- * surrounding record is still useful to downstream consumers — preserve it.
+ * A license file record. The `type` discriminator is always present so the
+ * framework's deep-strip never collapses the record to a half-shape:
+ *
+ * - `type: 'spdx'` with a populated `match` — the file contents map to a known
+ *   SPDX template.
+ * - `type: 'unknown'` with no `match` — a license file was located on disk but
+ *   its contents do not match any SPDX template (e.g. proprietary "All Rights
+ *   Reserved" notices). The `source` path is still retained on the surrounding
+ *   record. Downstream consumers that need to detect a proprietary project can
+ *   either check `data.type === 'unknown'` or fall back to the package manifest
+ *   sentinel (`license: "UNLICENSED"` in package.json).
  */
 export type LicenseFileRecord = {
 	match?: LicenseMatch
+	type: 'spdx' | 'unknown'
 }
 
 export type LicenseFileData = OneOrMany<SourceRecord<LicenseFileRecord>> | undefined
@@ -27,8 +35,9 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 	key: 'licenseFile',
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		const match = identifyLicense(content)
 		return {
-			data: { match: identifyLicense(content) },
+			data: match === undefined ? { type: 'unknown' } : { match, type: 'spdx' },
 			source: input,
 		}
 	},

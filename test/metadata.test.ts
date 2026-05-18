@@ -110,4 +110,23 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 		expect(result.codemetaJson).toBeUndefined()
 		expect(result.pythonPyprojectToml).toBeUndefined()
 	})
+
+	it('should preserve licenseFile record shape when no SPDX template matches', async () => {
+		const result = await getMetadata({
+			absolute: false,
+			path: 'test/fixtures/license-file/_proprietary',
+			sources: ['licenseFile'],
+		})
+
+		// A license file present on disk but not SPDX-identifiable (e.g. a
+		// proprietary "All Rights Reserved" notice) records `type: 'unknown'`.
+		// The discriminator keeps `data` non-empty so the framework's
+		// deep-strip preserves the full record (including `source`). Consumers
+		// read `record.data.match?.<field>` for SPDX-derived data and can
+		// branch on `record.data.type` to detect proprietary projects.
+		expect(firstOf(result.licenseFile)).toEqual({
+			data: { type: 'unknown' },
+			source: 'license.txt',
+		})
+	})
 })

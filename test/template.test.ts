@@ -363,7 +363,7 @@ describe('codemeta template', () => {
 		const contextWithUnidentifiedLicenseFile: MetadataContext = {
 			...mockContext,
 			licenseFile: {
-				data: {},
+				data: { type: 'unknown' },
 				source: 'license.txt',
 			},
 			nodePackageJson: {
