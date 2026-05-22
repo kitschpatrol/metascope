@@ -1,6 +1,6 @@
 import { defu } from 'defu'
 import { execFile } from 'node:child_process'
-import { stat } from 'node:fs/promises'
+import { realpath, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
 import prettyMs from 'pretty-ms'
@@ -215,19 +215,24 @@ export async function getMetadata<T>(
 	const startTime = performance.now()
 
 	const resolvedOptions = defu(options ?? {}, DEFAULT_GET_METADATA_OPTIONS)
-	const absolutePath = resolve(resolvedOptions.path)
+	const inputPath = resolve(resolvedOptions.path)
 
-	// Validate that the target directory exists
-	let stats: Awaited<ReturnType<typeof stat>>
+	// Resolve symlinks so every downstream source sees the canonical path.
+	// Some sources (e.g. `updates` via dependencyUpdates) reject symlinks with
+	// their own non-following stat check.
+	let absolutePath: string
 	try {
-		stats = await stat(absolutePath)
+		absolutePath = await realpath(inputPath)
 	} catch {
-		throw new Error(`Path does not exist: ${absolutePath}`)
+		throw new Error(`Path does not exist: ${inputPath}`)
 	}
 
+	const stats = await stat(absolutePath)
 	if (!stats.isDirectory()) {
 		throw new Error(`Path is not a directory: ${absolutePath}`)
 	}
+
+	resolvedOptions.path = absolutePath
 
 	// Resolve template from options (built-in name or function)
 	const template = resolveTemplate(resolvedOptions.template)
