@@ -56,7 +56,7 @@
 	},
 	"dependencies": {
 		"@bacons/xcode": "1.0.0-alpha.33",
-		"@kitschpatrol/tokei": "^2.0.1",
+		"@kitschpatrol/tokei": "^2.0.2",
 		"@sindresorhus/is": "^8.1.0",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "~22.17.2",
@@ -78,48 +78,48 @@
 		"read-pkg": "^10.1.0",
 		"read-pyproject": "^0.3.3",
 		"remark-parse": "^11.0.0",
-		"semver": "^7.8.0",
+		"semver": "^7.8.1",
 		"simple-git": "^3.36.0",
 		"smol-toml": "^1.6.1",
 		"spdx-license-list": "^6.11.0",
 		"string-ts": "^2.3.1",
-		"tinyexec": "^1.1.2",
+		"tinyexec": "^1.2.3",
 		"tinyglobby": "^0.2.16",
 		"unified": "^11.0.5",
-		"updates": "^17.16.12",
-		"web-tree-sitter": "^0.26.8",
+		"updates": "^17.17.3",
+		"web-tree-sitter": "^0.26.9",
 		"yaml": "^2.9.0",
 		"yargs": "^18.0.0",
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
-		"@arethetypeswrong/core": "^0.18.2",
+		"@arethetypeswrong/core": "^0.18.3",
 		"@fast-csv/parse": "^5.0.7",
-		"@kitschpatrol/shared-config": "^7.6.0",
+		"@kitschpatrol/shared-config": "^7.6.3",
 		"@types/jsonld": "^1.5.15",
 		"@types/picomatch": "^4.0.3",
 		"@types/semver": "^7.7.1",
 		"bumpp": "^11.1.0",
 		"jsonld": "^9.0.0",
-		"mdat-plugin-cli-help": "^3.0.0",
+		"mdat-plugin-cli-help": "^3.0.1",
 		"msw": "2.12.14",
 		"publint": "^0.3.21",
 		"shx": "^0.4.0",
 		"tree-sitter-python": "^0.25.0",
 		"tree-sitter-ruby": "^0.23.1",
-		"tsdown": "^0.22.0",
-		"tsx": "^4.22.1",
+		"tsdown": "^0.22.1",
+		"tsx": "^4.22.3",
 		"typescript": "~5.9.3",
-		"vitest": "^4.1.6"
+		"vitest": "^4.1.7"
 	},
-	"packageManager": "pnpm@11.1.2",
+	"packageManager": "pnpm@11.5.0",
 	"engines": {
 		"node": ">=22.17.0"
 	},
 	"devEngines": {
 		"runtime": {
 			"name": "node",
-			"version": ">=22.18.0"
+			"version": ">=22.22.2"
 		}
 	}
 }
