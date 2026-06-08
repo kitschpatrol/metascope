@@ -3,8 +3,12 @@
 /**
  * Source and parser for Xcode `.pbxproj` project files.
  *
- * Uses the `@bacons/xcode` package to parse the binary/ASCII plist format and
- * navigate the Xcode project object graph.
+ * Uses the `@mshibanami-org/xcode` package to parse the binary/ASCII plist
+ * format and navigate the Xcode project object graph.
+ *
+ * The `@mshibanami-org/xcode` dependency is a temporary fork of `@bacons/xcode`
+ * with security fixes, pending a new release from the original author. See:
+ * https://github.com/EvanBacon/xcode/issues/32
  *
  * Extracts metadata from:
  *
@@ -13,7 +17,7 @@
  * - Swift Package Manager dependencies
  */
 
-import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@bacons/xcode'
+import { PBXNativeTarget, XcodeProject, XCRemoteSwiftPackageReference } from '@mshibanami-org/xcode'
 import is from '@sindresorhus/is'
 import { resolve } from 'node:path'
 import { z } from 'zod'

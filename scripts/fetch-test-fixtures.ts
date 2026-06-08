@@ -1,7 +1,7 @@
 /* eslint-disable ts/no-unused-vars */
 /* eslint-disable ts/naming-convention */
 
-import { XcodeProject } from '@bacons/xcode'
+import { XcodeProject } from '@mshibanami-org/xcode'
 import { XMLParser } from 'fast-xml-parser'
 import { randomUUID } from 'node:crypto'
 import fsSync from 'node:fs'

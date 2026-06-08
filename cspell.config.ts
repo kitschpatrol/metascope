@@ -106,6 +106,7 @@ export default cspellConfig({
 		'modallmedia',
 		'modelcatalog',
 		'morrell',
+		'mshibanami',
 		'multierr',
 		'nameparser',
 		'nanocl',

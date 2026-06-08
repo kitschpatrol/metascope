@@ -12,6 +12,7 @@ publicHoistPattern:
   - '*prettier*'
   - '*remark*'
   - '*stylelint*'
+ignoreWorkspaceRootCheck: true
 allowBuilds:
   esbuild: true
   msw: true
