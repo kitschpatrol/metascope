@@ -47,14 +47,19 @@ export async function getTree(path: string, respectIgnored: boolean): Promise<st
 
 		if (respectIgnored) {
 			try {
+				// `-z` yields NUL-separated unquoted paths, so names with
+				// non-ASCII or special characters become valid glob patterns
 				const { stdout } = await exec(
 					'git',
-					['ls-files', '--others', '--ignored', '--exclude-standard', '--directory'],
-					{ nodeOptions: { cwd: path, stdio: ['ignore', 'pipe', 'ignore'] } },
+					['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'],
+					{
+						nodeOptions: { cwd: path, stdio: ['ignore', 'pipe', 'ignore'] },
+						throwOnError: true,
+					},
 				)
 
 				ignore = stdout
-					.split('\n')
+					.split('\0')
 					.filter(Boolean)
 					.map((p) => {
 						const escaped = escapePath(p)
@@ -68,7 +73,10 @@ export async function getTree(path: string, respectIgnored: boolean): Promise<st
 			}
 		}
 
-		tree = await glob('**', { cwd: path, dot: true, ignore })
+		// Never traverse into symlinked directories: pnpm layouts contain
+		// symlink cycles (e.g. monorepo test fixtures linking back to the
+		// repo root), which multiply the tree without bound
+		tree = await glob('**', { cwd: path, dot: true, followSymbolicLinks: false, ignore })
 		matchCache.set(key, tree)
 	}
 
