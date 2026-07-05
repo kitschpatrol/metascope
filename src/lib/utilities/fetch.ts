@@ -1,8 +1,30 @@
 import { log } from '../log'
 
+// Pace request starts globally so parallel sources (e.g. every workspace
+// package in a monorepo fetching four download periods at once) can't flood
+// rate-limited APIs like api.npmjs.org into 429 storms. Requests may overlap
+// in flight; only their start times are spaced.
+const MIN_FETCH_INTERVAL_MS = 300
+let fetchChain: Promise<void> = Promise.resolve()
+let lastFetchStart = 0
+
+async function waitForFetchTurn(): Promise<void> {
+	const turn = fetchChain.then(async () => {
+		const wait = lastFetchStart + MIN_FETCH_INTERVAL_MS - Date.now()
+		if (wait > 0) {
+			await sleep(wait)
+		}
+
+		lastFetchStart = Date.now()
+	})
+	fetchChain = turn
+	return turn
+}
+
 /**
  * Fetch with automatic retries and exponential backoff. Retries on network
- * errors and 429/5xx responses.
+ * errors and 429/5xx responses. Request starts are paced globally to stay under
+ * per-IP rate limits.
  */
 export async function fetchWithRetry(
 	url: string,
@@ -13,6 +35,7 @@ export async function fetchWithRetry(
 
 	for (let attempt = 0; attempt <= maxRetries; attempt++) {
 		try {
+			await waitForFetchTurn()
 			const response = await fetch(url, options)
 
 			if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {

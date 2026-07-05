@@ -11,8 +11,8 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-06-08",
-	"datePublished": "2026-06-05",
+	"dateModified": "2026-07-05",
+	"datePublished": "2026-07-05",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
@@ -77,7 +77,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "fast-xml-parser",
-			"version": "^5.8.0"
+			"version": "^5.9.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -152,7 +152,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "semver",
-			"version": "^7.8.1"
+			"version": "^7.8.5"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -162,7 +162,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "smol-toml",
-			"version": "^1.6.1"
+			"version": "^1.7.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -192,12 +192,12 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "updates",
-			"version": "^17.17.3"
+			"version": "^17.18.1"
 		},
 		{
 			"@type": "SoftwareApplication",
 			"name": "web-tree-sitter",
-			"version": "^0.26.9"
+			"version": "^0.26.10"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -219,7 +219,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@arethetypeswrong/core",
-			"version": "^0.18.3"
+			"version": "^0.18.4"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -229,7 +229,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@kitschpatrol/shared-config",
-			"version": "^7.6.3"
+			"version": "^7.6.4"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -259,7 +259,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "mdat-plugin-cli-help",
-			"version": "^3.0.1"
+			"version": "^3.0.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -289,7 +289,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tsdown",
-			"version": "^0.22.1"
+			"version": "^0.22.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -304,9 +304,9 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "vitest",
-			"version": "^4.1.8"
+			"version": "^4.1.9"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.8.2"
+	"version": "0.8.4"
 }
