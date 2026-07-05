@@ -37,8 +37,7 @@ type DependencyUpdatesExtra = {
 }
 
 export type DependencyUpdatesData =
-	| OneOrMany<SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>>
-	| undefined
+	OneOrMany<SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>> | undefined
 
 const depSchema = z.object({
 	age: z.string().optional(),

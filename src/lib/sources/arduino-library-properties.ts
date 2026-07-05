@@ -82,8 +82,7 @@ type ArduinoLibraryPropertiesPersonEntry = ArduinoLibraryProperties['authors'][n
 type ArduinoLibraryPropertiesDependencyEntry = ArduinoLibraryProperties['depends'][number]
 
 export type ArduinoLibraryPropertiesData =
-	| OneOrMany<SourceRecord<ArduinoLibraryProperties>>
-	| undefined
+	OneOrMany<SourceRecord<ArduinoLibraryProperties>> | undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 

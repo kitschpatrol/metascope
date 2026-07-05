@@ -97,8 +97,7 @@ export type ProcessingSketchProperties = z.infer<typeof processingSketchProperti
 type ProcessingSketchPropertiesAuthorEntry = ProcessingSketchProperties['authors'][number]
 
 export type ProcessingSketchPropertiesData =
-	| OneOrMany<SourceRecord<ProcessingSketchProperties>>
-	| undefined
+	OneOrMany<SourceRecord<ProcessingSketchProperties>> | undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 

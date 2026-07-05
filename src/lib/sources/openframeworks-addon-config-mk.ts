@@ -29,8 +29,7 @@ const openframeworksAddonConfigSchema = z.object({
 export type OpenframeworksAddonConfig = z.infer<typeof openframeworksAddonConfigSchema>
 
 export type OpenframeworksAddonConfigMkData =
-	| OneOrMany<SourceRecord<OpenframeworksAddonConfig>>
-	| undefined
+	OneOrMany<SourceRecord<OpenframeworksAddonConfig>> | undefined
 
 /**
  * Parse an `addon_config.mk` file and return validated metadata.

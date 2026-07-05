@@ -52,8 +52,7 @@ const openframeworksInstallXmlSchema = z.object({
 export type OpenframeworksInstallXml = z.infer<typeof openframeworksInstallXmlSchema>
 
 export type OpenframeworksInstallXmlData =
-	| OneOrMany<SourceRecord<OpenframeworksInstallXml>>
-	| undefined
+	OneOrMany<SourceRecord<OpenframeworksInstallXml>> | undefined
 
 /**
  * Map `<lib os="...">` attribute values to human-readable OS names.

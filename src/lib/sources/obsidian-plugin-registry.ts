@@ -14,8 +14,7 @@ export type ObsidianPluginRegistryInfo = {
 }
 
 export type ObsidianPluginRegistryData =
-	| OneOrMany<SourceRecord<ObsidianPluginRegistryInfo>>
-	| undefined
+	OneOrMany<SourceRecord<ObsidianPluginRegistryInfo>> | undefined
 
 const communityPluginsUrl =
 	'https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json'

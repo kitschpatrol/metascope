@@ -480,7 +480,8 @@ export function toStatusLegacy(
 	githubUserName?: string | string[],
 ):
 	| /** It's a fork on GitHub */
-	(| 'fork'
+	  (
+			| 'fork'
 			/** I am original author, local or on github */
 			| 'source'
 			/** Someone else's local code */

@@ -82,8 +82,7 @@ type ProcessingLibraryPropertiesAuthorEntry = ProcessingLibraryProperties['autho
 type ProcessingLibraryPropertiesCategory = ProcessingLibraryProperties['categories'][number]
 
 export type ProcessingLibraryPropertiesData =
-	| OneOrMany<SourceRecord<ProcessingLibraryProperties>>
-	| undefined
+	OneOrMany<SourceRecord<ProcessingLibraryProperties>> | undefined
 
 // ─── Parse ──────────────────────────────────────────────────────────
 
