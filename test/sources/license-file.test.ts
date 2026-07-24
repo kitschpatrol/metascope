@@ -1,11 +1,14 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import spdxLicenseList from 'spdx-license-list/full.js'
 import { beforeEach, describe, expect, it } from 'vitest'
+import licenseUrls from '../../src/lib/data/license-urls.json' with { type: 'json' }
 import { resetMatchCache } from '../../src/lib/file-matching'
 import { licenseFileSource } from '../../src/lib/sources/license-file'
 import { identifyLicense, spdxIdToUrl } from '../../src/lib/utilities/license-identification'
 
 const fixturesDirectory = resolve('test/fixtures/license-file')
+const OSI_LICENSE_PATH_REGEX = /^\/license\/[^/]+$/
 
 describe('licenseFile source', () => {
 	beforeEach(() => {
@@ -89,7 +92,7 @@ describe('identifyLicense', () => {
 		expect(result!.name).toBe('BSD 3-Clause "New" or "Revised" License')
 		expect(result!.osiApproved).toBe(true)
 		expect(result!.confidence).toBeGreaterThanOrEqual(0.75)
-		expect(result!.spdxUrl).toBe('https://opensource.org/licenses/BSD-3-Clause')
+		expect(result!.spdxUrl).toBe('https://opensource.org/license/BSD-3-Clause')
 	})
 
 	it('should identify an AGPL-3.0 license from a full GPL text', async () => {
@@ -104,7 +107,7 @@ describe('identifyLicense', () => {
 		expect(result!.name).toBe('GNU Affero General Public License v3.0 only')
 		expect(result!.osiApproved).toBe(true)
 		expect(result!.confidence).toBe(1)
-		expect(result!.spdxUrl).toBe('https://www.gnu.org/licenses/agpl.txt')
+		expect(result!.spdxUrl).toBe('https://spdx.org/licenses/AGPL-3.0-only')
 	})
 
 	it('should return undefined for empty text', () => {
@@ -143,7 +146,7 @@ describe('identifyLicense', () => {
 		expect(result?.name).toBe('MIT License')
 		expect(result?.osiApproved).toBe(true)
 		expect(result?.confidence).toBe(1)
-		expect(result?.spdxUrl).toBe('https://opensource.org/license/mit/')
+		expect(result?.spdxUrl).toBe('https://opensource.org/license/mit')
 	})
 
 	it('should identify a license by its /legalcode URL variant', () => {
@@ -162,6 +165,45 @@ describe('identifyLicense', () => {
 		const result = identifyLicense('https://www.gnu.org/licenses/gpl-3.0-standalone.html')
 
 		expect(result?.spdxId).toBe('GPL-3.0-only')
+	})
+
+	it('should emit the current direct OSI URL for legacy OSI paths', () => {
+		const result = identifyLicense('https://spdx.org/licenses/BSD-3-Clause')
+
+		expect(result?.spdxUrl).toBe('https://opensource.org/license/BSD-3-Clause')
+	})
+
+	it('should identify a license by the current direct OSI URL', () => {
+		const result = identifyLicense('https://opensource.org/license/BSD-3-Clause')
+
+		expect(result?.spdxId).toBe('BSD-3-Clause')
+	})
+
+	it('should emit the current direct OSI URL for legacy OSI slugs', () => {
+		const result = identifyLicense('https://spdx.org/licenses/UPL-1.0')
+
+		expect(result?.spdxUrl).toBe('https://opensource.org/license/upl-1.0')
+	})
+
+	it('should emit HTTPS URLs without legacy OSI routes for every SPDX license', () => {
+		for (const spdxId of Object.keys(spdxLicenseList)) {
+			const result = identifyLicense(spdxIdToUrl(spdxId))
+			expect(result, spdxId).toBeDefined()
+
+			const url = new URL(result!.spdxUrl)
+			expect(url.protocol, spdxId).toBe('https:')
+			if (url.hostname === 'opensource.org') {
+				expect(url.pathname, spdxId).toMatch(OSI_LICENSE_PATH_REGEX)
+			}
+		}
+	})
+
+	it('should preserve the dependency URL alongside each audited URL', () => {
+		expect(Object.keys(licenseUrls).toSorted()).toEqual(Object.keys(spdxLicenseList).toSorted())
+		expect(licenseUrls.MIT).toEqual({
+			originalUrl: 'https://opensource.org/license/mit/',
+			url: 'https://opensource.org/license/mit',
+		})
 	})
 })
 

@@ -1,7 +1,7 @@
 import { cspellConfig } from '@kitschpatrol/cspell-config'
 
 export default cspellConfig({
-	ignorePaths: ['codemeta.json', 'test/fixtures/**/*', 'scripts/data/**/*'],
+	ignorePaths: ['codemeta.json', 'test/fixtures/**/*', 'scripts/data/**/*', 'src/lib/data/**/*'],
 	words: [
 		'abelectronics',
 		'abelectronicsuk',
@@ -120,6 +120,7 @@ export default cspellConfig({
 		'ofxscenemanager',
 		'ofxspeechsynthesizer',
 		'onefetch',
+		'opensource',
 		'parklines',
 		'peddicord',
 		'pennstate',

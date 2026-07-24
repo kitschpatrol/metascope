@@ -52,7 +52,8 @@
 		"release": "bumpp --commit 'Release: %s' && pnpm build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') pnpm publish",
 		"pretest": "tsx scripts/copy-grammars.ts",
 		"test": "vitest run",
-		"test:live": "METASCOPE_TEST_MOCK=false vitest run"
+		"test:live": "METASCOPE_TEST_MOCK=false vitest run",
+		"update-license-urls": "tsx ./scripts/update-license-urls.ts"
 	},
 	"dependencies": {
 		"@kitschpatrol/tokei": "^2.0.2",

@@ -15,6 +15,7 @@
  */
 
 import spdxLicenseList from 'spdx-license-list/full.js'
+import licenseUrls from '../data/license-urls.json' with { type: 'json' }
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -34,6 +35,14 @@ export type LicenseMatch = {
 // ─── Constants ──────────────────────────────────────────────────────
 
 const SPDX_BASE_URL = 'https://spdx.org/licenses/'
+
+/** Leading `www.` subdomain. */
+const WWW_PREFIX_REGEX = /^www\./
+
+/** Direct URLs resolved by the explicit `update-license-urls` content step. */
+const directLicenseUrls = new Map(
+	Object.entries(licenseUrls).map(([spdxId, entry]) => [spdxId, entry.url]),
+)
 
 /** Minimum similarity score to consider a match. */
 const CONFIDENCE_THRESHOLD = 0.75
@@ -116,15 +125,13 @@ export function spdxIdToUrl(spdxId: string): string {
 }
 
 /**
- * Resolve the canonical URL for an SPDX license ID. Prefers the upstream URL
- * recorded in the SPDX list (e.g. `https://opensource.org/license/mit/`) and
- * falls back to the SPDX registry URL for the handful of entries whose upstream
- * URL is missing at runtime.
+ * Resolve an audited HTTPS URL for an SPDX license ID from the checked-in URL
+ * audit. Falls back to the stable SPDX registry URL for IDs missing from the
+ * generated data.
  */
 function getLicenseUrl(spdxId: string): string {
-	// Some actually are undefined?
-	// eslint-disable-next-line ts/no-unnecessary-condition
-	return spdxLicenseList[spdxId]?.url ?? spdxIdToUrl(spdxId)
+	const fallback = spdxIdToUrl(spdxId)
+	return directLicenseUrls.get(spdxId) ?? fallback
 }
 
 // ─── Text normalization ─────────────────────────────────────────────
@@ -277,9 +284,6 @@ function identifyByHeader(text: string): LicenseMatch | undefined {
  */
 const URL_REGEX = /https?:\/\/[^\s<>"')\]}]+/gi
 
-/** Leading `www.` subdomain. */
-const WWW_PREFIX_REGEX = /^www\./
-
 /** Trailing `/legalcode` or `/legalcode.<ext>` on Creative Commons URLs. */
 const LEGALCODE_SUFFIX_REGEX = /\/legalcode(?:\.[a-z]+)?$/
 
@@ -294,7 +298,11 @@ const TRAILING_PUNCTUATION_REGEX = /[.,;:!?]+$/
  * `www.`, strip trailing slashes, and strip trailing `/legalcode(.ext)?`
  * suffixes used by Creative Commons canonical URLs.
  */
-function normalizeUrl(url: string): string | undefined {
+function normalizeUrl(url: string | undefined): string | undefined {
+	if (!url) {
+		return undefined
+	}
+
 	let parsed: URL
 	try {
 		parsed = new URL(url.trim())
@@ -361,17 +369,17 @@ function getUrlIndex(): Map<string, string> {
 		// Always include the canonical spdx.org URL for every listed ID
 		index.set(`spdx.org/licenses/${spdxId.toLowerCase()}`, spdxId)
 
-		if (!entry.url) {
-			continue
-		}
+		// Match both the dependency's original upstream URL and the direct URL
+		// metascope emits after canonicalizing it.
+		for (const candidate of new Set([entry.url, getLicenseUrl(spdxId)])) {
+			const normalized = normalizeUrl(candidate)
+			if (!normalized) {
+				continue
+			}
 
-		const normalized = normalizeUrl(entry.url)
-		if (!normalized) {
-			continue
+			const existing = index.get(normalized)
+			index.set(normalized, existing ? preferSpdxId(existing, spdxId) : spdxId)
 		}
-
-		const existing = index.get(normalized)
-		index.set(normalized, existing ? preferSpdxId(existing, spdxId) : spdxId)
 	}
 
 	urlIndex = index

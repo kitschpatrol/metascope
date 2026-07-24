@@ -361,7 +361,7 @@
 				"name": "MIT License",
 				"osiApproved": true,
 				"spdxId": "MIT",
-				"spdxUrl": "https://opensource.org/license/mit/"
+				"spdxUrl": "https://opensource.org/license/mit"
 			},
 			"type": "spdx"
 		},
