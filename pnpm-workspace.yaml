@@ -23,3 +23,4 @@ minimumReleaseAgeExclude:
   - '@kitschpatrol/*'
   - tsdown@0.22.14
   - verkit@0.3.0
+  - spdx-license-list@6.12.0
