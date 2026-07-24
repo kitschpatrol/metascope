@@ -15,38 +15,36 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
-# Each scan merges an optional config file at the repository root over the
-# YAML defaults below — hard merge, the file's keys win — and hands the
-# result to the linkinator action as its config file:
-#   - linkinator.config.json          repository Markdown scan
-#   - linkinator.website.config.json  website scan
-# The action's inputs normally override its config file, and most inputs
-# have baked-in defaults, so each action call below explicitly passes ''
-# for every defaulted input: an empty input parses to undefined, which
-# defers to the merged config file for that key.
-#
-# Default policy notes:
-#   - Only permanent redirects fail: statusCodes is consulted before the
-#     redirects:error rule, so temporary codes (302/303/307) pass as
-#     warnings while 301/308 fail. 429 (rate limited) is skipped.
-#   - Conservative concurrency plus a request timeout keep runs bounded:
-#     high concurrency trips rate limits (e.g. github.com's secondary
-#     limit) and linkinator's default timeout of 0 lets one unresponsive
-#     host stall the job.
-#   - Every path glob must match at least one file; linkinator errors on
-#     globs with zero results.
-
 jobs:
-  check-links:
-    name: Check Links
+  # Resolves homepage and visibility from the API rather than the event
+  # payload: github.event.repository does not exist on schedule events.
+  # Then builds one merged linkinator config per scan: an optional config
+  # file at the repository root is merged on top of the defaults below,
+  # and the file's keys always win.
+  #   - linkinator.config.json          repository Markdown scan
+  #   - linkinator.website.config.json  website scan
+  # The merged configs are emitted as job outputs; the check jobs write
+  # them to disk and hand them to the linkinator action.
+  # Logs every decision so a skipped job is diagnosable from the log.
+  meta:
+    name: Resolve link check parameters
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    outputs:
+      repo-config: ${{ steps.merge.outputs.repo-config }}
+      website-config: ${{ steps.merge.outputs.website-config }}
+      check-website: ${{ steps.meta.outputs.check-website }}
     env:
+      # Defaults for the repository scan. Only permanent redirects fail:
+      # statusCodes is consulted before the redirects:error rule, so
+      # temporary codes (302/303/307) pass as warnings while 301/308
+      # fail, and 429 (rate limited) is skipped. Conservative concurrency
+      # plus a request timeout keep runs bounded. Every path glob must
+      # match at least one file (linkinator errors on empty globs).
       REPO_DEFAULTS: |
         path: ['**/*.md']
         markdown: true
         directoryListing: true
-        concurrency: 25
+        concurrency: 20
         timeout: 30000
         retry: true
         retryErrors: true
@@ -57,6 +55,8 @@ jobs:
         redirects: error
         statusCodes: { '302': warn, '303': warn, '307': warn, '429': skip }
         verbosity: INFO
+      # Defaults for the website scan; path defaults to the repository
+      # homepage resolved above.
       WEBSITE_DEFAULTS: |
         recurse: true
         concurrency: 20
@@ -75,13 +75,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          sparse-checkout: |
+            linkinator.config.json
+            linkinator.website.config.json
+          sparse-checkout-cone-mode: false
 
-      # Homepage and visibility come from the API rather than the event
-      # payload: github.event.repository does not exist on schedule events.
-      # Private repos: every self-referential URL (pages, badges, raw
-      # content) 404s for unauthenticated clients, so those prefixes are
-      # appended to both scans' skip lists.
-      - name: Resolve configuration
+      - name: Resolve
         id: meta
         env:
           GH_TOKEN: ${{ github.token }}
@@ -91,6 +90,8 @@ jobs:
           private="$(jq -r '.private' <<<"$repo_json")"
           repo_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
 
+          # Private repos: every self-referential URL (pages, badges, raw
+          # content) 404s for unauthenticated clients, so skip the prefix.
           privacy_skips='[]'
           if [[ "$private" == 'true' ]]; then
             escaped_repo="${GITHUB_REPOSITORY//./\\.}"
@@ -106,32 +107,72 @@ jobs:
             check_website='true'
           fi
 
-          config='{}'
-          [[ -f linkinator.config.json ]] && config="$(<linkinator.config.json)"
-          jq -n --argjson d "$(yq -o=json <<<"$REPO_DEFAULTS")" --argjson c "$config" --argjson p "$privacy_skips" \
-            '$d + $c | .path |= (if type == "array" then . else [.] end) | .skip = ((.skip // []) + $p)' \
-            >/tmp/linkinator-repo.config.json
-
-          config='{}'
-          [[ -f linkinator.website.config.json ]] && config="$(<linkinator.website.config.json)"
-          jq -n --argjson d "$(yq -o=json <<<"$WEBSITE_DEFAULTS")" --argjson c "$config" --argjson p "$privacy_skips" --arg h "$homepage" \
-            '$d + $c | .path = [$h] | .skip = ((.skip // []) + $p)' \
-            >/tmp/linkinator-website.config.json
-
-          echo "check-website=${check_website}" >>"$GITHUB_OUTPUT"
+          {
+            echo "privacy-skips=${privacy_skips}"
+            echo "check-website=${check_website}"
+            echo "homepage=${homepage}"
+          } >>"$GITHUB_OUTPUT"
 
           echo "homepage: ${homepage:-<unset>}"
           echo "private: ${private}"
           echo "check-website: ${check_website}"
-          echo "repo config: $(jq -c . /tmp/linkinator-repo.config.json)"
-          echo "website config: $(jq -c . /tmp/linkinator-website.config.json)"
+          echo "privacy-skips: ${privacy_skips}"
+
+      - name: Merge configs
+        id: merge
+        env:
+          PRIVACY_SKIPS: ${{ steps.meta.outputs.privacy-skips }}
+          HOMEPAGE: ${{ steps.meta.outputs.homepage }}
+        run: |
+          config='{}'
+          [[ -f linkinator.config.json ]] && config="$(<linkinator.config.json)"
+          repo_config="$(jq -cn \
+            --argjson d "$(yq -o=json <<<"$REPO_DEFAULTS")" \
+            --argjson c "$config" \
+            --argjson p "$PRIVACY_SKIPS" \
+            '($d | .skip = $p) + $c | .path |= (if type == "array" then . else [.] end)')"
+
+          config='{}'
+          [[ -f linkinator.website.config.json ]] && config="$(<linkinator.website.config.json)"
+          website_config="$(jq -cn \
+            --argjson d "$(yq -o=json <<<"$WEBSITE_DEFAULTS")" \
+            --argjson c "$config" \
+            --argjson p "$PRIVACY_SKIPS" \
+            --arg h "$HOMEPAGE" \
+            '($d | .skip = $p | .path = [$h]) + $c')"
+
+          {
+            echo "repo-config=${repo_config}"
+            echo "website-config=${website_config}"
+          } >>"$GITHUB_OUTPUT"
+
+          echo "repo config: ${repo_config}"
+          echo "website config: ${website_config}"
+
+  # Checks for broken links in all the repository's Markdown files
+  check-repo-links:
+    name: Check Repository Links
+    needs: meta
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Write merged config
+        env:
+          CONFIG: ${{ needs.meta.outputs.repo-config }}
+        run: printf '%s\n' "$CONFIG" >linkinator-merged.config.json
 
       - name: Check Repository Links
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
-          config: /tmp/linkinator-repo.config.json
-          # Neutralize the action's baked-in input defaults so the merged
-          # config file above governs every option.
+          config: linkinator-merged.config.json
+          # An explicitly empty input overrides the action's baked-in
+          # default and defers to the config file; without these the
+          # defaults would override the merged config above.
           paths: ''
           concurrency: ''
           recurse: ''
@@ -150,13 +191,27 @@ jobs:
           checkFragments: ''
           redirects: ''
 
+  # Checks for broken links on the repository's website. Remote URL scan:
+  # no checkout needed.
+  check-website-links:
+    name: Check Website Links
+    needs: meta
+    if: needs.meta.outputs.check-website == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Write merged config
+        env:
+          CONFIG: ${{ needs.meta.outputs.website-config }}
+        run: printf '%s\n' "$CONFIG" >linkinator-merged.website.config.json
+
       - name: Check Website Links
-        if: steps.meta.outputs.check-website == 'true'
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
-          config: /tmp/linkinator-website.config.json
-          # Neutralize the action's baked-in input defaults so the merged
-          # config file above governs every option.
+          config: linkinator-merged.website.config.json
+          # An explicitly empty input overrides the action's baked-in
+          # default and defers to the config file; without these the
+          # defaults would override the merged config above.
           paths: ''
           concurrency: ''
           recurse: ''
