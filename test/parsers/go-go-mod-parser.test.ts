@@ -57,7 +57,7 @@ describe('parseGoMod', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const goModFile = files.find((name) => name === 'go.mod')
-			if (!goModFile) {
+			if (goModFile === undefined) {
 				continue
 			}
 

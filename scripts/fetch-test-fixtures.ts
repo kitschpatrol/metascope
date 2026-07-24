@@ -14,18 +14,18 @@ import { parseDocument as parseYaml } from 'yaml'
 import { z } from 'zod'
 import { execFileAsync } from './utilities'
 
-const NAME_FIELD_REGEX = /^name\s*=/im
-const VERSION_FIELD_REGEX = /^version\s*=/im
-const AUTHOR_FIELD_REGEX = /^author\s*=/im
-const ARCHITECTURES_FIELD_REGEX = /^architectures\s*=/im
-const MAINTAINER_FIELD_REGEX = /^maintainer\s*=/im
-const DEPENDS_FIELD_REGEX = /^depends\s*=/im
-const DOT_A_LINKAGE_FIELD_REGEX = /^dot_a_linkage\s*=/im
-const AUTHORS_FIELD_REGEX = /^authors\s*=/im
-const PRETTYVERSION_FIELD_REGEX = /^prettyversion\s*=/im
-const MINREVISION_FIELD_REGEX = /^minrevision\s*=/im
-const AUTHORLIST_FIELD_REGEX = /^authorlist\s*=/im
-const DEPENDENCIES_FIELD_REGEX = /^dependencies\s*=/im
+const NAME_FIELD_REGEX = /^name\s*=/imv
+const VERSION_FIELD_REGEX = /^version\s*=/imv
+const AUTHOR_FIELD_REGEX = /^author\s*=/imv
+const ARCHITECTURES_FIELD_REGEX = /^architectures\s*=/imv
+const MAINTAINER_FIELD_REGEX = /^maintainer\s*=/imv
+const DEPENDS_FIELD_REGEX = /^depends\s*=/imv
+const DOT_A_LINKAGE_FIELD_REGEX = /^dot_a_linkage\s*=/imv
+const AUTHORS_FIELD_REGEX = /^authors\s*=/imv
+const PRETTYVERSION_FIELD_REGEX = /^prettyversion\s*=/imv
+const MINREVISION_FIELD_REGEX = /^minrevision\s*=/imv
+const AUTHORLIST_FIELD_REGEX = /^authorlist\s*=/imv
+const DEPENDENCIES_FIELD_REGEX = /^dependencies\s*=/imv
 
 const gitHubSearchResultSchema = z.object({
 	path: z.string(),
@@ -83,12 +83,13 @@ async function saveFileSearchResult(
 		return
 	}
 
-	const prefix = result.repository.nameWithOwner.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')
+	const prefix = result.repository.nameWithOwner.toLowerCase().replaceAll(/[^a-z0-9]+/gv, '-')
 
 	// Create the nested path if a suffix is provided
-	const fullDestinationDirectory = folderSuffix
-		? path.resolve(destinationDirectory, prefix, `${prefix}${folderSuffix}`)
-		: path.resolve(destinationDirectory, prefix)
+	const fullDestinationDirectory =
+		folderSuffix === ''
+			? path.resolve(destinationDirectory, prefix)
+			: path.resolve(destinationDirectory, prefix, `${prefix}${folderSuffix}`)
 
 	await fs.mkdir(fullDestinationDirectory, { recursive: true })
 
@@ -177,7 +178,7 @@ function isValidPlist(_filename: string, content: string): boolean {
 	// or leading whitespace before the `<?xml ?>` declaration. plist ignores
 	// comment nodes anyway, so retry with them stripped and leading
 	// whitespace trimmed.
-	return tryParse(content) || tryParse(content.replaceAll(/<!--[\s\S]*?-->/g, '').trimStart())
+	return tryParse(content) || tryParse(content.replaceAll(/<!--[\s\S]*?-->/gv, '').trimStart())
 }
 
 function isValidArduinoLibraryProperties(filename: string, content: string): boolean {
@@ -239,7 +240,7 @@ function isValidPbxproj(_filename: string, content: string): boolean {
 
 	const temporaryProjectPath = path.join(os.tmpdir(), `${randomUUID()}-project.pbxproj`)
 	fsSync.writeFileSync(temporaryProjectPath, content, 'utf8')
-	let valid = false
+	let valid: boolean
 
 	try {
 		XcodeProject.open(temporaryProjectPath)

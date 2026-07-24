@@ -5,7 +5,7 @@ import type { Node } from 'web-tree-sitter'
 import is from '@sindresorhus/is'
 import { getRubyLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
-const LEADING_COLON_REGEX = /^:/
+const LEADING_COLON_REGEX = /^:/v
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -51,43 +51,45 @@ const IDENTITY_METHODS = new Set(['-@', 'dup', 'freeze'])
 
 /** Extract the raw string value from a tree-sitter string/symbol node. */
 function extractString(node: Node): string | undefined {
-	switch (node.type) {
-		case 'call': {
-			// Handle "value".freeze, "value".dup, -"value" (frozen string literal)
-			const method = node.childForFieldName('method')
-			if (method && IDENTITY_METHODS.has(method.text)) {
-				const receiver = node.childForFieldName('receiver')
-				if (receiver) {
-					return extractString(receiver)
-				}
-			}
-
+	// Unwrap identity-method calls: "value".freeze, "value".dup, -"value"
+	let current = node
+	while (current.type === 'call') {
+		const method = current.childForFieldName('method')
+		const receiver =
+			method && IDENTITY_METHODS.has(method.text)
+				? current.childForFieldName('receiver')
+				: undefined
+		if (!receiver) {
 			return undefined
 		}
 
+		current = receiver
+	}
+
+	switch (current.type) {
 		case 'float':
 		case 'integer': {
-			return node.text
+			return current.text
 		}
 
 		case 'heredoc_body': {
-			return node.text.trim()
+			return current.text.trim()
 		}
 
 		case 'simple_symbol': {
-			return node.text.replace(LEADING_COLON_REGEX, '')
+			return current.text.replace(LEADING_COLON_REGEX, '')
 		}
 
 		case 'string':
 		case 'string_content': {
 			// A string node wraps string_content children; grab all content fragments
-			const parts = children(node).filter((c) => c.type === 'string_content')
+			const parts = children(current).filter((c) => c.type === 'string_content')
 			if (parts.length > 0) {
 				return parts.map((p) => p.text).join('')
 			}
 
 			// Simple string with no interpolation
-			return node.text.replaceAll(/^["']|["']$/g, '')
+			return current.text.replaceAll(/^["']|["']$/gv, '')
 		}
 
 		default: {
@@ -122,34 +124,38 @@ function extractStringArray(node: Node): string[] {
  * Evaluate (method calls, constants, etc.).
  */
 function extractValue(node: Node): string | string[] | undefined {
-	if (node.type === 'array' || node.type === 'string_array') {
-		return extractStringArray(node)
-	}
-
-	// Handle [].freeze — unwrap identity methods on arrays
-	if (node.type === 'call') {
-		const method = node.childForFieldName('method')
-		if (method && IDENTITY_METHODS.has(method.text)) {
-			const receiver = node.childForFieldName('receiver')
-			if (receiver) {
-				return extractValue(receiver)
-			}
+	// Handle [].freeze — unwrap identity methods (on arrays and other values)
+	let current = node
+	while (current.type === 'call') {
+		const method = current.childForFieldName('method')
+		const receiver =
+			method && IDENTITY_METHODS.has(method.text)
+				? current.childForFieldName('receiver')
+				: undefined
+		if (!receiver) {
+			break
 		}
+
+		current = receiver
 	}
 
-	if (node.type === 'true') {
+	if (current.type === 'array' || current.type === 'string_array') {
+		return extractStringArray(current)
+	}
+
+	if (current.type === 'true') {
 		return 'true'
 	}
 
-	if (node.type === 'false') {
+	if (current.type === 'false') {
 		return 'false'
 	}
 
-	if (node.type === 'nil') {
+	if (current.type === 'nil') {
 		return undefined
 	}
 
-	return extractString(node)
+	return extractString(current)
 }
 
 /** Resolve the attribute name from the LHS of `spec.foo = ...` */
@@ -189,15 +195,13 @@ function tryParseDependency(
 	if (methodNode.type === 'call') {
 		const inner = methodNode.childForFieldName('method')
 		methodName = inner?.text ?? undefined
-	} else if (methodNode.type === 'identifier') {
-		methodName = methodNode.text
 	} else {
-		// Sometimes the whole node is the call: `spec.add_dependency("name")`
+		// A plain identifier, or the whole node is the call: `spec.add_dependency("name")`
 		methodName = methodNode.text
 	}
 
 	// Check if this is a plain `call` with the dep method at the top level
-	if (!methodName) {
+	if (methodName === undefined || methodName === '') {
 		const topMethod = node.childForFieldName('method')
 		if (topMethod?.type === 'identifier') {
 			methodName = topMethod.text
@@ -211,8 +215,8 @@ function tryParseDependency(
 	// We need to handle both.
 
 	// Try extracting method name from the node text as fallback
-	// eslint-disable-next-line ts/no-unnecessary-condition
-	if (!methodName || !DEP_METHODS[methodName]) {
+
+	if (methodName === undefined || methodName === '' || DEP_METHODS[methodName] === undefined) {
 		// Check if the full text contains a dep method
 		for (const m of Object.keys(DEP_METHODS)) {
 			if (node.text.includes(`.${m}`)) {
@@ -222,12 +226,14 @@ function tryParseDependency(
 		}
 	}
 
-	// eslint-disable-next-line ts/no-unnecessary-condition
-	if (!methodName || !DEP_METHODS[methodName]) {
+	if (methodName === undefined || methodName === '') {
 		return undefined
 	}
 
-	const depType = DEP_METHODS[methodName]
+	const dependencyType = DEP_METHODS[methodName]
+	if (dependencyType === undefined) {
+		return undefined
+	}
 
 	const arguments_ = node.childForFieldName('arguments')
 	if (!arguments_) {
@@ -235,12 +241,13 @@ function tryParseDependency(
 	}
 
 	const argumentNodes = children(arguments_)
-	if (argumentNodes.length === 0) {
+	const firstArgument = argumentNodes[0]
+	if (firstArgument === undefined) {
 		return undefined
 	}
 
-	const depName = extractString(argumentNodes[0])
-	if (!depName) {
+	const dependencyName = extractString(firstArgument)
+	if (dependencyName === undefined || dependencyName === '') {
 		return undefined
 	}
 
@@ -249,7 +256,7 @@ function tryParseDependency(
 		.map((element) => extractString(element))
 		.filter((s): s is string => s !== undefined)
 
-	return { name: depName, requirements, type: depType }
+	return { name: dependencyName, requirements, type: dependencyType }
 }
 
 // ─── Metadata hash extraction ────────────────────────────────────────────────
@@ -273,7 +280,7 @@ function extractHash(node: Node): Record<string, string> {
 
 		const k = extractString(key)
 		const v = extractString(value)
-		if (k && v) {
+		if (k !== undefined && k !== '' && v !== undefined && v !== '') {
 			result[k] = v
 		}
 	}
@@ -354,7 +361,7 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 			}
 
 			const attribute = resolveAttribute(lhs)
-			if (!attribute) {
+			if (attribute === undefined || attribute === '') {
 				visitChildren(node)
 				return
 			}
@@ -410,21 +417,18 @@ export async function parseGemspec(source: string): Promise<Record<string, unkno
 
 		// ── Method calls: spec.add_dependency / metadata[]= ───────────────
 		if (node.type === 'call' || node.type === 'method_call') {
-			const dep = tryParseDependency(node)
-			if (dep) {
+			const dependency = tryParseDependency(node)
+			if (dependency) {
 				if (Array.isArray(spec.dependencies)) {
-					spec.dependencies.push(dep)
+					spec.dependencies.push(dependency)
 				}
 
 				return
 			}
 		}
 
-		// ── Element assignment: spec.metadata["key"] = "value" ────────────
-		if (node.type === 'element_assignment' || node.type === 'indexing') {
-			// We handle this pattern at the assignment level, so fall through
-		}
-
+		// Element assignments (spec.metadata["key"] = "value") are handled at the
+		// assignment level, so just recurse into children here.
 		visitChildren(node)
 	}
 

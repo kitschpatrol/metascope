@@ -114,12 +114,8 @@ export function deduplicatePersonsOrOrgs(
 ): CodemetaPersonOrOrgLd[] | undefined {
 	const seen = new Map<string, CodemetaPersonOrOrgLd>()
 	for (const person of persons) {
-		const key = (
-			person.name ??
-			([person.givenName, person.familyName].filter(Boolean).join(' ') || undefined) ??
-			person.email ??
-			''
-		)
+		const fullName = [person.givenName, person.familyName].filter(Boolean).join(' ')
+		const key = (person.name ?? (fullName === '' ? undefined : fullName) ?? person.email ?? '')
 			.toLowerCase()
 			.trim()
 		if (key.length > 0 && !seen.has(key)) {
@@ -127,7 +123,7 @@ export function deduplicatePersonsOrOrgs(
 		}
 	}
 
-	const result = [...seen.values()]
+	const result = seen.values().toArray()
 	return result.length > 0 ? result : undefined
 }
 
@@ -142,20 +138,20 @@ export function toDependencyLd(
 	identifier?: string,
 	runtimePlatform?: string,
 ): CodemetaDependencyLd {
-	const dep: CodemetaDependencyLd = { '@type': 'SoftwareApplication', name }
+	const dependency: CodemetaDependencyLd = { '@type': 'SoftwareApplication', name }
 	if (is.nonEmptyStringAndNotWhitespace(version)) {
-		dep.version = version
+		dependency.version = version
 	}
 
 	if (is.nonEmptyStringAndNotWhitespace(identifier)) {
-		dep.identifier = identifier
+		dependency.identifier = identifier
 	}
 
 	if (is.nonEmptyStringAndNotWhitespace(runtimePlatform)) {
-		dep.runtimePlatform = runtimePlatform
+		dependency.runtimePlatform = runtimePlatform
 	}
 
-	return dep
+	return dependency
 }
 
 /**
@@ -163,17 +159,17 @@ export function toDependencyLd(
  * occurrence. Returns undefined if the result is empty.
  */
 export function deduplicateDependencies(
-	deps: CodemetaDependencyLd[],
+	dependencies: CodemetaDependencyLd[],
 ): CodemetaDependencyLd[] | undefined {
 	const seen = new Map<string, CodemetaDependencyLd>()
-	for (const dep of deps) {
-		const key = dep.name.toLowerCase().trim()
+	for (const dependency of dependencies) {
+		const key = dependency.name.toLowerCase().trim()
 		if (key.length > 0 && !seen.has(key)) {
-			seen.set(key, dep)
+			seen.set(key, dependency)
 		}
 	}
 
-	const result = [...seen.values()]
+	const result = seen.values().toArray()
 	return result.length > 0 ? result : undefined
 }
 
@@ -186,11 +182,12 @@ export function deduplicateDependencies(
 export function toSpdxLicenseUrl(spdxId: string): string {
 	const cleaned = spdxId
 		.replace('https://spdx.org/licenses/', '')
+		// eslint-disable-next-line unicorn/prefer-https
 		.replace('http://spdx.org/licenses/', '')
 	return `https://spdx.org/licenses/${cleaned}`
 }
 
-const SEE_LICENSE_IN_REGEX = /^see license in /i
+const SEE_LICENSE_IN_REGEX = /^see license in /iv
 
 /**
  * Detect npm package.json sentinel license values that are not SPDX

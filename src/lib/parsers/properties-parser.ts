@@ -11,7 +11,7 @@
  * See https://en.wikipedia.org/wiki/.properties
  */
 
-const LINE_BREAK_REGEX = /\r?\n/
+const LINE_BREAK_REGEX = /\r?\n/v
 
 /**
  * Parse a `*.properties` content string into raw key-value pairs.

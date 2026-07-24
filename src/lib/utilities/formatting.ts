@@ -1,7 +1,7 @@
 import { relative } from 'node:path'
 import { DEFAULT_GET_METADATA_OPTIONS } from '../metadata-types'
 
-const URL_PROTOCOL_REGEX = /^[a-z]+:\/\//i
+const URL_PROTOCOL_REGEX = /^[a-z]+:\/\//iv
 
 // ─── Path Formatting ────────────────────────────────────────────────
 

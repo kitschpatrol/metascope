@@ -26,7 +26,7 @@ describe('getMetadata - full extraction', () => {
 describe('getMetadata - per source (project root)', () => {
 	for (const source of sourceNames) {
 		bench(
-			source,
+			`source: ${source}`,
 			async () => {
 				await getMetadata({ offline: true, path: projectRoot, sources: [source] })
 			},
@@ -38,7 +38,7 @@ describe('getMetadata - per source (project root)', () => {
 describe('getMetadata - per source (all-sources fixture)', () => {
 	for (const source of sourceNames) {
 		bench(
-			source,
+			`source: ${source}`,
 			async () => {
 				await getMetadata({ offline: true, path: allSourcesFixture, sources: [source] })
 			},

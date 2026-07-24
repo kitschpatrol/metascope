@@ -133,7 +133,7 @@ async function fetchWorkflowRuns(
 		}
 
 		let durationMs: number | undefined
-		if (run.run_started_at) {
+		if (run.run_started_at !== undefined && run.run_started_at !== '') {
 			durationMs = new Date(run.updated_at).getTime() - new Date(run.run_started_at).getTime()
 		}
 
@@ -205,17 +205,16 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 			try {
 				const ownerRepo = await resolveOwnerRepo(context)
 				if (ownerRepo) {
+					const githubToken = context.options.credentials?.githubToken
 					const octokit = new Octokit(
-						context.options.credentials?.githubToken
-							? { auth: context.options.credentials.githubToken }
-							: undefined,
+						githubToken !== undefined && githubToken !== '' ? { auth: githubToken } : undefined,
 					)
 
 					// Try to reuse default branch from the github source if it already ran
 					const githubData = ensureArray(context.metadata?.github)
 					let defaultBranch = githubData[0]?.data.defaultBranch
 
-					if (!defaultBranch) {
+					if (defaultBranch === undefined || defaultBranch === '') {
 						const repoResponse = await octokit.rest.repos.get({
 							owner: ownerRepo.owner,
 							repo: ownerRepo.repo,

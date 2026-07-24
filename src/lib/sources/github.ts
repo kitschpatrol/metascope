@@ -428,7 +428,7 @@ async function getUpstreamComparison(
 	parent: NonNullable<GitHubRepoData['parent']>,
 ): Promise<undefined | { ahead: number; behind: number }> {
 	const parentBranch = parent.defaultBranchRef?.name
-	if (!parentBranch) {
+	if (parentBranch === undefined || parentBranch === '') {
 		return undefined
 	}
 
@@ -445,16 +445,16 @@ async function getUpstreamComparison(
 }
 
 function countSubmodules(gitmodulesText: string | undefined): number {
-	if (!gitmodulesText) {
+	if (gitmodulesText === undefined || gitmodulesText === '') {
 		return 0
 	}
 
-	const matches = gitmodulesText.match(/\[submodule\s/g)
+	const matches = gitmodulesText.match(/\[submodule\s/gv)
 	return matches?.length ?? 0
 }
 
 function detectLfs(gitattributesText: string | undefined): boolean {
-	if (!gitattributesText) {
+	if (gitattributesText === undefined || gitattributesText === '') {
 		return false
 	}
 
@@ -477,10 +477,13 @@ function mapRepoData(
 	data: GitHubRepoData,
 	extras: { commitsAheadUpstream?: number; commitsBehindUpstream?: number; hasPages: boolean },
 ): GitHubInfo {
+	const totalReleaseDownloads =
+		data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
+		0
 	const releaseDownloadCount =
-		(data.latestRelease?.releaseAssets.nodes.reduce((sum, asset) => sum + asset.downloadCount, 0) ??
-			0) ||
-		undefined
+		totalReleaseDownloads === 0 || Number.isNaN(totalReleaseDownloads)
+			? undefined
+			: totalReleaseDownloads
 
 	return {
 		archivedAt: data.archivedAt ?? undefined,
@@ -541,7 +544,7 @@ function mapRepoData(
 		pullRequestCountMerged: data.mergedPullRequests.totalCount,
 		pullRequestCountOpen: data.openPullRequests.totalCount,
 		pushedAt: data.pushedAt ?? undefined,
-		releaseCount: data.releases.totalCount || undefined,
+		releaseCount: data.releases.totalCount === 0 ? undefined : data.releases.totalCount,
 		releaseDateLatest: data.latestRelease?.createdAt ?? undefined,
 		releaseDownloadCount,
 		releaseVersionLatest: data.latestRelease?.tagName ?? undefined,
@@ -610,12 +613,14 @@ export const githubSource = defineSource<'github'>({
 	key: 'github',
 	async parse(input, context) {
 		log.debug('Extracting GitHub metadata...')
-		const [owner, repo] = input.split('/')
+		const [owner, repo] = input.split('/', 2)
+		if (owner === undefined || repo === undefined) {
+			throw new Error(`Invalid GitHub repo identifier "${input}", expected "owner/repo"`)
+		}
 
+		const githubToken = context.options.credentials?.githubToken
 		const octokit = new Octokit(
-			context.options.credentials?.githubToken
-				? { auth: context.options.credentials.githubToken }
-				: undefined,
+			githubToken !== undefined && githubToken !== '' ? { auth: githubToken } : undefined,
 		)
 
 		const [graphqlResult, hasPages] = await Promise.all([

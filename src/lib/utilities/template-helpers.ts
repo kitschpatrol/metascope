@@ -139,6 +139,8 @@ export function toMarkdownLink(value: string | undefined): string | undefined {
 	if (is.nonEmptyStringAndNotWhitespace(value)) {
 		return `[${path.basename(value)}](${value})`
 	}
+
+	return undefined
 }
 
 /**
@@ -178,7 +180,7 @@ export function stripNamespace(value: string): string {
 export function toAlias(value: string | undefined): string | undefined {
 	if (is.nonEmptyString(value)) {
 		// Trim 2+ spaces to 1 space
-		const result = titleCase(stripNamespace(value)).replaceAll(/ {2,}/g, ' ').trim()
+		const result = titleCase(stripNamespace(value)).replaceAll(/ {2,}/gv, ' ').trim()
 		return replaceCore(result, casePoliceDict) ?? result
 	}
 
@@ -189,7 +191,7 @@ export function toAlias(value: string | undefined): string | undefined {
  * Escape a string for use in a regular expression.
  */
 function escapeRegExp(string_: string): string {
-	return string_.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+	return string_.replaceAll(/[.*+?^$\{\}\(\)\|\[\]\\]/gv, String.raw`\$&`)
 }
 
 // Codemeta is casual about capitalization...
@@ -208,7 +210,7 @@ function getCompiledReplacements(replacements: Map<string, string>): Array<[RegE
 	let compiled = compiledReplacementsCache.get(replacements)
 	if (!compiled) {
 		compiled = Array.from(replacements, ([search, replace]) => [
-			new RegExp(escapeRegExp(search), 'gi'),
+			new RegExp(escapeRegExp(search), 'giv'),
 			replace,
 		])
 		compiledReplacementsCache.set(replacements, compiled)
@@ -241,6 +243,7 @@ export function mixedStringsToArray(
 
 			let result = item
 			for (const [pattern, replace] of compiled) {
+				// eslint-disable-next-line unicorn/no-unsafe-string-replacement -- replacement strings come from caller-supplied case-correction maps; `$`-pattern substitution semantics must be preserved
 				result = result.replace(pattern, replace)
 			}
 
@@ -281,7 +284,7 @@ export function stripUndefined<T>(value: T): T {
 			// eslint-disable-next-line ts/no-unsafe-return
 			.map((item) => stripUndefined(item))
 			.filter((item) => item !== undefined)
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
+
 		return (filtered.length > 0 ? filtered : undefined) as T
 	}
 
@@ -289,22 +292,22 @@ export function stripUndefined<T>(value: T): T {
 		const result: Record<string, unknown> = {}
 		let hasKeys = false
 		for (const [key, theValue] of Object.entries(value)) {
-			if (theValue !== undefined) {
-				const stripped = stripUndefined(theValue)
-				// eslint-disable-next-line ts/no-unnecessary-condition
-				if (stripped !== undefined) {
-					result[key] = stripped
-					hasKeys = true
-				}
+			if (theValue === undefined) {
+				continue
+			}
+
+			const stripped = stripUndefined(theValue)
+			// eslint-disable-next-line ts/no-unnecessary-condition
+			if (stripped !== undefined) {
+				result[key] = stripped
+				hasKeys = true
 			}
 		}
 
 		if (!hasKeys) {
-			// eslint-disable-next-line ts/no-unsafe-type-assertion
 			return undefined as T
 		}
 
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		return result as T
 	}
 
@@ -321,7 +324,7 @@ export function toBasicLicense(source: string | undefined): string | undefined {
 		return undefined
 	}
 
-	return source.replace('http://spdx.org/licenses/', '').replace('https://spdx.org/licenses/', '')
+	return source.replace('https://spdx.org/licenses/', '').replace('https://spdx.org/licenses/', '')
 }
 
 /**
@@ -452,21 +455,21 @@ export function isAuthoredBy(
  * True if project is on a specific GitHub account(s).
  */
 export function isOnGithubAccountOf(
-	codeRepository?: string,
-	githubUserName?: string | string[],
+	codeRepo?: string,
+	githubUsername?: string | string[],
 ): boolean | undefined {
-	if (codeRepository === undefined || githubUserName === undefined) {
+	if (codeRepo === undefined || githubUsername === undefined) {
 		return undefined
 	}
 
-	const cleanRepo = codeRepository.toLocaleLowerCase().trim()
+	const cleanRepo = codeRepo.toLocaleLowerCase().trim()
 
 	if (!cleanRepo.includes('github.com/')) {
 		return false
 	}
 
-	return ensureArray(githubUserName).some((userName) =>
-		cleanRepo.includes(`/${userName.toLocaleLowerCase().trim()}/`),
+	return ensureArray(githubUsername).some((username) =>
+		cleanRepo.includes(`/${username.toLocaleLowerCase().trim()}/`),
 	)
 }
 
@@ -474,10 +477,10 @@ export function isOnGithubAccountOf(
  * Legacy heuristic project status based on authorship and GitHub account.
  */
 export function toStatusLegacy(
-	codeRepository?: string,
+	codeRepo?: string,
 	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	authorName?: string | string[],
-	githubUserName?: string | string[],
+	githubUsername?: string | string[],
 ):
 	| /** It's a fork on GitHub */
 	  (
@@ -488,12 +491,12 @@ export function toStatusLegacy(
 			| 'unmaintained'
 	  )
 	| undefined {
-	if (codeRepository === undefined || authorName === undefined || githubUserName === undefined) {
+	if (codeRepo === undefined || authorName === undefined || githubUsername === undefined) {
 		return undefined
 	}
 
 	const isAuthoredByAuthorName = isAuthoredBy(codemetaAuthorName, authorName)
-	const isOnGithub = isOnGithubAccountOf(codeRepository, githubUserName)
+	const isOnGithub = isOnGithubAccountOf(codeRepo, githubUsername)
 
 	if (isAuthoredByAuthorName === undefined || isOnGithub === undefined) {
 		return undefined
@@ -510,12 +513,12 @@ export function toStatusLegacy(
  * Heuristic project status based on authorship and GitHub account.
  */
 export function toStatus(
-	codeRepository?: string,
+	codeRepo?: string,
 	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	codemetaContributorOrMaintainerName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	isGitHubFork?: boolean,
 	myAuthorName?: string | string[],
-	myGithubUserName?: string | string[],
+	myGithubUsername?: string | string[],
 ):
 	| 'author' /** I wrote the repo */
 	| 'maintainer' /** I contribute or help maintain it */
@@ -523,7 +526,7 @@ export function toStatus(
 	| 'unknown' /** It's unclear */ {
 	const author = isAuthoredBy(codemetaAuthorName, myAuthorName)
 	const maintainer = isAuthoredBy(codemetaContributorOrMaintainerName, myAuthorName)
-	const githubStatus = isOnGithubAccountOf(codeRepository, myGithubUserName)
+	const githubStatus = isOnGithubAccountOf(codeRepo, myGithubUsername)
 
 	const github =
 		githubStatus === undefined

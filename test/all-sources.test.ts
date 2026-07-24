@@ -146,7 +146,7 @@ describe('all-sources fixture', () => {
 				? [result.licenseFile]
 				: []
 		expect(records.length).toBeGreaterThan(0)
-		const { data } = records[0]
+		const { data } = records[0]!
 		expect(data.type).toBe('spdx')
 		expect(data.match?.spdxId).toBe('MIT')
 		expect(data.match?.confidence).toBeGreaterThan(0)
@@ -312,21 +312,23 @@ describe('all-sources fixture', () => {
 	it('should extract pythonSetupPy', async () => {
 		// Setup.py parsing uses tree-sitter which may not support all grammar versions
 		// in all environments; skip if extraction failed gracefully
-		if (result.pythonSetupPy) {
-			const data = firstOf(result.pythonSetupPy)?.data
-			expect(data).toBeDefined()
-			expect(data!.name).toBe('all-sources-fixture')
-			expect(data!.version).toBe('1.0.0')
-			expect(data!.author).toBe('Test Author')
-			expect(data!.maintainer).toBe('Test Maintainer')
-			expect(data!.description).toBe('A comprehensive test fixture.')
-			expect(data!.license).toBe('MIT')
-			expect(data!.keywords).toEqual(['test', 'fixture'])
-			expect(data!.classifiers).toHaveLength(3)
-			expect(data!.install_requires).toHaveLength(2)
-			expect(data!.extras_require).toHaveProperty('dev')
-			expect(data!.project_urls).toHaveProperty('Repository')
+		if (!result.pythonSetupPy) {
+			return
 		}
+
+		const data = firstOf(result.pythonSetupPy)?.data
+		expect(data).toBeDefined()
+		expect(data!.name).toBe('all-sources-fixture')
+		expect(data!.version).toBe('1.0.0')
+		expect(data!.author).toBe('Test Author')
+		expect(data!.maintainer).toBe('Test Maintainer')
+		expect(data!.description).toBe('A comprehensive test fixture.')
+		expect(data!.license).toBe('MIT')
+		expect(data!.keywords).toEqual(['test', 'fixture'])
+		expect(data!.classifiers).toHaveLength(3)
+		expect(data!.install_requires).toHaveLength(2)
+		expect(data!.extras_require).toHaveProperty('dev')
+		expect(data!.project_urls).toHaveProperty('Repository')
 	})
 
 	it('should extract readmeFile', async () => {
@@ -425,12 +427,14 @@ describe('all-sources fixture', () => {
 	it('should extract codeStats', async () => {
 		const data = result.codeStats
 		// Code-statistics uses tokei, which may or may not be available
-		if (data) {
-			const stats = firstOf(data)?.data
-			expect(stats!.total).toBeDefined()
-			expect(stats!.total!.files).toBeGreaterThan(0)
-			expect(stats!.total!.code).toBeGreaterThan(0)
+		if (data === undefined) {
+			return
 		}
+
+		const stats = firstOf(data)?.data
+		expect(stats!.total).toBeDefined()
+		expect(stats!.total!.files).toBeGreaterThan(0)
+		expect(stats!.total!.code).toBeGreaterThan(0)
 	})
 
 	// ── Skipped sources (require network or git) ───────────

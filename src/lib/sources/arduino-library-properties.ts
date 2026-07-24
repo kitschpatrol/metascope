@@ -35,12 +35,13 @@ const CANONICAL_CATEGORIES = [
 ] as const
 
 /** Map from letters-only lowercase to canonical category form. */
-const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>(
-	CANONICAL_CATEGORIES.map((cat) => [cat.replaceAll(/[^a-z]/gi, '').toLowerCase(), cat]),
-)
-
-// Singular→plural coercion
-CATEGORY_MAP.set('sensor', 'Sensors')
+const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>([
+	...CANONICAL_CATEGORIES.map(
+		(cat) => [cat.replaceAll(/[^a-z]/giv, '').toLowerCase(), cat] as const,
+	),
+	// Singular→plural coercion
+	['sensor', 'Sensors'],
+])
 
 const arduinoLibraryPropertiesSchema = z.object({
 	/** Comma-separated architecture identifiers, or ["*"] for all. */
@@ -101,7 +102,8 @@ export function parse(content: string): ArduinoLibraryProperties {
 		category: normalizeCategory(get(raw, 'category')),
 		depends: parseDependencies(get(raw, 'depends') ?? get(raw, 'dependencies') ?? ''),
 		email: nonEmpty(get(raw, 'email')),
-		includes: includesValue ? splitCommaSeparated(includesValue) : [],
+		includes:
+			includesValue !== undefined && includesValue !== '' ? splitCommaSeparated(includesValue) : [],
 		license: nonEmpty(get(raw, 'license')),
 		maintainer: parsePersonList(get(raw, 'maintainer') ?? '')[0],
 		name: nonEmpty(get(raw, 'name')),
@@ -151,13 +153,13 @@ function normalizeCategory(
 
 	// Split on commas first (handles "Sensors, Timing" edge case)
 	for (const part of trimmed.split(',')) {
-		const key = part.replaceAll(/[^a-z]/gi, '').toLowerCase()
+		const key = part.replaceAll(/[^a-z]/giv, '').toLowerCase()
 		if (key.length === 0) {
 			continue
 		}
 
 		const canonical = CATEGORY_MAP.get(key)
-		if (canonical) {
+		if (canonical !== undefined) {
 			return canonical
 		}
 	}
@@ -293,9 +295,7 @@ export const arduinoLibraryPropertiesSource = defineSource<'arduinoLibraryProper
 	key: 'arduinoLibraryProperties',
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
-		if (isArduinoLibraryProperties(content)) {
-			return { data: parse(content), source: input }
-		}
+		return isArduinoLibraryProperties(content) ? { data: parse(content), source: input } : undefined
 	},
 	phase: 1,
 })

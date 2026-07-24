@@ -7,8 +7,8 @@ import jsonld from 'jsonld'
 import { log } from '../src/lib/log.ts'
 import contextCacheJson from './data/context-cache.json' with { type: 'json' }
 
-const TRAILING_SLASHES_REGEX = /\/+$/
-const PROTOCOL_PREFIX_REGEX = /^https?:\/\//
+const TRAILING_SLASHES_REGEX = /\/+$/v
+const PROTOCOL_PREFIX_REGEX = /^https?:\/\//v
 
 /**
  * Clear the loader cache. Used by the caching script
@@ -26,7 +26,6 @@ export function toCacheKey(url: string): string {
 }
 
 const loaderCache = new Map<string, RemoteDocument>(
-	// eslint-disable-next-line ts/no-unsafe-type-assertion
 	Object.entries(contextCacheJson) as unknown as Array<[string, RemoteDocument]>,
 )
 
@@ -47,6 +46,7 @@ export async function customLoader(url: string): Promise<RemoteDocument> {
 	if (
 		url.startsWith('https://doi.org/') ||
 		url.startsWith('https://w3id.org/codemeta') ||
+		// eslint-disable-next-line unicorn/prefer-https
 		url.startsWith('http://w3id.org/codemeta') ||
 		url.startsWith('https://raw.githubusercontent.com')
 	) {
@@ -58,7 +58,6 @@ export async function customLoader(url: string): Promise<RemoteDocument> {
 
 		const response = await fetch(url, {
 			headers,
-			redirect: 'follow',
 		})
 
 		const document: JsonLd = await response.json()

@@ -8,7 +8,7 @@ import { licenseFileSource } from '../../src/lib/sources/license-file'
 import { identifyLicense, spdxIdToUrl } from '../../src/lib/utilities/license-identification'
 
 const fixturesDirectory = resolve('test/fixtures/license-file')
-const OSI_LICENSE_PATH_REGEX = /^\/license\/[^/]+$/
+const OSI_LICENSE_PATH_REGEX = /^\/license\/[^\/]+$/v
 
 describe('licenseFile source', () => {
 	beforeEach(() => {
@@ -186,16 +186,26 @@ describe('identifyLicense', () => {
 	})
 
 	it('should emit HTTPS URLs without legacy OSI routes for every SPDX license', () => {
+		// Collect failures with their SPDX id so a single assertion identifies the case.
+		const failures: string[] = []
 		for (const spdxId of Object.keys(spdxLicenseList)) {
 			const result = identifyLicense(spdxIdToUrl(spdxId))
-			expect(result, spdxId).toBeDefined()
+			if (result === undefined) {
+				failures.push(`${spdxId}: no result`)
+				continue
+			}
 
-			const url = new URL(result!.spdxUrl)
-			expect(url.protocol, spdxId).toBe('https:')
-			if (url.hostname === 'opensource.org') {
-				expect(url.pathname, spdxId).toMatch(OSI_LICENSE_PATH_REGEX)
+			const url = new URL(result.spdxUrl)
+			if (url.protocol !== 'https:') {
+				failures.push(`${spdxId}: protocol ${url.protocol}`)
+			}
+
+			if (url.hostname === 'opensource.org' && !OSI_LICENSE_PATH_REGEX.test(url.pathname)) {
+				failures.push(`${spdxId}: pathname ${url.pathname}`)
 			}
 		}
+
+		expect(failures).toEqual([])
 	})
 
 	it('should preserve the dependency URL alongside each audited URL', () => {
@@ -226,6 +236,10 @@ describe('fixture coverage', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const licenseFile = files[0]
+			if (licenseFile === undefined) {
+				continue
+			}
+
 			const content = await readFile(resolve(directoryPath, licenseFile), 'utf8')
 			const result = identifyLicense(content)
 			if (result) {

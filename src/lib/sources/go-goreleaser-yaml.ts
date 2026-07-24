@@ -65,11 +65,13 @@ function isNonEmptyString(value: unknown): value is string {
  */
 function firstString(sections: unknown[], field: string): string | undefined {
 	for (const section of sections) {
-		if (isPlainObject(section)) {
-			const value = section[field]
-			if (isNonEmptyString(value) && !value.includes('{{')) {
-				return value.trim()
-			}
+		if (!isPlainObject(section)) {
+			continue
+		}
+
+		const value = section[field]
+		if (isNonEmptyString(value) && !value.includes('{{')) {
+			return value.trim()
 		}
 	}
 
@@ -192,13 +194,15 @@ export function parse(source: string): Goreleaser | undefined {
 	const goosSet = new Set<string>()
 	const builds = collectSections(data, 'builds', 'build')
 	for (const build of builds) {
-		if (isPlainObject(build)) {
-			const { goos } = build
-			if (Array.isArray(goos)) {
-				for (const os of goos) {
-					if (typeof os === 'string') {
-						goosSet.add(os.toLowerCase())
-					}
+		if (!isPlainObject(build)) {
+			continue
+		}
+
+		const { goos } = build
+		if (Array.isArray(goos)) {
+			for (const os of goos) {
+				if (typeof os === 'string') {
+					goosSet.add(os.toLowerCase())
 				}
 			}
 		}
@@ -223,9 +227,7 @@ export const goGoreleaserYamlSource = defineSource<'goGoreleaserYaml'>({
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

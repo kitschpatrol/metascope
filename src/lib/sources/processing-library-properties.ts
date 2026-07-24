@@ -8,7 +8,7 @@ import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 import { splitCommaSeparated } from '../utilities/template-helpers'
 
-const AUTHOR_SEPARATOR_REGEX = /\band\b|,|&/
+const AUTHOR_SEPARATOR_REGEX = /\band\b|,|&/v
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -38,12 +38,13 @@ const CANONICAL_CATEGORIES = [
 ] as const
 
 /** Map from letters-only lowercase to canonical category form. */
-const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>(
-	CANONICAL_CATEGORIES.map((cat) => [cat.replaceAll(/[^a-z]/gi, '').toLowerCase(), cat]),
-)
-
-// Explicit aliases for categories that lose digits/symbols when stripped
-CATEGORY_MAP.set('3d', '3D')
+const CATEGORY_MAP = new Map<string, (typeof CANONICAL_CATEGORIES)[number]>([
+	...CANONICAL_CATEGORIES.map(
+		(cat) => [cat.replaceAll(/[^a-z]/giv, '').toLowerCase(), cat] as const,
+	),
+	// Explicit aliases for categories that lose digits/symbols when stripped
+	['3d', '3D'],
+])
 
 const processingLibraryPropertiesSchema = z.object({
 	/** Parsed author entries with optional URLs. */
@@ -94,16 +95,21 @@ export function parse(content: string): ProcessingLibraryProperties {
 	const raw = parseProperties(content)
 
 	const versionRaw = get(raw, 'version') ?? '0'
-	const versionParsed = Number.parseInt(versionRaw, 10)
+	const versionParsed = Math.trunc(Number(versionRaw))
 
 	const prettyVersionRaw = get(raw, 'prettyVersion')
-	const prettyVersion = prettyVersionRaw ? stripInlineComment(prettyVersionRaw) : undefined
+	const prettyVersion =
+		prettyVersionRaw !== undefined && prettyVersionRaw !== ''
+			? stripInlineComment(prettyVersionRaw)
+			: undefined
 
 	const minRevisionRaw = get(raw, 'minRevision')
-	const minParsed = minRevisionRaw ? Number.parseInt(minRevisionRaw, 10) : 0
+	const minParsed =
+		minRevisionRaw !== undefined && minRevisionRaw !== '' ? Math.trunc(Number(minRevisionRaw)) : 0
 
 	const maxRevisionRaw = get(raw, 'maxRevision')
-	const maxParsed = maxRevisionRaw ? Number.parseInt(maxRevisionRaw, 10) : 0
+	const maxParsed =
+		maxRevisionRaw !== undefined && maxRevisionRaw !== '' ? Math.trunc(Number(maxRevisionRaw)) : 0
 
 	return processingLibraryPropertiesSchema.parse({
 		authors: parseAuthors(get(raw, 'authors') ?? get(raw, 'authorList') ?? ''),
@@ -258,18 +264,18 @@ function parseCategories(value: string): ProcessingLibraryPropertiesCategory[] {
 
 	for (const part of trimmed.split(',')) {
 		// Strip surrounding quotes
-		const stripped = part.trim().replaceAll(/^"|"$/g, '').trim()
+		const stripped = part.trim().replaceAll(/^"|"$/gv, '').trim()
 		if (stripped.length === 0) {
 			continue
 		}
 
-		const key = stripped.replaceAll(/[^a-z0-9]/gi, '').toLowerCase()
+		const key = stripped.replaceAll(/[^a-z0-9]/giv, '').toLowerCase()
 		if (key.length === 0) {
 			continue
 		}
 
 		const canonical = CATEGORY_MAP.get(key)
-		if (canonical && !results.includes(canonical)) {
+		if (canonical !== undefined && !results.includes(canonical)) {
 			results.push(canonical)
 		}
 	}

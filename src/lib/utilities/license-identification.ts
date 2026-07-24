@@ -37,7 +37,7 @@ export type LicenseMatch = {
 const SPDX_BASE_URL = 'https://spdx.org/licenses/'
 
 /** Leading `www.` subdomain. */
-const WWW_PREFIX_REGEX = /^www\./
+const WWW_PREFIX_REGEX = /^www\./v
 
 /** Direct URLs resolved by the explicit `update-license-urls` content step. */
 const directLicenseUrls = new Map(
@@ -108,6 +108,10 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
  */
 function buildMatch(spdxId: string, confidence: number): LicenseMatch {
 	const entry = spdxLicenseList[spdxId]
+	if (entry === undefined) {
+		throw new Error(`Unknown SPDX license ID "${spdxId}"`)
+	}
+
 	return {
 		confidence,
 		name: entry.name,
@@ -158,21 +162,21 @@ function normalizeText(text: string): string {
 	return (
 		text
 			// Remove markdown headings
-			.replaceAll(/^#+\s+/gm, '')
+			.replaceAll(/^#+\s+/gmv, '')
 			// Remove copyright lines (they vary per project, may span multiple formats)
-			.replaceAll(/^copyright.*$/gim, '')
+			.replaceAll(/^copyright.*$/gimv, '')
 			// Remove markdown table rows (contributor tables in COPYING files)
-			.replaceAll(/^\|.*\|$/gm, '')
+			.replaceAll(/^\|.*\|$/gmv, '')
 			// Remove markdown table separators
-			.replaceAll(/^[-|:\s]+$/gm, '')
+			.replaceAll(/^[\-\|:\s]+$/gmv, '')
 			// Remove common URL patterns
-			.replaceAll(/https?:\/\/\S+/g, '')
+			.replaceAll(/https?:\/\/\S+/gv, '')
 			// Remove email-like patterns
-			.replaceAll(/\S+@\S+/g, '')
+			.replaceAll(/\S+@\S+/gv, '')
 			// Remove markdown link/image syntax leftovers
-			.replaceAll(/[[\]()]/g, ' ')
+			.replaceAll(/[\[\]\(\)]/gv, ' ')
 			// Collapse whitespace
-			.replaceAll(/\s+/g, ' ')
+			.replaceAll(/\s+/gv, ' ')
 			.trim()
 			.toLowerCase()
 	)
@@ -255,13 +259,13 @@ function diceCoefficientCached(
  * (e.g. CeCILL-2.1 mentions AGPL in its body).
  */
 const HEADER_PATTERNS: Array<{ pattern: RegExp; spdxId: string }> = [
-	{ pattern: /gnu lesser general public license\s+version 3/i, spdxId: 'LGPL-3.0-only' },
-	{ pattern: /gnu lesser general public license\s+version 2\.1/i, spdxId: 'LGPL-2.1-only' },
+	{ pattern: /gnu lesser general public license\s+version 3/iv, spdxId: 'LGPL-3.0-only' },
+	{ pattern: /gnu lesser general public license\s+version 2\.1/iv, spdxId: 'LGPL-2.1-only' },
 	{
-		pattern: /gnu lesser general public license\s+version 2(?:\.0)?(?!\.\d)/i,
+		pattern: /gnu lesser general public license\s+version 2(?:\.0)?(?!\.\d)/iv,
 		spdxId: 'LGPL-2.0-only',
 	},
-	{ pattern: /gnu affero general public license\s+version 3/i, spdxId: 'AGPL-3.0-only' },
+	{ pattern: /gnu affero general public license\s+version 3/iv, spdxId: 'AGPL-3.0-only' },
 ]
 
 function identifyByHeader(text: string): LicenseMatch | undefined {
@@ -282,16 +286,16 @@ function identifyByHeader(text: string): LicenseMatch | undefined {
  * punctuation that commonly follows a URL in prose (`.`, `,`, `)`, `]`, etc.)
  * but is not part of the URL itself.
  */
-const URL_REGEX = /https?:\/\/[^\s<>"')\]}]+/gi
+const URL_REGEX = /https?:\/\/[^\s<>"'\)\]\}]+/giv
 
 /** Trailing `/legalcode` or `/legalcode.<ext>` on Creative Commons URLs. */
-const LEGALCODE_SUFFIX_REGEX = /\/legalcode(?:\.[a-z]+)?$/
+const LEGALCODE_SUFFIX_REGEX = /\/legalcode(?:\.[a-z]+)?$/v
 
 /** Trailing slashes. */
-const TRAILING_SLASH_REGEX = /\/+$/
+const TRAILING_SLASH_REGEX = /\/+$/v
 
 /** Trailing prose punctuation after a URL extracted from text. */
-const TRAILING_PUNCTUATION_REGEX = /[.,;:!?]+$/
+const TRAILING_PUNCTUATION_REGEX = /[.,;:!?]+$/v
 
 /**
  * Normalize a URL for comparison: lowercase host+path, drop scheme, strip
@@ -299,7 +303,7 @@ const TRAILING_PUNCTUATION_REGEX = /[.,;:!?]+$/
  * suffixes used by Creative Commons canonical URLs.
  */
 function normalizeUrl(url: string | undefined): string | undefined {
-	if (!url) {
+	if (url === undefined || url === '') {
 		return undefined
 	}
 
@@ -368,22 +372,30 @@ function getUrlIndex(): Map<string, string> {
 	for (const [spdxId, entry] of Object.entries(spdxLicenseList)) {
 		// Always include the canonical spdx.org URL for every listed ID
 		index.set(`spdx.org/licenses/${spdxId.toLowerCase()}`, spdxId)
-
-		// Match both the dependency's original upstream URL and the direct URL
-		// metascope emits after canonicalizing it.
-		for (const candidate of new Set([entry.url, getLicenseUrl(spdxId)])) {
-			const normalized = normalizeUrl(candidate)
-			if (!normalized) {
-				continue
-			}
-
-			const existing = index.get(normalized)
-			index.set(normalized, existing ? preferSpdxId(existing, spdxId) : spdxId)
-		}
+		indexLicenseUrls(index, spdxId, entry.url)
 	}
 
 	urlIndex = index
 	return index
+}
+
+/**
+ * Add every normalized form of a license's URLs to the index, keeping the
+ * preferred SPDX ID when several IDs share a URL.
+ */
+function indexLicenseUrls(index: Map<string, string>, spdxId: string, upstreamUrl: string): void {
+	// Match both the dependency's original upstream URL and the direct URL
+	// metascope emits after canonicalizing it.
+	const candidates = new Set([getLicenseUrl(spdxId), upstreamUrl])
+	for (const candidate of candidates) {
+		const normalized = normalizeUrl(candidate)
+		if (normalized === undefined || normalized === '') {
+			continue
+		}
+
+		const existing = index.get(normalized)
+		index.set(normalized, existing === undefined ? spdxId : preferSpdxId(existing, spdxId))
+	}
 }
 
 function identifyByUrl(text: string): LicenseMatch | undefined {
@@ -396,12 +408,12 @@ function identifyByUrl(text: string): LicenseMatch | undefined {
 	for (const raw of matches) {
 		const cleaned = raw.replace(TRAILING_PUNCTUATION_REGEX, '')
 		const normalized = normalizeUrl(cleaned)
-		if (!normalized) {
+		if (normalized === undefined || normalized === '') {
 			continue
 		}
 
 		const spdxId = index.get(normalized)
-		if (spdxId) {
+		if (spdxId !== undefined && spdxId !== '') {
 			return buildMatch(spdxId, 1)
 		}
 	}

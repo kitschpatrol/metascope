@@ -157,7 +157,7 @@ function parseRequirements(install: Record<string, unknown>): string[] {
 		const results: string[] = []
 		for (const addon of ensureArray(requires.addon)) {
 			const name = getString(addon)
-			if (name) {
+			if (name !== undefined && name !== '') {
 				results.push(name)
 			}
 		}
@@ -193,7 +193,7 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 		}
 
 		const os = getString(library['@_os'])
-		if (os) {
+		if (os !== undefined && os !== '') {
 			const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os
 			if (!seen.has(mapped)) {
 				seen.add(mapped)
@@ -215,9 +215,7 @@ export const openframeworksInstallXmlSource = defineSource<'openframeworksInstal
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

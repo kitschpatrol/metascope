@@ -53,7 +53,7 @@ describe('parseRfc822Headers', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const pkgInfoFile = files.find((name) => name === 'PKG-INFO')
-			if (!pkgInfoFile) {
+			if (pkgInfoFile === undefined) {
 				continue
 			}
 

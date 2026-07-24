@@ -56,10 +56,10 @@ import {
  */
 const INFER_TARGET_PRODUCT = false as const
 
-const PEP508_NAME_REGEX = /^[\w.-]+/
-const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/
-const DATETIME_DATE_REGEX = /^(\d{4}-\d{2}-\d{2})T/
-const TRAILING_DOT_GIT_REGEX = /\.git$/
+const PEP508_NAME_REGEX = /^[\w.\-]+/v
+const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/v
+const DATETIME_DATE_REGEX = /^(\d{4}-\d{2}-\d{2})T/v
+const TRAILING_DOT_GIT_REGEX = /\.git$/v
 
 // ─── Template ───────────────────────────────────────────────────────
 
@@ -105,7 +105,7 @@ export const codemeta = defineTemplate(
 		const package_ = firstOf(nodePackageJson)
 		const pyproject = firstOf(pythonPyprojectToml)
 		const setupPy = firstOf(pythonSetupPy)
-		const setupCfg = firstOf(pythonSetupCfg)
+		const setupConfig = firstOf(pythonSetupCfg)
 		const pkgInfo = firstOf(pythonPkgInfo)
 		const cargo = firstOf(rustCargoToml)
 		const gem = firstOf(rubyGemspec)
@@ -132,7 +132,7 @@ export const codemeta = defineTemplate(
 			pyproject?.data.project?.name ??
 			poetry?.name ??
 			setupPy?.data.name ??
-			setupCfg?.data.name ??
+			setupConfig?.data.name ??
 			pkgInfo?.data.name ??
 			cargo?.data.name ??
 			gem?.data.name ??
@@ -155,7 +155,7 @@ export const codemeta = defineTemplate(
 			pyproject?.data.project?.description ??
 			poetry?.description ??
 			setupPy?.data.description ??
-			setupCfg?.data.description ??
+			setupConfig?.data.description ??
 			pkgInfo?.data.summary ??
 			cargo?.data.description ??
 			gem?.data.summary ??
@@ -176,7 +176,7 @@ export const codemeta = defineTemplate(
 			pyproject?.data.project?.version ??
 			poetry?.version ??
 			setupPy?.data.version ??
-			setupCfg?.data.version ??
+			setupConfig?.data.version ??
 			pkgInfo?.data.version ??
 			cargo?.data.version ??
 			gem?.data.version ??
@@ -215,17 +215,15 @@ export const codemeta = defineTemplate(
 
 			// Python pyproject.toml
 			...(pyproject?.data.project?.authors ?? []).map((a) =>
-				is.plainObject(a)
-					? toPersonOrOrgLd({ email: a.email, name: a.name })
-					: toPersonOrOrgLd({ name: a }),
+				toPersonOrOrgLd(is.plainObject(a) ? { email: a.email, name: a.name } : { name: a }),
 			),
 
 			// Python setup.py / setup.cfg
-			...(setupPy?.data.author
+			...(setupPy?.data.author !== undefined && setupPy.data.author !== ''
 				? [toPersonOrOrgLd({ email: setupPy.data.author_email, name: setupPy.data.author })]
 				: []),
-			...(setupCfg?.data.author
-				? [toPersonOrOrgLd({ email: setupCfg.data.author_email, name: setupCfg.data.author })]
+			...(setupConfig?.data.author !== undefined && setupConfig.data.author !== ''
+				? [toPersonOrOrgLd({ email: setupConfig.data.author_email, name: setupConfig.data.author })]
 				: []),
 
 			// Rust Cargo.toml
@@ -248,19 +246,23 @@ export const codemeta = defineTemplate(
 			...(processing?.data.authors ?? []).map((a) => toPersonOrOrgLd({ name: a.name, url: a.url })),
 
 			// OpenFrameworks
-			...(ofAddon?.data.author ? [toPersonOrOrgLd({ name: ofAddon.data.author })] : []),
-			...(ofInstall?.data.author ? [toPersonOrOrgLd({ name: ofInstall.data.author })] : []),
+			...(ofAddon?.data.author !== undefined && ofAddon.data.author !== ''
+				? [toPersonOrOrgLd({ name: ofAddon.data.author })]
+				: []),
+			...(ofInstall?.data.author !== undefined && ofInstall.data.author !== ''
+				? [toPersonOrOrgLd({ name: ofInstall.data.author })]
+				: []),
 
 			// Cinder
 			...(cinder?.data.author ?? []).map((a) => toPersonOrOrgLd({ name: a })),
 
 			// Xcode
-			...(xcode?.data.author
+			...(xcode?.data.author !== undefined && xcode.data.author !== ''
 				? [toPersonOrOrgLd({ email: xcode.data.authorEmail, name: xcode.data.author })]
 				: []),
 
 			// Obsidian
-			...(obsidian?.data.author
+			...(obsidian?.data.author !== undefined && obsidian.data.author !== ''
 				? [toPersonOrOrgLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]
 				: []),
 
@@ -291,9 +293,9 @@ export const codemeta = defineTemplate(
 			// Node package.json contributors
 			...collectArrayField(nodePackageJson, (d) =>
 				d.contributors?.map((c) =>
-					is.plainObject(c)
-						? toPersonOrOrgLd({ email: c.email, name: c.name, url: c.url })
-						: toPersonOrOrgLd({ name: c }),
+					toPersonOrOrgLd(
+						is.plainObject(c) ? { email: c.email, name: c.name, url: c.url } : { name: c },
+					),
 				),
 			),
 
@@ -324,28 +326,26 @@ export const codemeta = defineTemplate(
 			// Node package.json maintainers
 			...collectArrayField(nodePackageJson, (d) =>
 				d.maintainers?.map((c) =>
-					is.plainObject(c)
-						? toPersonOrOrgLd({ email: c.email, name: c.name, url: c.url })
-						: toPersonOrOrgLd({ name: c }),
+					toPersonOrOrgLd(
+						is.plainObject(c) ? { email: c.email, name: c.name, url: c.url } : { name: c },
+					),
 				),
 			),
 			...(pyproject?.data.project?.maintainers ?? []).map((m) =>
-				is.plainObject(m)
-					? toPersonOrOrgLd({ email: m.email, name: m.name })
-					: toPersonOrOrgLd({ name: m }),
+				toPersonOrOrgLd(is.plainObject(m) ? { email: m.email, name: m.name } : { name: m }),
 			),
-			...(setupPy?.data.maintainer
+			...(setupPy?.data.maintainer !== undefined && setupPy.data.maintainer !== ''
 				? [toPersonOrOrgLd({ email: setupPy.data.maintainer_email, name: setupPy.data.maintainer })]
 				: []),
-			...(setupCfg?.data.maintainer
+			...(setupConfig?.data.maintainer !== undefined && setupConfig.data.maintainer !== ''
 				? [
 						toPersonOrOrgLd({
-							email: setupCfg.data.maintainer_email,
-							name: setupCfg.data.maintainer,
+							email: setupConfig.data.maintainer_email,
+							name: setupConfig.data.maintainer,
 						}),
 					]
 				: []),
-			...(pkgInfo?.data.maintainer
+			...(pkgInfo?.data.maintainer !== undefined && pkgInfo.data.maintainer !== ''
 				? [toPersonOrOrgLd({ email: pkgInfo.data.maintainer_email, name: pkgInfo.data.maintainer })]
 				: []),
 			...(arduino?.data.maintainer
@@ -376,10 +376,11 @@ export const codemeta = defineTemplate(
 		// ── Copyright holder ────────────────────────────────────────
 
 		const ecosystemCopyrightHolders: Array<CodemetaPersonOrOrgLd | undefined> = [
-			...(publiccode?.data.mainCopyrightOwner
+			...(publiccode?.data.mainCopyrightOwner !== undefined &&
+			publiccode.data.mainCopyrightOwner !== ''
 				? [toPersonOrOrgLd({ name: publiccode.data.mainCopyrightOwner })]
 				: []),
-			...(xcode?.data.copyrightHolder
+			...(xcode?.data.copyrightHolder !== undefined && xcode.data.copyrightHolder !== ''
 				? [toPersonOrOrgLd({ name: xcode.data.copyrightHolder })]
 				: []),
 		]
@@ -419,7 +420,7 @@ export const codemeta = defineTemplate(
 
 		// ── Code ────────────────────────────────────────────────────
 
-		const codeRepository =
+		const codeRepo =
 			github?.data.url ??
 			cargo?.data.repository ??
 			pom?.data.scmUrl ??
@@ -428,13 +429,15 @@ export const codemeta = defineTemplate(
 			arduino?.data.repository ??
 			cinder?.data.git ??
 			cm?.data.codeRepository ??
-			repositoryUrlFromPackageJson(package_?.data.repository) ??
+			repoUrlFromPackageJson(package_?.data.repository) ??
 			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
 			poetry?.repository
 
 		const programmingLanguage =
 			nonEmpty([
-				...(github?.data.primaryLanguage ? [github.data.primaryLanguage] : []),
+				...(github?.data.primaryLanguage !== undefined && github.data.primaryLanguage !== ''
+					? [github.data.primaryLanguage]
+					: []),
 				...(cm?.data.programmingLanguage ?? []),
 			]) ??
 			nonEmpty(Object.keys(github?.data.languages ?? {})) ??
@@ -442,14 +445,25 @@ export const codemeta = defineTemplate(
 
 		const runtimePlatform = nonEmpty([
 			...Object.keys(package_?.data.engines ?? {}),
-			...(goMod?.data.go_version ? [`go ${goMod.data.go_version}`] : []),
-			...(cargo?.data.rustVersion ? [`rust ${cargo.data.rustVersion}`] : []),
-			...(pyproject?.data.project?.requiresPython
+			...(goMod?.data.go_version !== undefined && goMod.data.go_version !== ''
+				? [`go ${goMod.data.go_version}`]
+				: []),
+			...(cargo?.data.rustVersion !== undefined && cargo.data.rustVersion !== ''
+				? [`rust ${cargo.data.rustVersion}`]
+				: []),
+			...(pyproject?.data.project?.requiresPython !== undefined &&
+			pyproject.data.project.requiresPython !== ''
 				? [`python ${pyproject.data.project.requiresPython}`]
 				: []),
-			...(setupPy?.data.python_requires ? [`python ${setupPy.data.python_requires}`] : []),
-			...(gem?.data.required_ruby_version ? [`ruby ${gem.data.required_ruby_version}`] : []),
-			...(pom?.data.javaVersion ? [`java ${pom.data.javaVersion}`] : []),
+			...(setupPy?.data.python_requires !== undefined && setupPy.data.python_requires !== ''
+				? [`python ${setupPy.data.python_requires}`]
+				: []),
+			...(gem?.data.required_ruby_version !== undefined && gem.data.required_ruby_version !== ''
+				? [`ruby ${gem.data.required_ruby_version}`]
+				: []),
+			...(pom?.data.javaVersion !== undefined && pom.data.javaVersion !== ''
+				? [`java ${pom.data.javaVersion}`]
+				: []),
 			...(cm?.data.runtimePlatform ?? []),
 		])
 
@@ -463,17 +477,17 @@ export const codemeta = defineTemplate(
 			...(xcode?.data.operatingSystems ?? []),
 		])
 
-		const applicationCategory =
+		const appCategory =
 			cm?.data.applicationCategory ??
 			xcode?.data.applicationCategory ??
 			arduino?.data.category ??
 			publiccode?.data.softwareType
 
-		const applicationSubCategory = cm?.data.applicationSubCategory
+		const appSubCategory = cm?.data.applicationSubCategory
 
 		// ── Dependencies ────────────────────────────────────────────
 
-		const runtimeDeps = collectRuntimeDeps({
+		const runtimeDependencies = collectRuntimeDependencies({
 			arduino,
 			cargo,
 			cinder,
@@ -487,13 +501,13 @@ export const codemeta = defineTemplate(
 			publiccode,
 			pyproject,
 			rubyGemspec,
-			setupCfg,
+			setupCfg: setupConfig,
 			setupPy,
 		})
 
 		const softwareRequirements =
-			runtimeDeps.length > 0
-				? deduplicateDependencies(runtimeDeps)
+			runtimeDependencies.length > 0
+				? deduplicateDependencies(runtimeDependencies)
 				: cm?.data.softwareRequirements?.map((d) =>
 						toDependencyLd(
 							d.name ?? d.identifier ?? '',
@@ -503,7 +517,7 @@ export const codemeta = defineTemplate(
 						),
 					)
 
-		const developmentDeps = collectDevelopmentDeps({
+		const developmentDependencies = collectDevelopmentDependencies({
 			cargo,
 			gem,
 			javaPomXml,
@@ -512,8 +526,8 @@ export const codemeta = defineTemplate(
 		})
 
 		const softwareSuggestions =
-			developmentDeps.length > 0
-				? deduplicateDependencies(developmentDeps)
+			developmentDependencies.length > 0
+				? deduplicateDependencies(developmentDependencies)
 				: cm?.data.softwareSuggestions?.map((d) =>
 						toDependencyLd(
 							d.name ?? d.identifier ?? '',
@@ -545,12 +559,11 @@ export const codemeta = defineTemplate(
 		// ── License ─────────────────────────────────────────────────
 
 		const rawLicense =
-			// eslint-disable-next-line ts/no-unnecessary-condition
 			package_?.data.license ??
 			cargo?.data.license ??
 			resolvePythonLicense(pyproject?.data.project?.license) ??
 			setupPy?.data.license ??
-			setupCfg?.data.license ??
+			setupConfig?.data.license ??
 			gem?.data.license ??
 			firstPomLicense(pom) ??
 			arduino?.data.license ??
@@ -577,7 +590,7 @@ export const codemeta = defineTemplate(
 				...(pyproject?.data.project?.keywords ?? []),
 				...(poetry?.keywords ?? []),
 				...(setupPy?.data.keywords ?? []),
-				...(setupCfg?.data.keywords ?? []),
+				...(setupConfig?.data.keywords ?? []),
 				...(pkgInfo?.data.keywords ?? []),
 				...(cargo?.data.keywords ?? []),
 				...(ofAddon?.data.tags ?? []),
@@ -595,7 +608,7 @@ export const codemeta = defineTemplate(
 			poetry?.homepage ??
 			cargo?.data.homepage ??
 			setupPy?.data.url ??
-			setupCfg?.data.url ??
+			setupConfig?.data.url ??
 			pkgInfo?.data.home_page ??
 			gem?.data.homepage ??
 			pom?.data.url ??
@@ -637,7 +650,7 @@ export const codemeta = defineTemplate(
 		const readme =
 			readmeUrl(
 				firstOf(readmeFile),
-				codeRepository,
+				codeRepo,
 				github?.data.defaultBranch ?? git?.data.branchCurrent,
 				firstOf(metascope)?.data.options.path,
 			) ?? cm?.data.readme
@@ -656,19 +669,17 @@ export const codemeta = defineTemplate(
 			'@context': 'https://w3id.org/codemeta/3.0',
 			'@type': 'SoftwareSourceCode',
 			// Application
-			applicationCategory,
-			applicationSubCategory,
+			applicationCategory: appCategory,
+			applicationSubCategory: appSubCategory,
 			// People
 			author,
 			buildInstructions,
 			// Source code
-			codeRepository,
+			codeRepository: codeRepo,
 			continuousIntegration,
 			contributor,
 			copyrightHolder,
-			copyrightYear: is.nonEmptyStringAndNotWhitespace(copyrightYear)
-				? Number.parseInt(copyrightYear, 10) || undefined
-				: undefined,
+			copyrightYear: toCopyrightYear(copyrightYear),
 			// Dates
 			dateCreated: toDateOnly(dateCreated),
 			dateModified: toDateOnly(dateModified),
@@ -761,7 +772,7 @@ function resolvePersonsOrOrgs(
 /**
  * Collect runtime dependencies from all ecosystem sources.
  */
-function collectRuntimeDeps(sources: {
+function collectRuntimeDependencies(sources: {
 	arduino: ReturnType<
 		typeof firstOf<{ data: { depends: Array<{ name: string; versionConstraint?: string }> } }>
 	>
@@ -794,85 +805,105 @@ function collectRuntimeDeps(sources: {
 	setupCfg: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
 	setupPy: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
 }): CodemetaDependencyLd[] {
-	const deps: CodemetaDependencyLd[] = []
+	const dependencies: CodemetaDependencyLd[] = []
 
 	// Node package.json dependencies
-	deps.push(
-		...collectArrayField(sources.nodePackageJson, (d) => objectEntriesToDeps(d.dependencies)),
+	dependencies.push(
+		...collectArrayField(sources.nodePackageJson, (d) =>
+			objectEntriesToDependencies(d.dependencies),
+		),
 	)
 
 	// Python pyproject.toml dependencies
-	deps.push(
-		...(sources.pyproject?.data.project?.dependencies ?? []).map((dep) => parsePep508Dep(dep)),
+	dependencies.push(
+		...(sources.pyproject?.data.project?.dependencies ?? []).map((dependency) =>
+			parsePep508Dependency(dependency),
+		),
 	)
 
 	// Python setup.py / setup.cfg install_requires
-	deps.push(...(sources.setupPy?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)))
-	deps.push(...(sources.setupCfg?.data.install_requires ?? []).map((dep) => parsePep508Dep(dep)))
+	dependencies.push(
+		...(sources.setupPy?.data.install_requires ?? []).map((dependency) =>
+			parsePep508Dependency(dependency),
+		),
+	)
+	dependencies.push(
+		...(sources.setupCfg?.data.install_requires ?? []).map((dependency) =>
+			parsePep508Dependency(dependency),
+		),
+	)
 
 	// Python PKG-INFO requires_dist
-	deps.push(...(sources.pkgInfo?.data.requires_dist ?? []).map((dep) => parsePep508Dep(dep)))
+	dependencies.push(
+		...(sources.pkgInfo?.data.requires_dist ?? []).map((dependency) =>
+			parsePep508Dependency(dependency),
+		),
+	)
 
 	// Rust Cargo.toml dependencies
-	deps.push(
+	dependencies.push(
 		...(sources.cargo?.data.dependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
 	// Ruby gemspec runtime dependencies
-	deps.push(
+	dependencies.push(
 		...collectArrayField(sources.rubyGemspec, (d) =>
 			d.dependencies
-				.filter((dep: { type: string }) => dep.type === 'runtime')
-				.map((dep: { name: string; requirements: string[] }) =>
-					toDependencyLd(dep.name, dep.requirements.join(', ')),
+				.filter((dependency: { type: string }) => dependency.type === 'runtime')
+				.map((dependency: { name: string; requirements: string[] }) =>
+					toDependencyLd(dependency.name, dependency.requirements.join(', ')),
 				),
 		),
 	)
 
 	// Java POM dependencies
-	deps.push(
+	dependencies.push(
 		...collectArrayField(sources.javaPomXml, (d) =>
-			d.dependencies.map((dep: { artifactId: string; groupId: string; version?: string }) =>
-				toDependencyLd(dep.artifactId, dep.version, `${dep.groupId}:${dep.artifactId}`),
+			d.dependencies.map((dependency: { artifactId: string; groupId: string; version?: string }) =>
+				toDependencyLd(
+					dependency.artifactId,
+					dependency.version,
+					`${dependency.groupId}:${dependency.artifactId}`,
+				),
 			),
 		),
 	)
 
 	// Go go.mod dependencies
-	deps.push(
+	dependencies.push(
 		...collectArrayField(sources.goGoMod, (d) =>
-			d.dependencies.map((dep: { module: string; version: string }) =>
-				toDependencyLd(dep.module, dep.version),
+			d.dependencies.map((dependency: { module: string; version: string }) =>
+				toDependencyLd(dependency.module, dependency.version),
 			),
 		),
 	)
 
 	// Arduino depends
-	deps.push(
+	dependencies.push(
 		...(sources.arduino?.data.depends ?? []).map((d) =>
 			toDependencyLd(d.name, d.versionConstraint),
 		),
 	)
 
 	// OpenFrameworks
-	deps.push(...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)))
-	deps.push(...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)))
+	dependencies.push(...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)))
+	dependencies.push(...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)))
 
 	// Cinder requires
-	deps.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
+	dependencies.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
 
 	// Publiccode.yml dependencies
-	deps.push(
+	dependencies.push(
 		...(sources.publiccode?.data.dependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
-	return deps
+	return dependencies
 }
 
 /**
  * Collect dev dependencies from ecosystem sources.
  */
-function collectDevelopmentDeps(sources: {
+function collectDevelopmentDependencies(sources: {
 	cargo: ReturnType<
 		typeof firstOf<{ data: { devDependencies: Array<{ name: string; version?: string }> } }>
 	>
@@ -891,39 +922,46 @@ function collectDevelopmentDeps(sources: {
 	nodePackageJson: MetadataContext['nodePackageJson']
 	rubyGemspec: MetadataContext['rubyGemspec']
 }): CodemetaDependencyLd[] {
-	const deps: CodemetaDependencyLd[] = []
+	const dependencies: CodemetaDependencyLd[] = []
 
 	// Node devDependencies
-	deps.push(
-		...collectArrayField(sources.nodePackageJson, (d) => objectEntriesToDeps(d.devDependencies)),
+	dependencies.push(
+		...collectArrayField(sources.nodePackageJson, (d) =>
+			objectEntriesToDependencies(d.devDependencies),
+		),
 	)
 
 	// Rust dev-dependencies
-	deps.push(
+	dependencies.push(
 		...(sources.cargo?.data.devDependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
 	// Ruby development dependencies
-	deps.push(
+	dependencies.push(
 		...collectArrayField(sources.rubyGemspec, (d) =>
 			d.dependencies
-				.filter((dep: { type: string }) => dep.type === 'development')
-				.map((dep: { name: string; requirements: string[] }) =>
-					toDependencyLd(dep.name, dep.requirements.join(', ')),
+				.filter((dependency: { type: string }) => dependency.type === 'development')
+				.map((dependency: { name: string; requirements: string[] }) =>
+					toDependencyLd(dependency.name, dependency.requirements.join(', ')),
 				),
 		),
 	)
 
 	// Java POM devDependencies
-	deps.push(
+	dependencies.push(
 		...collectArrayField(sources.javaPomXml, (d) =>
-			d.devDependencies.map((dep: { artifactId: string; groupId: string; version?: string }) =>
-				toDependencyLd(dep.artifactId, dep.version, `${dep.groupId}:${dep.artifactId}`),
+			d.devDependencies.map(
+				(dependency: { artifactId: string; groupId: string; version?: string }) =>
+					toDependencyLd(
+						dependency.artifactId,
+						dependency.version,
+						`${dependency.groupId}:${dependency.artifactId}`,
+					),
 			),
 		),
 	)
 
-	return deps
+	return dependencies
 }
 
 // ─── Field Helpers ──────────────────────────────────────────────────
@@ -931,26 +969,31 @@ function collectDevelopmentDeps(sources: {
 /**
  * Convert a Record<name, version> dependency map to CodemetaDependencyLd[].
  */
-function objectEntriesToDeps(
-	deps: Record<string, string> | undefined,
+function objectEntriesToDependencies(
+	dependencies: Record<string, string> | undefined,
 ): CodemetaDependencyLd[] | undefined {
-	if (deps === undefined) {
+	if (dependencies === undefined) {
 		return undefined
 	}
 
-	return Object.entries(deps).map(([depName, depVersion]) => toDependencyLd(depName, depVersion))
+	return Object.entries(dependencies).map(([dependencyName, dependencyVersion]) =>
+		toDependencyLd(dependencyName, dependencyVersion),
+	)
 }
 
 /**
  * Parse a PEP 508 dependency string ("package>=1.0") into a
  * CodemetaDependencyLd.
  */
-function parsePep508Dep(dep: string): CodemetaDependencyLd {
-	const trimmed = dep.trim()
+function parsePep508Dependency(dependency: string): CodemetaDependencyLd {
+	const trimmed = dependency.trim()
 	const nameMatch = PEP508_NAME_REGEX.exec(trimmed)
 	if (nameMatch) {
-		const depVersion = trimmed.slice(nameMatch[0].length).trim()
-		return toDependencyLd(nameMatch[0], depVersion.length > 0 ? depVersion : undefined)
+		const dependencyVersion = trimmed.slice(nameMatch[0].length).trim()
+		return toDependencyLd(
+			nameMatch[0],
+			dependencyVersion.length > 0 ? dependencyVersion : undefined,
+		)
 	}
 
 	return toDependencyLd(trimmed)
@@ -959,18 +1002,18 @@ function parsePep508Dep(dep: string): CodemetaDependencyLd {
 /**
  * Extract URL from package.json repository field (string or {url}).
  */
-function repositoryUrlFromPackageJson(
-	repository: string | undefined | { type: string; url: string },
+function repoUrlFromPackageJson(
+	repo: string | undefined | { type: string; url: string },
 ): string | undefined {
-	if (repository === undefined) {
+	if (repo === undefined) {
 		return undefined
 	}
 
-	if (typeof repository === 'string') {
-		return repository
+	if (typeof repo === 'string') {
+		return repo
 	}
 
-	return repository.url
+	return repo.url
 }
 
 /**
@@ -1026,6 +1069,21 @@ function resolveCmLicense(cmLicense: string | string[] | undefined): string | un
 }
 
 /**
+ * Parse a copyright year string to a leading integer year, or undefined when it
+ * contains no parseable year (0 and NaN both collapse to undefined).
+ */
+function toCopyrightYear(copyrightYear: string | undefined): number | undefined {
+	if (!is.nonEmptyStringAndNotWhitespace(copyrightYear)) {
+		return undefined
+	}
+
+	// Prefix-parse a leading year (e.g. "2020-2021" → 2020); Number() would reject these.
+	// eslint-disable-next-line unicorn/prefer-number-coercion
+	const year = Number.parseInt(copyrightYear, 10)
+	return year === 0 || Number.isNaN(year) ? undefined : year
+}
+
+/**
  * Deduplicate strings case-insensitively, preserving first occurrence casing.
  */
 function deduplicateStrings(strings: string[]): string[] {
@@ -1037,7 +1095,7 @@ function deduplicateStrings(strings: string[]): string[] {
 		}
 	}
 
-	return [...seen.values()]
+	return seen.values().toArray()
 }
 
 /**

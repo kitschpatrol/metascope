@@ -7,13 +7,12 @@ import { templates } from '../src/lib/templates'
 const projectRoot = resolve('.')
 const allSourcesFixture = resolve('test/fixtures/all-sources')
 
-// eslint-disable-next-line ts/no-unsafe-type-assertion
 const templateNames = Object.keys(templates) as TemplateName[]
 
 describe('getMetadata - per template (project root)', () => {
 	for (const template of templateNames) {
 		bench(
-			template,
+			`template: ${template}`,
 			async () => {
 				await getMetadata({ offline: true, path: projectRoot, template })
 			},
@@ -25,7 +24,7 @@ describe('getMetadata - per template (project root)', () => {
 describe('getMetadata - per template (all-sources fixture)', () => {
 	for (const template of templateNames) {
 		bench(
-			template,
+			`template: ${template}`,
 			async () => {
 				await getMetadata({ offline: true, path: allSourcesFixture, template })
 			},

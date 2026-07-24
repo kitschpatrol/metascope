@@ -48,9 +48,7 @@ export const obsidianPluginManifestJsonSource = defineSource<'obsidianPluginMani
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const parsed = manifestSchema.safeParse(JSON.parse(content))
-		if (parsed.success) {
-			return { data: parsed.data, source: input }
-		}
+		return parsed.success ? { data: parsed.data, source: input } : undefined
 	},
 	phase: 1,
 })

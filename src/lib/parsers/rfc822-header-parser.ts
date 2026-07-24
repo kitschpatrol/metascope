@@ -1,6 +1,6 @@
 // ─── Header parser ──────────────────────────────────────────────────────────
 
-const LEADING_WHITESPACE_REGEX = /^\s/
+const LEADING_WHITESPACE_REGEX = /^\s/v
 
 /** Multi-value headers that can appear multiple times. */
 const MULTI_VALUE_HEADERS = new Set([
@@ -28,9 +28,9 @@ export function parseRfc822Headers(content: string): Record<string, string> {
 		}
 
 		// Continuation line (starts with whitespace)
-		if (LEADING_WHITESPACE_REGEX.test(line) && lastKey) {
+		if (lastKey !== '' && LEADING_WHITESPACE_REGEX.test(line)) {
 			const continuation = line.trim()
-			if (continuation) {
+			if (continuation !== '') {
 				headers[lastKey] = `${headers[lastKey]}\n${continuation}`
 			}
 
@@ -43,8 +43,11 @@ export function parseRfc822Headers(content: string): Record<string, string> {
 			const key = line.slice(0, colonIndex)
 			const value = line.slice(colonIndex + 2).trim()
 
+			const previous = headers[key]
 			headers[key] =
-				MULTI_VALUE_HEADERS.has(key) && headers[key] ? `${headers[key]}\n${value}` : value
+				previous !== undefined && previous !== '' && MULTI_VALUE_HEADERS.has(key)
+					? `${previous}\n${value}`
+					: value
 
 			lastKey = key
 		}
@@ -61,12 +64,12 @@ export function extractRfc822Body(content: string): string | undefined {
 	}
 
 	const body = content.slice(blankIndex + 2).trim()
-	return body || undefined
+	return body === '' ? undefined : body
 }
 
 /** Split newline-separated multi-value into array. */
 export function splitMultiValues(value: string | undefined): string[] {
-	if (!value) {
+	if (value === undefined || value === '') {
 		return []
 	}
 

@@ -66,13 +66,13 @@ describe('parse', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'caddyserver-certmagic/go.mod'), 'utf8')
 		const result = parse(content)
 
-		const depNames = result.dependencies.map((d) => d.module)
-		expect(depNames).toContain('github.com/caddyserver/zerossl')
-		expect(depNames).toContain('github.com/miekg/dns')
-		expect(depNames).toContain('go.uber.org/zap')
+		const dependencyNames = result.dependencies.map((d) => d.module)
+		expect(dependencyNames).toContain('github.com/caddyserver/zerossl')
+		expect(dependencyNames).toContain('github.com/miekg/dns')
+		expect(dependencyNames).toContain('go.uber.org/zap')
 		// Indirect deps should be excluded
-		expect(depNames).not.toContain('go.uber.org/multierr')
-		expect(depNames).not.toContain('golang.org/x/mod')
+		expect(dependencyNames).not.toContain('go.uber.org/multierr')
+		expect(dependencyNames).not.toContain('golang.org/x/mod')
 	})
 
 	it('should include version in dependencies', () => {

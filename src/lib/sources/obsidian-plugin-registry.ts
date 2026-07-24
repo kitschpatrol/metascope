@@ -56,8 +56,9 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 		}
 
 		const stats = pluginStatsSchema.parse(await response.json())
-		// eslint-disable-next-line ts/no-unnecessary-condition -- pluginId may not exist in stats
-		const downloadCount = stats[pluginId]?.downloads || undefined
+
+		const downloads = stats[pluginId]?.downloads
+		const downloadCount = downloads === undefined || downloads === 0 ? undefined : downloads
 
 		return { data: { downloadCount, url }, source: url }
 	},

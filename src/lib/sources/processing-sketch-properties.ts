@@ -8,7 +8,7 @@ import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl } from '../utilities/schema-primitives'
 import { splitCommaSeparated } from '../utilities/template-helpers'
 
-const AUTHOR_SEPARATOR_REGEX = /\band\b|,|&/
+const AUTHOR_SEPARATOR_REGEX = /\band\b|,|&/v
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -108,52 +108,29 @@ export type ProcessingSketchPropertiesData =
 export function parse(content: string): ProcessingSketchProperties {
 	const raw = parseProperties(content)
 
-	// eslint-disable-next-line ts/no-unnecessary-condition
-	const versionRaw = raw.version ?? '0'
-	const versionParsed = Number.parseInt(versionRaw, 10)
-
 	const prettyVersionRaw = raw.prettyVersion
-	const prettyVersion = prettyVersionRaw ? stripInlineComment(prettyVersionRaw) : undefined
+	const prettyVersion =
+		prettyVersionRaw !== undefined && prettyVersionRaw !== ''
+			? stripInlineComment(prettyVersionRaw)
+			: undefined
 
-	const minRevisionRaw = raw.minRevision
-	const minParsed = minRevisionRaw ? Number.parseInt(minRevisionRaw, 10) : 0
-
-	const maxRevisionRaw = raw.maxRevision
-	const maxParsed = maxRevisionRaw ? Number.parseInt(maxRevisionRaw, 10) : 0
-
-	const manifestVersionCodeRaw = raw['manifest.version.code']
-	const manifestVersionCode = manifestVersionCodeRaw
-		? Number.parseInt(manifestVersionCodeRaw, 10)
-		: undefined
-
-	const manifestSdkTargetRaw = raw['manifest.sdk.target']
-	const manifestSdkTarget = manifestSdkTargetRaw
-		? Number.parseInt(manifestSdkTargetRaw, 10)
-		: undefined
-
-	const manifestSdkMinRaw = raw['manifest.sdk.min']
-	const manifestSdkMin = manifestSdkMinRaw ? Number.parseInt(manifestSdkMinRaw, 10) : undefined
-
-	const permissionsRaw = raw['manifest.permissions'] ?? ''
-	const manifestPermissions = splitCommaSeparated(permissionsRaw)
+	const manifestPermissions = splitCommaSeparated(raw['manifest.permissions'] ?? '')
 
 	return processingSketchPropertiesSchema.parse({
-		// eslint-disable-next-line ts/no-unnecessary-condition
 		authors: parseAuthors(raw.authors ?? raw.authorList ?? ''),
 		component: nonEmpty(raw.component),
-		// eslint-disable-next-line ts/no-unnecessary-condition
 		download: nonEmpty(unescapeUrl(raw.download ?? '')),
 		main: nonEmpty(raw.main),
 		manifestLabel: nonEmpty(raw['manifest.label']),
 		manifestOrientation: nonEmpty(raw['manifest.orientation']),
 		manifestPackage: nonEmpty(raw['manifest.package']),
 		manifestPermissions,
-		manifestSdkMin: Number.isNaN(manifestSdkMin) ? undefined : manifestSdkMin,
-		manifestSdkTarget: Number.isNaN(manifestSdkTarget) ? undefined : manifestSdkTarget,
-		manifestVersionCode: Number.isNaN(manifestVersionCode) ? undefined : manifestVersionCode,
+		manifestSdkMin: parseIntegerOr(raw['manifest.sdk.min'], undefined),
+		manifestSdkTarget: parseIntegerOr(raw['manifest.sdk.target'], undefined),
+		manifestVersionCode: parseIntegerOr(raw['manifest.version.code'], undefined),
 		manifestVersionName: nonEmpty(raw['manifest.version.name']),
-		maxRevision: Number.isNaN(maxParsed) ? 0 : maxParsed,
-		minRevision: Number.isNaN(minParsed) ? 0 : minParsed,
+		maxRevision: parseIntegerOr(raw.maxRevision, 0),
+		minRevision: parseIntegerOr(raw.minRevision, 0),
 		mode: nonEmpty(raw.mode),
 		modeId: nonEmpty(raw['mode.id']),
 		name: nonEmpty(raw.name),
@@ -162,14 +139,31 @@ export function parse(content: string): ProcessingSketchProperties {
 		raw,
 		sentence: nonEmpty(raw.sentence),
 		templates: nonEmpty(raw.templates),
-		// eslint-disable-next-line ts/no-unnecessary-condition
 		url: nonEmpty(unescapeUrl(raw.url ?? '')),
-		version: Number.isNaN(versionParsed) ? 0 : versionParsed,
+		version: parseIntegerOr(raw.version, 0),
 		zipfilename: nonEmpty(raw.zipfilename),
 	})
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────
+
+/**
+ * Parse a raw properties value as an integer, returning `fallback` when the
+ * value is missing, empty, or non-numeric.
+ */
+function parseIntegerOr(value: string | undefined, fallback: number): number
+function parseIntegerOr(value: string | undefined, fallback: undefined): number | undefined
+function parseIntegerOr(
+	value: string | undefined,
+	fallback: number | undefined,
+): number | undefined {
+	if (value === undefined || value === '') {
+		return fallback
+	}
+
+	const parsed = Math.trunc(Number(value))
+	return Number.isNaN(parsed) ? fallback : parsed
+}
 
 /** Return a trimmed string, or undefined if empty/whitespace-only. */
 function nonEmpty(value: string | undefined): string | undefined {

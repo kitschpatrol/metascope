@@ -102,18 +102,18 @@ export function parse(source: string): PkgInfo {
 	// Simple string fields
 	for (const [header, field] of Object.entries(HEADER_MAP)) {
 		const value = headers[header]
-		if (value && value !== 'UNKNOWN') {
+		if (value !== undefined && value !== '' && value !== 'UNKNOWN') {
 			Object.assign(data, { [field]: value })
 		}
 	}
 
 	// Also map Summary → description for convenience
-	if (headers.Summary && headers.Summary !== 'UNKNOWN') {
+	if (headers.Summary !== undefined && headers.Summary !== '' && headers.Summary !== 'UNKNOWN') {
 		data.description = headers.Summary
 	}
 
 	// Keywords — comma-separated
-	if (headers.Keywords && headers.Keywords !== 'UNKNOWN') {
+	if (headers.Keywords !== undefined && headers.Keywords !== '' && headers.Keywords !== 'UNKNOWN') {
 		data.keywords = splitCommaSeparated(headers.Keywords)
 	}
 
@@ -127,13 +127,14 @@ export function parse(source: string): PkgInfo {
 	data.requires_dist = splitMultiValues(headers['Requires-Dist'])
 
 	// Project-URL — multi-value "Label, URL" format
-	if (headers['Project-URL']) {
-		for (const line of splitMultiValues(headers['Project-URL'])) {
+	const projectUrl = headers['Project-URL']
+	if (projectUrl !== undefined && projectUrl !== '') {
+		for (const line of splitMultiValues(projectUrl)) {
 			const commaIndex = line.indexOf(', ')
 			if (commaIndex > 0) {
 				const label = line.slice(0, commaIndex).trim()
 				const url = line.slice(commaIndex + 2).trim()
-				if (url) {
+				if (url !== '') {
 					data.project_urls[label] = url
 				}
 			}

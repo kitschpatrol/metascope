@@ -60,6 +60,7 @@ describe('parse', () => {
 		expect(result!.version).toBe('Public Beta 2')
 		expect(result!.git).toBe('https://github.com/astellato/Cinder-Syphon.git')
 		expect(result!.url).toBe('https://github.com/astellato/Cinder-Syphon')
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result!.library).toBe('http://syphon.v002.info')
 		expect(result!.supports).toEqual(['macOS'])
 		expect(result!.requires).toEqual([])

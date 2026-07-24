@@ -22,11 +22,11 @@ import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
-const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/i
-const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i
-const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/i
-const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/
-const PROCESSOR_ARCH_REGEX = /^(?:arm|x86|i386)/i
+const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/iv
+const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/iv
+const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/iv
+const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/v
+const PROCESSOR_ARCH_REGEX = /^(?:arm|x86|i386)/iv
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -66,10 +66,10 @@ type PlistDict = Record<string, unknown>
 // ─── Constants ──────────────────────────────────────────────────────
 
 /** Xcode build variable pattern: $(VAR) or ${VAR}. */
-const XCODE_VARIABLE_RE = /\$[({][^)}]+[)}]/
+const XCODE_VARIABLE_RE = /\$[\(\{][^\)\}]+[\)\}]/v
 
 /** XML comment, including malformed ones with `--` inside. */
-const XML_COMMENT_RE = /<!--[\s\S]*?-->/g
+const XML_COMMENT_RE = /<!--[\s\S]*?-->/gv
 
 /**
  * Map DTPlatformName / CFBundleSupportedPlatforms values to human-readable OS
@@ -122,14 +122,14 @@ export function parse(content: string): InfoPlist | undefined {
 
 	const authorName = getString(data, 'createdby') ?? getString(data, 'contactName')
 	const authorEmailRot13 = getString(data, 'contactEmailRot13')
-	const authorEmail = authorEmailRot13 ? rot13(authorEmailRot13) : undefined
+	const authorEmail = authorEmailRot13 === undefined ? undefined : rot13(authorEmailRot13)
 
 	const url = getString(data, 'webaddress')
 
-	const applicationCategory = parseApplicationCategory(data)
+	const appCategory = parseAppCategory(data)
 
 	return infoPlistSchema.parse({
-		applicationCategory,
+		applicationCategory: appCategory,
 		author: authorName,
 		authorEmail,
 		copyrightHolder,
@@ -185,7 +185,7 @@ function getString(data: PlistDict, key: string): string | undefined {
  * ROT13-decode a string (used by TextMate bundles for obfuscated emails).
  */
 function rot13(value: string): string {
-	return value.replaceAll(/[a-z]/gi, (c) => {
+	return value.replaceAll(/[a-z]/giv, (c) => {
 		const base = c <= 'Z' ? 65 : 97
 		return String.fromCodePoint(((c.codePointAt(0)! - base + 13) % 26) + base)
 	})
@@ -211,9 +211,9 @@ function humanizeCategory(uti: string): string {
 /**
  * Parse application category from LSApplicationCategoryType.
  */
-function parseApplicationCategory(data: PlistDict): string | undefined {
+function parseAppCategory(data: PlistDict): string | undefined {
 	const category = getString(data, 'LSApplicationCategoryType')
-	if (!category) {
+	if (category === undefined) {
 		return undefined
 	}
 
@@ -230,7 +230,7 @@ function parseCopyright(data: PlistDict): {
 } {
 	const copyrightSource =
 		getString(data, 'NSHumanReadableCopyright') ?? getString(data, 'CFBundleGetInfoString')
-	if (!copyrightSource) {
+	if (copyrightSource === undefined) {
 		return {}
 	}
 
@@ -240,11 +240,11 @@ function parseCopyright(data: PlistDict): {
 
 	// Extract holder: text after the year and optional punctuation/whitespace
 	// Common patterns: "Copyright © 2013 MICE Software. All rights reserved."
-	const holderMatch = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)
+	const holderText = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)?.[1]
 	let copyrightHolder: string | undefined
-	if (holderMatch) {
+	if (holderText !== undefined) {
 		// Clean up trailing "All rights reserved." and similar
-		copyrightHolder = holderMatch[1]
+		copyrightHolder = holderText
 			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
 			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
@@ -264,20 +264,22 @@ function parseOperatingSystems(data: PlistDict): string[] {
 	const seen = new Set<string>()
 
 	function add(value: string) {
-		if (!seen.has(value)) {
-			seen.add(value)
-			results.push(value)
+		if (seen.has(value)) {
+			return
 		}
+
+		seen.add(value)
+		results.push(value)
 	}
 
 	// Minimum OS versions (most specific — includes version number)
 	const minMacOS = getString(data, 'LSMinimumSystemVersion')
-	if (minMacOS) {
+	if (minMacOS !== undefined) {
 		add(`macOS >= ${minMacOS}`)
 	}
 
 	const minIOS = getString(data, 'MinimumOSVersion')
-	if (minIOS) {
+	if (minIOS !== undefined) {
 		add(`iOS >= ${minIOS}`)
 	}
 
@@ -288,9 +290,9 @@ function parseOperatingSystems(data: PlistDict): string[] {
 
 	// DTPlatformName
 	const platformName = getString(data, 'DTPlatformName')
-	if (platformName) {
+	if (platformName !== undefined) {
 		const os = PLATFORM_NAME_MAP[platformName.toLowerCase()]
-		if (os) {
+		if (os !== undefined) {
 			add(os)
 		}
 	}
@@ -299,11 +301,13 @@ function parseOperatingSystems(data: PlistDict): string[] {
 	const supportedPlatforms = data.CFBundleSupportedPlatforms
 	if (Array.isArray(supportedPlatforms)) {
 		for (const p of supportedPlatforms) {
-			if (typeof p === 'string') {
-				const os = PLATFORM_NAME_MAP[p.toLowerCase()]
-				if (os) {
-					add(os)
-				}
+			if (typeof p !== 'string') {
+				continue
+			}
+
+			const os = PLATFORM_NAME_MAP[p.toLowerCase()]
+			if (os !== undefined) {
+				add(os)
 			}
 		}
 	}
@@ -346,9 +350,7 @@ export const xcodeInfoPlistSource = defineSource<'xcodeInfoPlist'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

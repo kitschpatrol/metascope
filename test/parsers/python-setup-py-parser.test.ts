@@ -53,7 +53,7 @@ describe('parseSetupPy', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const setupPyFile = files.find((name) => name === 'setup.py')
-			if (!setupPyFile) {
+			if (setupPyFile === undefined) {
 				continue
 			}
 

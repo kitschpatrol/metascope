@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-null */
-/* eslint-disable ts/no-unsafe-type-assertion */
 
 import { http, HttpResponse, passthrough } from 'msw'
 import { githubActionsRuns, githubGraphql, githubRest } from './fixtures/github'
@@ -20,7 +19,7 @@ export const handlers = [
 		}
 
 		const fixture = pypiPackages[params.name as string]
-		if (!fixture) {
+		if (fixture === undefined) {
 			return new HttpResponse(null, { status: 404 })
 		}
 
@@ -33,7 +32,7 @@ export const handlers = [
 		}
 
 		const fixture = pypistatsRecent[params.name as string]
-		if (!fixture) {
+		if (fixture === undefined) {
 			return new HttpResponse(null, { status: 404 })
 		}
 
@@ -46,7 +45,7 @@ export const handlers = [
 		}
 
 		const fixture = pypistatsOverall[params.name as string]
-		if (!fixture) {
+		if (fixture === undefined) {
 			return new HttpResponse(null, { status: 404 })
 		}
 
@@ -61,7 +60,7 @@ export const handlers = [
 		}
 
 		const fixture = npmPackages[params.name as string]
-		if (!fixture) {
+		if (fixture === undefined) {
 			return new HttpResponse(null, { status: 404 })
 		}
 
@@ -74,7 +73,7 @@ export const handlers = [
 		}
 
 		const downloads = npmDownloads[params.name as string]
-		// eslint-disable-next-line ts/no-unnecessary-condition
+
 		if (downloads === undefined) {
 			return new HttpResponse(null, { status: 404 })
 		}
@@ -105,7 +104,7 @@ export const handlers = [
 		const body = (await request.json()) as { variables?: { owner?: string; repo?: string } }
 		const key = `${body.variables?.owner}/${body.variables?.repo}`
 		const fixture = githubGraphql[key]
-		if (!fixture) {
+		if (fixture === undefined) {
 			return HttpResponse.json({ errors: [{ message: 'Not Found' }] }, { status: 200 })
 		}
 
@@ -121,7 +120,7 @@ export const handlers = [
 		const key = `${params.owner}/${params.repo}`
 
 		const fixture = githubActionsRuns[key]
-		// eslint-disable-next-line ts/no-unnecessary-condition
+
 		if (!fixture) {
 			return new HttpResponse(null, { status: 404 })
 		}
@@ -137,7 +136,7 @@ export const handlers = [
 		// eslint-disable-next-line ts/restrict-template-expressions
 		const key = `${params.owner}/${params.repo}`
 		const fixture = githubRest[key]
-		// eslint-disable-next-line ts/no-unnecessary-condition
+
 		if (!fixture) {
 			return new HttpResponse(null, { status: 404 })
 		}

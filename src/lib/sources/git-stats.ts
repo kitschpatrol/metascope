@@ -8,8 +8,8 @@ import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
 
-const VERSION_TAG_REGEX = /^v?\d+(?:\.\d+){1,2}$/
-const LEADING_V_REGEX = /^v/
+const VERSION_TAG_REGEX = /^v?\d+(?:\.\d+){1,2}$/v
+const LEADING_V_REGEX = /^v/v
 
 export type GitStatsInfo = {
 	/** Total number of local branches. */
@@ -93,27 +93,37 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			git.log(),
 			git.branch(),
 			git.tags(),
-			git.raw(['rev-list', '--max-parents=0', 'HEAD', '--format=%aI']).then((output) => {
+			(async () => {
+				const output = await git.raw(['rev-list', '--max-parents=0', 'HEAD', '--format=%aI'])
 				// Output is "commit <hash>\n<date>" pairs; take the last date line
 				const lines = output
 					.trim()
 					.split('\n')
 					.filter((line) => !line.startsWith('commit '))
 				return lines.at(-1) ?? undefined
-			}),
-			git.raw(['ls-files']).then((output) => output.trim().split('\n').filter(Boolean)),
+			})(),
+			(async () => {
+				const output = await git.raw(['ls-files'])
+				return output.trim().split('\n').filter(Boolean)
+			})(),
 			git.getRemotes(),
-			git
-				.raw(['submodule', 'status'])
-				.then((output) => {
+			(async () => {
+				try {
+					const output = await git.raw(['submodule', 'status'])
 					const count = output.trim().split('\n').filter(Boolean).length
 					return count > 0 ? count : undefined
-				})
-				.catch(() => undefined),
-			git
-				.raw(['lfs', 'ls-files'])
-				.then((output) => (output.trim().length > 0 ? true : undefined))
-				.catch(() => undefined),
+				} catch {
+					return undefined
+				}
+			})(),
+			(async () => {
+				try {
+					const output = await git.raw(['lfs', 'ls-files'])
+					return output.trim().length > 0 ? true : undefined
+				} catch {
+					return undefined
+				}
+			})(),
 		])
 
 		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
@@ -123,23 +133,27 @@ export const gitStatsSource = defineSource<'gitStats'>({
 		const [trackedSizeBytes, tagDateLatest, versionTagInfo, remoteStatusEntries] =
 			await Promise.all([
 				// 1. Sum tracked file sizes
-				batchMap(trackedFiles, async (file) => {
-					try {
-						const fileStat = await stat(join(context.options.path, file))
-						return fileStat.size
-					} catch {
-						return 0
-					}
-				}).then((sizes) => sizes.reduce((sum, size) => sum + size, 0)),
+				(async () => {
+					const sizes = await batchMap(trackedFiles, async (file) => {
+						try {
+							const fileStat = await stat(join(context.options.path, file))
+							return fileStat.size
+						} catch {
+							return 0
+						}
+					})
+					return sizes.reduce((sum, size) => sum + size, 0)
+				})(),
 				// 2. Latest tag date
 				(async (): Promise<string | undefined> => {
-					if (!tagNameLatest) {
+					if (tagNameLatest === undefined || tagNameLatest === '') {
 						return undefined
 					}
 
 					try {
 						const tagDate = await git.raw(['log', '-1', '--format=%aI', tagNameLatest])
-						return tagDate.trim() || undefined
+						const trimmed = tagDate.trim()
+						return trimmed.length > 0 ? trimmed : undefined
 					} catch {
 						return undefined
 					}
@@ -152,11 +166,12 @@ export const gitStatsSource = defineSource<'gitStats'>({
 						const versionTags = allTags.filter((tag) => VERSION_TAG_REGEX.test(tag))
 						const tagReleaseCount = versionTags.length > 0 ? versionTags.length : undefined
 						const match = versionTags[0]
-						if (match) {
+						if (match !== undefined) {
 							const tagDate = await git.raw(['log', '-1', '--format=%aI', match])
+							const trimmedDate = tagDate.trim()
 							return {
 								tagReleaseCount,
-								tagVersionDateLatest: tagDate.trim() || undefined,
+								tagVersionDateLatest: trimmedDate.length > 0 ? trimmedDate : undefined,
 								tagVersionLatest: match.replace(LEADING_V_REGEX, ''),
 							}
 						}
@@ -183,11 +198,15 @@ export const gitStatsSource = defineSource<'gitStats'>({
 									`HEAD...${reference}`,
 								])
 								const [ahead, behind] = output.trim().split('\t').map(Number)
-								return [remote.name, { ahead, behind }] as const
+								if (ahead !== undefined && behind !== undefined) {
+									return [remote.name, { ahead, behind }] as const
+								}
 							} catch {
 								// Branch doesn't exist on this remote
 							}
 						}
+
+						return undefined
 					}),
 				),
 			])

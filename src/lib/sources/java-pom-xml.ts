@@ -136,7 +136,8 @@ export function parse(content: string): PomXml | undefined {
 		devDependencies,
 		developers: parsePersonEntries(project.developers, 'developer'),
 		groupId,
-		identifier: groupId && artifactId ? `${groupId}.${artifactId}` : undefined,
+		identifier:
+			groupId !== undefined && artifactId !== undefined ? `${groupId}.${artifactId}` : undefined,
 		inceptionYear: getString(project.inceptionYear),
 		issueManagementUrl: getNestedUrl(project.issueManagement),
 		javaVersion: parseJavaVersion(project),
@@ -189,21 +190,21 @@ function resolveName(
 	artifactId: string | undefined,
 ): string | undefined {
 	const name = getString(project.name)
-	if (!name) {
+	if (name === undefined) {
 		return undefined
 	}
 
 	let resolved = name
-	if (groupId) {
+	if (groupId !== undefined) {
 		// This matches an actual Maven string literal...
 		// eslint-disable-next-line no-template-curly-in-string
-		resolved = resolved.replaceAll('${project.groupId}', groupId)
+		resolved = resolved.replaceAll('${project.groupId}', () => groupId)
 	}
 
-	if (artifactId) {
+	if (artifactId !== undefined) {
 		// This matches an actual Maven string literal...
 		// eslint-disable-next-line no-template-curly-in-string
-		resolved = resolved.replaceAll('${project.artifactId}', artifactId)
+		resolved = resolved.replaceAll('${project.artifactId}', () => artifactId)
 	}
 
 	return resolved
@@ -238,7 +239,7 @@ function parsePersonEntries(container: unknown, childKey: string): PomXmlPersonE
 		}
 
 		const name = getString(entry.name)
-		if (!name) {
+		if (name === undefined) {
 			continue
 		}
 
@@ -269,7 +270,7 @@ function parseLicenses(project: Record<string, unknown>): PomXmlLicenseEntry[] {
 
 		const name = getString(entry.name)
 		const url = getString(entry.url)
-		if (name ?? url) {
+		if (name !== undefined || url !== undefined) {
 			results.push({ name, url })
 		}
 	}
@@ -298,19 +299,19 @@ function parseDependencies(project: Record<string, unknown>): {
 
 		const groupId = getString(entry.groupId)
 		const artifactId = getString(entry.artifactId)
-		if (!groupId || !artifactId) {
+		if (groupId === undefined || artifactId === undefined) {
 			continue
 		}
 
-		const dep: PomXmlDependencyEntry = {
+		const dependency: PomXmlDependencyEntry = {
 			artifactId,
 			groupId,
 			version: getCleanString(entry.version),
 		}
 		if (getString(entry.scope) === 'test') {
-			devDependencies.push(dep)
+			devDependencies.push(dependency)
 		} else {
-			dependencies.push(dep)
+			dependencies.push(dependency)
 		}
 	}
 
@@ -337,7 +338,7 @@ function parseOrganization(project: Record<string, unknown>): PomXmlOrganization
 	}
 
 	const name = getString(project.organization.name)
-	if (!name) {
+	if (name === undefined) {
 		return undefined
 	}
 
@@ -375,9 +376,7 @@ export const javaPomXmlSource = defineSource<'javaPomXml'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

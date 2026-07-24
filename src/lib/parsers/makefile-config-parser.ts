@@ -11,16 +11,16 @@
  * openFrameworks Project Generator.
  */
 
-const INLINE_COMMENT_REGEX = /#.*$/
+const INLINE_COMMENT_REGEX = /#.*$/v
 
 /**
  * Section header pattern: a word (with optional hyphens/slashes) followed by a
  * colon.
  */
-const SECTION_RE = /^[\w/][\w/-]*:$/
+const SECTION_RE = /^[\w\/][\w\/\-]*:$/v
 
 /** Variable assignment pattern: VARNAME = value or VARNAME += value */
-const ASSIGNMENT_RE = /^(\w+)\s*(\+?=)\s*(.*)/
+const ASSIGNMENT_RE = /^(\w+)\s*(\+?=)\s*(.*)/v
 
 /**
  * Sections that are not platform-specific and should be excluded from
@@ -65,6 +65,10 @@ export function parseMakefileConfig(content: string): Record<string, unknown> {
 		}
 
 		const [, variableName, operator, rawValue] = match
+		if (variableName === undefined || rawValue === undefined) {
+			continue
+		}
+
 		currentSectionHasAssignment = true
 
 		if (currentSection === 'meta') {
@@ -131,9 +135,9 @@ function tokenizeValues(raw: string): string[] {
 
 	const values: string[] = []
 	// Match quoted "multi-word" tokens or bare tokens
-	for (const [, quoted, bare] of trimmed.matchAll(/"([^"]+)"|(\S+)/g)) {
-		const value = quoted || bare
-		if (value.length > 0) {
+	for (const [, quoted, bare] of trimmed.matchAll(/"([^"]+)"|(\S+)/gv)) {
+		const value = quoted ?? bare
+		if (value !== undefined && value.length > 0) {
 			values.push(value)
 		}
 	}

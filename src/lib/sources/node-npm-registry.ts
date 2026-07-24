@@ -56,20 +56,20 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 
 		// Now, only bother if the package is actually public...
 		const packageNames = packages
-			.filter((packageJson) => {
+			.filter((package_) => {
 				if (
-					packageJson.data.private === true ||
-					packageJson.data.publishConfig?.access === 'restricted'
+					package_.data.private === true ||
+					package_.data.publishConfig?.access === 'restricted'
 				) {
 					log.debug(
-						`Skipping NPM registry lookup for "${packageJson.data.name}" in "${context.options.path}" because it is a private package`,
+						`Skipping NPM registry lookup for "${package_.data.name}" in "${context.options.path}" because it is a private package`,
 					)
 					return false
 				}
 
 				return true
 			})
-			.map((packageJson) => packageJson.data.name)
+			.map((package_) => package_.data.name)
 
 		return packageNames
 	},
@@ -80,10 +80,15 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 
 		const [metadata, downloadsWeekly, downloadsMonthly, downloadsYearly, downloadsTotal] =
 			await Promise.all([
-				packageJson(name, { fullMetadata: true }).catch(
-					// Return undefined if package metadata lookup fails
-					(): undefined => undefined,
-				),
+				(async () => {
+					try {
+						return await packageJson(name, { fullMetadata: true })
+					} catch {
+						// Return undefined if package metadata lookup fails
+						// eslint-disable-next-line unicorn/no-useless-undefined
+						return undefined
+					}
+				})(),
 				fetchDownloads(name, 'last-week'),
 				fetchDownloads(name, 'last-month'),
 				fetchDownloads(name, 'last-year'),
@@ -109,8 +114,8 @@ export const nodeNpmRegistrySource = defineSource<'nodeNpmRegistry'>({
 			data: {
 				deprecated: typeof metadata.deprecated === 'string' ? metadata.deprecated : undefined,
 				downloadsMonthly,
-				// eslint-disable-next-line ts/prefer-nullish-coalescing
-				downloadsTotal: downloadsTotal || undefined,
+				downloadsTotal:
+					downloadsTotal === undefined || downloadsTotal === 0 ? undefined : downloadsTotal,
 				downloadsWeekly,
 				downloadsYearly,
 				fileCount: typeof distribution?.fileCount === 'number' ? distribution.fileCount : undefined,

@@ -29,11 +29,14 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 		const result = await getMetadata({ path: '.' })
 		// Sources that aren't available should not appear as empty objects
 		// (arrays like licenseFile may legitimately be empty)
-		for (const [, value] of Object.entries(result)) {
-			if (typeof value === 'object' && !Array.isArray(value)) {
-				expect(Object.keys(value).length).toBeGreaterThan(0)
+		const emptyObjectKeys: string[] = []
+		for (const [key, value] of Object.entries(result)) {
+			if (typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0) {
+				emptyObjectKeys.push(key)
 			}
 		}
+
+		expect(emptyObjectKeys).toEqual([])
 	})
 
 	it('should apply a template function', async () => {

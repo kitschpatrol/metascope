@@ -143,7 +143,7 @@ function parseOperatingSystems(block: Record<string, unknown>): string[] {
 		}
 
 		const os = getAttribute(support, 'os')
-		if (os) {
+		if (os !== undefined) {
 			const mapped = OS_MAP[os.toLowerCase()] ?? os
 			if (!seen.has(mapped)) {
 				seen.add(mapped)
@@ -161,12 +161,12 @@ function parseOperatingSystems(block: Record<string, unknown>): string[] {
 function parseDependencies(block: Record<string, unknown>): string[] {
 	const results: string[] = []
 
-	for (const dep of ensureArray(block.requires)) {
-		if (typeof dep !== 'string') {
+	for (const dependency of ensureArray(block.requires)) {
+		if (typeof dependency !== 'string') {
 			continue
 		}
 
-		const trimmed = dep.trim()
+		const trimmed = dependency.trim()
 		if (trimmed.length > 0) {
 			results.push(trimmed)
 		}
@@ -186,9 +186,7 @@ export const cinderCinderblockXmlSource = defineSource<'cinderCinderblockXml'>({
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
 
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

@@ -109,7 +109,7 @@ describe('parse', () => {
 			const goreleaserFile = files.find(
 				(name) => name === '.goreleaser.yaml' || name === '.goreleaser.yml',
 			)
-			if (!goreleaserFile) {
+			if (goreleaserFile === undefined) {
 				continue
 			}
 

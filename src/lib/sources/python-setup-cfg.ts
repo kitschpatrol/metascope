@@ -1,4 +1,5 @@
 /* eslint-disable ts/naming-convention */
+import is from '@sindresorhus/is'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { z } from 'zod'
@@ -11,7 +12,7 @@ import { splitCommaSeparated } from '../utilities/template-helpers'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-const setupCfgDataSchema = z.object({
+const setupConfigDataSchema = z.object({
 	author: nonEmptyString,
 	author_email: nonEmptyString,
 	classifiers: stringArray,
@@ -32,7 +33,7 @@ const setupCfgDataSchema = z.object({
 })
 
 /** Parsed setup.cfg metadata */
-export type SetupCfg = z.infer<typeof setupCfgDataSchema>
+export type SetupCfg = z.infer<typeof setupConfigDataSchema>
 
 export type PythonSetupCfgData = OneOrMany<SourceRecord<SetupCfg>> | undefined
 
@@ -87,29 +88,29 @@ export function parse(source: string): SetupCfg {
 	// String attributes from [metadata]
 	for (const key of STRING_ATTRS) {
 		const value = metadata[key]
-		if (value) {
+		if (is.nonEmptyString(value)) {
 			Object.assign(data, { [key]: value })
 		}
 	}
 
 	// Classifiers — multi-line list in [metadata]
-	if (metadata.classifiers) {
+	if (is.nonEmptyString(metadata.classifiers)) {
 		data.classifiers = splitMultiline(metadata.classifiers)
 	}
 
 	// Keywords — comma-separated on a single line
-	if (metadata.keywords) {
+	if (is.nonEmptyString(metadata.keywords)) {
 		data.keywords = splitCommaSeparated(metadata.keywords)
 	}
 
 	// Project URLs — multi-line "label = url" pairs in [metadata]
-	if (metadata.project_urls) {
+	if (is.nonEmptyString(metadata.project_urls)) {
 		for (const line of splitMultiline(metadata.project_urls)) {
 			const eqIndex = line.indexOf('=')
 			if (eqIndex > 0) {
 				const label = line.slice(0, eqIndex).trim()
 				const url = line.slice(eqIndex + 1).trim()
-				if (url) {
+				if (url !== '') {
 					data.project_urls[label] = url
 				}
 			}
@@ -117,12 +118,12 @@ export function parse(source: string): SetupCfg {
 	}
 
 	// Install_requires — multi-line dependency list in [options]
-	if (options.install_requires) {
+	if (is.nonEmptyString(options.install_requires)) {
 		data.install_requires = splitMultiline(options.install_requires)
 	}
 
 	// Python_requires — version constraint in [options]
-	if (options.python_requires) {
+	if (is.nonEmptyString(options.python_requires)) {
 		data.python_requires = options.python_requires
 	}
 
@@ -134,7 +135,7 @@ export function parse(source: string): SetupCfg {
 		}
 	}
 
-	return setupCfgDataSchema.parse(data)
+	return setupConfigDataSchema.parse(data)
 }
 
 // ─── Source ──────────────────────────────────────────────────────────────────

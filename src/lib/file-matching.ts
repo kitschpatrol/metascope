@@ -205,7 +205,7 @@ export async function getMatches(
 		effectivePatterns = [...patterns]
 
 		// ...and if workspaces are enabled, append patterns for the root of each workspace.
-		if (resolved.workspaces) {
+		if (resolved.workspaces !== false) {
 			const workspacePaths = getWorkspaces(resolved.path, resolved.workspaces)
 			for (const workspace of workspacePaths) {
 				// Convert absolute workspace path to a root-relative POSIX path for picomatch
@@ -228,6 +228,9 @@ export async function getMatches(
 	// Sort by depth (shallowest first), then alphabetically
 	// Pre-compute depths to avoid repeated splitting in the comparator
 	const decorated = results.map((p) => ({ depth: p.split(sep).length, path: p }))
-	decorated.sort((a, b) => a.depth - b.depth || a.path.localeCompare(b.path))
+	decorated.sort((a, b) => {
+		const depthDelta = a.depth - b.depth
+		return depthDelta === 0 ? a.path.localeCompare(b.path) : depthDelta
+	})
 	return decorated.map((d) => d.path)
 }

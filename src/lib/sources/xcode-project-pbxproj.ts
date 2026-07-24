@@ -26,10 +26,10 @@ import { getMatches } from '../file-matching'
 import { defineSource } from '../source'
 import { nonEmptyString, stringArray } from '../utilities/schema-primitives'
 
-const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/i
-const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/i
-const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/i
-const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/
+const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/iv
+const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/iv
+const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/iv
+const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/v
 
 // ─── Schema ─────────────────────────────────────────────────────────
 
@@ -67,7 +67,7 @@ type PbxprojDependency = Pbxproj['dependencies'][number]
 // ─── Constants ──────────────────────────────────────────────────────
 
 /** Xcode build variable pattern: $(VAR) or ${VAR}. */
-const XCODE_VARIABLE_RE = /\$[({][^)}]+[)}]/
+const XCODE_VARIABLE_RE = /\$[\(\{][^\)\}]+[\)\}]/v
 
 /**
  * Map SDKROOT values to human-readable OS names.
@@ -177,13 +177,13 @@ export function parse(filePath: string): Pbxproj | undefined {
 
 	const swiftVersion = getSetting(targetSettings, projectSettings, 'SWIFT_VERSION')
 	let programmingLanguage: string | undefined
-	if (swiftVersion) {
-		programmingLanguage = 'Swift'
-	} else {
+	if (swiftVersion === undefined) {
 		const cStandard = getSetting(targetSettings, projectSettings, 'GCC_C_LANGUAGE_STANDARD')
-		if (cStandard) {
+		if (cStandard !== undefined) {
 			programmingLanguage = 'Objective-C'
 		}
+	} else {
+		programmingLanguage = 'Swift'
 	}
 
 	return pbxprojSchema.parse({
@@ -281,17 +281,17 @@ function parseCopyrightString(copyrightSource: string | undefined): {
 	copyrightHolder?: string
 	copyrightYear?: string
 } {
-	if (!copyrightSource) {
+	if (copyrightSource === undefined) {
 		return {}
 	}
 
 	const yearMatch = COPYRIGHT_YEAR_REGEX.exec(copyrightSource)
 	const copyrightYear = yearMatch?.[1]
 
-	const holderMatch = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)
+	const holderText = COPYRIGHT_HOLDER_REGEX.exec(copyrightSource)?.[1]
 	let copyrightHolder: string | undefined
-	if (holderMatch) {
-		copyrightHolder = holderMatch[1]
+	if (holderText !== undefined) {
+		copyrightHolder = holderText
 			.replace(ALL_RIGHTS_RESERVED_REGEX, '')
 			.replace(TRAILING_PUNCTUATION_REGEX, '')
 			.trim()
@@ -315,7 +315,7 @@ function parseOperatingSystems(
 
 	for (const { key, os } of DEPLOYMENT_TARGETS) {
 		const version = getSetting(targetSettings, projectSettings, key)
-		if (version) {
+		if (version !== undefined) {
 			const value = `${os} >= ${version}`
 			if (!seen.has(value)) {
 				seen.add(value)
@@ -327,9 +327,9 @@ function parseOperatingSystems(
 	// Fallback to SDKROOT if no deployment targets found
 	if (results.length === 0) {
 		const sdkroot = getSetting(targetSettings, projectSettings, 'SDKROOT')
-		if (sdkroot && sdkroot !== 'auto') {
+		if (sdkroot !== undefined && sdkroot !== 'auto') {
 			const os = SDKROOT_MAP[sdkroot]
-			if (os) {
+			if (os !== undefined) {
 				results.push(os)
 			}
 		}
@@ -353,7 +353,7 @@ function parseDependencies(
 		}
 
 		const url = cleanString(packageReference.props.repositoryURL)
-		if (url) {
+		if (url !== undefined) {
 			results.push({ url })
 		}
 	}
@@ -375,9 +375,7 @@ export const xcodeProjectPbxprojSource = defineSource<'xcodeProjectPbxproj'>({
 	// eslint-disable-next-line ts/require-await
 	async parse(input, context) {
 		const data = parse(resolve(context.options.path, input))
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

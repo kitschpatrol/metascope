@@ -53,7 +53,7 @@ describe('parseGemspec', () => {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
 			const gemspecFile = files.find((name) => name.endsWith('.gemspec'))
-			if (!gemspecFile) {
+			if (gemspecFile === undefined) {
 				continue
 			}
 

@@ -4,7 +4,7 @@ import type { Node } from 'web-tree-sitter'
 import { splitCommaSeparated } from '../utilities/template-helpers'
 import { getPythonLanguage, initParser } from '../utilities/tree-sitter-wasm.js'
 
-const STRING_PREFIX_REGEX = /^[bfru]*/i
+const STRING_PREFIX_REGEX = /^[bfru]*/iv
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ function extractString(node: Node): string | undefined {
 
 			// Fallback: strip quotes manually (b/f/r/u are Python string prefixes)
 			const raw = node.text
-			// eslint-disable-next-line capitalized-comments
+
 			const withoutPrefix = raw.replace(STRING_PREFIX_REGEX, '') // cspell:disable-line
 			if (withoutPrefix.startsWith('"""') || withoutPrefix.startsWith("'''")) {
 				return withoutPrefix.slice(3, -3)
@@ -121,7 +121,7 @@ function extractStringDict(node: Node): Record<string, string> {
 
 		const k = extractString(key)
 		const v = extractString(value)
-		if (k && v) {
+		if (k !== undefined && k !== '' && v !== undefined && v !== '') {
 			result[k] = v
 		}
 	}
@@ -148,7 +148,7 @@ function extractStringListDict(node: Node): Record<string, string[]> {
 		}
 
 		const k = extractString(key)
-		if (k) {
+		if (k !== undefined && k !== '') {
 			result[k] = extractStringList(value)
 		}
 	}
@@ -229,45 +229,54 @@ export async function parseSetupPy(source: string): Promise<Record<string, unkno
 		}
 
 		// List attributes
-		switch (argumentName) {
-			case 'classifiers': {
-				data.classifiers = extractStringList(valueNode)
-				break
-			}
-
-			case 'extras_require': {
-				data.extras_require = extractStringListDict(valueNode)
-				break
-			}
-
-			case 'install_requires': {
-				data.install_requires = extractStringList(valueNode)
-				break
-			}
-
-			case 'keywords': {
-				// Keywords can be a list or a comma-separated string
-				if (valueNode.type === 'list' || valueNode.type === 'tuple') {
-					data.keywords = extractStringList(valueNode)
-				} else {
-					const string_ = extractString(valueNode)
-					if (string_) {
-						data.keywords = splitCommaSeparated(string_)
-					}
-				}
-
-				break
-			}
-
-			case 'project_urls': {
-				data.project_urls = extractStringDict(valueNode)
-				break
-			}
-			// No default
-		}
+		applyListAttribute(data, argumentName, valueNode)
 	}
 
 	return data
+}
+
+/** Apply a list/dict-valued setup() keyword argument to the data object. */
+function applyListAttribute(
+	data: Record<string, unknown>,
+	argumentName: string,
+	valueNode: Node,
+): void {
+	switch (argumentName) {
+		case 'classifiers': {
+			data.classifiers = extractStringList(valueNode)
+			break
+		}
+
+		case 'extras_require': {
+			data.extras_require = extractStringListDict(valueNode)
+			break
+		}
+
+		case 'install_requires': {
+			data.install_requires = extractStringList(valueNode)
+			break
+		}
+
+		case 'keywords': {
+			// Keywords can be a list or a comma-separated string
+			if (valueNode.type === 'list' || valueNode.type === 'tuple') {
+				data.keywords = extractStringList(valueNode)
+			} else {
+				const string_ = extractString(valueNode)
+				if (string_ !== undefined && string_ !== '') {
+					data.keywords = splitCommaSeparated(string_)
+				}
+			}
+
+			break
+		}
+
+		case 'project_urls': {
+			data.project_urls = extractStringDict(valueNode)
+			break
+		}
+		// No default
+	}
 }
 
 /**

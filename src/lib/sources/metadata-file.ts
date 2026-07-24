@@ -67,10 +67,9 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 		return undefined
 	}
 
-	const repository = isString(data.repository) ? normalizeRepoUrl(data.repository) : undefined
+	const repo = isString(data.repository) ? normalizeRepoUrl(data.repository) : undefined
 
-	const homepage =
-		nonEmpty(data.homepage) ?? nonEmpty(data.url) ?? repository ?? nonEmpty(data.website)
+	const homepage = nonEmpty(data.homepage) ?? nonEmpty(data.url) ?? repo ?? nonEmpty(data.website)
 
 	const keywords =
 		parseKeywords(data.keywords) ?? parseKeywords(data.tags) ?? parseKeywords(data.topics) ?? []
@@ -79,7 +78,7 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 		description: data.description,
 		homepage,
 		keywords,
-		repository,
+		repository: repo,
 	})
 }
 
@@ -151,13 +150,13 @@ export const metadataFileSource = defineSource<'metadataFile'>({
 	key: 'metadataFile',
 	async parse(input, context) {
 		const format = getFormat(input)
-		if (format !== undefined) {
-			const content = await readFile(resolve(context.options.path, input), 'utf8')
-			const data = parse(content, format)
-			if (data !== undefined) {
-				return { data, source: input }
-			}
+		if (format === undefined) {
+			return
 		}
+
+		const content = await readFile(resolve(context.options.path, input), 'utf8')
+		const data = parse(content, format)
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

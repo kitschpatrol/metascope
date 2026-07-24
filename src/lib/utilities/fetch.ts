@@ -9,14 +9,16 @@ let fetchChain: Promise<void> = Promise.resolve()
 let lastFetchStart = 0
 
 async function waitForFetchTurn(): Promise<void> {
-	const turn = fetchChain.then(async () => {
+	const previous = fetchChain
+	const turn = (async () => {
+		await previous
 		const wait = lastFetchStart + MIN_FETCH_INTERVAL_MS - Date.now()
 		if (wait > 0) {
 			await sleep(wait)
 		}
 
 		lastFetchStart = Date.now()
-	})
+	})()
 	fetchChain = turn
 	return turn
 }
@@ -68,7 +70,7 @@ function getDelay(attempt: number, response?: Response): number {
 
 	// Respect Retry-After header if present, but never go below the backoff
 	const retryAfter = response?.headers.get('retry-after')
-	if (retryAfter) {
+	if (retryAfter !== null && retryAfter !== undefined && retryAfter !== '') {
 		const seconds = Number(retryAfter)
 		if (!Number.isNaN(seconds)) {
 			return Math.max(seconds * 1000, backoff)

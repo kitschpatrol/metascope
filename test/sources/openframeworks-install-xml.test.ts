@@ -55,6 +55,7 @@ describe('parse', () => {
 		expect(result!.name).toBe('ofxGraycode')
 		expect(result!.version).toBe('0.01')
 		expect(result!.author).toBe('Elliot Woods')
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result!.url).toBe('http://github.com/elliotwoods/ofxGraycode')
 	})
 
@@ -68,6 +69,7 @@ describe('parse', () => {
 		expect(result).toBeDefined()
 		expect(result!.name).toBe('ofxSceneManager')
 		expect(result!.codeUrl).toBe('https://github.com/armadillu/ofxSceneManager')
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result!.siteUrl).toBe('http://www.uri.cat')
 		expect(result!.description).toContain('ofxSceneManager helps handle different scenes')
 	})

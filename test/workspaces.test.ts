@@ -105,9 +105,10 @@ describe('getMatches with workspaces', () => {
 			['package.json'],
 		)
 
-		const sorted = matches.toSorted(
-			(a, b) => a.split(sep).length - b.split(sep).length || a.localeCompare(b),
-		)
+		const sorted = matches.toSorted((a, b) => {
+			const depthDifference = a.split(sep).length - b.split(sep).length
+			return depthDifference === 0 ? a.localeCompare(b) : depthDifference
+		})
 		expect(matches).toEqual(sorted)
 	})
 })

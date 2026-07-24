@@ -66,6 +66,7 @@ export default cspellConfig({
 		'geniuxgh',
 		'geoscience',
 		'geospatial',
+		'gimv',
 		'gompel',
 		'goodchild',
 		'graycode',

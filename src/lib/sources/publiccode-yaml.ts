@@ -164,6 +164,42 @@ function toStringArray(value: unknown): string[] {
 	return value.filter((item): item is string => typeof item === 'string')
 }
 
+/** Parse a single dependency entry, returning undefined when it lacks a name. */
+function parseDependencyEntry(
+	dependency: unknown,
+	category: PubliccodeDependencyEntry['category'],
+): PubliccodeDependencyEntry | undefined {
+	if (!isPlainObject(dependency) || !isNonEmptyString(dependency.name)) {
+		return undefined
+	}
+
+	const entry: PubliccodeDependencyEntry = {
+		category,
+		name: dependency.name,
+	}
+
+	const version = toString(dependency.version)
+	if (version !== undefined && version !== '') {
+		entry.version = version
+	}
+
+	const versionMin = toString(dependency.versionMin)
+	if (versionMin !== undefined && versionMin !== '') {
+		entry.versionMin = versionMin
+	}
+
+	const versionMax = toString(dependency.versionMax)
+	if (versionMax !== undefined && versionMax !== '') {
+		entry.versionMax = versionMax
+	}
+
+	if (typeof dependency.optional === 'boolean') {
+		entry.optional = dependency.optional
+	}
+
+	return entry
+}
+
 /** Parse a description block from a publiccode description object. */
 function parseDescription(data: Record<string, unknown>): PubliccodeDescription {
 	const features: string[] = []
@@ -181,16 +217,14 @@ function parseDescription(data: Record<string, unknown>): PubliccodeDescription 
 	}
 
 	return {
-		...(isNonEmptyString(data.documentation) ? { documentation: data.documentation } : {}),
+		...(isNonEmptyString(data.documentation) && { documentation: data.documentation }),
 		features,
-		...(isNonEmptyString(data.genericName) ? { genericName: data.genericName } : {}),
-		...(isNonEmptyString(data.localisedName) ? { localisedName: data.localisedName } : {}),
-		...(isNonEmptyString(data.longDescription)
-			? { longDescription: data.longDescription.trim() }
-			: {}),
-		...(isNonEmptyString(data.shortDescription)
-			? { shortDescription: data.shortDescription.trim() }
-			: {}),
+		...(isNonEmptyString(data.genericName) && { genericName: data.genericName }),
+		...(isNonEmptyString(data.localisedName) && { localisedName: data.localisedName }),
+		...(isNonEmptyString(data.longDescription) && { longDescription: data.longDescription.trim() }),
+		...(isNonEmptyString(data.shortDescription) && {
+			shortDescription: data.shortDescription.trim(),
+		}),
 	}
 }
 
@@ -235,7 +269,7 @@ export function parse(content: string): Publiccode | undefined {
 
 		// Prefer English, fall back to first available language
 		const preferredLang = 'en' in descriptions ? 'en' : Object.keys(descriptions)[0]
-		if (preferredLang) {
+		if (preferredLang !== undefined && preferredLang !== '') {
 			description = descriptions[preferredLang]
 		}
 	}
@@ -246,22 +280,24 @@ export function parse(content: string): Publiccode | undefined {
 		const { maintenance } = data
 		if (Array.isArray(maintenance.contacts)) {
 			for (const contact of maintenance.contacts) {
-				if (isPlainObject(contact) && isNonEmptyString(contact.name)) {
-					const entry: PubliccodeContactEntry = { name: contact.name }
-					if (isNonEmptyString(contact.email)) {
-						entry.email = contact.email
-					}
-
-					if (isNonEmptyString(contact.phone)) {
-						entry.phone = contact.phone
-					}
-
-					if (isNonEmptyString(contact.affiliation)) {
-						entry.affiliation = contact.affiliation
-					}
-
-					contacts.push(entry)
+				if (!isPlainObject(contact) || !isNonEmptyString(contact.name)) {
+					continue
 				}
+
+				const entry: PubliccodeContactEntry = { name: contact.name }
+				if (isNonEmptyString(contact.email)) {
+					entry.email = contact.email
+				}
+
+				if (isNonEmptyString(contact.phone)) {
+					entry.phone = contact.phone
+				}
+
+				if (isNonEmptyString(contact.affiliation)) {
+					entry.affiliation = contact.affiliation
+				}
+
+				contacts.push(entry)
 			}
 		}
 	}
@@ -272,19 +308,21 @@ export function parse(content: string): Publiccode | undefined {
 		const { maintenance } = data
 		if (Array.isArray(maintenance.contractors)) {
 			for (const contractor of maintenance.contractors) {
-				if (isPlainObject(contractor) && isNonEmptyString(contractor.name)) {
-					const entry: PubliccodeContractorEntry = { name: contractor.name }
-					const until = toString(contractor.until)
-					if (until) {
-						entry.until = until
-					}
-
-					if (isNonEmptyString(contractor.website)) {
-						entry.website = contractor.website
-					}
-
-					contractors.push(entry)
+				if (!isPlainObject(contractor) || !isNonEmptyString(contractor.name)) {
+					continue
 				}
+
+				const entry: PubliccodeContractorEntry = { name: contractor.name }
+				const until = toString(contractor.until)
+				if (until !== undefined && until !== '') {
+					entry.until = until
+				}
+
+				if (isNonEmptyString(contractor.website)) {
+					entry.website = contractor.website
+				}
+
+				contractors.push(entry)
 			}
 		}
 	}
@@ -293,40 +331,17 @@ export function parse(content: string): Publiccode | undefined {
 	const dependencies: PubliccodeDependencyEntry[] = []
 	if (isPlainObject(data.dependsOn)) {
 		const { dependsOn } = data
-		const depCategories: Array<PubliccodeDependencyEntry['category']> = [
+		const dependencyCategories: Array<PubliccodeDependencyEntry['category']> = [
 			'open',
 			'proprietary',
 			'hardware',
 		]
-		for (const category of depCategories) {
-			const categoryDeps = dependsOn[category]
-			if (Array.isArray(categoryDeps)) {
-				for (const dep of categoryDeps) {
-					if (isPlainObject(dep) && isNonEmptyString(dep.name)) {
-						const entry: PubliccodeDependencyEntry = {
-							category,
-							name: dep.name,
-						}
-
-						const version = toString(dep.version)
-						if (version) {
-							entry.version = version
-						}
-
-						const versionMin = toString(dep.versionMin)
-						if (versionMin) {
-							entry.versionMin = versionMin
-						}
-
-						const versionMax = toString(dep.versionMax)
-						if (versionMax) {
-							entry.versionMax = versionMax
-						}
-
-						if (typeof dep.optional === 'boolean') {
-							entry.optional = dep.optional
-						}
-
+		for (const category of dependencyCategories) {
+			const categoryDependencies = dependsOn[category]
+			if (Array.isArray(categoryDependencies)) {
+				for (const dependency of categoryDependencies) {
+					const entry = parseDependencyEntry(dependency, category)
+					if (entry !== undefined) {
 						dependencies.push(entry)
 					}
 				}
@@ -367,44 +382,39 @@ export function parse(content: string): Publiccode | undefined {
 	// ─── Assemble result ───────────────────────────────────────
 	const version = toString(data.softwareVersion)
 	const releaseDate = toString(data.releaseDate)
+	const publiccodeYmlVersion = toString(data.publiccodeYmlVersion)
 
 	return publiccodeSchema.parse({
-		...(isNonEmptyString(data.applicationSuite) ? { applicationSuite: data.applicationSuite } : {}),
+		...(isNonEmptyString(data.applicationSuite) && { applicationSuite: data.applicationSuite }),
 		availableLanguages,
 		categories: toStringArray(data.categories),
 		contacts,
 		contractors,
 		dependencies,
-		...(description ? { description } : {}),
+		...(description && { description }),
 		descriptions,
-		...(isNonEmptyString(data.developmentStatus)
-			? { developmentStatus: data.developmentStatus }
-			: {}),
+		...(isNonEmptyString(data.developmentStatus) && { developmentStatus: data.developmentStatus }),
 		inputTypes: toStringArray(data.inputTypes),
-		...(isNonEmptyString(data.isBasedOn) ? { isBasedOn: data.isBasedOn } : {}),
-		...(isNonEmptyString(data.landingURL) ? { landingUrl: data.landingURL } : {}),
-		...(license ? { license } : {}),
-		...(localisationReady === undefined ? {} : { localisationReady }),
-		...(isNonEmptyString(data.logo) ? { logo: data.logo } : {}),
-		...(mainCopyrightOwner ? { mainCopyrightOwner } : {}),
-		...(isPlainObject(data.maintenance) && isNonEmptyString(data.maintenance.type)
-			? { maintenanceType: data.maintenance.type }
-			: {}),
-		...(isNonEmptyString(data.monochromeLogo) ? { monochromeLogo: data.monochromeLogo } : {}),
-		...(isNonEmptyString(data.name) ? { name: data.name } : {}),
+		...(isNonEmptyString(data.isBasedOn) && { isBasedOn: data.isBasedOn }),
+		...(isNonEmptyString(data.landingURL) && { landingUrl: data.landingURL }),
+		...(license !== undefined && { license }),
+		...(localisationReady !== undefined && { localisationReady }),
+		...(isNonEmptyString(data.logo) && { logo: data.logo }),
+		...(mainCopyrightOwner !== undefined && { mainCopyrightOwner }),
+		...(isPlainObject(data.maintenance) &&
+			isNonEmptyString(data.maintenance.type) && { maintenanceType: data.maintenance.type }),
+		...(isNonEmptyString(data.monochromeLogo) && { monochromeLogo: data.monochromeLogo }),
+		...(isNonEmptyString(data.name) && { name: data.name }),
 		outputTypes: toStringArray(data.outputTypes),
 		platforms: toStringArray(data.platforms),
-		...(isNonEmptyString(data.publiccodeYmlVersion)
-			? { publiccodeYmlVersion: data.publiccodeYmlVersion }
-			: toString(data.publiccodeYmlVersion)
-				? { publiccodeYmlVersion: toString(data.publiccodeYmlVersion) }
-				: {}),
-		...(releaseDate ? { releaseDate } : {}),
-		...(repoOwner ? { repoOwner } : {}),
-		...(isNonEmptyString(data.roadmap) ? { roadmap: data.roadmap } : {}),
-		...(isNonEmptyString(data.softwareType) ? { softwareType: data.softwareType } : {}),
-		...(version ? { softwareVersion: version } : {}),
-		...(isNonEmptyString(data.url) ? { url: data.url } : {}),
+		...(publiccodeYmlVersion !== undefined &&
+			publiccodeYmlVersion !== '' && { publiccodeYmlVersion }),
+		...(releaseDate !== undefined && releaseDate !== '' && { releaseDate }),
+		...(repoOwner !== undefined && { repoOwner }),
+		...(isNonEmptyString(data.roadmap) && { roadmap: data.roadmap }),
+		...(isNonEmptyString(data.softwareType) && { softwareType: data.softwareType }),
+		...(version !== undefined && version !== '' && { softwareVersion: version }),
+		...(isNonEmptyString(data.url) && { url: data.url }),
 		usedBy: toStringArray(data.usedBy),
 	})
 }
@@ -419,9 +429,7 @@ export const publiccodeYamlSource = defineSource<'publiccodeYaml'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

@@ -40,5 +40,5 @@ export type TemplateName = keyof TemplateMap
  * Type guard
  */
 export function isKeyOfTemplate(value: unknown): value is keyof typeof templates {
-	return typeof value === 'string' && value in templates
+	return typeof value === 'string' && Object.hasOwn(templates, value)
 }

@@ -23,6 +23,6 @@ describe('git config source', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.data).toBeDefined()
-		expect(typeof result!.data.remote?.origin.url).toBe('string')
+		expect(typeof result!.data.remote?.origin?.url).toBe('string')
 	})
 })

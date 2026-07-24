@@ -100,8 +100,8 @@ describe('parse', () => {
 		expect(result).toBeDefined()
 		expect(result!.descriptions).toHaveProperty('en')
 		expect(result!.descriptions).toHaveProperty('nl')
-		expect(result!.descriptions.en.localisedName).toBe('Appsemble')
-		expect(result!.descriptions.nl.localisedName).toBe('Appsemble')
+		expect(result!.descriptions.en!.localisedName).toBe('Appsemble')
+		expect(result!.descriptions.nl!.localisedName).toBe('Appsemble')
 		// Preferred description should be English
 		expect(result!.description).toStrictEqual(result!.descriptions.en)
 	})
@@ -112,8 +112,8 @@ describe('parse', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.contacts.length).toBe(1)
-		expect(result!.contacts[0].name).toBe('Michael Boelen')
-		expect(result!.contacts[0].email).toBe('michael.boelen@cisofy.com')
+		expect(result!.contacts[0]!.name).toBe('Michael Boelen')
+		expect(result!.contacts[0]!.email).toBe('michael.boelen@cisofy.com')
 	})
 
 	it('should parse contacts with affiliation', () => {
@@ -125,8 +125,8 @@ describe('parse', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.contacts.length).toBe(1)
-		expect(result!.contacts[0].name).toBe('Ruben van der Linde')
-		expect(result!.contacts[0].affiliation).toBe('Conduction')
+		expect(result!.contacts[0]!.name).toBe('Ruben van der Linde')
+		expect(result!.contacts[0]!.affiliation).toBe('Conduction')
 	})
 
 	it('should parse contractors', () => {
@@ -138,9 +138,9 @@ describe('parse', () => {
 
 		expect(result).toBeDefined()
 		expect(result!.contractors.length).toBe(1)
-		expect(result!.contractors[0].name).toBe('Conduction')
-		expect(result!.contractors[0].until).toBe('2035-01-01')
-		expect(result!.contractors[0].website).toBe('https://www.conduction.nl')
+		expect(result!.contractors[0]!.name).toBe('Conduction')
+		expect(result!.contractors[0]!.until).toBe('2035-01-01')
+		expect(result!.contractors[0]!.website).toBe('https://www.conduction.nl')
 	})
 
 	it('should parse dependencies with version constraints', () => {
@@ -279,7 +279,7 @@ describe('parse', () => {
 			const publiccodeFile = files.find(
 				(name) => name === 'publiccode.yml' || name === 'publiccode.yaml',
 			)
-			if (!publiccodeFile) {
+			if (publiccodeFile === undefined) {
 				continue
 			}
 

@@ -55,6 +55,9 @@ import { xcodeProjectPbxprojSource } from './sources/xcode-project-pbxproj'
 import { isKeyOfTemplate, templates } from './templates/index.js'
 import { stripUndefined } from './utilities/template-helpers'
 
+// `promisify` types `execFile` (which returns a ChildProcess) against a void-returning
+// callback, and Node's built-in promisify.custom impl discards that return value.
+// eslint-disable-next-line ts/strict-void-return
 const execFileAsync = promisify(execFile)
 
 /**
@@ -111,13 +114,13 @@ export const sourceNames: SourceName[] = sources.map((s) => s.key)
  */
 async function resolveCredentials(credentials?: Credentials): Promise<Credentials> {
 	// Explicit credentials take priority
-	if (credentials?.githubToken) {
+	if (credentials?.githubToken !== undefined && credentials.githubToken !== '') {
 		return credentials
 	}
 
 	// Environment variable
 	const environmentToken = process.env.GITHUB_TOKEN
-	if (environmentToken) {
+	if (environmentToken !== undefined && environmentToken !== '') {
 		return { ...credentials, githubToken: environmentToken }
 	}
 
@@ -125,7 +128,7 @@ async function resolveCredentials(credentials?: Credentials): Promise<Credential
 	try {
 		const { stdout } = await execFileAsync('gh', ['auth', 'token'])
 		const token = stdout.trim()
-		if (token) {
+		if (token !== '') {
 			return { ...credentials, githubToken: token }
 		}
 	} catch {
@@ -297,7 +300,8 @@ export async function getMetadata<T>(
 	// Each phase receives the accumulated context from all previous phases.
 	const completedSources = new Set<SourceName>()
 	const phases = new Set(activeSources.map((s) => s.phase))
-	for (const phase of [...phases].toSorted((a, b) => a - b)) {
+	const sortedPhases = [...phases].toSorted((a, b) => a - b)
+	for (const phase of sortedPhases) {
 		const phaseSources = activeSources.filter((s) => s.phase === phase)
 		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
 		const sourceContext: SourceContext = {
@@ -325,7 +329,7 @@ export async function getMetadata<T>(
 	// Apply template if provided (pass raw context so all source keys exist)
 	if (template) {
 		const templateStartTime = performance.now()
-		// eslint-disable-next-line ts/no-unsafe-type-assertion -- Template return type T is guaranteed by the overload signatures
+
 		const finalTemplateResult = (stripUndefined(
 			template(context, resolvedOptions.templateData ?? {}),
 		) ?? {}) as unknown as T

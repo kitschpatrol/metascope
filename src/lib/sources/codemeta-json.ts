@@ -38,9 +38,9 @@ const codeMetaString = z
 			return value
 		}
 
-		if (is.plainObject(value) && typeof value['@value'] === 'string') {
-			return value['@value']
-		}
+		return is.plainObject(value) && typeof value['@value'] === 'string'
+			? value['@value']
+			: undefined
 	}, nonEmptyString)
 	.optional()
 
@@ -51,9 +51,9 @@ const codeMetaUrl = z
 			return value
 		}
 
-		if (is.plainObject(value) && typeof value['@value'] === 'string') {
-			return value['@value']
-		}
+		return is.plainObject(value) && typeof value['@value'] === 'string'
+			? value['@value']
+			: undefined
 	}, optionalUrl)
 	.optional()
 
@@ -75,22 +75,24 @@ const codeMetaStringArray = z
 			return value.includes(',') ? splitCommaSeparated(value) : [value]
 		}
 
-		if (Array.isArray(value)) {
-			return value
-				.map((item) => {
-					if (typeof item === 'string') {
-						return item.trim()
-					}
-
-					if (is.plainObject(item)) {
-						return typeof item.name === 'string' ? item.name.trim() : ''
-					}
-
-					log.warn('Invalid type found in codemeta json parser')
-					return ''
-				})
-				.filter((s) => s.length > 0)
+		if (!Array.isArray(value)) {
+			return
 		}
+
+		return value
+			.map((item) => {
+				if (typeof item === 'string') {
+					return item.trim()
+				}
+
+				if (is.plainObject(item)) {
+					return typeof item.name === 'string' ? item.name.trim() : ''
+				}
+
+				log.warn('Invalid type found in codemeta json parser')
+				return ''
+			})
+			.filter((s) => s.length > 0)
 	}, z.array(z.string()).optional())
 	.optional()
 
@@ -104,10 +106,12 @@ const codeMetaLicense = z
 				return value
 			}
 
-			if (Array.isArray(value)) {
-				const filtered = value.filter((l): l is string => typeof l === 'string')
-				return filtered.length > 0 ? filtered : undefined
+			if (!Array.isArray(value)) {
+				return
 			}
+
+			const filtered = value.filter((l): l is string => typeof l === 'string')
+			return filtered.length > 0 ? filtered : undefined
 		},
 		z.union([z.string(), z.array(z.string())]).optional(),
 	)
@@ -186,7 +190,8 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
 	}
 
 	// Only return if we have some identifying info
-	if (result.name ?? result.givenName ?? result.familyName ?? result.email) {
+	const identifyingValue = result.name ?? result.givenName ?? result.familyName ?? result.email
+	if (identifyingValue !== undefined && identifyingValue !== '') {
 		return result
 	}
 
@@ -234,26 +239,27 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 		return undefined
 	}
 
-	const dep: Record<string, unknown> = {}
+	const dependency: Record<string, unknown> = {}
 
 	if (typeof value.name === 'string') {
-		dep.name = value.name
+		dependency.name = value.name
 	}
 
 	if (typeof value.identifier === 'string') {
-		dep.identifier = value.identifier
+		dependency.identifier = value.identifier
 	}
 
 	if (typeof value.version === 'string') {
-		dep.version = value.version
+		dependency.version = value.version
 	}
 
 	if (typeof value.runtimePlatform === 'string') {
-		dep.runtimePlatform = value.runtimePlatform
+		dependency.runtimePlatform = value.runtimePlatform
 	}
 
-	if (dep.name ?? dep.identifier) {
-		return dep
+	const dependencyKey = dependency.name ?? dependency.identifier
+	if (dependencyKey !== undefined && dependencyKey !== '') {
+		return dependency
 	}
 
 	return undefined
@@ -295,10 +301,13 @@ export const codeMetaJsonDataSchema = z.object({
 				return v
 			}
 
-			if (typeof v === 'string') {
-				const parsed = Number.parseInt(v, 10)
-				return Number.isNaN(parsed) ? undefined : parsed
+			if (typeof v !== 'string') {
+				return
 			}
+
+			// eslint-disable-next-line unicorn/prefer-number-coercion -- parseInt prefix-parses copyright year ranges like "2019-2021" → 2019; Number() would yield NaN
+			const parsed = Number.parseInt(v, 10)
+			return Number.isNaN(parsed) ? undefined : parsed
 		}, z.number().optional())
 		.optional(),
 	dateCreated: codeMetaString,
@@ -381,7 +390,7 @@ function migrateV1Properties(raw: Record<string, unknown>): Record<string, unkno
 
 		const mappedKey = v1PropertyMap[key] ?? key
 		// Don't overwrite if already set (prefer v2/v3 names)
-		if (!(mappedKey in result)) {
+		if (!Object.hasOwn(result, mappedKey)) {
 			result[mappedKey] = value
 		}
 	}
@@ -399,9 +408,7 @@ export const codemetaJsonSource = defineSource<'codemetaJson'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import { createLogger, getChildLogger } from 'lognow'
+import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
+import { kebabCase } from 'string-ts'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { kebabCase } from 'string-ts'
-import { bin, version, name } from '../../package.json' with { type: 'json' }
-import { createLogger, getChildLogger } from 'lognow'
+import type { SourceName, Template, TemplateData } from '../lib'
+import { bin, name, version } from '../../package.json' with { type: 'json' }
 import {
 	DEFAULT_GET_METADATA_OPTIONS,
 	getMetadata,
@@ -12,8 +14,6 @@ import {
 	sourceNames,
 	templates,
 } from '../lib'
-import type { SourceName, Template, TemplateData } from '../lib'
-import { setLogger as setLoggerReadPyproject } from 'read-pyproject'
 import { isKeyOfTemplate } from '../lib/templates'
 
 const cliCommandName = Object.keys(bin).at(0)!
@@ -24,12 +24,15 @@ const yargsInstance = yargs(hideBin(process.argv))
 // accepts the more idiomatic kebab-case form. Both are accepted silently; the
 // help text only shows the kebab-case form.
 const kebabToCamelSource = new Map<string, SourceName>(
-	sourceNames.map((name) => [kebabCase(name), name]),
+	sourceNames.map((sourceName) => [kebabCase(sourceName), sourceName]),
 )
-const kebabSourceNames = [...kebabToCamelSource.keys()]
+const kebabSourceNames = kebabToCamelSource.keys().toArray()
 
-function resolveSourceArg(argument: string): SourceName | undefined {
-	if (sourceNames.includes(argument as SourceName)) return argument as SourceName
+function resolveSourceArgument(argument: string): SourceName | undefined {
+	if (sourceNames.includes(argument as SourceName)) {
+		return argument as SourceName
+	}
+
 	return kebabToCamelSource.get(argument)
 }
 
@@ -38,8 +41,8 @@ await yargsInstance
 	.command(
 		'$0 [path]',
 		'Extract metadata from a code repository.',
-		(yargs) =>
-			yargs
+		(builder) =>
+			builder
 				.positional('path', {
 					default: DEFAULT_GET_METADATA_OPTIONS.path,
 					description: 'Project directory path',
@@ -55,29 +58,29 @@ await yargsInstance
 					type: 'string',
 				})
 				.option('author-name', {
+					array: true,
 					description: 'Optional author name(s) for ownership checks in templates',
 					type: 'string',
-					array: true,
 				})
 				.option('github-account', {
+					array: true,
 					description: 'Optional GitHub account name(s) for ownership checks in templates',
 					type: 'string',
-					array: true,
 				})
 				.option('absolute', {
+					default: DEFAULT_GET_METADATA_OPTIONS.absolute,
 					description: 'Output absolute paths. Use `--no-absolute` for relative paths.',
 					type: 'boolean',
-					default: DEFAULT_GET_METADATA_OPTIONS.absolute,
 				})
 				.option('offline', {
+					default: DEFAULT_GET_METADATA_OPTIONS.offline,
 					description: 'Skip sources requiring network requests',
 					type: 'boolean',
-					default: DEFAULT_GET_METADATA_OPTIONS.offline,
 				})
 				.option('sources', {
 					alias: 's',
 					array: true,
-					coerce: (values: string[]) => values.map((v) => resolveSourceArg(v) ?? v),
+					coerce: (values: string[]) => values.map((v) => resolveSourceArgument(v) ?? v),
 					description: `Only run specific metadata sources (${kebabSourceNames.map((n) => `\`${n}\``).join(', ')}); defaults to all`,
 					type: 'string',
 				})
@@ -88,23 +91,27 @@ await yargsInstance
 							`Invalid source(s): ${invalid.join(', ')}. Valid sources: ${kebabSourceNames.join(', ')}`,
 						)
 					}
+
 					return true
 				})
 				.option('no-ignore', {
+					default: !DEFAULT_GET_METADATA_OPTIONS.respectIgnored,
 					description: 'Include files ignored by .gitignore in the file tree',
 					type: 'boolean',
-					default: !DEFAULT_GET_METADATA_OPTIONS.respectIgnored,
 				})
 				.option('recursive', {
 					alias: 'r',
+					default: DEFAULT_GET_METADATA_OPTIONS.recursive,
 					description: 'Search for metadata files recursively in subdirectories',
 					type: 'boolean',
-					default: DEFAULT_GET_METADATA_OPTIONS.recursive,
 				})
 				.option('workspaces', {
 					alias: 'w',
-					coerce: (value: (boolean | string)[] | boolean | string) => {
-						if (value === true || value === false) return value
+					coerce(value: Array<boolean | string> | boolean | string) {
+						if (value === true || value === false) {
+							return value
+						}
+
 						const values = Array.isArray(value) ? value : [value]
 						const strings = values.filter((v): v is string => typeof v === 'string')
 						return strings.length > 0 ? strings : true
@@ -114,15 +121,15 @@ await yargsInstance
 						'Include workspace-specific metadata in monorepos; pass a `boolean` to enable or disable auto-detection, or pass one or more `string`s to explicitly define workspace paths',
 				})
 				.option('verbose', {
+					default: false,
 					description: 'Run with verbose logging',
 					type: 'boolean',
-					default: false,
 				}),
 		async (argv) => {
 			const log = createLogger({
-				name: name,
-				verbose: argv.verbose ?? false,
 				logToConsole: { showTime: false },
+				name,
+				verbose: argv.verbose,
 			})
 			setLogger(log)
 			setLoggerReadPyproject(getChildLogger(log, 'read-pyproject'))
@@ -130,9 +137,9 @@ await yargsInstance
 
 			// Resolve template: try built-in template first, then load as file
 			let template: Template<unknown> | undefined
-			if (argv.template) {
+			if (argv.template !== undefined && argv.template !== '') {
 				if (isKeyOfTemplate(argv.template)) {
-					// built in
+					// Built in
 					template = templates[argv.template]
 				} else {
 					// Load file
@@ -147,9 +154,10 @@ await yargsInstance
 							typeof templateModule.default === 'function'
 						) {
 							// Runtime-validated function from dynamic import; shape guaranteed by defineTemplate()
-							const fn = templateModule.default
-							template = (context, data) => fn(context, data)
+							const templateFunction = templateModule.default as Template<unknown>
+							template = (context, data) => templateFunction(context, data)
 						}
+
 						if (typeof template !== 'function') {
 							log.error(
 								'Template file must export a function as default export. Use defineTemplate().',
@@ -168,10 +176,13 @@ await yargsInstance
 			}
 
 			try {
-				const credentials = argv.githubToken ? { githubToken: argv.githubToken } : undefined
+				const credentials =
+					argv.githubToken !== undefined && argv.githubToken !== ''
+						? { githubToken: argv.githubToken }
+						: undefined
 				const templateData: TemplateData = {
-					...(argv.authorName ? { authorName: argv.authorName } : {}),
-					...(argv.githubAccount ? { githubAccount: argv.githubAccount } : {}),
+					...(argv.authorName && { authorName: argv.authorName }),
+					...(argv.githubAccount && { githubAccount: argv.githubAccount }),
 				}
 				const sharedOptions = {
 					absolute: argv.absolute,

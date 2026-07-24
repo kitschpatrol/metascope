@@ -1,4 +1,4 @@
-/* eslint-disable max-depth */
+/* eslint-disable unicorn/prefer-https */
 /* eslint-disable ts/dot-notation */
 /* eslint-disable ts/naming-convention */
 
@@ -18,7 +18,7 @@ import {
 	runPrettierOnFile,
 } from './utilities'
 
-const COMMA_OR_SLASH_REGEX = /[,/]/
+const COMMA_OR_SLASH_REGEX = /[,\/]/v
 
 async function getAllContextUrlsFromFixtures(): Promise<Promise<string[]>> {
 	const MANDATORY_URLS = new Set([
@@ -52,7 +52,7 @@ async function getAllContextUrlsFromFixtures(): Promise<Promise<string[]>> {
 	const urlAccumulator = new Set<string>(MANDATORY_URLS)
 	for (const filePath of codemetaFiles) {
 		const rawData = await fs.readFile(filePath, 'utf8')
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
+
 		const document = JSON.parse(rawData) as Record<string, unknown>
 
 		const urls = enforceArray(extractAllStringValuesFromPojo(document['@context'])).filter(
@@ -95,7 +95,7 @@ async function updateContextCache(destinationDirectory: string, force = false): 
 }
 
 function framingContextMutation(content: string): string {
-	// eslint-disable-next-line ts/no-unsafe-type-assertion, ts/no-explicit-any
+	// eslint-disable-next-line ts/no-explicit-any
 	const json = JSON.parse(content) as { '@context': Record<string, any> }
 	const context = json['@context']
 
@@ -128,7 +128,7 @@ function framingContextMutation(content: string): string {
 }
 
 function softwareTypesTermsMutation(content: string): string {
-	// eslint-disable-next-line ts/no-unsafe-type-assertion, ts/no-explicit-any
+	// eslint-disable-next-line ts/no-explicit-any
 	const json = JSON.parse(content) as { '@context': Record<string, any> }
 
 	const newJson = {
@@ -159,11 +159,43 @@ const PREFIXES: Record<string, string> = {
 }
 
 function resolveToUri(prefix: string): string {
-	if (!PREFIXES[prefix]) {
+	const uri = PREFIXES[prefix]
+	if (uri === undefined || uri === '') {
 		throw new Error(`Unknown prefix: ${prefix}`)
 	}
 
-	return PREFIXES[prefix]
+	return uri
+}
+
+/**
+ * Record a single crosswalk mapping for a source key. For codemeta-V1/V2 only
+ * actual renames (source key differs from the V3 property name) are recorded,
+ * prefixed with the resolved URI to match expanded keys.
+ */
+function addSourceKeyMapping(
+	sourceMap: Record<string, string>,
+	source: string,
+	sourceKey: string,
+	codeMetaPropertyName: string,
+	parentType: string,
+	fullPropertyKey: string,
+): void {
+	if (source === 'codemeta-V1' || source === 'codemeta-V2') {
+		if (sourceKey === codeMetaPropertyName) {
+			return
+		}
+
+		const schemaContext = parentType.split(':', 1).at(0)
+		if (schemaContext === undefined) {
+			throw new Error(`Invalid schema context for parentType: ${parentType}`)
+		}
+
+		const uri = resolveToUri(schemaContext)
+		sourceMap[`${uri}${sourceKey}`] = `${uri}${codeMetaPropertyName}`
+		return
+	}
+
+	sourceMap[sourceKey] = fullPropertyKey
 }
 
 /**
@@ -179,6 +211,13 @@ async function updateCrossWalkJson(
 	// Download crosswalk CSV from GitHub
 	const codemetaCrosswalkUrl = `https://raw.githubusercontent.com/codemeta/codemeta/${versionTag}/crosswalk.csv`
 	const crosswalkColumnMap = await getColumnMapFromCsvUrl(codemetaCrosswalkUrl)
+	const propertyColumn = crosswalkColumnMap['Property']
+	const parentTypeColumn = crosswalkColumnMap['Parent Type']
+	const typeColumn = crosswalkColumnMap['Type']
+	if (propertyColumn === undefined || parentTypeColumn === undefined || typeColumn === undefined) {
+		throw new Error('Crosswalk CSV is missing required columns: Property, Parent Type, Type')
+	}
+
 	const crosswalkRecords: {
 		maps: Record<string, Record<string, string>>
 		types: Record<string, string[]>
@@ -201,43 +240,34 @@ async function updateCrossWalkJson(
 	]
 	for (const source of SOURCES) {
 		// For each row, get value of column ['property'] and [source]
-		for (const [rowIndex, codeMetaPropertyName] of crosswalkColumnMap.Property.entries()) {
-			const sourceValue = crosswalkColumnMap[source][rowIndex]
+		for (const [rowIndex, codeMetaPropertyName] of propertyColumn.entries()) {
+			const sourceValue = crosswalkColumnMap[source]?.[rowIndex]
 			if (is.nonEmptyStringAndNotWhitespace(sourceValue)) {
-				const parentType = crosswalkColumnMap['Parent Type'][rowIndex].trim()
+				const parentType = (parentTypeColumn[rowIndex] ?? '').trim()
 
-				crosswalkRecords.maps[source] ??= {}
+				const sourceMap = crosswalkRecords.maps[source] ?? {}
+				crosswalkRecords.maps[source] = sourceMap
 
 				// Split on '/' or ',' and add each key to the record
 				const fullPropertyKey = `${parentType}/${codeMetaPropertyName}`
 				for (const key of sourceValue.split(COMMA_OR_SLASH_REGEX)) {
-					const sourceKey = key.trim()
-
-					// Special handling for codemeta-V1 and V2, we only care if the value is an actual rename
-					// (i.e. source key name differs from V3 property name)
-					if (source === 'codemeta-V1' || source === 'codemeta-V2') {
-						if (sourceKey !== codeMetaPropertyName) {
-							// Also needs to be prefixed with URI to match expanded keys
-							const schemaContext = parentType.split(':').at(0)
-							if (schemaContext === undefined) {
-								throw new Error(`Invalid schema context for parentType: ${parentType}`)
-							}
-
-							const uri = resolveToUri(schemaContext)
-							crosswalkRecords.maps[source][`${uri}${sourceKey}`] = `${uri}${codeMetaPropertyName}`
-						}
-					} else {
-						crosswalkRecords.maps[source][sourceKey] = fullPropertyKey
-					}
+					addSourceKeyMapping(
+						sourceMap,
+						source,
+						key.trim(),
+						codeMetaPropertyName,
+						parentType,
+						fullPropertyKey,
+					)
 				}
 			}
 		}
 	}
 
 	// Also create a map of CodeMeta property names to types
-	for (const [rowIndex, codeMetaPropertyName] of crosswalkColumnMap.Property.entries()) {
-		const parentTypeString = crosswalkColumnMap['Parent Type'][rowIndex]
-		const rawTypeString = crosswalkColumnMap['Type'][rowIndex]
+	for (const [rowIndex, codeMetaPropertyName] of propertyColumn.entries()) {
+		const parentTypeString = parentTypeColumn[rowIndex] ?? ''
+		const rawTypeString = typeColumn[rowIndex] ?? ''
 		const typeValues = rawTypeString
 			.split(' or ')
 			.map((t) => t.trim())
@@ -248,44 +278,51 @@ async function updateCrossWalkJson(
 	}
 
 	// Manual fixes and augmentation...
+	const nodeJsMap = crosswalkRecords.maps['NodeJS']
+	const rustMap = crosswalkRecords.maps['Rust Package Manager']
+	const pythonDistutilsMap = crosswalkRecords.maps['Python Distutils (PyPI)']
+	const pythonPkgInfoMap = crosswalkRecords.maps['Python PKG-INFO']
+	if (
+		nodeJsMap === undefined ||
+		rustMap === undefined ||
+		pythonDistutilsMap === undefined ||
+		pythonPkgInfoMap === undefined
+	) {
+		throw new Error('Crosswalk CSV is missing expected source mappings')
+	}
 
 	// NodeJS
 	// read-pkg normalizes bugs to an object, so access via bugs.url
-	delete crosswalkRecords.maps['NodeJS']['bugs']
-	crosswalkRecords.maps['NodeJS']['bugs.url'] = 'codemeta:SoftwareSourceCode/issueTracker'
+	delete nodeJsMap['bugs']
+	nodeJsMap['bugs.url'] = 'codemeta:SoftwareSourceCode/issueTracker'
 	// Whole object flows through addPropertySmart → emitPersonOrOrg, even though
 	// normalization ensures author key is never just a bare string
-	delete crosswalkRecords.maps['NodeJS']['author.email']
-	delete crosswalkRecords.maps['NodeJS']['author.name']
+	delete nodeJsMap['author.email']
+	delete nodeJsMap['author.name']
 
 	// Rust — fix and augment crosswalk entries
-	crosswalkRecords.maps['Rust Package Manager']['package.description'] = 'schema:Thing/description'
-	crosswalkRecords.maps['Rust Package Manager']['package.name'] = 'schema:Thing/name'
+	rustMap['package.description'] = 'schema:Thing/description'
+	rustMap['package.name'] = 'schema:Thing/name'
 	// CSV has "package.keyword" (singular); Cargo.toml uses "keywords" (plural)
-	crosswalkRecords.maps['Rust Package Manager']['package.keywords'] = 'schema:CreativeWork/keywords'
-	crosswalkRecords.maps['Rust Package Manager']['package.categories'] =
-		'schema:SoftwareApplication/applicationCategory'
+	rustMap['package.keywords'] = 'schema:CreativeWork/keywords'
+	rustMap['package.categories'] = 'schema:SoftwareApplication/applicationCategory'
 	// CSV maps dev-dependencies to softwareRequirements; should be softwareSuggestions
-	crosswalkRecords.maps['Rust Package Manager']['dev-dependencies'] =
-		'codemeta:SoftwareSourceCode/softwareSuggestions'
+	rustMap['dev-dependencies'] = 'codemeta:SoftwareSourceCode/softwareSuggestions'
 	// CSV maps package.authors to maintainer; Cargo "authors" semantically means author
-	crosswalkRecords.maps['Rust Package Manager']['package.authors'] = 'schema:CreativeWork/author'
+	rustMap['package.authors'] = 'schema:CreativeWork/author'
 
 	// Python Distutils (PyPI) — setup.py / setup.cfg field aliases
 	// Legacy aliases used in setup.cfg [metadata] section
-	crosswalkRecords.maps['Python Distutils (PyPI)']['home-page'] = 'schema:Thing/url'
-	crosswalkRecords.maps['Python Distutils (PyPI)']['summary'] = 'schema:Thing/description'
+	pythonDistutilsMap['home-page'] = 'schema:Thing/url'
+	pythonDistutilsMap['summary'] = 'schema:Thing/description'
 	// CSV has "Version" (capital V from PKG-INFO); setup.py/cfg use lowercase
-	crosswalkRecords.maps['Python Distutils (PyPI)']['version'] = 'schema:CreativeWork/version'
+	pythonDistutilsMap['version'] = 'schema:CreativeWork/version'
 
 	// Python PKG-INFO — augment with fields not in the CSV
-	crosswalkRecords.maps['Python PKG-INFO']['Requires-Dist'] =
-		'schema:SoftwareApplication/softwareRequirements'
-	crosswalkRecords.maps['Python PKG-INFO']['Requires-Python'] =
-		'schema:SoftwareSourceCode/runtimePlatform'
-	crosswalkRecords.maps['Python PKG-INFO']['Maintainer'] = 'codemeta:SoftwareSourceCode/maintainer'
-	crosswalkRecords.maps['Python PKG-INFO']['Maintainer-email'] =
-		'codemeta:SoftwareSourceCode/maintainer'
+	pythonPkgInfoMap['Requires-Dist'] = 'schema:SoftwareApplication/softwareRequirements'
+	pythonPkgInfoMap['Requires-Python'] = 'schema:SoftwareSourceCode/runtimePlatform'
+	pythonPkgInfoMap['Maintainer'] = 'codemeta:SoftwareSourceCode/maintainer'
+	pythonPkgInfoMap['Maintainer-email'] = 'codemeta:SoftwareSourceCode/maintainer'
 
 	// Python PEP 621 — modern pyproject.toml [project] table fields (not in CSV)
 	crosswalkRecords.maps['Python PEP 621'] = {

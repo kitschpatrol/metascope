@@ -9,7 +9,7 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-07-05",
+	"dateModified": "2026-07-24",
 	"datePublished": "2026-07-05",
 	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
@@ -66,7 +66,7 @@
 		},
 		{
 			"name": "fast-xml-parser",
-			"version": "^5.9.3"
+			"version": "^5.10.1"
 		},
 		{
 			"name": "find-workspaces",
@@ -86,7 +86,7 @@
 		},
 		{
 			"name": "lognow",
-			"version": "^0.6.2"
+			"version": "^0.7.1"
 		},
 		{
 			"name": "octokit",
@@ -98,7 +98,7 @@
 		},
 		{
 			"name": "picomatch",
-			"version": "^4.0.4"
+			"version": "^4.0.5"
 		},
 		{
 			"name": "pkg-types",
@@ -158,11 +158,11 @@
 		},
 		{
 			"name": "updates",
-			"version": "^17.18.1"
+			"version": "^17.19.1"
 		},
 		{
 			"name": "web-tree-sitter",
-			"version": "^0.26.10"
+			"version": "^0.26.11"
 		},
 		{
 			"name": "yaml",
@@ -180,7 +180,7 @@
 	"softwareSuggestions": [
 		{
 			"name": "@arethetypeswrong/core",
-			"version": "^0.18.4"
+			"version": "^0.18.5"
 		},
 		{
 			"name": "@fast-csv/parse",
@@ -188,7 +188,7 @@
 		},
 		{
 			"name": "@kitschpatrol/shared-config",
-			"version": "^7.6.4"
+			"version": "^8.4.0"
 		},
 		{
 			"name": "@types/jsonld",
@@ -204,7 +204,7 @@
 		},
 		{
 			"name": "bumpp",
-			"version": "^11.1.0"
+			"version": "^12.0.0"
 		},
 		{
 			"name": "jsonld",
@@ -236,21 +236,21 @@
 		},
 		{
 			"name": "tsdown",
-			"version": "^0.22.3"
+			"version": "^0.22.14"
 		},
 		{
 			"name": "tsx",
-			"version": "^4.22.4"
+			"version": "^4.23.1"
 		},
 		{
 			"name": "typescript",
-			"version": "~5.9.3"
+			"version": "~6.0.3"
 		},
 		{
 			"name": "vitest",
-			"version": "^4.1.9"
+			"version": "^4.1.10"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.8.4"
+	"version": "0.8.5"
 }

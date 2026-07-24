@@ -43,7 +43,7 @@ export async function resolveLicenseUrl(
 	fetchResponse: (url: string) => Promise<Response> = fetchHeaders,
 ): Promise<Resolution> {
 	const fallback = `${SPDX_BASE_URL}${spdxId}`
-	if (!upstreamUrl) {
+	if (upstreamUrl === undefined || upstreamUrl === '') {
 		return {
 			redirected: false,
 			retainedTemporaryRedirect: false,
@@ -82,7 +82,7 @@ export async function resolveLicenseUrl(
 
 		if (REDIRECT_STATUSES.has(response.status)) {
 			const location = response.headers.get('location')
-			if (!location) {
+			if (location === null || location === '') {
 				return {
 					redirected,
 					retainedTemporaryRedirect: false,
@@ -151,7 +151,12 @@ async function updateLicenseUrls(): Promise<void> {
 			const currentIndex = cursor
 			cursor++
 
-			const [spdxId, entry] = entries[currentIndex]
+			const currentEntry = entries[currentIndex]
+			if (currentEntry === undefined) {
+				break
+			}
+
+			const [spdxId, entry] = currentEntry
 			const resolution = await resolveLicenseUrl(spdxId, entry.url)
 			urls.set(spdxId, {
 				originalUrl: entry.url,

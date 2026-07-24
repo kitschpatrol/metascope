@@ -99,11 +99,13 @@ describe('parse', () => {
 	})
 
 	it('should return undefined for non-dictionary root', () => {
+		/* eslint-disable unicorn/prefer-https -- Canonical Apple DTD identifier is http */
 		const arrayPlist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array><string>item</string></array>
 </plist>`
+		/* eslint-enable unicorn/prefer-https */
 		expect(parse(arrayPlist)).toBeUndefined()
 	})
 

@@ -30,13 +30,13 @@ export function getGitHubRemoteFromConfig(
 
 	for (const [, remote] of sorted) {
 		const { url } = remote
-		if (!url) {
+		if (url === undefined || url === '') {
 			continue
 		}
 
 		try {
 			const parsed = gitUrlParse(url)
-			if (parsed.source === 'github.com' && parsed.owner && parsed.name) {
+			if (parsed.source === 'github.com' && parsed.owner !== '' && parsed.name !== '') {
 				return { owner: parsed.owner, repo: parsed.name }
 			}
 		} catch {

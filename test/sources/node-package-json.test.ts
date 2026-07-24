@@ -71,6 +71,7 @@ describe('parse', () => {
 		expect(result.author).toEqual({
 			email: 'bschlenk@umich.edu',
 			name: 'Brian Schlenker',
+			// eslint-disable-next-line unicorn/prefer-https -- mirrors the fixture's author URL
 			url: 'http://github.com/bschlenk',
 		})
 	})
@@ -127,13 +128,12 @@ describe('parse', () => {
 				continue
 			}
 
-			const content = readFileSync(resolve(directoryPath, 'package.json'), 'utf8')
-
 			if (expectedFailures.has(directory.name)) {
 				parsedCount++
 				continue
 			}
 
+			const content = readFileSync(resolve(directoryPath, 'package.json'), 'utf8')
 			expect(() => parse(content), `fixture "${directory.name}" should parse`).not.toThrow()
 			parsedCount++
 		}

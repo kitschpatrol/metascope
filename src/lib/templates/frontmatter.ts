@@ -158,7 +158,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 			nodeNpmRegistry?.downloadsMonthly ?? pythonPypiRegistry?.downloadsMonthly ?? null,
 
 		// ── Activity ──────────────────────────────────────────
-		CI: ciStatus ? titleCase(ciStatus) : null,
+		CI: ciStatus === undefined ? null : titleCase(ciStatus),
 		'CI URL': ciUrl ?? null,
 
 		Releases: github?.releaseCount ?? gitStats?.tagReleaseCount ?? null,

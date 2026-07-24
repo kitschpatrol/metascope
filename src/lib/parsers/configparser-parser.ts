@@ -1,6 +1,6 @@
-const SECTION_HEADER_REGEX = /^\[([^\]]+)\]/
-const LEADING_WHITESPACE_REGEX = /^\s/
-const KEY_VALUE_PAIR_REGEX = /^([^=:]+)[=:](.*)$/
+const SECTION_HEADER_REGEX = /^\[([^\]]+)\]/v
+const LEADING_WHITESPACE_REGEX = /^\s/v
+const KEY_VALUE_PAIR_REGEX = /^([^=:]+)[=:](.*)$/v
 
 /**
  * Parse a ConfigParser-style INI file into sections with key-value pairs.
@@ -23,18 +23,25 @@ export function parseConfigparser(content: string): Record<string, Record<string
 		// Section header
 		const sectionMatch = SECTION_HEADER_REGEX.exec(trimmed)
 		if (sectionMatch) {
-			currentSection = sectionMatch[1]
+			currentSection = sectionMatch[1] ?? ''
 			sections[currentSection] ??= {}
 			lastKey = ''
 			continue
 		}
 
 		// Continuation line (starts with whitespace and we have a current key)
-		if (LEADING_WHITESPACE_REGEX.test(line) && lastKey && currentSection) {
-			const existing = sections[currentSection][lastKey]
+		const continuationSection = sections[currentSection]
+		if (
+			lastKey !== '' &&
+			currentSection !== '' &&
+			continuationSection !== undefined &&
+			LEADING_WHITESPACE_REGEX.test(line)
+		) {
+			const existing = continuationSection[lastKey]
 			const continuation = trimmed.trim()
-			if (continuation) {
-				sections[currentSection][lastKey] = existing ? `${existing}\n${continuation}` : continuation
+			if (continuation !== '') {
+				continuationSection[lastKey] =
+					existing !== undefined && existing !== '' ? `${existing}\n${continuation}` : continuation
 			}
 
 			continue
@@ -42,11 +49,12 @@ export function parseConfigparser(content: string): Record<string, Record<string
 
 		// Key = value pair (supports both = and : as delimiters)
 		const kvMatch = KEY_VALUE_PAIR_REGEX.exec(trimmed)
-		if (kvMatch && currentSection) {
-			const key = kvMatch[1].trim()
-			const value = kvMatch[2].trim()
-			sections[currentSection] ??= {}
-			sections[currentSection][key] = value
+		if (kvMatch && currentSection !== '') {
+			const key = (kvMatch[1] ?? '').trim()
+			const value = (kvMatch[2] ?? '').trim()
+			const section = sections[currentSection] ?? {}
+			sections[currentSection] = section
+			section[key] = value
 			lastKey = key
 		}
 	}

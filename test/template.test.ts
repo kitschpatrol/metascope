@@ -205,7 +205,7 @@ describe('defineTemplate', () => {
 	it('should support single-arg templates (legacy compat)', () => {
 		// Templates that only use the first arg still work since
 		// JS allows calling a function with more args than declared
-		// eslint-disable-next-line unicorn/consistent-function-scoping
+
 		const singleArgumentTemplate = (context: MetadataContext) => ({
 			name: firstOf(context.codemetaJson)?.data.name,
 		})
@@ -277,7 +277,7 @@ describe('codemeta template', () => {
 	})
 
 	it('should collect dependencies from package.json', () => {
-		const contextWithDeps: MetadataContext = {
+		const contextWithDependencies: MetadataContext = {
 			...mockContext,
 			nodePackageJson: {
 				data: {
@@ -292,7 +292,7 @@ describe('codemeta template', () => {
 				source: 'package.json',
 			},
 		}
-		const result = codemeta(contextWithDeps, {})
+		const result = codemeta(contextWithDependencies, {})
 		expect(result.softwareRequirements).toEqual([
 			{ '@type': 'SoftwareApplication', name: 'express', version: '^4.18.0' },
 			{ '@type': 'SoftwareApplication', name: 'lodash', version: '^4.17.21' },

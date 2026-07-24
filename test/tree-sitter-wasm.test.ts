@@ -27,9 +27,7 @@ describe('findGrammarDirectory', () => {
 				'/home/user/project/dist/grammars',
 			)
 		})
-	}
-
-	if (sep === '\\') {
+	} else {
 		it('should handle windows-style dist paths', () => {
 			expect(findGrammarDirectory(String.raw`D:\a\project\dist\lib\utilities`)).toBe(
 				String.raw`D:\a\project\dist\grammars`,

@@ -83,6 +83,7 @@ describe('parse', () => {
 		expect(result.name).toBe('ofxGStreamer')
 		expect(result.author).toBe('Arturo Castro')
 		expect(result.tags).toEqual(['GStreamer', 'video', 'audio', 'network'])
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result.url).toBe('http://github.com/arturoc/ofxGStreamer')
 		expect(result.platformSections).toContain('msys2')
 		expect(result.platformSections).toContain('vs')

@@ -12,9 +12,9 @@ describe('parseConfigparser', () => {
 		const sections = parseConfigparser(content)
 
 		expect(sections.metadata).toBeDefined()
-		expect(sections.metadata.name).toBe('example-package')
-		expect(sections.metadata.version).toBe('1.2.3')
-		expect(sections.metadata.author).toBe('Jane Smith')
+		expect(sections.metadata!.name).toBe('example-package')
+		expect(sections.metadata!.version).toBe('1.2.3')
+		expect(sections.metadata!.author).toBe('Jane Smith')
 	})
 
 	it('should parse multiple sections', () => {
@@ -29,7 +29,7 @@ describe('parseConfigparser', () => {
 		const content = readFileSync(resolve(fixturesDirectory, 'basic/setup.cfg'), 'utf8')
 		const sections = parseConfigparser(content)
 
-		const classifiers = splitMultiline(sections.metadata.classifiers)
+		const classifiers = splitMultiline(sections.metadata!.classifiers!)
 		expect(classifiers.length).toBeGreaterThan(0)
 		expect(classifiers).toContain('Development Status :: 5 - Production/Stable')
 	})
@@ -44,12 +44,12 @@ describe('parseConfigparser', () => {
 		for (const directory of directories) {
 			const directoryPath = resolve(fixturesDirectory, directory.name)
 			const files = await readdir(directoryPath)
-			const setupCfgFile = files.find((name) => name === 'setup.cfg')
-			if (!setupCfgFile) {
+			const setupConfigFile = files.find((name) => name === 'setup.cfg')
+			if (setupConfigFile === undefined) {
 				continue
 			}
 
-			const content = readFileSync(resolve(directoryPath, setupCfgFile), 'utf8')
+			const content = readFileSync(resolve(directoryPath, setupConfigFile), 'utf8')
 			expect(
 				() => parseConfigparser(content),
 				`fixture "${directory.name}" should parse`,

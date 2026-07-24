@@ -62,10 +62,10 @@ describe('parse', () => {
 
 		expect(result!.author).toBeDefined()
 		expect(result!.author!.length).toBe(2)
-		expect(result!.author![0].givenName).toBe('Michael')
-		expect(result!.author![0].familyName).toBe('Hucka')
-		expect(result!.author![0].type).toBe('Person')
-		expect(result!.author![0].affiliation).toBe('California Institute of Technology Library')
+		expect(result!.author![0]!.givenName).toBe('Michael')
+		expect(result!.author![0]!.familyName).toBe('Hucka')
+		expect(result!.author![0]!.type).toBe('Person')
+		expect(result!.author![0]!.affiliation).toBe('California Institute of Technology Library')
 	})
 
 	it('should parse keywords', () => {
@@ -110,11 +110,11 @@ describe('parse', () => {
 
 		expect(result!.maintainer).toBeDefined()
 		expect(result!.maintainer!.length).toBe(1)
-		expect(result!.maintainer![0].familyName).toBe('Morrell')
+		expect(result!.maintainer![0]!.familyName).toBe('Morrell')
 
 		expect(result!.copyrightHolder).toBeDefined()
 		expect(result!.copyrightHolder!.length).toBe(1)
-		expect(result!.copyrightHolder![0].type).toBe('Organization')
+		expect(result!.copyrightHolder![0]!.type).toBe('Organization')
 	})
 
 	it('should parse programming languages', () => {
@@ -136,7 +136,7 @@ describe('parse', () => {
 		// V1 "agents" → "author"
 		expect(result!.author).toBeDefined()
 		expect(result!.author!.length).toBe(2)
-		expect(result!.author![0].name).toBe('Thomas Cassimon')
+		expect(result!.author![0]!.name).toBe('Thomas Cassimon')
 	})
 
 	it('should handle v1 dependencies', () => {
@@ -146,7 +146,7 @@ describe('parse', () => {
 		// V1 "depends" → "softwareRequirements"
 		expect(result!.softwareRequirements).toBeDefined()
 		expect(result!.softwareRequirements!.length).toBeGreaterThan(0)
-		expect(result!.softwareRequirements![0].name).toBe('export_fig')
+		expect(result!.softwareRequirements![0]!.name).toBe('export_fig')
 	})
 
 	it('should strip JSON-LD boilerplate', () => {

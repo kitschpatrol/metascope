@@ -77,10 +77,8 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 			return []
 		}
 
-		let packageNames = []
-
 		// Try to get package name from pyproject.toml context
-		packageNames = ensureArray(context.metadata?.pythonPyprojectToml)
+		let packageNames = ensureArray(context.metadata?.pythonPyprojectToml)
 			.filter(
 				(value) =>
 					!hasPrivateClassifier(
@@ -154,8 +152,8 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 					.filter((value) => value !== undefined)
 
 				if (packageNames.length === 0) {
-					const setupCfg = await pythonSetupCfgSource.extract(context)
-					packageNames = ensureArray(setupCfg)
+					const setupConfig = await pythonSetupCfgSource.extract(context)
+					packageNames = ensureArray(setupConfig)
 						.filter(
 							(value) =>
 								!hasPrivateClassifier(
@@ -208,35 +206,15 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		const name = input
 
 		const [pypiResult, pypistatsRecentResult, pypistatsOverallResult] = await Promise.all([
-			fetchWithRetry(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`)
-				.then(async (response) => {
-					if (!response.ok) {
-						return
-					}
-
-					return pypiResponseSchema.parse(await response.json())
-				})
-				.catch((): undefined => undefined),
-			fetchWithRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`)
-				.then(async (response) => {
-					if (!response.ok) {
-						return
-					}
-
-					return pypistatsRecentSchema.parse(await response.json())
-				})
-				.catch((): undefined => undefined),
-			fetchWithRetry(
+			fetchJson(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`, pypiResponseSchema),
+			fetchJson(
+				`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`,
+				pypistatsRecentSchema,
+			),
+			fetchJson(
 				`https://pypistats.org/api/packages/${encodeURIComponent(name)}/overall?mirrors=false`,
-			)
-				.then(async (response) => {
-					if (!response.ok) {
-						return
-					}
-
-					return pypistatsOverallSchema.parse(await response.json())
-				})
-				.catch((): undefined => undefined),
+				pypistatsOverallSchema,
+			),
 		])
 
 		if (!pypiResult) {
@@ -260,8 +238,9 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		// Only include yanked fields when true
 		if (pypiResult.info.yanked) {
 			info.yanked = true
-			if (pypiResult.info.yanked_reason) {
-				info.yankedReason = pypiResult.info.yanked_reason
+			const yankedReason = pypiResult.info.yanked_reason
+			if (yankedReason !== null && yankedReason !== undefined && yankedReason !== '') {
+				info.yankedReason = yankedReason
 			}
 		}
 
@@ -272,8 +251,12 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 		}
 
 		if (pypistatsOverallResult) {
+			const downloads180Days = pypistatsOverallResult.data.reduce(
+				(sum, entry) => sum + entry.downloads,
+				0,
+			)
 			info.downloads180Days =
-				pypistatsOverallResult.data.reduce((sum, entry) => sum + entry.downloads, 0) || undefined
+				downloads180Days === 0 || Number.isNaN(downloads180Days) ? undefined : downloads180Days
 		}
 
 		return {
@@ -285,6 +268,23 @@ export const pythonPypiRegistrySource = defineSource<'pythonPypiRegistry'>({
 })
 
 // Helpers -----------------------
+
+/**
+ * Fetch a URL and parse its JSON body with a Zod schema. Returns undefined when
+ * the request fails, the response is not OK, or the body doesn't validate.
+ */
+async function fetchJson<T>(url: string, schema: z.ZodType<T>): Promise<T | undefined> {
+	try {
+		const response = await fetchWithRetry(url)
+		if (!response.ok) {
+			return undefined
+		}
+
+		return schema.parse(await response.json())
+	} catch {
+		return undefined
+	}
+}
 
 /**
  * Check if classifiers contain a "Private ::" prefix, which signals that the

@@ -5,7 +5,7 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
-const AGE_VALUE_UNIT_REGEX = /^(\d+)\s+(\w+)$/
+const AGE_VALUE_UNIT_REGEX = /^(\d+)\s+(\w+)$/v
 
 type DependencyUpdatesPackage = {
 	/** Human-readable age of the update (e.g. "3 months"). */
@@ -39,7 +39,7 @@ type DependencyUpdatesExtra = {
 export type DependencyUpdatesData =
 	OneOrMany<SourceRecord<DependencyUpdatesFields, DependencyUpdatesExtra>> | undefined
 
-const depSchema = z.object({
+const dependencySchema = z.object({
 	age: z.string().optional(),
 	info: z.string().optional(),
 	new: z.string(),
@@ -47,7 +47,7 @@ const depSchema = z.object({
 })
 
 const updatesOutputSchema = z.object({
-	results: z.record(z.string(), z.record(z.string(), z.record(z.string(), depSchema))),
+	results: z.record(z.string(), z.record(z.string(), z.record(z.string(), dependencySchema))),
 })
 
 /**
@@ -69,6 +69,9 @@ function parseAgeToYears(age: string): number {
 
 	const value = Number(match[1])
 	const unit = match[2]
+	if (unit === undefined) {
+		return 0
+	}
 
 	switch (unit) {
 		case 'day':
@@ -124,19 +127,67 @@ function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor'
 	}
 
 	const result = diff(oldSemver, newSemver)
-	if (!result) {
+	if (result === null) {
 		return 'major'
 	}
 
-	if (result.startsWith('major') || result === 'premajor') {
+	if (result === 'premajor' || result.startsWith('major')) {
 		return 'major'
 	}
 
-	if (result.startsWith('minor') || result === 'preminor') {
+	if (result === 'preminor' || result.startsWith('minor')) {
 		return 'minor'
 	}
 
 	return 'patch'
+}
+
+type UpdatesDependency = z.infer<typeof dependencySchema>
+
+type DependencyBuckets = Record<'major' | 'minor' | 'patch', DependencyUpdatesPackage[]>
+
+/**
+ * Classify each dependency in a group into the appropriate bucket, skipping
+ * `@types/node` and packages already seen. Returns the libyears contributed by
+ * this group.
+ */
+function collectDependencyUpdates(
+	dependencyGroup: Record<string, UpdatesDependency>,
+	buckets: DependencyBuckets,
+	seen: Set<string>,
+): number {
+	let libyears = 0
+
+	for (const [name, dependency] of Object.entries(dependencyGroup)) {
+		if (name === '@types/node' || seen.has(name)) {
+			continue
+		}
+
+		seen.add(name)
+
+		if (dependency.age !== undefined && dependency.age !== '') {
+			libyears += parseAgeToYears(dependency.age)
+		}
+
+		const packageStatus: DependencyUpdatesPackage = {
+			name,
+			new: dependency.new,
+			old: dependency.old,
+		}
+
+		if (dependency.age !== undefined && dependency.age !== '') {
+			packageStatus.age = dependency.age
+		}
+
+		if (dependency.info !== undefined && dependency.info !== '') {
+			packageStatus.info = dependency.info
+		}
+
+		const bump = classifyBump(dependency.old, dependency.new)
+		buckets[bump].push(packageStatus)
+	}
+
+	return libyears
 }
 
 export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
@@ -163,63 +214,17 @@ export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 			return
 		}
 
-		const major: DependencyUpdatesPackage[] = []
-		const minor: DependencyUpdatesPackage[] = []
-		const patch: DependencyUpdatesPackage[] = []
+		const buckets: DependencyBuckets = { major: [], minor: [], patch: [] }
 		const seen = new Set<string>()
 		let libyears = 0
 
 		for (const mode of Object.values(parsed.results)) {
-			for (const depGroup of Object.values(mode)) {
-				for (const [name, dep] of Object.entries(depGroup)) {
-					if (name === '@types/node') {
-						continue
-					}
-
-					if (seen.has(name)) {
-						continue
-					}
-
-					seen.add(name)
-
-					if (dep.age) {
-						libyears += parseAgeToYears(dep.age)
-					}
-
-					const packageStatus: DependencyUpdatesPackage = {
-						name,
-						new: dep.new,
-						old: dep.old,
-					}
-
-					if (dep.age) {
-						packageStatus.age = dep.age
-					}
-
-					if (dep.info) {
-						packageStatus.info = dep.info
-					}
-
-					const bump = classifyBump(dep.old, dep.new)
-					switch (bump) {
-						case 'major': {
-							major.push(packageStatus)
-							break
-						}
-
-						case 'minor': {
-							minor.push(packageStatus)
-							break
-						}
-
-						case 'patch': {
-							patch.push(packageStatus)
-							break
-						}
-					}
-				}
+			for (const dependencyGroup of Object.values(mode)) {
+				libyears += collectDependencyUpdates(dependencyGroup, buckets, seen)
 			}
 		}
+
+		const { major, minor, patch } = buckets
 
 		return {
 			data: {

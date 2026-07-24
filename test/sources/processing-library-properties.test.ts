@@ -78,6 +78,7 @@ describe('parse', () => {
 		const result = parse(content)
 
 		expect(result.name).toBe('ROCKETuC')
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result.authors).toEqual([{ name: 'Alexander Reben', url: 'http://www.areben.com' }])
 		expect(result.categories).toEqual(['I/O'])
 		expect(result.version).toBe(1)

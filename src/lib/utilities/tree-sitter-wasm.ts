@@ -38,7 +38,7 @@ export function findGrammarDirectory(moduleDirectory: string): string {
 
 /** Resolve a grammar WASM file path relative to the dist/ directory. */
 function resolveGrammar(filename: string): string {
-	if (grammarDirectoryOverride) {
+	if (grammarDirectoryOverride !== undefined && grammarDirectoryOverride !== '') {
 		return resolve(grammarDirectoryOverride, filename)
 	}
 

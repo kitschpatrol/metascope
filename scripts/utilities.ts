@@ -6,6 +6,7 @@ import path from 'node:path'
 import { Readable } from 'node:stream'
 import { promisify } from 'node:util'
 
+// eslint-disable-next-line ts/strict-void-return -- execFile returns a ChildProcess; promisify resolves it via its util.promisify.custom hook to { stdout, stderr }, so execFile must be passed directly rather than wrapped
 export const execFileAsync = promisify(execFile)
 
 /**
@@ -41,7 +42,7 @@ export async function getColumnMapFromCsvUrl(url: string): Promise<Record<string
 			.on('data', (row: Record<string, string>) => {
 				// 3. Push each row's value into the corresponding header array
 				for (const [key, value] of Object.entries(row)) {
-					columnMap[key].push(value)
+					;(columnMap[key] ??= []).push(value)
 				}
 			})
 			.on('end', () => {
@@ -74,7 +75,7 @@ export async function downloadUrlToFile(
 	// File name should be final segment of URL
 	const finalFileName = fileName ?? url.split('/').pop()
 
-	if (!finalFileName) {
+	if (finalFileName === undefined || finalFileName === '') {
 		throw new Error(`Could not determine file name from URL: ${url}`)
 	}
 

@@ -1,11 +1,11 @@
 /* eslint-disable complexity */
 /* eslint-disable ts/naming-convention */
 
-const MAJOR_VERSION_SUFFIX_REGEX = /\/v\d+$/
-const INDIRECT_COMMENT_REGEX = /\/\/\s*indirect/
-const MODULE_VERSION_REGEX = /^(\S+)\s+(\S+)/
-const INCOMPATIBLE_SUFFIX_REGEX = /\+incompatible$/
-const WHITESPACE_REGEX = /\s+/
+const MAJOR_VERSION_SUFFIX_REGEX = /\/v\d+$/v
+const INDIRECT_COMMENT_REGEX = /\/\/\s*indirect/v
+const MODULE_VERSION_REGEX = /^(\S+)\s+(\S+)/v
+const INCOMPATIBLE_SUFFIX_REGEX = /\+incompatible$/v
+const WHITESPACE_REGEX = /\s+/v
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -30,12 +30,12 @@ const HOST_SEGMENTS: Record<string, number> = {
 function moduleToRepoUrl(modulePath: string): string | undefined {
 	const segments = modulePath.split('/')
 	const host = segments[0]
-	if (!host) {
+	if (host === undefined || host === '') {
 		return undefined
 	}
 
 	const needed = HOST_SEGMENTS[host]
-	if (!needed || segments.length < needed) {
+	if (needed === undefined || needed === 0 || segments.length < needed) {
 		return undefined
 	}
 
@@ -68,8 +68,13 @@ function parseRequireLine(
 		return undefined
 	}
 
-	const version = match[2].replace(INCOMPATIBLE_SUFFIX_REGEX, '')
-	return { indirect, module: match[1], version }
+	const [, module, rawVersion] = match
+	if (module === undefined || rawVersion === undefined) {
+		return undefined
+	}
+
+	const version = rawVersion.replace(INCOMPATIBLE_SUFFIX_REGEX, '')
+	return { indirect, module, version }
 }
 
 /**
@@ -83,16 +88,16 @@ function parseReplaceLine(line: string): undefined | { from: string; to: Replace
 		return undefined
 	}
 
-	const left = parts[0].trim().split(WHITESPACE_REGEX)
-	const right = parts[1].trim().split(WHITESPACE_REGEX)
+	const left = (parts[0] ?? '').trim().split(WHITESPACE_REGEX)
+	const right = (parts[1] ?? '').trim().split(WHITESPACE_REGEX)
 
 	const from = left[0]
-	if (!from || right.length === 0) {
+	if (from === undefined || from === '' || right.length === 0) {
 		return undefined
 	}
 
 	const target = right[0]
-	if (!target) {
+	if (target === undefined || target === '') {
 		return undefined
 	}
 
@@ -111,7 +116,8 @@ function parseToolLine(line: string): string | undefined {
 		return undefined
 	}
 
-	return clean.split(WHITESPACE_REGEX)[0] || undefined
+	const first = clean.split(WHITESPACE_REGEX)[0]
+	return first === undefined || first === '' ? undefined : first
 }
 
 // ─── Main parser ─────────────────────────────────────────────────────────────
@@ -137,17 +143,52 @@ export function parseGoMod(source: string): Record<string, unknown> {
 		tool_dependencies: [],
 	}
 
-	const directDeps: Record<string, string> = {}
-	const toolDeps: string[] = []
+	const directDependencies: Record<string, string> = {}
+	const toolDependencies: string[] = []
 	const replacements = new Map<string, Replacement>()
 
 	let blockState: BlockState = 'none'
+
+	function handleBlockLine(state: Exclude<BlockState, 'none'>, blockLine: string): void {
+		switch (state) {
+			case 'replace': {
+				const rep = parseReplaceLine(blockLine)
+				if (rep) {
+					replacements.set(rep.from, rep.to)
+				}
+
+				break
+			}
+
+			case 'require': {
+				const dependency = parseRequireLine(blockLine)
+				if (dependency && !dependency.indirect) {
+					directDependencies[dependency.module] = dependency.version
+				}
+
+				break
+			}
+
+			case 'skip': {
+				break
+			}
+
+			case 'tool': {
+				const tool = parseToolLine(blockLine)
+				if (tool !== undefined && tool !== '') {
+					toolDependencies.push(tool)
+				}
+
+				break
+			}
+		}
+	}
 
 	for (const rawLine of source.split('\n')) {
 		const line = rawLine.trim()
 
 		// Skip empty lines and pure comments outside blocks
-		if (line === '' || (line.startsWith('//') && blockState === 'none')) {
+		if (line === '' || (blockState === 'none' && line.startsWith('//'))) {
 			continue
 		}
 
@@ -159,39 +200,7 @@ export function parseGoMod(source: string): Record<string, unknown> {
 
 		// Inside a block
 		if (blockState !== 'none') {
-			switch (blockState) {
-				case 'replace': {
-					const rep = parseReplaceLine(line)
-					if (rep) {
-						replacements.set(rep.from, rep.to)
-					}
-
-					break
-				}
-
-				case 'require': {
-					const dep = parseRequireLine(line)
-					if (dep && !dep.indirect) {
-						directDeps[dep.module] = dep.version
-					}
-
-					break
-				}
-
-				case 'skip': {
-					break
-				}
-
-				case 'tool': {
-					const tool = parseToolLine(line)
-					if (tool) {
-						toolDeps.push(tool)
-					}
-
-					break
-				}
-			}
-
+			handleBlockLine(blockState, line)
 			continue
 		}
 
@@ -204,9 +213,9 @@ export function parseGoMod(source: string): Record<string, unknown> {
 			if (line.includes('(')) {
 				blockState = 'require'
 			} else {
-				const dep = parseRequireLine(line.slice('require '.length))
-				if (dep && !dep.indirect) {
-					directDeps[dep.module] = dep.version
+				const dependency = parseRequireLine(line.slice('require '.length))
+				if (dependency && !dependency.indirect) {
+					directDependencies[dependency.module] = dependency.version
 				}
 			}
 		} else if (line.startsWith('replace ')) {
@@ -223,8 +232,8 @@ export function parseGoMod(source: string): Record<string, unknown> {
 				blockState = 'tool'
 			} else {
 				const tool = parseToolLine(line.slice('tool '.length))
-				if (tool) {
-					toolDeps.push(tool)
+				if (tool !== undefined && tool !== '') {
+					toolDependencies.push(tool)
 				}
 			}
 		} else if (
@@ -240,21 +249,26 @@ export function parseGoMod(source: string): Record<string, unknown> {
 
 	// Apply replacements
 	for (const [from, to] of replacements) {
-		if (from in directDeps) {
-			// eslint-disable-next-line ts/no-dynamic-delete
-			delete directDeps[from]
-			if (to !== 'local') {
-				directDeps[to.module] = to.version
-			}
+		if (!Object.hasOwn(directDependencies, from)) {
+			continue
+		}
+
+		// eslint-disable-next-line ts/no-dynamic-delete
+		delete directDependencies[from]
+		if (to !== 'local') {
+			directDependencies[to.module] = to.version
 		}
 	}
 
 	// Convert deps map to array
-	data.dependencies = Object.entries(directDeps).map(([module, version]) => ({ module, version }))
-	data.tool_dependencies = toolDeps
+	data.dependencies = Object.entries(directDependencies).map(([module, version]) => ({
+		module,
+		version,
+	}))
+	data.tool_dependencies = toolDependencies
 
 	// Derive repository URL
-	if (data.module) {
+	if (data.module !== undefined && data.module !== '') {
 		data.repository_url = moduleToRepoUrl(data.module)
 	}
 

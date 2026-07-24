@@ -65,11 +65,13 @@ function extractFirstH1(markdown: string): string | undefined {
 	const tree = markdownParser.parse(markdown)
 
 	for (const node of tree.children) {
-		if (node.type === 'heading' && node.depth === 1) {
-			const text = extractText(node.children)
-			if (text.length > 0) {
-				return text
-			}
+		if (node.type !== 'heading' || node.depth !== 1) {
+			continue
+		}
+
+		const text = extractText(node.children)
+		if (text.length > 0) {
+			return text
 		}
 	}
 
@@ -79,7 +81,7 @@ function extractFirstH1(markdown: string): string | undefined {
 // ─── Parser ──────────────────────────────────────────────────────────
 
 /** Pattern matching README filenames (case-insensitive, optional extension). */
-export const readmePattern = /^readme(\.\w+)?$/i
+export const readmePattern = /^readme(\.\w+)?$/iv
 
 /**
  * Parse a README file's content.
@@ -91,7 +93,7 @@ export const readmePattern = /^readme(\.\w+)?$/i
 export function parse(content: string): Readme | undefined {
 	const { content: markdown, data } = matter(content)
 	const name = extractFirstH1(markdown)
-	if (!name) {
+	if (name === undefined || name === '') {
 		return undefined
 	}
 
@@ -111,9 +113,7 @@ export const readmeFileSource = defineSource<'readmeFile'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const data = parse(content)
-		if (data !== undefined) {
-			return { data, source: input }
-		}
+		return data === undefined ? undefined : { data, source: input }
 	},
 	phase: 1,
 })

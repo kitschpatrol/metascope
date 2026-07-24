@@ -35,7 +35,7 @@ describe('javaPomXml source', () => {
 		expect(result!.data.groupId).toBe('com.oath.halodb')
 		expect(result!.data.artifactId).toBe('halodb')
 		expect(result!.data.developers).toHaveLength(1)
-		expect(result!.data.developers[0].name).toBe('Arjun Mannaly')
+		expect(result!.data.developers[0]!.name).toBe('Arjun Mannaly')
 	})
 })
 
@@ -51,6 +51,7 @@ describe('parse', () => {
 		expect(result!.name).toBe('HaloDB')
 		expect(result!.version).toBe('0.5.6')
 		expect(result!.description).toBe('A fast, embedded, persistent key-value storage engine.')
+		// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 		expect(result!.url).toBe('http://maven.apache.org')
 	})
 
@@ -82,6 +83,7 @@ describe('parse', () => {
 		expect(result!.licenses).toHaveLength(1)
 		expect(result!.licenses[0]).toEqual({
 			name: 'The Apache License, Version 2.0',
+			// eslint-disable-next-line unicorn/prefer-https -- Mirrors fixture data
 			url: 'http://www.apache.org/licenses/LICENSE-2.0.txt',
 		})
 	})
