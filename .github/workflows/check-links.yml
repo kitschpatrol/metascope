@@ -124,9 +124,51 @@ jobs:
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
           config: /tmp/linkinator-repo.config.json
+          # Required: an explicitly empty input overrides the action's
+          # baked-in default and defers to the config file above. Without
+          # these the defaults (paths '*.md', redirects 'allow', ...)
+          # silently override the merged config.
+          paths: ''
+          concurrency: ''
+          recurse: ''
+          timeout: ''
+          markdown: ''
+          directoryListing: ''
+          retry: ''
+          retryErrors: ''
+          retryErrorsCount: ''
+          retryErrorsJitter: ''
+          verbosity: ''
+          allowInsecureCerts: ''
+          requireHttps: ''
+          cleanUrls: ''
+          checkCss: ''
+          checkFragments: ''
+          redirects: ''
 
       - name: Check Website Links
         if: steps.meta.outputs.check-website == 'true'
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
           config: /tmp/linkinator-website.config.json
+          # Required: an explicitly empty input overrides the action's
+          # baked-in default and defers to the config file above. Without
+          # these the defaults (paths '*.md', redirects 'allow', ...)
+          # silently override the merged config.
+          paths: ''
+          concurrency: ''
+          recurse: ''
+          timeout: ''
+          markdown: ''
+          directoryListing: ''
+          retry: ''
+          retryErrors: ''
+          retryErrorsCount: ''
+          retryErrorsJitter: ''
+          verbosity: ''
+          allowInsecureCerts: ''
+          requireHttps: ''
+          cleanUrls: ''
+          checkCss: ''
+          checkFragments: ''
+          redirects: ''
