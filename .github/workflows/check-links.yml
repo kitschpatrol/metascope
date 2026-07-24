@@ -67,6 +67,7 @@ jobs:
     name: Check Repository Links
     needs: meta
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -96,6 +97,12 @@ jobs:
           requireHttps: error
           retry: true
           retryErrors: true
+          # Many github.com links at the default concurrency (100) trip
+          # GitHub's secondary rate limit, and each request has no timeout
+          # by default, so a single unresponsive host can stall the job.
+          # Cap concurrency and per-request time to keep the run bounded.
+          concurrency: 25
+          timeout: 30000
           statusCodes: '{"307":"warn", "429":"skip"}'
           verbosity: INFO
 
