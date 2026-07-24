@@ -574,6 +574,9 @@ Metascope was built to support automated generation of project dashboards, badge
   Offline command-line Git information tool (Rust)
 - [Sokrates](https://www.sokrates.dev/)\
   Polyglot source code examination tool (Java)
+- [ecosyste.ms](https://ecosyste.ms/)
+  Massive project metadatabase and [public API](https://packages.ecosyste.ms/api/v1/registries/npmjs.org/packages/metascope) (Ruby)
+
 
 ## Slop factor
 
