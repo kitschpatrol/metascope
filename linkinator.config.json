@@ -1,0 +1,4 @@
+{
+	"path": ["*.md", "docs/**/*.md"],
+	"skip": ["^https://crates\\.io/", "^https://csdms\\.colorado\\.edu/"]
+}
