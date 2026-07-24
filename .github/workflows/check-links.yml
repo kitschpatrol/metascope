@@ -43,11 +43,11 @@ jobs:
   check-links:
     name: Check Links
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       SHARED_DEFAULTS: |
         concurrency: 20
-        timeout: 30000
+        timeout: 5000
         retry: true
         retryErrors: true
         retryErrorsCount: 3
