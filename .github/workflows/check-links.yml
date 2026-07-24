@@ -18,20 +18,26 @@ concurrency:
 jobs:
   # Resolves link check parameters. Homepage and visibility come from the
   # API rather than the event payload: github.event.repository does not
-  # exist on schedule events. Path globs and skip patterns come from an
-  # optional linkinator.config.json at the repository root — resolved here
-  # rather than by the linkinator action itself because action inputs
-  # (most of which have baked-in defaults) always override that file.
-  # Only the path and skip keys are honored; every other key in that file
-  # is overridden by this workflow's inputs or the action's input
-  # defaults. Without the file, paths falls back to '**/*.md' with no
-  # extra skips. Logs every decision so a skipped job is diagnosable.
+  # exist on schedule events.
+  #
+  # Repository-specific configuration comes from two optional files at the
+  # repository root, deep-merged over this workflow's defaults (file wins):
+  #   - linkinator.config.json          repository Markdown scan
+  #   - linkinator.website.config.json  website scan
+  # The merge happens here rather than in the linkinator action because
+  # action inputs (most of which have baked-in defaults) always override
+  # the config file the action reads itself. Keys outside the defaults
+  # sets below are reported as warnings, then ignored. Without the files,
+  # the repository scan covers '**/*.md' with no extra skips. Every path
+  # glob must match at least one file (linkinator errors on empty globs),
+  # and path/skip values must not contain spaces or commas (the action
+  # splits its list inputs on both).
   meta:
     name: Resolve link check parameters
     runs-on: ubuntu-latest
     outputs:
-      links-to-skip: ${{ steps.meta.outputs.links-to-skip }}
-      paths: ${{ steps.meta.outputs.paths }}
+      repo-config: ${{ steps.meta.outputs.repo-config }}
+      website-config: ${{ steps.meta.outputs.website-config }}
       check-website: ${{ steps.meta.outputs.check-website }}
       homepage: ${{ steps.meta.outputs.homepage }}
     steps:
@@ -39,7 +45,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          sparse-checkout: linkinator.config.json
+          sparse-checkout: |
+            linkinator.config.json
+            linkinator.website.config.json
           sparse-checkout-cone-mode: false
 
       - name: Resolve
@@ -54,29 +62,98 @@ jobs:
 
           # Private repos: every self-referential URL (pages, badges, raw
           # content) 404s for unauthenticated clients, so skip the prefix.
-          links_to_skip=''
+          # These are platform-derived and appended to both scans' skips.
+          privacy_skips='[]'
           if [[ "$private" == 'true' ]]; then
             escaped_repo="${GITHUB_REPOSITORY//./\\.}"
             escaped_server="${GITHUB_SERVER_URL//./\\.}"
-            links_to_skip="^${escaped_server}/${escaped_repo}(/|$) ^https://raw\.githubusercontent\.com/${escaped_repo}/"
+            privacy_skips="$(jq -cn \
+              --arg a "^${escaped_server}/${escaped_repo}(/|\$)" \
+              --arg b "^https://raw\\.githubusercontent\\.com/${escaped_repo}/" \
+              '[$a, $b]')"
           fi
 
-          # Merge path globs and skip patterns from the repository's
-          # linkinator.config.json, if present. Every glob must match at
-          # least one file (linkinator errors on empty globs), and values
-          # must not contain spaces or commas (the action splits its list
-          # inputs on both).
-          paths='**/*.md'
-          if [[ -f linkinator.config.json ]]; then
-            config_paths="$(jq -r '(.path // empty) | if type == "array" then join(" ") else . end' linkinator.config.json)"
-            if [[ -n "$config_paths" ]]; then
-              paths="$config_paths"
+          # Workflow defaults per scan. A config file may override any of
+          # these keys; anything else it contains is warned about below.
+          # The redirect policy enforces only permanent redirects:
+          # statusCodes is consulted before the redirects:error rule, so
+          # mapping temporary codes (302/303/307) to warn lets them pass
+          # while 301/308 still fail. 429 (rate limited) is skipped.
+          # Conservative concurrency and a request timeout keep the run
+          # bounded: high concurrency trips rate limits (e.g. github.com's
+          # secondary limit) and the action's default request timeout of 0
+          # lets one unresponsive host stall the job.
+          repo_defaults='{
+            "path": ["**/*.md"],
+            "skip": [],
+            "concurrency": 25,
+            "timeout": 30000,
+            "markdown": true,
+            "recurse": false,
+            "serverRoot": "",
+            "directoryListing": true,
+            "retry": true,
+            "retryErrors": true,
+            "retryErrorsCount": 3,
+            "retryErrorsJitter": 2000,
+            "userAgent": "",
+            "verbosity": "INFO",
+            "allowInsecureCerts": false,
+            "requireHttps": "error",
+            "cleanUrls": false,
+            "checkCss": false,
+            "checkFragments": true,
+            "redirects": "error",
+            "statusCodes": { "302": "warn", "303": "warn", "307": "warn", "429": "skip" }
+          }'
+          website_defaults='{
+            "skip": [],
+            "concurrency": 20,
+            "timeout": 30000,
+            "recurse": true,
+            "retry": true,
+            "retryErrors": true,
+            "retryErrorsCount": 3,
+            "retryErrorsJitter": 2000,
+            "userAgent": "",
+            "verbosity": "INFO",
+            "allowInsecureCerts": false,
+            "requireHttps": "error",
+            "cleanUrls": false,
+            "checkCss": false,
+            "checkFragments": true,
+            "redirects": "error",
+            "statusCodes": { "302": "warn", "303": "warn", "307": "warn", "429": "skip" }
+          }'
+
+          warn_unknown() {
+            local file="$1" defaults="$2" unknown
+            [[ -f "$file" ]] || return 0
+            unknown="$(jq -cn --argjson d "$defaults" --argjson c "$(<"$file")" \
+              '($c | keys) - ($d | keys)')"
+            if [[ "$unknown" != '[]' ]]; then
+              echo "::warning::${file}: keys outside this workflow's supported set: ${unknown}"
             fi
-            config_skips="$(jq -r '(.skip // empty) | if type == "array" then join(" ") else . end' linkinator.config.json)"
-            if [[ -n "$config_skips" ]]; then
-              links_to_skip="${links_to_skip:+${links_to_skip} }${config_skips}"
-            fi
-          fi
+          }
+
+          # Deep-merge a config file over the defaults (file wins), append
+          # the privacy skips, and flatten list values into the
+          # space-separated strings the action's inputs expect.
+          resolve() {
+            local file="$1" defaults="$2" config='{}'
+            [[ -f "$file" ]] && config="$(<"$file")"
+            jq -cn --argjson d "$defaults" --argjson c "$config" --argjson p "$privacy_skips" '
+              def aslist: if type == "array" then . elif . == null then [] else [.] end;
+              ($d * $c)
+              | .path = (.path | aslist | join(" "))
+              | .skip = ((.skip | aslist) + $p | join(" "))
+              | .statusCodes = (.statusCodes | tojson)'
+          }
+
+          warn_unknown linkinator.config.json "$repo_defaults"
+          warn_unknown linkinator.website.config.json "$website_defaults"
+          repo_config="$(resolve linkinator.config.json "$repo_defaults")"
+          website_config="$(resolve linkinator.website.config.json "$website_defaults")"
 
           check_website='false'
           if [[ -n "$homepage" && "${homepage%/}" != "$repo_url" ]]; then
@@ -84,8 +161,8 @@ jobs:
           fi
 
           {
-            echo "links-to-skip=${links_to_skip}"
-            echo "paths=${paths}"
+            echo "repo-config=${repo_config}"
+            echo "website-config=${website_config}"
             echo "check-website=${check_website}"
             echo "homepage=${homepage}"
           } >>"$GITHUB_OUTPUT"
@@ -93,10 +170,13 @@ jobs:
           echo "homepage: ${homepage:-<unset>}"
           echo "private: ${private}"
           echo "check-website: ${check_website}"
-          echo "paths: ${paths}"
-          echo "links-to-skip: ${links_to_skip:-<none>}"
+          echo "repo config: ${repo_config}"
+          echo "website config: ${website_config}"
 
-  # Checks for broken links in all the repository's Markdown files
+  # Checks for broken links in the repository's Markdown files. All
+  # inputs are resolved by the meta job (workflow defaults overridden by
+  # linkinator.config.json); they must be passed explicitly because the
+  # action's own inputs take precedence over any config file it reads.
   check-repo-links:
     name: Check Repository Links
     needs: meta
@@ -111,51 +191,57 @@ jobs:
       - name: Check Repository Links
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
-          # Repository-specific path globs and skip patterns live in
-          # linkinator.config.json; the meta job merges them with the
-          # privacy-derived skips. They must be passed as inputs here
-          # because the action's inputs take precedence over that file.
-          paths: ${{ needs.meta.outputs.paths }}
-          linksToSkip: ${{ needs.meta.outputs.links-to-skip }}
-          checkFragments: true
-          redirects: error
-          requireHttps: error
-          retry: true
-          retryErrors: true
-          # Many links to a single host at the default concurrency (100)
-          # trip rate limits (e.g. github.com's secondary limit), and each
-          # request has no timeout by default, so one unresponsive host can
-          # stall the job. Cap both to keep the run bounded.
-          concurrency: 25
-          timeout: 30000
-          # Enforce only permanent redirects. statusCodes is consulted
-          # before the redirects:error rule, so mapping the temporary codes
-          # (302/303/307) to warn lets them pass while 301/308 still fail.
-          # 429 (rate limited) is skipped.
-          statusCodes: '{"302":"warn", "303":"warn", "307":"warn", "429":"skip"}'
-          verbosity: INFO
+          paths: ${{ fromJSON(needs.meta.outputs.repo-config).path }}
+          linksToSkip: ${{ fromJSON(needs.meta.outputs.repo-config).skip }}
+          concurrency: ${{ fromJSON(needs.meta.outputs.repo-config).concurrency }}
+          timeout: ${{ fromJSON(needs.meta.outputs.repo-config).timeout }}
+          markdown: ${{ fromJSON(needs.meta.outputs.repo-config).markdown }}
+          recurse: ${{ fromJSON(needs.meta.outputs.repo-config).recurse }}
+          serverRoot: ${{ fromJSON(needs.meta.outputs.repo-config).serverRoot }}
+          directoryListing: ${{ fromJSON(needs.meta.outputs.repo-config).directoryListing }}
+          retry: ${{ fromJSON(needs.meta.outputs.repo-config).retry }}
+          retryErrors: ${{ fromJSON(needs.meta.outputs.repo-config).retryErrors }}
+          retryErrorsCount: ${{ fromJSON(needs.meta.outputs.repo-config).retryErrorsCount }}
+          retryErrorsJitter: ${{ fromJSON(needs.meta.outputs.repo-config).retryErrorsJitter }}
+          userAgent: ${{ fromJSON(needs.meta.outputs.repo-config).userAgent }}
+          verbosity: ${{ fromJSON(needs.meta.outputs.repo-config).verbosity }}
+          allowInsecureCerts: ${{ fromJSON(needs.meta.outputs.repo-config).allowInsecureCerts }}
+          requireHttps: ${{ fromJSON(needs.meta.outputs.repo-config).requireHttps }}
+          cleanUrls: ${{ fromJSON(needs.meta.outputs.repo-config).cleanUrls }}
+          checkCss: ${{ fromJSON(needs.meta.outputs.repo-config).checkCss }}
+          checkFragments: ${{ fromJSON(needs.meta.outputs.repo-config).checkFragments }}
+          redirects: ${{ fromJSON(needs.meta.outputs.repo-config).redirects }}
+          statusCodes: ${{ fromJSON(needs.meta.outputs.repo-config).statusCodes }}
 
   # Checks for broken links on the repository's website. Remote URL scan:
-  # no checkout needed, all configuration is inline.
+  # no checkout needed. Inputs are resolved by the meta job (workflow
+  # defaults overridden by linkinator.website.config.json); the start URL
+  # is always the repository homepage.
   check-website-links:
     name: Check Website Links
     needs: meta
     if: needs.meta.outputs.check-website == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Check Website Links
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
           paths: ${{ needs.meta.outputs.homepage }}
-          linksToSkip: ${{ needs.meta.outputs.links-to-skip }}
-          recurse: true
-          concurrency: 20
-          timeout: 30000
-          checkFragments: true
-          redirects: error
-          requireHttps: error
-          retry: true
-          retryErrors: true
-          # Same permanent-redirect-only policy as the repository scan.
-          statusCodes: '{"302":"warn", "303":"warn", "307":"warn", "429":"skip"}'
-          verbosity: INFO
+          linksToSkip: ${{ fromJSON(needs.meta.outputs.website-config).skip }}
+          concurrency: ${{ fromJSON(needs.meta.outputs.website-config).concurrency }}
+          timeout: ${{ fromJSON(needs.meta.outputs.website-config).timeout }}
+          recurse: ${{ fromJSON(needs.meta.outputs.website-config).recurse }}
+          retry: ${{ fromJSON(needs.meta.outputs.website-config).retry }}
+          retryErrors: ${{ fromJSON(needs.meta.outputs.website-config).retryErrors }}
+          retryErrorsCount: ${{ fromJSON(needs.meta.outputs.website-config).retryErrorsCount }}
+          retryErrorsJitter: ${{ fromJSON(needs.meta.outputs.website-config).retryErrorsJitter }}
+          userAgent: ${{ fromJSON(needs.meta.outputs.website-config).userAgent }}
+          verbosity: ${{ fromJSON(needs.meta.outputs.website-config).verbosity }}
+          allowInsecureCerts: ${{ fromJSON(needs.meta.outputs.website-config).allowInsecureCerts }}
+          requireHttps: ${{ fromJSON(needs.meta.outputs.website-config).requireHttps }}
+          cleanUrls: ${{ fromJSON(needs.meta.outputs.website-config).cleanUrls }}
+          checkCss: ${{ fromJSON(needs.meta.outputs.website-config).checkCss }}
+          checkFragments: ${{ fromJSON(needs.meta.outputs.website-config).checkFragments }}
+          redirects: ${{ fromJSON(needs.meta.outputs.website-config).redirects }}
+          statusCodes: ${{ fromJSON(needs.meta.outputs.website-config).statusCodes }}
