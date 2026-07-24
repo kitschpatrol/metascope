@@ -81,17 +81,16 @@ jobs:
           # verbatim license and readme files copied from other projects
           # (many with permanently dead links); they are not ours to edit.
           paths: '*.md docs/**/*.md'
-          # In addition to any meta-resolved skips, ignore URLs that are
-          # unreachable to a link checker but fine in a browser: persistent
-          # identifiers that always redirect (doi.org, w3id.org), a portal
-          # that only 302s to its host (swmath.org), and a registry that
-          # bot-blocks automated requests with 403 (crates.io).
+          # linksToSkip is only for hosts a link checker can't reach but a
+          # browser can: crates.io bot-blocks automated requests with 403,
+          # and csdms.colorado.edu intermittently times out (no response)
+          # from GitHub's runners. Temporary redirects are NOT skipped here
+          # — they are downgraded to warnings via statusCodes below, so the
+          # 301/308 permanent-redirect check still applies to every URL.
           linksToSkip: >-
             ${{ needs.meta.outputs.links-to-skip }}
             ^https://crates\.io/
-            ^https://doi\.org/
-            ^https://w3id\.org/
-            ^https://swmath\.org/
+            ^https://csdms\.colorado\.edu/
           checkFragments: true
           redirects: error
           requireHttps: error
@@ -103,7 +102,11 @@ jobs:
           # Cap concurrency and per-request time to keep the run bounded.
           concurrency: 25
           timeout: 30000
-          statusCodes: '{"307":"warn", "429":"skip"}'
+          # Enforce only permanent redirects. statusCodes is consulted
+          # before the redirects:error rule, so mapping the temporary codes
+          # (302/303/307) to warn lets them pass while 301/308 still fail.
+          # 429 (rate limited) is skipped.
+          statusCodes: '{"302":"warn", "303":"warn", "307":"warn", "429":"skip"}'
           verbosity: INFO
 
   # Checks for broken links on the repository's website. Remote URL scan:
