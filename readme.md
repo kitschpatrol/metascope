@@ -361,8 +361,8 @@ Metascope extracts data from a wide range of data sources:
 | Agnostic   | [CodeMeta (v3)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)          |
 | Agnostic   | [Documented below](#about-metadatajson)                                                                 | `metadataFile`                | `metadata.json` (and `.yaml` / `.yml` variants)                                                     |
 | Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       |
-| Agnostic   | [Public Code](https://publiccode.net/)                                                                  | `publiccodeYaml`              | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)            |
-| Agnostic   | [SPDX](https://spdx.org/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            |
+| Agnostic   | [Public Code](https://www.publiccode.net/)                                                              | `publiccodeYaml`              | [`publiccode.yml`](https://yml.publiccode.tools/schema.core.html) (Also matches `.yaml`)            |
+| Agnostic   | [SPDX](https://spdx.dev/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            |
 | Apple      | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) | `xcodeInfoPlist`              | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list) |
 | Apple      | [Xcode Project](https://developer.apple.com/xcode/)                                                     | `xcodeProjectPbxproj`         | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                    |
 | C++        | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           | `arduinoLibraryProperties`    | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                  |
@@ -374,10 +374,10 @@ Metascope extracts data from a wide range of data sources:
 | Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                      |
 | Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)               |
 | Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)              |
-| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)                       |
+| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json/)                      |
 | Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                      |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://docs.python.org/3/distutils/apiref.html#distutils.config)                     |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://docs.python.org/3/distutils/setupscript.html)                                  |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://setuptools.pypa.io/en/latest/userguide/declarative_config.html)               |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://setuptools.pypa.io/en/latest/references/keywords.html)                         |
 | Python     | [PyPi (pep-0621)](https://pypi.org/)                                                                    | `pythonPyprojectToml`         | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                               |
 | Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    | `pythonPkgInfo`               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                      |
 | Ruby       | [Ruby Gems](https://rubygems.org/)                                                                      | `rubyGemspec`                 | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                 |
@@ -396,12 +396,12 @@ Metascope extracts data from a wide range of data sources:
 
 You can skip network calls by passing `--offline` to the CLI.
 
-| Ecosystem  | Organization                                                                            | Metascope Key            | Source Specifications                                                |
-| ---------- | --------------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------- |
-| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/rest/repos/repos#get-a-repository) | `github`                 | _GitHub GraphQL metadata_                                            |
-| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                  | `nodeNpmRegistry`        | _NPM registry API_ (download counts, publish dates, latest version)  |
-| Obsidian   | [Obsidian Community Plugins](https://obsidian.md/plugins)                               | `obsidianPluginRegistry` | _Obsidian community plugin stats_ (download counts)                  |
-| Python     | [PyPI Registry](https://pypi.org/)                                                      | `pythonPypiRegistry`     | _PyPI registry API_ (download counts, publish dates, latest version) |
+| Ecosystem  | Organization                                                                               | Metascope Key            | Source Specifications                                                |
+| ---------- | ------------------------------------------------------------------------------------------ | ------------------------ | -------------------------------------------------------------------- |
+| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/en/rest/repos/repos#get-a-repository) | `github`                 | _GitHub GraphQL metadata_                                            |
+| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                     | `nodeNpmRegistry`        | _NPM registry API_ (download counts, publish dates, latest version)  |
+| Obsidian   | [Obsidian Community Plugins](https://community.obsidian.md/)                               | `obsidianPluginRegistry` | _Obsidian community plugin stats_ (download counts)                  |
+| Python     | [PyPI Registry](https://pypi.org/)                                                         | `pythonPypiRegistry`     | _PyPI registry API_ (download counts, publish dates, latest version) |
 
 ### About metadata.json
 
