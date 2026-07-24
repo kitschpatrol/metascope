@@ -1,0 +1,110 @@
+name: Check Links
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  # Resolves homepage and visibility from the API rather than the event
+  # payload: github.event.repository does not exist on schedule events.
+  # Logs every decision so a skipped job is diagnosable from the log.
+  meta:
+    name: Resolve link check parameters
+    runs-on: ubuntu-latest
+    outputs:
+      links-to-skip: ${{ steps.meta.outputs.links-to-skip }}
+      check-website: ${{ steps.meta.outputs.check-website }}
+      homepage: ${{ steps.meta.outputs.homepage }}
+    steps:
+      - name: Resolve
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          repo_json="$(gh api "repos/${GITHUB_REPOSITORY}")"
+          homepage="$(jq -r '.homepage // empty' <<<"$repo_json")"
+          private="$(jq -r '.private' <<<"$repo_json")"
+          repo_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+
+          # Private repos: every self-referential URL (pages, badges, raw
+          # content) 404s for unauthenticated clients, so skip the prefix.
+          links_to_skip=''
+          if [[ "$private" == 'true' ]]; then
+            escaped_repo="${GITHUB_REPOSITORY//./\\.}"
+            escaped_server="${GITHUB_SERVER_URL//./\\.}"
+            links_to_skip="^${escaped_server}/${escaped_repo}(/|$) ^https://raw\.githubusercontent\.com/${escaped_repo}/"
+          fi
+
+          check_website='false'
+          if [[ -n "$homepage" && "${homepage%/}" != "$repo_url" ]]; then
+            check_website='true'
+          fi
+
+          {
+            echo "links-to-skip=${links_to_skip}"
+            echo "check-website=${check_website}"
+            echo "homepage=${homepage}"
+          } >>"$GITHUB_OUTPUT"
+
+          echo "homepage: ${homepage:-<unset>}"
+          echo "private: ${private}"
+          echo "check-website: ${check_website}"
+          echo "links-to-skip: ${links_to_skip:-<none>}"
+
+  # Checks for broken links in all the repository's Markdown files
+  check-repo-links:
+    name: Check Repository Links
+    needs: meta
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check Repository Links
+        uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
+        with:
+          paths: '**/*.md'
+          linksToSkip: ${{ needs.meta.outputs.links-to-skip }}
+          checkFragments: true
+          redirects: error
+          requireHttps: error
+          retry: true
+          retryErrors: true
+          statusCodes: '{"307":"warn", "429":"skip"}'
+          verbosity: INFO
+
+  # Checks for broken links on the repository's website. Remote URL scan:
+  # no checkout needed, all configuration is inline.
+  check-website-links:
+    name: Check Website Links
+    needs: meta
+    if: needs.meta.outputs.check-website == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Website Links
+        uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
+        with:
+          paths: ${{ needs.meta.outputs.homepage }}
+          linksToSkip: ${{ needs.meta.outputs.links-to-skip }}
+          recurse: true
+          concurrency: 20
+          checkFragments: true
+          redirects: error
+          requireHttps: error
+          retry: true
+          retryErrors: true
+          statusCodes: '{"307":"warn", "429":"skip"}'
+          verbosity: INFO
