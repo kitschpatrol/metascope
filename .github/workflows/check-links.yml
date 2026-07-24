@@ -22,7 +22,10 @@ jobs:
   # optional linkinator.config.json at the repository root — resolved here
   # rather than by the linkinator action itself because action inputs
   # (most of which have baked-in defaults) always override that file.
-  # Logs every decision so a skipped job is diagnosable from the log.
+  # Only the path and skip keys are honored; every other key in that file
+  # is overridden by this workflow's inputs or the action's input
+  # defaults. Without the file, paths falls back to '**/*.md' with no
+  # extra skips. Logs every decision so a skipped job is diagnosable.
   meta:
     name: Resolve link check parameters
     runs-on: ubuntu-latest
