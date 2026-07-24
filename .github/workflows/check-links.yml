@@ -76,8 +76,21 @@ jobs:
       - name: Check Repository Links
         uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
         with:
-          paths: '**/*.md'
-          linksToSkip: ${{ needs.meta.outputs.links-to-skip }}
+          # Only the project's own docs. test/fixtures holds vendored,
+          # verbatim license and readme files copied from other projects
+          # (many with permanently dead links); they are not ours to edit.
+          paths: '*.md docs/**/*.md'
+          # In addition to any meta-resolved skips, ignore URLs that are
+          # unreachable to a link checker but fine in a browser: persistent
+          # identifiers that always redirect (doi.org, w3id.org), a portal
+          # that only 302s to its host (swmath.org), and a registry that
+          # bot-blocks automated requests with 403 (crates.io).
+          linksToSkip: >-
+            ${{ needs.meta.outputs.links-to-skip }}
+            ^https://crates\.io/
+            ^https://doi\.org/
+            ^https://w3id\.org/
+            ^https://swmath\.org/
           checkFragments: true
           redirects: error
           requireHttps: error
