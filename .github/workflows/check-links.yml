@@ -15,12 +15,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
-# Runs linkinator directly (not via the linkinator-action, whose defaulted
-# inputs always override config files). Each scan merges an optional config
-# file at the repository root over the YAML defaults below — deep merge,
-# file wins, and any option linkinator supports may be used:
+# Each scan merges an optional config file at the repository root over the
+# YAML defaults below — hard merge, the file's keys win — and hands the
+# result to the linkinator action as its config file:
 #   - linkinator.config.json          repository Markdown scan
 #   - linkinator.website.config.json  website scan
+# The action's inputs normally override its config file, and most inputs
+# have baked-in defaults, so each action call below explicitly passes ''
+# for every defaulted input: an empty input parses to undefined, which
+# defers to the merged config file for that key.
 #
 # Default policy notes:
 #   - Only permanent redirects fail: statusCodes is consulted before the
@@ -39,14 +42,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      LINKINATOR_VERSION: 8.0.2
       REPO_DEFAULTS: |
         path: ['**/*.md']
         markdown: true
+        directoryListing: true
         concurrency: 25
         timeout: 30000
         retry: true
         retryErrors: true
+        retryErrorsCount: 3
+        retryErrorsJitter: 2000
         checkFragments: true
         requireHttps: error
         redirects: error
@@ -58,6 +63,8 @@ jobs:
         timeout: 30000
         retry: true
         retryErrors: true
+        retryErrorsCount: 3
+        retryErrorsJitter: 2000
         checkFragments: true
         requireHttps: error
         redirects: error
@@ -69,16 +76,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-
       # Homepage and visibility come from the API rather than the event
       # payload: github.event.repository does not exist on schedule events.
       # Private repos: every self-referential URL (pages, badges, raw
-      # content) 404s for unauthenticated clients, so skip the prefix.
-      - name: Resolve repository metadata
+      # content) 404s for unauthenticated clients, so those prefixes are
+      # appended to both scans' skip lists.
+      - name: Resolve configuration
         id: meta
         env:
           GH_TOKEN: ${{ github.token }}
@@ -103,40 +106,71 @@ jobs:
             check_website='true'
           fi
 
-          {
-            echo "privacy-skips=${privacy_skips}"
-            echo "check-website=${check_website}"
-            echo "homepage=${homepage}"
-          } >>"$GITHUB_OUTPUT"
+          config='{}'
+          [[ -f linkinator.config.json ]] && config="$(<linkinator.config.json)"
+          jq -n --argjson d "$(yq -o=json <<<"$REPO_DEFAULTS")" --argjson c "$config" --argjson p "$privacy_skips" \
+            '$d + $c | .path |= (if type == "array" then . else [.] end) | .skip = ((.skip // []) + $p)' \
+            >/tmp/linkinator-repo.config.json
+
+          config='{}'
+          [[ -f linkinator.website.config.json ]] && config="$(<linkinator.website.config.json)"
+          jq -n --argjson d "$(yq -o=json <<<"$WEBSITE_DEFAULTS")" --argjson c "$config" --argjson p "$privacy_skips" --arg h "$homepage" \
+            '$d + $c | .path = [$h] | .skip = ((.skip // []) + $p)' \
+            >/tmp/linkinator-website.config.json
+
+          echo "check-website=${check_website}" >>"$GITHUB_OUTPUT"
 
           echo "homepage: ${homepage:-<unset>}"
           echo "private: ${private}"
           echo "check-website: ${check_website}"
-          echo "privacy-skips: ${privacy_skips}"
+          echo "repo config: $(jq -c . /tmp/linkinator-repo.config.json)"
+          echo "website config: $(jq -c . /tmp/linkinator-website.config.json)"
 
-      - name: Check repository links
-        env:
-          PRIVACY_SKIPS: ${{ steps.meta.outputs.privacy-skips }}
-        run: |
-          config='{}'
-          [[ -f linkinator.config.json ]] && config="$(<linkinator.config.json)"
-          jq -n --argjson d "$(yq -o=json <<<"$REPO_DEFAULTS")" --argjson c "$config" --argjson p "$PRIVACY_SKIPS" \
-            '$d * $c | .path |= (if type == "array" then . else [.] end) | .skip = ((.skip // []) + $p)' \
-            >/tmp/repo-config.json
-          echo "Resolved config: $(jq -c . /tmp/repo-config.json)"
-          readarray -t paths < <(jq -r '.path[]' /tmp/repo-config.json)
-          npx --yes "linkinator@${LINKINATOR_VERSION}" "${paths[@]}" --config /tmp/repo-config.json
+      - name: Check Repository Links
+        uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
+        with:
+          config: /tmp/linkinator-repo.config.json
+          # Neutralize the action's baked-in input defaults so the merged
+          # config file above governs every option.
+          paths: ''
+          concurrency: ''
+          recurse: ''
+          timeout: ''
+          markdown: ''
+          directoryListing: ''
+          retry: ''
+          retryErrors: ''
+          retryErrorsCount: ''
+          retryErrorsJitter: ''
+          verbosity: ''
+          allowInsecureCerts: ''
+          requireHttps: ''
+          cleanUrls: ''
+          checkCss: ''
+          checkFragments: ''
+          redirects: ''
 
-      - name: Check website links
+      - name: Check Website Links
         if: steps.meta.outputs.check-website == 'true'
-        env:
-          PRIVACY_SKIPS: ${{ steps.meta.outputs.privacy-skips }}
-          HOMEPAGE: ${{ steps.meta.outputs.homepage }}
-        run: |
-          config='{}'
-          [[ -f linkinator.website.config.json ]] && config="$(<linkinator.website.config.json)"
-          jq -n --argjson d "$(yq -o=json <<<"$WEBSITE_DEFAULTS")" --argjson c "$config" --argjson p "$PRIVACY_SKIPS" \
-            '$d * $c | del(.path) | .skip = ((.skip // []) + $p)' \
-            >/tmp/website-config.json
-          echo "Resolved config: $(jq -c . /tmp/website-config.json)"
-          npx --yes "linkinator@${LINKINATOR_VERSION}" "$HOMEPAGE" --config /tmp/website-config.json
+        uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4.5
+        with:
+          config: /tmp/linkinator-website.config.json
+          # Neutralize the action's baked-in input defaults so the merged
+          # config file above governs every option.
+          paths: ''
+          concurrency: ''
+          recurse: ''
+          timeout: ''
+          markdown: ''
+          directoryListing: ''
+          retry: ''
+          retryErrors: ''
+          retryErrorsCount: ''
+          retryErrorsJitter: ''
+          verbosity: ''
+          allowInsecureCerts: ''
+          requireHttps: ''
+          cleanUrls: ''
+          checkCss: ''
+          checkFragments: ''
+          redirects: ''
