@@ -19,8 +19,10 @@ concurrency:
 # YAML defaults below — deep merge, the file's values win (arrays are
 # replaced; nested maps like statusCodes combine key-wise) — and hands the
 # result to the linkinator action as its config file:
-#   - linkinator.config.json          repository Markdown scan
+#   - linkinator.repo.config.json     repository Markdown scan
 #   - linkinator.website.config.json  website scan
+# (linkinator.config.json is left alone so it stays available for local
+# linkinator CLI runs, which pick that name up by default.)
 # The action's inputs normally override its config file, and most inputs
 # have baked-in defaults, so each action call below explicitly passes ''
 # for every defaulted input: an empty input parses to undefined, which
@@ -101,7 +103,7 @@ jobs:
           fi
 
           config='{}'
-          [[ -f linkinator.config.json ]] && config="$(<linkinator.config.json)"
+          [[ -f linkinator.repo.config.json ]] && config="$(<linkinator.repo.config.json)"
           CONFIG="$config" PRIVACY_SKIPS="$privacy_skips" yq -o=json -I0 -n '
             env(SHARED_DEFAULTS) * env(REPO_DEFAULTS) * env(CONFIG)
             | .path |= ([] + .)
