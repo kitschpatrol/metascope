@@ -57,7 +57,7 @@
 	},
 	"dependencies": {
 		"@kitschpatrol/tokei": "^2.0.2",
-		"@mshibanami-org/xcode": "^1.0.1",
+		"@mshibanami-org/xcode": "^1.1.0",
 		"@sindresorhus/is": "^8.1.0",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "~22.17.2",
@@ -69,7 +69,7 @@
 		"git-url-parse": "^16.1.0",
 		"gray-matter-es": "^0.2.1",
 		"jiti": "^2.7.0",
-		"lognow": "^0.7.1",
+		"lognow": "^0.8.0",
 		"octokit": "^5.0.5",
 		"package-json": "^10.0.1",
 		"picomatch": "^4.0.5",
@@ -81,30 +81,30 @@
 		"remark-parse": "^11.0.0",
 		"semver": "^7.8.5",
 		"simple-git": "^3.36.0",
-		"smol-toml": "^1.7.0",
+		"smol-toml": "^1.7.1",
 		"spdx-license-list": "^6.12.0",
 		"string-ts": "^2.3.1",
-		"tinyexec": "^1.2.4",
+		"tinyexec": "^1.3.0",
 		"tinyglobby": "^0.2.17",
 		"unified": "^11.0.5",
-		"updates": "^17.19.1",
+		"updates": "^17.20.3",
 		"web-tree-sitter": "^0.26.11",
 		"yaml": "^2.9.0",
-		"yargs": "^18.0.0",
+		"yargs": "^18.1.0",
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.5",
 		"@fast-csv/parse": "^5.0.7",
-		"@kitschpatrol/shared-config": "^8.4.0",
+		"@kitschpatrol/shared-config": "^8.6.0",
 		"@types/jsonld": "^1.5.15",
 		"@types/picomatch": "^4.0.3",
-		"@types/semver": "^7.7.1",
-		"bumpp": "^12.0.0",
+		"@types/semver": "^7.8.0",
+		"bumpp": "^12.1.1",
 		"jsonld": "^9.0.0",
-		"mdat-plugin-cli-help": "^3.0.2",
+		"mdat-plugin-cli-help": "^3.1.0",
 		"msw": "^2.15.0",
-		"publint": "^0.3.21",
+		"publint": "^0.3.22",
 		"shx": "^0.4.0",
 		"tree-sitter-python": "^0.25.0",
 		"tree-sitter-ruby": "^0.23.1",
@@ -113,14 +113,8 @@
 		"typescript": "~6.0.3",
 		"vitest": "^4.1.10"
 	},
-	"packageManager": "pnpm@11.13.1",
+	"packageManager": "pnpm@11.17.0",
 	"engines": {
-		"node": ">=22.17.0"
-	},
-	"devEngines": {
-		"runtime": {
-			"name": "node",
-			"version": ">=24.16.0"
-		}
+		"node": ">=24.16.0"
 	}
 }

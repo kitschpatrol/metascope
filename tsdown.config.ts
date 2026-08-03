@@ -33,7 +33,7 @@ export default defineConfig([
 		],
 		deps: {
 			alwaysBundle: /.+/v,
-			neverBundle: ['@kitschpatrol/tokei'],
+			neverBundle: ['@kitschpatrol/tokei', 'electron'],
 			onlyBundle: false,
 		},
 		dts: false,

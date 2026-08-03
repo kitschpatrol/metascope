@@ -23,7 +23,7 @@ export async function getColumnMapFromCsvUrl(url: string): Promise<Record<string
 
 	// Convert Web ReadableStream to Node Readable Stream
 	// @ts-expect-error -- global ReadableStream is structurally compatible with node:stream/web ReadableStream
-	// eslint-disable-next-line node/no-unsupported-features/node-builtins
+
 	const nodeStream = Readable.fromWeb(response.body)
 	const columnMap: Record<string, string[]> = {}
 

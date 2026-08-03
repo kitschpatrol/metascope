@@ -4,7 +4,7 @@ packages:
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
   - '@kitschpatrol/typescript-config'
-  - case-police
+  - 'case-police'
   - '*cspell*'
   - '*eslint*'
   - '*knip*'
@@ -21,6 +21,4 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - '@kitschpatrol/*'
-  - tsdown@0.22.14
-  - verkit@0.3.0
-  - spdx-license-list@6.12.0
+  - updates@17.20.3
