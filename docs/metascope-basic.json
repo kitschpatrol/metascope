@@ -5,24 +5,24 @@
 				{
 					"language": "JSON",
 					"files": 195,
-					"lines": 42723,
-					"code": 42708,
+					"lines": 42714,
+					"code": 42699,
 					"comments": 0,
 					"blanks": 15
 				},
 				{
 					"language": "YAML",
 					"files": 329,
-					"lines": 41576,
-					"code": 33809,
+					"lines": 41577,
+					"code": 33810,
 					"comments": 1912,
 					"blanks": 5855
 				},
 				{
 					"language": "TypeScript",
 					"files": 135,
-					"lines": 20627,
-					"code": 15351,
+					"lines": 20629,
+					"code": 15353,
 					"comments": 2607,
 					"blanks": 2669
 				},
@@ -85,7 +85,7 @@
 			],
 			"total": {
 				"blanks": 17485,
-				"code": 119398,
+				"code": 119392,
 				"comments": 27011,
 				"files": 1679,
 				"languages": [
@@ -100,7 +100,7 @@
 					"Markdown",
 					"Plain Text"
 				],
-				"lines": 163894
+				"lines": 163888
 			}
 		},
 		"source": "/Users/Someone/metascope"
@@ -137,7 +137,7 @@
 			"folderName": "metascope",
 			"totalDirectoryCount": 2537,
 			"totalFileCount": 2699,
-			"totalSizeBytes": 9029674
+			"totalSizeBytes": 9029833
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -312,16 +312,16 @@
 		"data": {
 			"branchCount": 6,
 			"branchCurrent": "main",
-			"commitCount": 230,
+			"commitCount": 231,
 			"commitDateFirst": "2026-02-24T12:07:53-05:00",
-			"commitDateLast": "2026-08-25T00:14:57-04:00",
+			"commitDateLast": "2026-08-25T00:26:56-04:00",
 			"contributorCount": 1,
-			"isClean": false,
-			"isDirty": true,
+			"isClean": true,
+			"isDirty": false,
 			"remoteCount": 1,
 			"remoteStatus": {
 				"origin": {
-					"ahead": 1,
+					"ahead": 2,
 					"behind": 0
 				}
 			},
@@ -331,11 +331,11 @@
 			"tagReleaseCount": 27,
 			"tagVersionDateLatest": "2026-08-03T10:58:27-04:00",
 			"tagVersionLatest": "0.10.0",
-			"totalAhead": 1,
+			"totalAhead": 2,
 			"totalBehind": 0,
 			"trackedFileCount": 3065,
-			"trackedSizeBytes": 9591660,
-			"uncommittedFileCount": 3
+			"trackedSizeBytes": 9591819,
+			"uncommittedFileCount": 0
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -354,7 +354,7 @@
 	},
 	"metascope": {
 		"data": {
-			"durationMs": 7342,
+			"durationMs": 11521,
 			"options": {
 				"absolute": true,
 				"offline": false,
@@ -363,7 +363,7 @@
 				"respectIgnored": true,
 				"workspaces": true
 			},
-			"scannedAt": "2026-08-25T04:24:06.206Z",
+			"scannedAt": "2026-08-25T04:27:43.802Z",
 			"version": "0.10.0"
 		},
 		"source": "/Users/Someone/metascope"

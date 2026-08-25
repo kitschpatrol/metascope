@@ -3,6 +3,7 @@
 /* eslint-disable ts/naming-convention */
 
 import is from '@sindresorhus/is'
+import { basename } from 'node:path'
 import { titleCase } from 'string-ts'
 import { defineTemplate } from '../metadata-types'
 import {
@@ -110,6 +111,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		'VS Code Path':
 			metascope?.options.path === undefined ? null : `vscode://file/${metascope.options.path}`,
 		'Readme Path': toLocalUrl(codemeta.readme, metascope?.options.path) ?? null,
+		'Folder Name': metascope?.options.path === undefined ? null : basename(metascope.options.path),
 
 		// ── Links ─────────────────────────────────────────────
 		'Homepage URL':
