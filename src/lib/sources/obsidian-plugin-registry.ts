@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
-import { fetchWithRetry } from '../utilities/fetch'
+import { discardResponseBody, fetchWithRetry } from '../utilities/fetch'
 import { ensureArray } from '../utilities/template-helpers'
 import { obsidianPluginManifestJsonSource } from './obsidian-plugin-manifest-json'
 
@@ -52,6 +52,7 @@ export const obsidianPluginRegistrySource = defineSource<'obsidianPluginRegistry
 
 		const response = await fetchWithRetry(communityPluginsUrl)
 		if (!response.ok) {
+			discardResponseBody(response)
 			return { data: { url }, source: url }
 		}
 

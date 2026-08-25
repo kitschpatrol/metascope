@@ -4,7 +4,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
-import { fetchWithRetry } from '../utilities/fetch'
+import { discardResponseBody, fetchWithRetry } from '../utilities/fetch'
 import { ensureArray } from '../utilities/template-helpers'
 import { nodePackageJsonSource } from './node-package-json'
 
@@ -144,6 +144,7 @@ async function fetchDownloads(packageName: string, period: string): Promise<numb
 			`https://api.npmjs.org/downloads/point/${period}/${encodeURIComponent(packageName)}`,
 		)
 		if (!response.ok) {
+			discardResponseBody(response)
 			return undefined
 		}
 

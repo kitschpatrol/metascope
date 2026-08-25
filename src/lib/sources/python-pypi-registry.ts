@@ -4,7 +4,7 @@ import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
-import { fetchWithRetry } from '../utilities/fetch'
+import { discardResponseBody, fetchWithRetry } from '../utilities/fetch'
 import { ensureArray } from '../utilities/template-helpers'
 import { pythonPkgInfoSource } from './python-pkg-info'
 import { pythonPyprojectTomlSource } from './python-pyproject-toml'
@@ -277,6 +277,7 @@ async function fetchJson<T>(url: string, schema: z.ZodType<T>): Promise<T | unde
 	try {
 		const response = await fetchWithRetry(url)
 		if (!response.ok) {
+			discardResponseBody(response)
 			return undefined
 		}
 

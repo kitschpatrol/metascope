@@ -49,7 +49,7 @@
 		"docs": "tsx ./scripts/generate-examples.ts && ksc-prettier fix ./docs",
 		"fix": "ksc fix",
 		"lint": "ksc lint",
-		"release": "bumpp --commit 'Release: %s' && pnpm build && pnpm publish --otp $(op read 'op://Personal/npm/otp')",
+		"release": "bumpp --commit 'Release: %s' && pnpm build && npm publish --otp $(op read 'op://Personal/npm/otp')",
 		"pretest": "tsx scripts/copy-grammars.ts",
 		"test": "vitest run",
 		"test:live": "METASCOPE_TEST_MOCK=false vitest run",
