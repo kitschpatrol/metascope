@@ -5,10 +5,24 @@ import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 
-const AGE_VALUE_UNIT_REGEX = /^(\d+)\s+(\w+)$/v
+const AGE_VALUE_UNIT_REGEX = /^(\d+)([a-z]+)$/v
+
+/**
+ * Fractional years per `timerel` short unit. Note that `m` is minutes and `mo`
+ * is months.
+ */
+const AGE_UNIT_YEARS: Record<string, number> = {
+	d: 1 / 365.25,
+	h: 1 / (365.25 * 24),
+	m: 1 / (365.25 * 24 * 60),
+	mo: 1 / 12,
+	s: 1 / (365.25 * 24 * 60 * 60),
+	w: 7 / 365.25,
+	y: 1,
+}
 
 type DependencyUpdatesPackage = {
-	/** Human-readable age of the update (e.g. "3 months"). */
+	/** Human-readable age of the update (e.g. "3mo"). */
 	age?: string
 	/** Additional info about the update (e.g. deprecation notice). */
 	info?: string
@@ -51,68 +65,25 @@ const updatesOutputSchema = z.object({
 })
 
 /**
- * Parse an age string from the `updates` CLI (via the `timerel` library) into
- * fractional years.
+ * Parse an age string from the `updates` library (via the `timerel` library)
+ * into fractional years.
  *
- * Possible formats: "now", "<n> sec(s)", "<n> min(s)", "<n> hour(s)", "<n>
- * day(s)", "<n> week(s)", "<n> month(s)", "<n> year(s)"
+ * As of updates v18 the age column uses short units. Possible formats: "now",
+ * "<n>s", "<n>m", "<n>h", "<n>d", "<n>w", "<n>mo", "<n>y"
  */
-function parseAgeToYears(age: string): number {
+export function parseAgeToYears(age: string): number {
 	if (age === 'now') {
 		return 0
 	}
 
 	const match = AGE_VALUE_UNIT_REGEX.exec(age.trim())
-	if (!match) {
+	const unitYears = match?.[2] === undefined ? undefined : AGE_UNIT_YEARS[match[2]]
+	if (match === null || unitYears === undefined) {
+		log.debug(`Ignoring unrecognized dependency age "${age}" in libyears calculation.`)
 		return 0
 	}
 
-	const value = Number(match[1])
-	const unit = match[2]
-	if (unit === undefined) {
-		return 0
-	}
-
-	switch (unit) {
-		case 'day':
-		case 'days': {
-			return value / 365.25
-		}
-
-		case 'hour':
-		case 'hours': {
-			return value / (365.25 * 24)
-		}
-
-		case 'min':
-		case 'mins': {
-			return value / (365.25 * 24 * 60)
-		}
-
-		case 'month':
-		case 'months': {
-			return value / 12
-		}
-
-		case 'sec':
-		case 'secs': {
-			return value / (365.25 * 24 * 60 * 60)
-		}
-
-		case 'week':
-		case 'weeks': {
-			return (value * 7) / 365.25
-		}
-
-		case 'year':
-		case 'years': {
-			return value
-		}
-
-		default: {
-			return 0
-		}
-	}
+	return Number(match[1]) * unitYears
 }
 
 /**

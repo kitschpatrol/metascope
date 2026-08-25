@@ -21,4 +21,5 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - '@kitschpatrol/*'
-  - updates@17.20.3
+  - updates@18.0.6
+  - picomatch@4.0.7
