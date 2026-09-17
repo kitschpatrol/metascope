@@ -4,11 +4,19 @@
 
 <!-- /title -->
 
-<!-- badges-->
+<!-- badges({
+  npm: [],
+  custom: {
+    "Bundle Size": {
+      image: "https://img.shields.io/bundlephobia/minzip/metascope?label=Size",
+      link: "https://bundlephobia.com/package/metascope",
+    },
+  }
+}) -->
 
-[![NPM Package metascope](https://img.shields.io/npm/v/metascope.svg)](https://www.npmjs.com/package/metascope)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/metascope?label=Size)](https://bundlephobia.com/package/metascope)
 
 <!-- /badges -->
 
@@ -49,7 +57,7 @@ Highlights:
 
 ### Dependencies
 
-Metascope requires [Node.js](https://nodejs.org/) 22.17+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+Metascope requires [Node.js](https://nodejs.org/) 24.16+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
 
 Metascope also requires a recent version of [git](https://git-scm.com/) on your path for quickly identifying ignored files and aggregating repository statistics.
 
