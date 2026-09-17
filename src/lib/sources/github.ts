@@ -1,9 +1,10 @@
-import { Octokit } from 'octokit'
+import type { Octokit } from '@octokit/core'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { getGitHubRemoteFromConfig } from '../utilities/github'
+import { createGitHubClient } from '../utilities/github-client'
 import { ensureArray } from '../utilities/template-helpers'
 import { gitConfigSource } from './git-config'
 
@@ -411,7 +412,7 @@ const graphqlQuery = `
 // GitHub Pages detection requires REST API
 async function checkHasPages(octokit: Octokit, owner: string, repo: string): Promise<boolean> {
 	try {
-		const response = await octokit.rest.repos.get({ owner, repo })
+		const response = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo })
 		return response.data.has_pages
 	} catch {
 		return false
@@ -433,7 +434,7 @@ async function getUpstreamComparison(
 	}
 
 	try {
-		const response = await octokit.rest.repos.compareCommitsWithBasehead({
+		const response = await octokit.request('GET /repos/{owner}/{repo}/compare/{basehead}', {
 			basehead: `${parent.owner.login}:${parentBranch}...${owner}:${defaultBranch}`,
 			owner,
 			repo,
@@ -619,9 +620,7 @@ export const githubSource = defineSource<'github'>({
 		}
 
 		const githubToken = context.options.credentials?.githubToken
-		const octokit = new Octokit(
-			githubToken !== undefined && githubToken !== '' ? { auth: githubToken } : undefined,
-		)
+		const octokit = createGitHubClient(githubToken)
 
 		const [graphqlResult, hasPages] = await Promise.all([
 			octokit.graphql(graphqlQuery, { owner, repo }),

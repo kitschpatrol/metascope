@@ -10,9 +10,9 @@
  * default branch via the GitHub REST API.
  */
 
+import type { Octokit } from '@octokit/core'
 import { readFile } from 'node:fs/promises'
 import { relative } from 'node:path'
-import { Octokit } from 'octokit'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
 import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from '../source'
@@ -20,6 +20,7 @@ import { getMatches } from '../file-matching'
 import { log } from '../log'
 import { formatPath } from '../utilities/formatting'
 import { getGitHubRemoteFromConfig } from '../utilities/github'
+import { createGitHubClient } from '../utilities/github-client'
 import { ensureArray } from '../utilities/template-helpers'
 import { gitConfigSource } from './git-config'
 
@@ -116,7 +117,7 @@ async function fetchWorkflowRuns(
 	repo: string,
 	defaultBranch: string,
 ): Promise<Map<string, WorkflowRunInfo>> {
-	const response = await octokit.rest.actions.listWorkflowRunsForRepo({
+	const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
 		branch: defaultBranch,
 		owner,
 		// eslint-disable-next-line ts/naming-convention
@@ -206,16 +207,14 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 				const ownerRepo = await resolveOwnerRepo(context)
 				if (ownerRepo) {
 					const githubToken = context.options.credentials?.githubToken
-					const octokit = new Octokit(
-						githubToken !== undefined && githubToken !== '' ? { auth: githubToken } : undefined,
-					)
+					const octokit = createGitHubClient(githubToken)
 
 					// Try to reuse default branch from the github source if it already ran
 					const githubData = ensureArray(context.metadata?.github)
 					let defaultBranch = githubData[0]?.data.defaultBranch
 
 					if (defaultBranch === undefined || defaultBranch === '') {
-						const repoResponse = await octokit.rest.repos.get({
+						const repoResponse = await octokit.request('GET /repos/{owner}/{repo}', {
 							owner: ownerRepo.owner,
 							repo: ownerRepo.repo,
 						})

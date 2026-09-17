@@ -56,6 +56,11 @@ export default defineConfig([
 		},
 		copy: [
 			{
+				from: 'node_modules/spdx-license-list/license',
+				rename: 'spdx-license-list-LICENSE',
+				to: 'dist/lib',
+			},
+			{
 				from: [
 					'node_modules/tree-sitter-ruby/tree-sitter-ruby.wasm',
 					'node_modules/tree-sitter-python/tree-sitter-python.wasm',
@@ -73,6 +78,12 @@ export default defineConfig([
 				to: 'dist/grammars',
 			},
 		],
+		// Include only the imported aggregate, so consumers do not also install
+		// the dependency's individual copies of every license.
+		deps: {
+			alwaysBundle: /^spdx-license-list(?:\/|$)/v,
+			onlyBundle: ['spdx-license-list'],
+		},
 		dts: true,
 		entry: 'src/lib/index.ts',
 		fixedExtension: false,
