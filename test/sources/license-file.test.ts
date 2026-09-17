@@ -95,7 +95,7 @@ describe('identifyLicense', () => {
 		expect(result!.spdxUrl).toBe('https://opensource.org/license/BSD-3-Clause')
 	})
 
-	it('should identify an AGPL-3.0 license from a full GPL text', async () => {
+	it('should retain an AGPL candidate without treating a nonidentical body as exact', async () => {
 		const content = await readFile(
 			resolve(fixturesDirectory, 'callofduty4x-cod4x-server/COPYING.md'),
 			'utf8',
@@ -106,7 +106,9 @@ describe('identifyLicense', () => {
 		expect(result!.spdxId).toBe('AGPL-3.0-only')
 		expect(result!.name).toBe('GNU Affero General Public License v3.0 only')
 		expect(result!.osiApproved).toBe(true)
-		expect(result!.confidence).toBe(1)
+		expect(result!.confidence).toBeGreaterThanOrEqual(0.75)
+		expect(result!.confidence).toBeLessThan(1)
+		expect(result!.status).not.toBe('exact')
 		expect(result!.spdxUrl).toBe('https://spdx.org/licenses/AGPL-3.0-only')
 	})
 

@@ -570,7 +570,7 @@ export const codemeta = defineTemplate(
 			cinder?.data.license ??
 			publiccode?.data.license ??
 			github?.data.licenseSpdxId ??
-			collectField(licenseFile, (d) => d.match?.spdxId)[0] ??
+			collectField(licenseFile, (d) => (d.type === 'spdx' ? d.match?.spdxId : undefined))[0] ??
 			resolveCmLicense(cm?.data.license)
 
 		const license = is.nonEmptyStringAndNotWhitespace(rawLicense)

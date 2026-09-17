@@ -12,8 +12,10 @@ import { identifyLicense } from '../utilities/license-identification'
  * A license file record. The `type` discriminator is always present so the
  * framework's deep-strip never collapses the record to a half-shape:
  *
- * - `type: 'spdx'` with a populated `match` — the file contents map to a known
- *   SPDX template.
+ * - `type: 'spdx'` — normalized text matches a template exactly, or the file
+ *   explicitly points to a license.
+ * - `type: 'modified'` — a close template was found, but the text differs.
+ * - `type: 'uncertain'` — a weaker or ambiguous candidate was found.
  * - `type: 'unknown'` with no `match` — a license file was located on disk but
  *   its contents do not match any SPDX template (e.g. proprietary "All Rights
  *   Reserved" notices). The `source` path is still retained on the surrounding
@@ -23,7 +25,7 @@ import { identifyLicense } from '../utilities/license-identification'
  */
 export type LicenseFileRecord = {
 	match?: LicenseMatch
-	type: 'spdx' | 'unknown'
+	type: 'modified' | 'spdx' | 'uncertain' | 'unknown'
 }
 
 export type LicenseFileData = OneOrMany<SourceRecord<LicenseFileRecord>> | undefined
@@ -36,8 +38,14 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 	async parse(input, context) {
 		const content = await readFile(resolve(context.options.path, input), 'utf8')
 		const match = identifyLicense(content)
+		const type =
+			match === undefined
+				? 'unknown'
+				: match.status === 'exact' || match.status === 'reference'
+					? 'spdx'
+					: match.status
 		return {
-			data: match === undefined ? { type: 'unknown' } : { match, type: 'spdx' },
+			data: { match, type },
 			source: input,
 		}
 	},

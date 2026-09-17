@@ -382,6 +382,33 @@ describe('codemeta template', () => {
 		expect(result.license).toBe('UNLICENSED')
 	})
 
+	it.each(['modified', 'uncertain'] as const)(
+		'does not promote a %s license candidate to a CodeMeta SPDX assertion',
+		(status) => {
+			const result = codemeta(
+				{
+					...mockContext,
+					licenseFile: {
+						data: {
+							match: {
+								confidence: 0.99,
+								name: 'MIT License',
+								osiApproved: true,
+								spdxId: 'MIT',
+								spdxUrl: 'https://spdx.org/licenses/MIT',
+								status,
+							},
+							type: status,
+						},
+						source: 'LICENSE',
+					},
+				},
+				{},
+			)
+			expect(result.license).toBeUndefined()
+		},
+	)
+
 	it('should truncate dates to date-only format', () => {
 		const contextWithDates: MetadataContext = {
 			...mockContext,

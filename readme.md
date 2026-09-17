@@ -286,10 +286,12 @@ const metadata = await getMetadata({
 
 // Only the requested sources are populated
 console.log(helpers.firstOf(metadata.nodePackageJson)?.data.name)
-console.log(helpers.firstOf(metadata.licenseFile)?.data.spdxId)
+console.log(helpers.firstOf(metadata.licenseFile)?.data.match?.spdxId)
 // Other sources are undefined
 console.log(metadata.github) // Undefined
 ```
+
+License files report exact matches, explicit references, modified candidates, or uncertain candidates. Check `data.type` and `data.match.status` before treating a candidate as a license declaration. See [license matching](./docs/license-matching.md) for details.
 
 ##### Get shaped metadata via a template
 

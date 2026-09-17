@@ -78,12 +78,6 @@ export default defineConfig([
 				to: 'dist/grammars',
 			},
 		],
-		// Include only the imported aggregate, so consumers do not also install
-		// the dependency's individual copies of every license.
-		deps: {
-			alwaysBundle: /^spdx-license-list(?:\/|$)/v,
-			onlyBundle: ['spdx-license-list'],
-		},
 		dts: true,
 		entry: 'src/lib/index.ts',
 		fixedExtension: false,

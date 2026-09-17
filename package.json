@@ -44,10 +44,13 @@
 	"scripts": {
 		"bench": "vitest bench --run --no-file-parallelism",
 		"bench:baseline": "vitest bench --run --no-file-parallelism --mode benchmark-baseline --reporter=json --outputFile=test/benchmarks/baseline.json",
+		"bench:licenses": "tsx scripts/benchmark-license-matching.ts",
+		"prebuild": "pnpm generate-license-fingerprints",
 		"build": "tsdown",
 		"clean-deep": "shx rm -f pnpm-lock.yaml && git clean -fdX -e !.claude/",
 		"docs": "tsx ./scripts/generate-examples.ts && ksc-prettier fix ./docs",
 		"fix": "ksc fix",
+		"generate-license-fingerprints": "tsx scripts/generate-license-fingerprints.ts",
 		"lint": "ksc lint",
 		"release": "bumpp --commit 'Release: %s' && pnpm build && npm publish --otp $(op item get npm --otp)",
 		"pretest": "tsx scripts/copy-grammars.ts",

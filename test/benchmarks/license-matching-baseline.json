@@ -1,0 +1,785 @@
+[
+	{
+		"label": "MIT: original",
+		"category": "canonical",
+		"expectedId": "MIT",
+		"inputHash": "07c7993a082dd28479b2f48dd4ab9fac71bd97aeeecaa4cd89ef863fb3867c67",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: whitespace",
+		"category": "formatting",
+		"expectedId": "MIT",
+		"inputHash": "9ecca52ffee81d3e70b8a63351d01931501715d65f46216452f701c27d796df9",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: copyright",
+		"category": "formatting",
+		"expectedId": "MIT",
+		"inputHash": "99a3183a54efa4869b7e0fdb654b55dbdc9b66bd7c2cf594a833ef60bece7a07",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: front matter",
+		"category": "formatting",
+		"expectedId": "MIT",
+		"inputHash": "c6abc9b9384e4ab1a81efc7110129c0116ed63d26353f72126f54173ad7d3e11",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: typo",
+		"category": "modified",
+		"expectedId": "MIT",
+		"inputHash": "befcf35fb5b68c5388ad3bc54da9efb96eb39f74deb07f2aad04a0f17a797394",
+		"match": {
+			"confidence": 0.9985429820301117,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: added restriction",
+		"category": "modified",
+		"expectedId": "MIT",
+		"inputHash": "aca014191cef97c2fd6a0708ce0ffeea57f98b41f1a0253a2f785921b29a19b3",
+		"match": {
+			"confidence": 0.9856459330143541,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: prefixed restriction",
+		"category": "modified",
+		"expectedId": "MIT",
+		"inputHash": "fb4d3b2bbb95dc1ac184f9f04efbf4223feb94f3b8375ba4e27645fa5f0f9cce",
+		"match": {
+			"confidence": 0.9856459330143541,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT: missing paragraph",
+		"category": "deleted",
+		"expectedId": "MIT",
+		"inputHash": "a644a64f8c32d2ca447b8072356555f81e9c5f0e75fc62c2eb95b0d31c6db8fa",
+		"match": {
+			"confidence": 0.7682242990654206,
+			"name": "Xfig License",
+			"osiApproved": false,
+			"spdxId": "Xfig",
+			"spdxUrl": "https://github.com/Distrotech/transfig/blob/master/transfig/transfig.c"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: original",
+		"category": "canonical",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "d5371501f4b40aea8bf3a5330d6613055b9427bdee1c1bb63c67af30f2eb79be",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: whitespace",
+		"category": "formatting",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "cd1792a05444103f693d5d221cba2ce64fbead2f12bb4f97076d78e85a26fd50",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: copyright",
+		"category": "formatting",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "90727051706750380cad33604f3fe9ff2e89b3b15a86fcef76305ac5cf0b35bd",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: front matter",
+		"category": "formatting",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "0999d0f17dcd52ef3550c6176108be250f197bea3fa378fa509e2e48f4237df1",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: typo",
+		"category": "modified",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "d45e1684aa86e43f172f1d2d3f67213aed3c66df662d9f19fbf98520538b1cd4",
+		"match": {
+			"confidence": 0.9987770077456176,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: added restriction",
+		"category": "modified",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "333ced1b236b931fac5f1506a80b7de8f0d37bca65ec70d68d667fd74c379014",
+		"match": {
+			"confidence": 0.9879227053140096,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: prefixed restriction",
+		"category": "modified",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "ed6364a26a3a101592b9c5e4f9937521e59980cb6c5eddd04dc28622afb9cc0a",
+		"match": {
+			"confidence": 0.9879227053140096,
+			"name": "BSD 2-Clause \"Simplified\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-2-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-2-Clause"
+		}
+	},
+	{
+		"label": "BSD-2-Clause: missing paragraph",
+		"category": "deleted",
+		"expectedId": "BSD-2-Clause",
+		"inputHash": "c783effbf7331a15fdb7b57fe97ee420b0f746fba3025baded8ad9d46df84f1b",
+		"match": {
+			"confidence": 0.8442028985507246,
+			"name": "BSD 2-Clause pkgconf disclaimer variant",
+			"osiApproved": false,
+			"spdxId": "BSD-2-Clause-pkgconf-disclaimer",
+			"spdxUrl": "https://github.com/audacious-media-player/audacious/blob/master/src/audacious/main.cc"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: original",
+		"category": "canonical",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "a4da910352996e9119e0778ae98a51b9ed51417e0a7dd766633c9b98c0a0aa49",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: whitespace",
+		"category": "formatting",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "90cae06cd65b8a9b37978295a92ffb507b809f116f436065c11c83ed83de3b28",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: copyright",
+		"category": "formatting",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "e0ea67c3dc9f1568509817ec3950537492e002f30ea1c5c2baaa1bda12a81210",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: front matter",
+		"category": "formatting",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "4515adc541d05d902d3c22877a3ec4ec0d37fb0e35c6c2b09ba7933a32ccce3b",
+		"match": {
+			"confidence": 1,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: typo",
+		"category": "modified",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "18a42ea34edae3a766d39109521efba85092d1c2412d9b1b1f09dfd0ec6125b6",
+		"match": {
+			"confidence": 0.9989417989417989,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: added restriction",
+		"category": "modified",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "9b4caf1ebe41c1c30b67f640d1b654178c1dc54fc49255743fbe303f68e8c622",
+		"match": {
+			"confidence": 0.9895324494068388,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: prefixed restriction",
+		"category": "modified",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "25b23cc67074804904498aa945918aa71f45fffa97a30699a0904565ee1c5336",
+		"match": {
+			"confidence": 0.9895324494068388,
+			"name": "BSD 3-Clause \"New\" or \"Revised\" License",
+			"osiApproved": true,
+			"spdxId": "BSD-3-Clause",
+			"spdxUrl": "https://opensource.org/license/BSD-3-Clause"
+		}
+	},
+	{
+		"label": "BSD-3-Clause: missing paragraph",
+		"category": "deleted",
+		"expectedId": "BSD-3-Clause",
+		"inputHash": "b81c789992637a304fab159e57e82683a37b34c358d68869a1ab966d4b8f0fc3",
+		"match": {
+			"confidence": 0.8525096525096525,
+			"name": "BSD 2-Clause pkgconf disclaimer variant",
+			"osiApproved": false,
+			"spdxId": "BSD-2-Clause-pkgconf-disclaimer",
+			"spdxUrl": "https://github.com/audacious-media-player/audacious/blob/master/src/audacious/main.cc"
+		}
+	},
+	{
+		"label": "ISC: original",
+		"category": "canonical",
+		"expectedId": "ISC",
+		"inputHash": "f2ff9e66e9a9acdbffbcbf2ae4ff184d923325ce1a98d20ac64f3dd450263f3a",
+		"match": {
+			"confidence": 1,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: whitespace",
+		"category": "formatting",
+		"expectedId": "ISC",
+		"inputHash": "8522741f1e5976d0ef8b490c37a86faba9982eef76b1b2826d67aa2de732bb4b",
+		"match": {
+			"confidence": 1,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: copyright",
+		"category": "formatting",
+		"expectedId": "ISC",
+		"inputHash": "884b4340d8cc4b5357c71d16ff8b70aa04f72282f7eba65ff035e9d36023794a",
+		"match": {
+			"confidence": 1,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: front matter",
+		"category": "formatting",
+		"expectedId": "ISC",
+		"inputHash": "e33ee67d2763959d07b2b6a80f3347cadbaeb6d8154b8add3f413d3220d67be0",
+		"match": {
+			"confidence": 1,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: typo",
+		"category": "modified",
+		"expectedId": "ISC",
+		"inputHash": "f18ce3384316354b7da3542b91361a2f91ff1f32a7b69ee5f80049839eca0262",
+		"match": {
+			"confidence": 0.9978339350180505,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: added restriction",
+		"category": "modified",
+		"expectedId": "ISC",
+		"inputHash": "e99357bd351306e8b7026344d63a9a0bd4e949dc4d6a94316f0c1f9c6669f830",
+		"match": {
+			"confidence": 0.9788135593220338,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: prefixed restriction",
+		"category": "modified",
+		"expectedId": "ISC",
+		"inputHash": "8cd68ffc1f5d0f0dae8a470927351062980045376f8016d2a8aaccceda58271f",
+		"match": {
+			"confidence": 0.9788135593220338,
+			"name": "ISC License",
+			"osiApproved": true,
+			"spdxId": "ISC",
+			"spdxUrl": "https://www.isc.org/licenses/"
+		}
+	},
+	{
+		"label": "ISC: missing paragraph",
+		"category": "deleted",
+		"expectedId": "ISC",
+		"inputHash": "a6d607ae7ea68274d9e52cdc6d960916d165a4762f365c9087e8b9ddb220a194",
+		"match": {
+			"confidence": 0.8,
+			"name": "UnixCrypt License",
+			"osiApproved": false,
+			"spdxId": "UnixCrypt",
+			"spdxUrl": "https://foss.heptapod.net/python-libs/passlib/-/blob/branch/stable/LICENSE#L70"
+		}
+	},
+	{
+		"label": "Zlib: original",
+		"category": "canonical",
+		"expectedId": "Zlib",
+		"inputHash": "93bbf912f82f210f3f67f515f79f383103e90ffad00c5b518fcc49698b73f0d1",
+		"match": {
+			"confidence": 1,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: whitespace",
+		"category": "formatting",
+		"expectedId": "Zlib",
+		"inputHash": "f4ff51c342d8d0ca06747b116e359b78fa791069d0b958e08e698530670c9f17",
+		"match": {
+			"confidence": 1,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: copyright",
+		"category": "formatting",
+		"expectedId": "Zlib",
+		"inputHash": "93bbf912f82f210f3f67f515f79f383103e90ffad00c5b518fcc49698b73f0d1",
+		"match": {
+			"confidence": 1,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: front matter",
+		"category": "formatting",
+		"expectedId": "Zlib",
+		"inputHash": "c41a473372ce6f731b124bb27051a9fe40fb230c0b429c0a559b8a84f09b69f6",
+		"match": {
+			"confidence": 1,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: typo",
+		"category": "modified",
+		"expectedId": "Zlib",
+		"inputHash": "00433df703e060b03cc02a3be87fdf0b5d61f7413394dcfec0ea968064da71fd",
+		"match": {
+			"confidence": 0.998158379373849,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: added restriction",
+		"category": "modified",
+		"expectedId": "Zlib",
+		"inputHash": "716fbd4c5bec813dd843531d8b1ab20889254ee77382799e23c1b6d59f5cb8bf",
+		"match": {
+			"confidence": 0.9819277108433735,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: prefixed restriction",
+		"category": "modified",
+		"expectedId": "Zlib",
+		"inputHash": "4d9f93c7df118a4894d660b21461dbcc0725db16139bc1093bb53de348bb493d",
+		"match": {
+			"confidence": 0.9819277108433735,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Zlib: missing paragraph",
+		"category": "deleted",
+		"expectedId": "Zlib",
+		"inputHash": "6e77dd5fa311c7bdb04fc351fbd9c8a60ed3fcc9ac277c9a3a5632ae8ed7d590",
+		"match": {
+			"confidence": 0.823953823953824,
+			"name": "zlib License",
+			"osiApproved": true,
+			"spdxId": "Zlib",
+			"spdxUrl": "https://spdx.org/licenses/Zlib"
+		}
+	},
+	{
+		"label": "Apache-2.0: original",
+		"category": "canonical",
+		"expectedId": "Apache-2.0",
+		"inputHash": "c274f80372d90c012937370f0e1f15087d22e308ef98b27cea5dc0d2d088366c",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: whitespace",
+		"category": "formatting",
+		"expectedId": "Apache-2.0",
+		"inputHash": "9113d375b1e4f2b44e49d2311c6e5f45ab82b4e3946a8902dc5e842a521a5145",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: copyright",
+		"category": "formatting",
+		"expectedId": "Apache-2.0",
+		"inputHash": "5856471ce6afa49e1e591c631bbb0faae321904e062852763497b47536cdbb71",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: front matter",
+		"category": "formatting",
+		"expectedId": "Apache-2.0",
+		"inputHash": "015f903d39094021d7de5ec9b763e2b96d0932b4e1e65be0d3ba400fb390b07a",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: typo",
+		"category": "modified",
+		"expectedId": "Apache-2.0",
+		"inputHash": "5a17315dc1d673e5be302130fba913f33166186a745c068e8c31065ef0a48299",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: added restriction",
+		"category": "modified",
+		"expectedId": "Apache-2.0",
+		"inputHash": "7129142bc64ba2f6ba01b60bc1a03d998aeaaf9eb0f0a69be0d9788bed0f7863",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: prefixed restriction",
+		"category": "modified",
+		"expectedId": "Apache-2.0",
+		"inputHash": "907a8e8d569c31b74a40da399c37f131aa8cb94eadf1bfe6d70dbe864b1a4791",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "Apache-2.0: missing paragraph",
+		"category": "deleted",
+		"expectedId": "Apache-2.0",
+		"inputHash": "79234fd57316bf5f7e372f1f6a053fe9a1b47c909de7068f8d06b7f6998acc83",
+		"match": {
+			"confidence": 1,
+			"name": "Apache License 2.0",
+			"osiApproved": true,
+			"spdxId": "Apache-2.0",
+			"spdxUrl": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	{
+		"label": "MPL-2.0: original",
+		"category": "canonical",
+		"expectedId": "MPL-2.0",
+		"inputHash": "fb72181dd02473b6e42749e14362ede6ba6202540dcc2ce98299ed9051fbde61",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: whitespace",
+		"category": "formatting",
+		"expectedId": "MPL-2.0",
+		"inputHash": "cfb3affa1f0c93a22fe183172f48194ac5764bf559aa7021ce7ae8dac1fd39b7",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: copyright",
+		"category": "formatting",
+		"expectedId": "MPL-2.0",
+		"inputHash": "fb72181dd02473b6e42749e14362ede6ba6202540dcc2ce98299ed9051fbde61",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: front matter",
+		"category": "formatting",
+		"expectedId": "MPL-2.0",
+		"inputHash": "86ca0d966d5b02a021a870c18766a1c136d31dd7964980c8e338d8ab82459c6b",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: typo",
+		"category": "modified",
+		"expectedId": "MPL-2.0",
+		"inputHash": "e50daaa95e4639e66955360156aadbc058edba0186e703ded7b246bae3645de2",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: added restriction",
+		"category": "modified",
+		"expectedId": "MPL-2.0",
+		"inputHash": "1c32a5dbfebc4f1a769efa90972017094af81270cbe51d6239c2477756da76c8",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: prefixed restriction",
+		"category": "modified",
+		"expectedId": "MPL-2.0",
+		"inputHash": "205771bfc3a9a7668dd32bb33e4f9df91c23e3ebe32dbaee5640984915d78d42",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MPL-2.0: missing paragraph",
+		"category": "deleted",
+		"expectedId": "MPL-2.0",
+		"inputHash": "d93a9cae568ebfd5f5b9602a32e07808d90497f5fd8f49d0eeddfcbf815926ae",
+		"match": {
+			"confidence": 1,
+			"name": "Mozilla Public License 2.0",
+			"osiApproved": true,
+			"spdxId": "MPL-2.0",
+			"spdxUrl": "https://www.mozilla.org/MPL/2.0/"
+		}
+	},
+	{
+		"label": "MIT: negated grant",
+		"category": "modified",
+		"expectedId": "MIT",
+		"inputHash": "166ab37549b2ae1779db1c86e7167562a1d2f740ca7f8d6ed9a8b3ec2212bb0e",
+		"match": {
+			"confidence": 0.9946524064171123,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT plus BSD-3-Clause",
+		"category": "uncertain",
+		"inputHash": "eec617cc588df1d1d691d54bcd5cd95e2e1622d7303b4fc9fd69882d3a204bc3",
+		"match": {
+			"confidence": 0.8745777027027027,
+			"name": "XFree86 License 1.1",
+			"osiApproved": false,
+			"spdxId": "XFree86-1.1",
+			"spdxUrl": "https://spdx.org/licenses/XFree86-1.1"
+		}
+	},
+	{
+		"label": "unrelated prose",
+		"category": "uncertain",
+		"inputHash": "f5da1b95424b82f58a09cdf1d7a42011b62f104c81f9fc93521fcdd7586265d9"
+	},
+	{
+		"label": "negated MIT reference",
+		"category": "uncertain",
+		"inputHash": "3412480a2f3b3deccaffe93068bd7acf2634274c3c329c1f46c34da84ba4ec79",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	},
+	{
+		"label": "MIT pointer",
+		"category": "reference",
+		"expectedId": "MIT",
+		"inputHash": "6c74a0ab1355612da1b6a332c8074c90be8f3cc03af4c5f4624edd19331041b7",
+		"match": {
+			"confidence": 1,
+			"name": "MIT License",
+			"osiApproved": true,
+			"spdxId": "MIT",
+			"spdxUrl": "https://opensource.org/license/mit"
+		}
+	}
+]

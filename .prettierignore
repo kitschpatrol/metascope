@@ -11,3 +11,4 @@ skills-lock.json
 test/fixtures/*
 .agents/*
 test/benchmarks/baseline.json
+src/lib/data/license-fingerprints.json

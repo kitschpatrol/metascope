@@ -1,9 +1,9 @@
 /**
  * License identification using Dice coefficient on bigrams.
  *
- * Compares plain-text license file content against the full SPDX license list
- * to identify the best-matching SPDX license identifier. Returns a standard
- * SPDX license URL (e.g. "https://spdx.org/licenses/MIT").
+ * Compares license files against compact, precomputed SPDX fingerprints.
+ * Similarity is separate from whether the normalized text matches exactly. The
+ * original license texts are only needed when generating the corpus.
  *
  * Handles:
  *
@@ -14,13 +14,24 @@
  * - YAML front matter stripping
  */
 
-import spdxLicenseList from 'spdx-license-list/full.js'
 import licenseUrls from '../data/license-urls.json' with { type: 'json' }
+import {
+	computeLicenseBigrams,
+	computeLicenseWordSignature,
+	hashLicenseText,
+	licenseDiceScore,
+	licenseWordScore,
+	normalizeLicenseText,
+} from './license-fingerprint'
+import { getLicenseFingerprints } from './license-fingerprint-data'
 
 // ─── Types ──────────────────────────────────────────────────────────
 
 export type LicenseMatch = {
-	/** Dice coefficient confidence score (0–1). */
+	/**
+	 * Character-bigram Dice similarity (0–1), not a probability. References use
+	 * 1.
+	 */
 	confidence: number
 	/** Full license name (e.g. "MIT License", "Apache License 2.0"). */
 	name: string
@@ -30,6 +41,11 @@ export type LicenseMatch = {
 	spdxId: string
 	/** SPDX license URL. */
 	spdxUrl: string
+	/**
+	 * Exact normalized text, explicit reference, likely modified text, or an
+	 * uncertain candidate.
+	 */
+	status: 'exact' | 'modified' | 'reference' | 'uncertain'
 }
 
 // ─── Constants ──────────────────────────────────────────────────────
@@ -47,67 +63,142 @@ const directLicenseUrls = new Map(
 /** Minimum similarity score to consider a match. */
 const CONFIDENCE_THRESHOLD = 0.75
 
+const REFERENCE_PREFIX_REGEX =
+	/^(?:(?:this (?:work|software|project) is )?licensed under(?: the)?|see)\s*/v
+const REFERENCE_SUFFIX_REGEX = /\s*for (?:the )?full text$/v
+
 // ─── Public API ─────────────────────────────────────────────────────
 
 /**
- * Identify the SPDX license that best matches the given text. Returns the best
- * match with confidence score, or undefined if no match exceeds the confidence
- * threshold.
+ * Identify a reference license and report whether its normalized text matches
+ * exactly. Fuzzy matches require at least 0.75 character similarity; URL and
+ * GNU title fallbacks may score lower and are always uncertain. Returns
+ * undefined when no candidate or explicit URL reference can be identified.
  */
 export function identifyLicense(text: string): LicenseMatch | undefined {
-	// Short circuit for pointer-style license files that only reference
-	// a canonical SPDX or vendor URL (e.g. CC license deeds)
-	const urlMatch = identifyByUrl(text)
-	if (urlMatch) {
-		return urlMatch
+	const normalized = normalizeInput(text)
+	const hash = hashLicenseText(normalized)
+	const fingerprints = getLicenseFingerprints()
+	let exactId: string | undefined
+	for (const entry of fingerprints) {
+		if (entry.hash === hash) {
+			exactId = exactId === undefined ? entry.spdxId : preferSpdxId(exactId, entry.spdxId)
+		}
 	}
 
-	// Quick header-based check for GNU licenses whose SPDX templates
-	// include combined texts that don't match real-world standalone files
-	const headerMatch = identifyByHeader(text)
-	if (headerMatch) {
-		return headerMatch
+	if (exactId !== undefined) {
+		return buildMatch(exactId, 1, 'exact')
 	}
 
-	const normalizedInput = normalizeInput(text)
+	// A URL is sufficient for a short, explicit pointer. It must not override
+	// evidence of changed terms in a full license body.
+	const reference = identifyByUrl(text)
+	if (reference && isLicenseReference(text, reference)) {
+		return reference
+	}
 
-	if (normalizedInput.length < 2) {
+	if (normalized.length < 2) {
 		return undefined
 	}
 
-	const inputBigramsMap = computeBigrams(normalizedInput)
-	const inputTotal = normalizedInput.length - 1
-
-	let bestMatch: LicenseMatch | undefined
-	let bestScore = 0
-
-	for (const { bigramsMap, normalized, spdxId, totalBigrams } of getNormalizedLicenses()) {
-		if (normalizedInput === normalized) {
-			return buildMatch(spdxId, 1)
+	const inputBigrams = computeLicenseBigrams(normalized)
+	// Group identical templates so deprecated aliases do not create a false
+	// ambiguity. Score every distinct template; a 0.98 early exit can miss a
+	// closer license later in the corpus.
+	const candidates = new Map<
+		string,
+		{ confidence: number; spdxId: string; wordSignature: number[] }
+	>()
+	for (const entry of fingerprints) {
+		const existing = candidates.get(entry.hash)
+		if (existing) {
+			existing.spdxId = preferSpdxId(existing.spdxId, entry.spdxId)
+			continue
 		}
 
-		const score = diceCoefficientCached(inputBigramsMap, inputTotal, bigramsMap, totalBigrams)
-		if (score > bestScore) {
-			bestScore = score
-			bestMatch = buildMatch(spdxId, score)
-			if (bestScore > 0.98) {
-				break
-			}
+		candidates.set(entry.hash, {
+			confidence: licenseDiceScore(
+				inputBigrams,
+				normalized.length - 1,
+				entry.bigrams,
+				entry.totalBigrams,
+			),
+			spdxId: entry.spdxId,
+			wordSignature: entry.wordSignature,
+		})
+	}
+
+	const inputWords = computeLicenseWordSignature(normalized)
+	const ranked = candidates
+		.values()
+		.filter((candidate) => candidate.confidence >= CONFIDENCE_THRESHOLD)
+		.toArray()
+		.toSorted((a, b) => b.confidence - a.confidence)
+		.slice(0, 8)
+		.map((candidate) => {
+			const wordScore = licenseWordScore(inputWords, candidate.wordSignature)
+			return { ...candidate, rank: (candidate.confidence + wordScore) / 2, wordScore }
+		})
+		.toSorted((a, b) => b.rank - a.rank)
+	const best = ranked[0]
+	if (best) {
+		const margin = best.rank - (ranked[1]?.rank ?? 0)
+		if (best.confidence >= 0.9 && best.wordScore >= 0.85 && margin >= 0.01) {
+			return buildMatch(best.spdxId, best.confidence, 'modified')
 		}
 	}
 
-	if (bestMatch && bestMatch.confidence >= CONFIDENCE_THRESHOLD) {
-		return bestMatch
+	// Extended notices, translated text, and GNU supplements may score poorly
+	// against a full template. Prefer their explicit hints over a weak lexical
+	// guess, without treating a referenced license as confirmed.
+	const hintId = reference?.spdxId ?? identifyByHeader(text)
+	const hint = fingerprints.find((entry) => entry.spdxId === hintId)
+	if (hint) {
+		return buildMatch(
+			hint.spdxId,
+			licenseDiceScore(inputBigrams, normalized.length - 1, hint.bigrams, hint.totalBigrams),
+			'uncertain',
+		)
 	}
 
-	return undefined
+	return best === undefined ? undefined : buildMatch(best.spdxId, best.confidence, 'uncertain')
+}
+
+/** Accept explicit license pointers, excluding extra conditions and negations. */
+function isLicenseReference(text: string, match: LicenseMatch): boolean {
+	if (text.length > 500) {
+		return false
+	}
+
+	const target = normalizeReferenceWords(text)
+		.replace(REFERENCE_PREFIX_REGEX, '')
+		.replace(REFERENCE_SUFFIX_REGEX, '')
+		.trim()
+	const compact = target.replaceAll(' ', '')
+	return (
+		compact === '' ||
+		compact === normalizeReferenceWords(match.name).replaceAll(' ', '') ||
+		compact === normalizeReferenceWords(match.spdxId).replaceAll(' ', '')
+	)
+}
+
+function normalizeReferenceWords(value: string): string {
+	return normalizeInput(value)
+		.replaceAll(/[^\p{L}\p{N}\s]/gv, ' ')
+		.replaceAll(/\blicense\b/gv, '')
+		.replaceAll(/\s+/gv, ' ')
+		.trim()
 }
 
 /**
  * Build a LicenseMatch for the given SPDX ID with the supplied confidence.
  */
-function buildMatch(spdxId: string, confidence: number): LicenseMatch {
-	const entry = spdxLicenseList[spdxId]
+function buildMatch(
+	spdxId: string,
+	confidence: number,
+	status: LicenseMatch['status'],
+): LicenseMatch {
+	const entry = getLicenseFingerprints().find((entry) => entry.spdxId === spdxId)
 	if (entry === undefined) {
 		throw new Error(`Unknown SPDX license ID "${spdxId}"`)
 	}
@@ -118,6 +209,7 @@ function buildMatch(spdxId: string, confidence: number): LicenseMatch {
 		osiApproved: entry.osiApproved,
 		spdxId,
 		spdxUrl: getLicenseUrl(spdxId),
+		status,
 	}
 }
 
@@ -154,99 +246,9 @@ function stripFrontMatter(text: string): string {
 	return text
 }
 
-/**
- * Normalize license text for comparison. Follows SPDX matching guidelines:
- * collapse whitespace, strip copyright lines, remove URLs, lowercase.
- */
-function normalizeText(text: string): string {
-	return (
-		text
-			// Remove markdown headings
-			.replaceAll(/^#+\s+/gmv, '')
-			// Remove copyright lines (they vary per project, may span multiple formats)
-			.replaceAll(/^copyright.*$/gimv, '')
-			// Remove markdown table rows (contributor tables in COPYING files)
-			.replaceAll(/^\|.*\|$/gmv, '')
-			// Remove markdown table separators
-			.replaceAll(/^[\-\|:\s]+$/gmv, '')
-			// Remove common URL patterns
-			.replaceAll(/https?:\/\/\S+/gv, '')
-			// Remove email-like patterns
-			.replaceAll(/\S+@\S+/gv, '')
-			// Remove markdown link/image syntax leftovers
-			.replaceAll(/[\[\]\(\)]/gv, ' ')
-			// Collapse whitespace
-			.replaceAll(/\s+/gv, ' ')
-			.trim()
-			.toLowerCase()
-	)
-}
-
-/**
- * Normalize input text (user-provided license file). Applies additional cleanup
- * beyond what reference texts need.
- */
+/** Normalize file input using the same rules as the build-time corpus. */
 function normalizeInput(text: string): string {
-	return normalizeText(stripFrontMatter(text))
-}
-
-// ─── Bigram / Dice coefficient ──────────────────────────────────────
-
-/**
- * Compute bigrams (2-character substrings) of a string.
- */
-function computeBigrams(text: string): Map<string, number> {
-	const map = new Map<string, number>()
-	for (let index = 0; index < text.length - 1; index++) {
-		const pair = text.slice(index, index + 2)
-		map.set(pair, (map.get(pair) ?? 0) + 1)
-	}
-
-	return map
-}
-
-/** Pre-computed normalized license texts with cached bigrams, built lazily. */
-type NormalizedLicense = {
-	bigramsMap: Map<string, number>
-	normalized: string
-	spdxId: string
-	totalBigrams: number
-}
-
-let normalizedLicenses: NormalizedLicense[] | undefined
-
-function getNormalizedLicenses(): NormalizedLicense[] {
-	normalizedLicenses ??= Object.entries(spdxLicenseList).map(([spdxId, entry]) => {
-		const normalized = normalizeText(entry.licenseText)
-		return {
-			bigramsMap: computeBigrams(normalized),
-			normalized,
-			spdxId,
-			totalBigrams: normalized.length - 1,
-		}
-	})
-
-	return normalizedLicenses
-}
-
-/**
- * Compute the Dice coefficient using pre-computed bigrams for one side.
- */
-function diceCoefficientCached(
-	inputBigrams: Map<string, number>,
-	inputTotal: number,
-	referenceBigrams: Map<string, number>,
-	referenceTotal: number,
-): number {
-	let intersection = 0
-	for (const [pair, countA] of inputBigrams) {
-		const countB = referenceBigrams.get(pair)
-		if (countB !== undefined) {
-			intersection += Math.min(countA, countB)
-		}
-	}
-
-	return (2 * intersection) / (inputTotal + referenceTotal)
+	return normalizeLicenseText(stripFrontMatter(text))
 }
 
 // ─── Header-based matching ──────────────────────────────────────────
@@ -268,11 +270,11 @@ const HEADER_PATTERNS: Array<{ pattern: RegExp; spdxId: string }> = [
 	{ pattern: /gnu affero general public license\s+version 3/iv, spdxId: 'AGPL-3.0-only' },
 ]
 
-function identifyByHeader(text: string): LicenseMatch | undefined {
+function identifyByHeader(text: string): string | undefined {
 	const header = text.slice(0, 500)
 	for (const { pattern, spdxId } of HEADER_PATTERNS) {
 		if (pattern.test(header)) {
-			return buildMatch(spdxId, 1)
+			return spdxId
 		}
 	}
 
@@ -369,10 +371,10 @@ function getUrlIndex(): Map<string, string> {
 
 	const index = new Map<string, string>()
 
-	for (const [spdxId, entry] of Object.entries(spdxLicenseList)) {
+	for (const { spdxId, url } of getLicenseFingerprints()) {
 		// Always include the canonical spdx.org URL for every listed ID
 		index.set(`spdx.org/licenses/${spdxId.toLowerCase()}`, spdxId)
-		indexLicenseUrls(index, spdxId, entry.url)
+		indexLicenseUrls(index, spdxId, url)
 	}
 
 	urlIndex = index
@@ -383,7 +385,11 @@ function getUrlIndex(): Map<string, string> {
  * Add every normalized form of a license's URLs to the index, keeping the
  * preferred SPDX ID when several IDs share a URL.
  */
-function indexLicenseUrls(index: Map<string, string>, spdxId: string, upstreamUrl: string): void {
+function indexLicenseUrls(
+	index: Map<string, string>,
+	spdxId: string,
+	upstreamUrl: string | undefined,
+): void {
 	// Match both the dependency's original upstream URL and the direct URL
 	// metascope emits after canonicalizing it.
 	const candidates = new Set([getLicenseUrl(spdxId), upstreamUrl])
@@ -405,6 +411,7 @@ function identifyByUrl(text: string): LicenseMatch | undefined {
 	}
 
 	const index = getUrlIndex()
+	let found: string | undefined
 	for (const raw of matches) {
 		const cleaned = raw.replace(TRAILING_PUNCTUATION_REGEX, '')
 		const normalized = normalizeUrl(cleaned)
@@ -414,9 +421,13 @@ function identifyByUrl(text: string): LicenseMatch | undefined {
 
 		const spdxId = index.get(normalized)
 		if (spdxId !== undefined && spdxId !== '') {
-			return buildMatch(spdxId, 1)
+			if (found !== undefined && found !== spdxId) {
+				return undefined
+			}
+
+			found = spdxId
 		}
 	}
 
-	return undefined
+	return found === undefined ? undefined : buildMatch(found, 1, 'reference')
 }
