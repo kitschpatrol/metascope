@@ -7,7 +7,7 @@ import { dirname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Language, Parser } from 'web-tree-sitter'
 
-let initialized = false
+let initialization: Promise<void> | undefined
 let grammarDirectoryOverride: string | undefined
 
 /**
@@ -48,24 +48,39 @@ function resolveGrammar(filename: string): string {
 
 /** Initialize web-tree-sitter (idempotent) and return a new Parser instance. */
 export async function initParser(): Promise<Parser> {
-	if (!initialized) {
-		await Parser.init()
-		initialized = true
-	}
+	// Cache the pending initialization too: sources can start parsing concurrently.
+	// eslint-disable-next-line unicorn/prefer-await -- Share rejection handling across concurrent callers.
+	initialization ??= Parser.init().catch((error: unknown) => {
+		initialization = undefined
+		throw error
+	})
+	await initialization
 
 	return new Parser()
 }
 
-let pythonLanguage: Language | undefined
+let pythonLanguage: Promise<Language> | undefined
 /** Get the Python language (cached after first load). */
 export async function getPythonLanguage(): Promise<Language> {
-	pythonLanguage ??= await Language.load(resolveGrammar('tree-sitter-python.wasm'))
+	// eslint-disable-next-line unicorn/prefer-await -- Share rejection handling across concurrent callers.
+	pythonLanguage ??= Language.load(resolveGrammar('tree-sitter-python.wasm')).catch(
+		(error: unknown) => {
+			pythonLanguage = undefined
+			throw error
+		},
+	)
 	return pythonLanguage
 }
 
-let rubyLanguage: Language | undefined
+let rubyLanguage: Promise<Language> | undefined
 /** Get the Ruby language (cached after first load). */
 export async function getRubyLanguage(): Promise<Language> {
-	rubyLanguage ??= await Language.load(resolveGrammar('tree-sitter-ruby.wasm'))
+	// eslint-disable-next-line unicorn/prefer-await -- Share rejection handling across concurrent callers.
+	rubyLanguage ??= Language.load(resolveGrammar('tree-sitter-ruby.wasm')).catch(
+		(error: unknown) => {
+			rubyLanguage = undefined
+			throw error
+		},
+	)
 	return rubyLanguage
 }

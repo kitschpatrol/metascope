@@ -20,6 +20,4 @@ allowBuilds:
   tree-sitter-ruby: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
-  - '@kitschpatrol/*'
-  - updates@18.0.6
-  - picomatch@4.0.7
+  - lognow

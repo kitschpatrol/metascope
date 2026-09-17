@@ -310,12 +310,6 @@ describe('all-sources fixture', () => {
 	})
 
 	it('should extract pythonSetupPy', async () => {
-		// Setup.py parsing uses tree-sitter which may not support all grammar versions
-		// in all environments; skip if extraction failed gracefully
-		if (!result.pythonSetupPy) {
-			return
-		}
-
 		const data = firstOf(result.pythonSetupPy)?.data
 		expect(data).toBeDefined()
 		expect(data!.name).toBe('all-sources-fixture')
