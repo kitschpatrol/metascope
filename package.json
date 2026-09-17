@@ -52,7 +52,7 @@
 		"fix": "ksc fix",
 		"generate-license-fingerprints": "tsx scripts/generate-license-fingerprints.ts",
 		"lint": "ksc lint",
-		"release": "bumpp --commit 'Release: %s' && pnpm build && npm publish --otp $(op item get npm --otp)",
+		"release": "bumpp --commit 'Release: %s' && pnpm build && pnpm publish --otp $(op item get npm --otp)",
 		"pretest": "tsx scripts/copy-grammars.ts",
 		"test": "vitest run",
 		"test:live": "METASCOPE_TEST_MOCK=false vitest run",
