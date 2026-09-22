@@ -86,6 +86,12 @@ npm install metascope
 npm install --global metascope
 ```
 
+... or install globally with Homebrew:
+
+```sh
+brew install kitschpatrol/tap/metascope
+```
+
 If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their bundled WASM implementations.
 
 In your `pnpm-workspace.yaml`:
