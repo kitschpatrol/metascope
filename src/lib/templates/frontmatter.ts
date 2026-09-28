@@ -87,7 +87,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		Maintainer: mixedStringsToArray(toBasicNames(codemeta.maintainer)) ?? null,
 		Version: codemeta.version ?? null,
 		Account: github?.ownerLogin ?? null,
-		Public: github === undefined ? false : !github.isPrivate,
+		Public: github !== undefined && !github.isPrivate,
 		Fork: github?.isFork ?? false,
 		Published: Boolean(
 			obsidianPluginRegistry?.url ?? nodeNpmRegistry?.url ?? pythonPypiRegistry?.url,
@@ -218,9 +218,7 @@ export const frontmatter = defineTemplate((context, templateData) => {
 		// 'Has Discussions': github.hasDiscussionsEnabled,
 		// 'Issues': github.hasIssuesEnabled,
 		Monorepo:
-			metascope?.workspaceDirectories === undefined
-				? false
-				: metascope.workspaceDirectories.length > 0,
+			metascope?.workspaceDirectories !== undefined && metascope.workspaceDirectories.length > 0,
 
 		// ── Git Status ────────────────────────────────────────
 		// 'Git Clean': gitStats?.isClean ?? null,

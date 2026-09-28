@@ -230,13 +230,15 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 
 					for (const record of records) {
 						const runInfo = runsByPath.get(record.rawPath)
-						if (runInfo) {
-							record.data.lastRunConclusion = runInfo.conclusion
-							record.data.lastRunStatus = runInfo.status
-							record.data.lastRunAt = runInfo.updatedAt
-							record.data.lastRunUrl = runInfo.url
-							record.data.lastRunDurationMs = runInfo.durationMs
+						if (!runInfo) {
+							continue
 						}
+
+						record.data.lastRunConclusion = runInfo.conclusion
+						record.data.lastRunStatus = runInfo.status
+						record.data.lastRunAt = runInfo.updatedAt
+						record.data.lastRunUrl = runInfo.url
+						record.data.lastRunDurationMs = runInfo.durationMs
 					}
 				}
 			} catch (error) {

@@ -151,11 +151,7 @@ function extractValue(node: Node): string | string[] | undefined {
 		return 'false'
 	}
 
-	if (current.type === 'nil') {
-		return undefined
-	}
-
-	return extractString(current)
+	return current.type === 'nil' ? undefined : extractString(current)
 }
 
 /** Resolve the attribute name from the LHS of `spec.foo = ...` */

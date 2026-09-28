@@ -39,18 +39,20 @@ export function parseRfc822Headers(content: string): Record<string, string> {
 
 		// Header line: "Key: Value"
 		const colonIndex = line.indexOf(': ')
-		if (colonIndex > 0) {
-			const key = line.slice(0, colonIndex)
-			const value = line.slice(colonIndex + 2).trim()
-
-			const previous = headers[key]
-			headers[key] =
-				previous !== undefined && previous !== '' && MULTI_VALUE_HEADERS.has(key)
-					? `${previous}\n${value}`
-					: value
-
-			lastKey = key
+		if (colonIndex <= 0) {
+			continue
 		}
+
+		const key = line.slice(0, colonIndex)
+		const value = line.slice(colonIndex + 2).trim()
+
+		const previous = headers[key]
+		headers[key] =
+			previous !== undefined && previous !== '' && MULTI_VALUE_HEADERS.has(key)
+				? `${previous}\n${value}`
+				: value
+
+		lastKey = key
 	}
 
 	return headers
@@ -69,12 +71,10 @@ export function extractRfc822Body(content: string): string | undefined {
 
 /** Split newline-separated multi-value into array. */
 export function splitMultiValues(value: string | undefined): string[] {
-	if (value === undefined || value === '') {
-		return []
-	}
-
-	return value
-		.split('\n')
-		.map((line) => line.trim())
-		.filter((line) => line.length > 0)
+	return value === undefined || value === ''
+		? []
+		: value
+				.split('\n')
+				.map((line) => line.trim())
+				.filter((line) => line.length > 0)
 }

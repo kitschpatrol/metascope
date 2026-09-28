@@ -137,11 +137,9 @@ function nonEmpty(value: unknown): string | undefined {
 
 /** Convert an unknown value to a string array, filtering non-strings. */
 function toStringArray(value: unknown): string[] {
-	if (!Array.isArray(value)) {
-		return []
-	}
-
-	return value.filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
+	return Array.isArray(value)
+		? value.filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
+		: []
 }
 
 /**

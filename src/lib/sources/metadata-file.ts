@@ -136,11 +136,7 @@ function getFormat(file: string): 'json' | 'yaml' | undefined {
 		return 'json'
 	}
 
-	if (file.endsWith('.yaml') || file.endsWith('.yml')) {
-		return 'yaml'
-	}
-
-	return undefined
+	return file.endsWith('.yaml') || file.endsWith('.yml') ? 'yaml' : undefined
 }
 
 export const metadataFileSource = defineSource<'metadataFile'>({

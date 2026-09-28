@@ -143,13 +143,17 @@ function parseOperatingSystems(block: Record<string, unknown>): string[] {
 		}
 
 		const os = getAttribute(support, 'os')
-		if (os !== undefined) {
-			const mapped = OS_MAP[os.toLowerCase()] ?? os
-			if (!seen.has(mapped)) {
-				seen.add(mapped)
-				results.push(mapped)
-			}
+		if (os === undefined) {
+			continue
 		}
+
+		const mapped = OS_MAP[os.toLowerCase()] ?? os
+		if (seen.has(mapped)) {
+			continue
+		}
+
+		seen.add(mapped)
+		results.push(mapped)
 	}
 
 	return results

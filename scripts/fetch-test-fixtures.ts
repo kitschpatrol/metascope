@@ -76,7 +76,7 @@ async function saveFileSearchResult(
 
 	const basename = path.basename(result.path)
 
-	const isValid = validate === undefined ? true : validate(basename, content)
+	const isValid = validate === undefined || validate(basename, content)
 
 	if (!isValid) {
 		console.log(`Skipping invalid file: ${rawUrl}`)

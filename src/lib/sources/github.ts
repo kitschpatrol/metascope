@@ -455,11 +455,7 @@ function countSubmodules(gitmodulesText: string | undefined): number {
 }
 
 function detectLfs(gitattributesText: string | undefined): boolean {
-	if (gitattributesText === undefined || gitattributesText === '') {
-		return false
-	}
-
-	return gitattributesText.includes('filter=lfs')
+	return gitattributesText?.includes('filter=lfs') ?? false
 }
 
 function extractLanguages(data: GitHubRepoData): Record<string, number> {

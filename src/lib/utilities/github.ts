@@ -21,11 +21,7 @@ export function getGitHubRemoteFromConfig(
 			return -1
 		}
 
-		if (b === 'origin') {
-			return 1
-		}
-
-		return 0
+		return b === 'origin' ? 1 : 0
 	})
 
 	for (const [, remote] of sorted) {

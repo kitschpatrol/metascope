@@ -103,14 +103,12 @@ export function nonEmpty<T>(array: T[]): T[] | undefined {
  * Returns an empty array for `undefined` or empty input.
  */
 export function splitCommaSeparated(value: string | undefined): string[] {
-	if (value === undefined) {
-		return []
-	}
-
-	return value
-		.split(',')
-		.map((s) => s.trim())
-		.filter((s) => s.length > 0)
+	return value === undefined
+		? []
+		: value
+				.split(',')
+				.map((s) => s.trim())
+				.filter((s) => s.length > 0)
 }
 
 /**
@@ -136,11 +134,9 @@ export function toDelimitedString(
  * Convert a URL or path to a markdown link using its basename as the label.
  */
 export function toMarkdownLink(value: string | undefined): string | undefined {
-	if (is.nonEmptyStringAndNotWhitespace(value)) {
-		return `[${path.basename(value)}](${value})`
-	}
-
-	return undefined
+	return is.nonEmptyStringAndNotWhitespace(value)
+		? `[${path.basename(value)}](${value})`
+		: undefined
 }
 
 /**
@@ -148,22 +144,14 @@ export function toMarkdownLink(value: string | undefined): string | undefined {
  * value as-is.
  */
 export function toOptionalMarkdownLink(name: string, url: string | undefined): string {
-	if (is.nonEmptyStringAndNotWhitespace(url)) {
-		return `[${name}](${url})`
-	}
-
-	return name
+	return is.nonEmptyStringAndNotWhitespace(url) ? `[${name}](${url})` : name
 }
 
 /**
  * Convert bytes to megabytes (rounded). (MB, not MiB.)
  */
 export function toMb(bytes: unknown): number | undefined {
-	if (is.positiveNumber(bytes)) {
-		return Math.round((bytes / 1000 / 1000) * 100) / 100
-	}
-
-	return undefined
+	return is.positiveNumber(bytes) ? Math.round((bytes / 1000 / 1000) * 100) / 100 : undefined
 }
 
 /**
@@ -298,17 +286,15 @@ export function stripUndefined<T>(value: T): T {
 
 			const stripped = stripUndefined(theValue)
 			// eslint-disable-next-line ts/no-unnecessary-condition
-			if (stripped !== undefined) {
-				result[key] = stripped
-				hasKeys = true
+			if (stripped === undefined) {
+				continue
 			}
+
+			result[key] = stripped
+			hasKeys = true
 		}
 
-		if (!hasKeys) {
-			return undefined as T
-		}
-
-		return result as T
+		return hasKeys ? (result as T) : (undefined as T)
 	}
 
 	return value
@@ -320,11 +306,9 @@ export function stripUndefined<T>(value: T): T {
  * Strip the SPDX license URL prefix, returning just the license identifier.
  */
 export function toBasicLicense(source: string | undefined): string | undefined {
-	if (source === undefined) {
-		return undefined
-	}
-
-	return source.replace('https://spdx.org/licenses/', '').replace('https://spdx.org/licenses/', '')
+	return source === undefined
+		? undefined
+		: source.replace('https://spdx.org/licenses/', '').replace('https://spdx.org/licenses/', '')
 }
 
 /**
@@ -351,15 +335,10 @@ type CodeMetaPersonOrOrg = NonNullable<CodeMetaJson['author']>[number]
  * Extract a display name from a `CodeMetaPersonOrOrg`.
  */
 function toBasicName(basicPersonOrOrg: CodeMetaPersonOrOrg | undefined): string | undefined {
-	if (basicPersonOrOrg === undefined) {
-		return undefined
-	}
-
-	if (basicPersonOrOrg.name !== undefined) {
-		return basicPersonOrOrg.name
-	}
-
-	return toDelimitedString([basicPersonOrOrg.givenName, basicPersonOrOrg.familyName], ' ')
+	return basicPersonOrOrg === undefined
+		? undefined
+		: (basicPersonOrOrg.name ??
+				toDelimitedString([basicPersonOrOrg.givenName, basicPersonOrOrg.familyName], ' '))
 }
 
 /**
@@ -414,14 +393,10 @@ export function dependencyNames(
  */
 export function usesPnpm(packageJson: NodePackageJsonData): boolean {
 	const first = firstOf(packageJson)
-	if (!first) {
-		return false
-	}
-
-	return (
-		first.data.packageManager?.toLowerCase().startsWith('pnpm') ??
-		Object.hasOwn(first.data.engines ?? {}, 'pnpm')
-	)
+	return first
+		? (first.data.packageManager?.toLowerCase().startsWith('pnpm') ??
+				Object.hasOwn(first.data.engines ?? {}, 'pnpm'))
+		: false
 }
 
 /**
@@ -464,12 +439,11 @@ export function isOnGithubAccountOf(
 
 	const cleanRepo = codeRepo.toLocaleLowerCase().trim()
 
-	if (!cleanRepo.includes('github.com/')) {
-		return false
-	}
-
-	return ensureArray(githubUsername).some((username) =>
-		cleanRepo.includes(`/${username.toLocaleLowerCase().trim()}/`),
+	return (
+		cleanRepo.includes('github.com/') &&
+		ensureArray(githubUsername).some((username) =>
+			cleanRepo.includes(`/${username.toLocaleLowerCase().trim()}/`),
+		)
 	)
 }
 
@@ -606,11 +580,7 @@ export function toStatus(
 		return 'maintainer'
 	}
 
-	if (github === 'their-source' && me === 'missing') {
-		return 'observer'
-	}
-
-	return 'unknown'
+	return github === 'their-source' && me === 'missing' ? 'observer' : 'unknown'
 }
 
 /**

@@ -98,19 +98,11 @@ function classifyBump(oldVersion: string, newVersion: string): 'major' | 'minor'
 	}
 
 	const result = diff(oldSemver, newSemver)
-	if (result === null) {
+	if (result === null || result === 'premajor' || result.startsWith('major')) {
 		return 'major'
 	}
 
-	if (result === 'premajor' || result.startsWith('major')) {
-		return 'major'
-	}
-
-	if (result === 'preminor' || result.startsWith('minor')) {
-		return 'minor'
-	}
-
-	return 'patch'
+	return result === 'preminor' || result.startsWith('minor') ? 'minor' : 'patch'
 }
 
 type UpdatesDependency = z.infer<typeof dependencySchema>

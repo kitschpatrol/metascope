@@ -17,4 +17,4 @@ exclude = [
 	# # Overzealous redirects
 	# 'https://nodejs\.org',
 ]
-exclude_path = ["test/fixtures/*"]
+exclude_path = ['test/fixtures/*']

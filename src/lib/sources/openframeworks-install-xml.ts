@@ -193,13 +193,17 @@ function parseOperatingSystems(install: Record<string, unknown>): string[] {
 		}
 
 		const os = getString(library['@_os'])
-		if (os !== undefined && os !== '') {
-			const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os
-			if (!seen.has(mapped)) {
-				seen.add(mapped)
-				results.push(mapped)
-			}
+		if (os === undefined || os === '') {
+			continue
 		}
+
+		const mapped = LIB_OS_MAP[os.toLowerCase()] ?? os
+		if (seen.has(mapped)) {
+			continue
+		}
+
+		seen.add(mapped)
+		results.push(mapped)
 	}
 
 	return results

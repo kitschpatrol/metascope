@@ -115,13 +115,15 @@ function framingContextMutation(content: string): string {
 		// eslint-disable-next-line ts/no-unsafe-assignment
 		const value = context[key]
 
-		if (typeof value === 'object' && value !== null) {
-			// Strip @container (conflicts with repeated-triples) and @type (conflicts with IDs)
-			// eslint-disable-next-line ts/no-unsafe-member-access
-			delete value['@container']
-			// eslint-disable-next-line ts/no-unsafe-member-access
-			delete value['@type']
+		if (typeof value !== 'object' || value === null) {
+			continue
 		}
+
+		// Strip @container (conflicts with repeated-triples) and @type (conflicts with IDs)
+		// eslint-disable-next-line ts/no-unsafe-member-access
+		delete value['@container']
+		// eslint-disable-next-line ts/no-unsafe-member-access
+		delete value['@type']
 	}
 
 	return JSON.stringify(json, undefined, 2)
@@ -242,24 +244,26 @@ async function updateCrossWalkJson(
 		// For each row, get value of column ['property'] and [source]
 		for (const [rowIndex, codeMetaPropertyName] of propertyColumn.entries()) {
 			const sourceValue = crosswalkColumnMap[source]?.[rowIndex]
-			if (is.nonEmptyStringAndNotWhitespace(sourceValue)) {
-				const parentType = (parentTypeColumn[rowIndex] ?? '').trim()
+			if (!is.nonEmptyStringAndNotWhitespace(sourceValue)) {
+				continue
+			}
 
-				const sourceMap = crosswalkRecords.maps[source] ?? {}
-				crosswalkRecords.maps[source] = sourceMap
+			const parentType = (parentTypeColumn[rowIndex] ?? '').trim()
 
-				// Split on '/' or ',' and add each key to the record
-				const fullPropertyKey = `${parentType}/${codeMetaPropertyName}`
-				for (const key of sourceValue.split(COMMA_OR_SLASH_REGEX)) {
-					addSourceKeyMapping(
-						sourceMap,
-						source,
-						key.trim(),
-						codeMetaPropertyName,
-						parentType,
-						fullPropertyKey,
-					)
-				}
+			const sourceMap = crosswalkRecords.maps[source] ?? {}
+			crosswalkRecords.maps[source] = sourceMap
+
+			// Split on '/' or ',' and add each key to the record
+			const fullPropertyKey = `${parentType}/${codeMetaPropertyName}`
+			for (const key of sourceValue.split(COMMA_OR_SLASH_REGEX)) {
+				addSourceKeyMapping(
+					sourceMap,
+					source,
+					key.trim(),
+					codeMetaPropertyName,
+					parentType,
+					fullPropertyKey,
+				)
 			}
 		}
 	}

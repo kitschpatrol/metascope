@@ -420,13 +420,15 @@ function identifyByUrl(text: string): LicenseMatch | undefined {
 		}
 
 		const spdxId = index.get(normalized)
-		if (spdxId !== undefined && spdxId !== '') {
-			if (found !== undefined && found !== spdxId) {
-				return undefined
-			}
-
-			found = spdxId
+		if (spdxId === undefined || spdxId === '') {
+			continue
 		}
+
+		if (found !== undefined && found !== spdxId) {
+			return undefined
+		}
+
+		found = spdxId
 	}
 
 	return found === undefined ? undefined : buildMatch(found, 1, 'reference')

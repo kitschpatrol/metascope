@@ -226,11 +226,7 @@ function cleanString(value: unknown): string | undefined {
 		return undefined
 	}
 
-	if (XCODE_VARIABLE_RE.test(trimmed)) {
-		return undefined
-	}
-
-	return trimmed
+	return XCODE_VARIABLE_RE.test(trimmed) ? undefined : trimmed
 }
 
 /**
@@ -242,11 +238,7 @@ function getSetting(
 	key: string,
 ): string | undefined {
 	const targetValue = cleanString(targetSettings?.[key])
-	if (targetValue !== undefined) {
-		return targetValue
-	}
-
-	return cleanString(projectSettings?.[key])
+	return targetValue ?? cleanString(projectSettings?.[key])
 }
 
 /**
@@ -315,13 +307,17 @@ function parseOperatingSystems(
 
 	for (const { key, os } of DEPLOYMENT_TARGETS) {
 		const version = getSetting(targetSettings, projectSettings, key)
-		if (version !== undefined) {
-			const value = `${os} >= ${version}`
-			if (!seen.has(value)) {
-				seen.add(value)
-				results.push(value)
-			}
+		if (version === undefined) {
+			continue
 		}
+
+		const value = `${os} >= ${version}`
+		if (seen.has(value)) {
+			continue
+		}
+
+		seen.add(value)
+		results.push(value)
 	}
 
 	// Fallback to SDKROOT if no deployment targets found

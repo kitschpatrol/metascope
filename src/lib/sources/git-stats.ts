@@ -119,7 +119,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			(async () => {
 				try {
 					const output = await git.raw(['lfs', 'ls-files'])
-					return output.trim().length > 0 ? true : undefined
+					return output.trim().length > 0 || undefined
 				} catch {
 					return undefined
 				}

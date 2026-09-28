@@ -174,11 +174,7 @@ function getString(data: PlistDict, key: string): string | undefined {
 		return undefined
 	}
 
-	if (XCODE_VARIABLE_RE.test(trimmed)) {
-		return undefined
-	}
-
-	return trimmed
+	return XCODE_VARIABLE_RE.test(trimmed) ? undefined : trimmed
 }
 
 /**
@@ -213,11 +209,7 @@ function humanizeCategory(uti: string): string {
  */
 function parseAppCategory(data: PlistDict): string | undefined {
 	const category = getString(data, 'LSApplicationCategoryType')
-	if (category === undefined) {
-		return undefined
-	}
-
-	return humanizeCategory(category)
+	return category === undefined ? undefined : humanizeCategory(category)
 }
 
 /**

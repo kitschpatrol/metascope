@@ -64,11 +64,9 @@ function extractString(node: Node): string | undefined {
 			const raw = node.text
 
 			const withoutPrefix = raw.replace(STRING_PREFIX_REGEX, '') // cspell:disable-line
-			if (withoutPrefix.startsWith('"""') || withoutPrefix.startsWith("'''")) {
-				return withoutPrefix.slice(3, -3)
-			}
-
-			return withoutPrefix.slice(1, -1)
+			return withoutPrefix.startsWith('"""') || withoutPrefix.startsWith("'''")
+				? withoutPrefix.slice(3, -3)
+				: withoutPrefix.slice(1, -1)
 		}
 
 		case 'string_content': {

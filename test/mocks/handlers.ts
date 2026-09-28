@@ -19,11 +19,9 @@ export const handlers = [
 		}
 
 		const fixture = pypiPackages[params.name as string]
-		if (fixture === undefined) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture === undefined
+			? new HttpResponse(null, { status: 404 })
+			: HttpResponse.json(fixture)
 	}),
 
 	http.get('https://pypistats.org/api/packages/:name/recent', ({ params }) => {
@@ -32,11 +30,9 @@ export const handlers = [
 		}
 
 		const fixture = pypistatsRecent[params.name as string]
-		if (fixture === undefined) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture === undefined
+			? new HttpResponse(null, { status: 404 })
+			: HttpResponse.json(fixture)
 	}),
 
 	http.get('https://pypistats.org/api/packages/:name/overall', ({ params }) => {
@@ -45,11 +41,9 @@ export const handlers = [
 		}
 
 		const fixture = pypistatsOverall[params.name as string]
-		if (fixture === undefined) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture === undefined
+			? new HttpResponse(null, { status: 404 })
+			: HttpResponse.json(fixture)
 	}),
 
 	// ── npm ───────────────────────────────────────────────────
@@ -60,11 +54,9 @@ export const handlers = [
 		}
 
 		const fixture = npmPackages[params.name as string]
-		if (fixture === undefined) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture === undefined
+			? new HttpResponse(null, { status: 404 })
+			: HttpResponse.json(fixture)
 	}),
 
 	http.get('https://api.npmjs.org/downloads/point/:period/:name', ({ params }) => {
@@ -74,24 +66,16 @@ export const handlers = [
 
 		const downloads = npmDownloads[params.name as string]
 
-		if (downloads === undefined) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json({ downloads })
+		return downloads === undefined
+			? new HttpResponse(null, { status: 404 })
+			: HttpResponse.json({ downloads })
 	}),
 
 	// ── Obsidian ──────────────────────────────────────────────
 
 	http.get(
 		'https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json',
-		() => {
-			if (!shouldMock()) {
-				return passthrough()
-			}
-
-			return HttpResponse.json(obsidianPluginStats)
-		},
+		() => (shouldMock() ? HttpResponse.json(obsidianPluginStats) : passthrough()),
 	),
 
 	// ── GitHub ────────────────────────────────────────────────
@@ -104,11 +88,9 @@ export const handlers = [
 		const body = (await request.json()) as { variables?: { owner?: string; repo?: string } }
 		const key = `${body.variables?.owner}/${body.variables?.repo}`
 		const fixture = githubGraphql[key]
-		if (fixture === undefined) {
-			return HttpResponse.json({ errors: [{ message: 'Not Found' }] }, { status: 200 })
-		}
-
-		return HttpResponse.json({ data: fixture })
+		return fixture === undefined
+			? HttpResponse.json({ errors: [{ message: 'Not Found' }] }, { status: 200 })
+			: HttpResponse.json({ data: fixture })
 	}),
 
 	http.get('https://api.github.com/repos/:owner/:repo/actions/runs', ({ params }) => {
@@ -121,11 +103,7 @@ export const handlers = [
 
 		const fixture = githubActionsRuns[key]
 
-		if (!fixture) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture ? HttpResponse.json(fixture) : new HttpResponse(null, { status: 404 })
 	}),
 
 	http.get('https://api.github.com/repos/:owner/:repo', ({ params }) => {
@@ -137,10 +115,6 @@ export const handlers = [
 		const key = `${params.owner}/${params.repo}`
 		const fixture = githubRest[key]
 
-		if (!fixture) {
-			return new HttpResponse(null, { status: 404 })
-		}
-
-		return HttpResponse.json(fixture)
+		return fixture ? HttpResponse.json(fixture) : new HttpResponse(null, { status: 404 })
 	}),
 ]

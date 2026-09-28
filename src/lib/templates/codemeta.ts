@@ -580,7 +580,7 @@ export const codemeta = defineTemplate(
 			: undefined
 
 		const isAccessibleForFree =
-			cm?.data.isAccessibleForFree ?? (github?.data.isPrivate === false ? true : undefined)
+			cm?.data.isAccessibleForFree ?? (github?.data.isPrivate === false || undefined)
 
 		// ── Keywords ────────────────────────────────────────────────
 
@@ -972,13 +972,11 @@ function collectDevelopmentDependencies(sources: {
 function objectEntriesToDependencies(
 	dependencies: Record<string, string> | undefined,
 ): CodemetaDependencyLd[] | undefined {
-	if (dependencies === undefined) {
-		return undefined
-	}
-
-	return Object.entries(dependencies).map(([dependencyName, dependencyVersion]) =>
-		toDependencyLd(dependencyName, dependencyVersion),
-	)
+	return dependencies === undefined
+		? undefined
+		: Object.entries(dependencies).map(([dependencyName, dependencyVersion]) =>
+				toDependencyLd(dependencyName, dependencyVersion),
+			)
 }
 
 /**
@@ -1009,11 +1007,7 @@ function repoUrlFromPackageJson(
 		return undefined
 	}
 
-	if (typeof repo === 'string') {
-		return repo
-	}
-
-	return repo.url
+	return typeof repo === 'string' ? repo : repo.url
 }
 
 /**
@@ -1022,11 +1016,7 @@ function repoUrlFromPackageJson(
 function bugsUrlFromPackageJson(
 	bugs: undefined | { email: string; url?: string } | { email?: string; url?: string },
 ): string | undefined {
-	if (bugs === undefined) {
-		return undefined
-	}
-
-	return bugs.url
+	return bugs === undefined ? undefined : bugs.url
 }
 
 /**
@@ -1050,11 +1040,9 @@ function resolvePythonLicense(
 		return undefined
 	}
 
-	if (typeof pythonLicense === 'string') {
-		return pythonLicense
-	}
-
-	return pythonLicense.spdx ?? pythonLicense.text
+	return typeof pythonLicense === 'string'
+		? pythonLicense
+		: (pythonLicense.spdx ?? pythonLicense.text)
 }
 
 /**
@@ -1146,11 +1134,7 @@ function toDateOnly(value: string | undefined): string | undefined {
 	}
 
 	const match = DATETIME_DATE_REGEX.exec(value)
-	if (match) {
-		return match[1]
-	}
-
-	return value
+	return match ? match[1] : value
 }
 
 /**
@@ -1171,11 +1155,7 @@ function inferTargetProduct(
 		return { '@type': 'CommandLineApplication' }
 	}
 
-	if (package_?.data.browser !== undefined) {
-		return { '@type': 'WebApplication' }
-	}
-
-	return undefined
+	return package_?.data.browser === undefined ? undefined : { '@type': 'WebApplication' }
 }
 
 /**

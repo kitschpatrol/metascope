@@ -39,15 +39,13 @@ export const optionalUrl = nonEmptyString.describe('A URL string')
  * to `[]` so absent/non-array fields parse cleanly under zod 4.4+.
  */
 export const stringArray = z
-	.preprocess((value) => {
-		if (!Array.isArray(value)) {
-			return []
-		}
-
-		return value.filter(
-			(item): item is string => typeof item === 'string' && item.trim().length > 0,
-		)
-	}, z.array(z.string()))
+	.preprocess(
+		(value) =>
+			Array.isArray(value)
+				? value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+				: [],
+		z.array(z.string()),
+	)
 	.default([])
 
 /**

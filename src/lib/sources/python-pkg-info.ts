@@ -131,12 +131,14 @@ export function parse(source: string): PkgInfo {
 	if (projectUrl !== undefined && projectUrl !== '') {
 		for (const line of splitMultiValues(projectUrl)) {
 			const commaIndex = line.indexOf(', ')
-			if (commaIndex > 0) {
-				const label = line.slice(0, commaIndex).trim()
-				const url = line.slice(commaIndex + 2).trim()
-				if (url !== '') {
-					data.project_urls[label] = url
-				}
+			if (commaIndex <= 0) {
+				continue
+			}
+
+			const label = line.slice(0, commaIndex).trim()
+			const url = line.slice(commaIndex + 2).trim()
+			if (url !== '') {
+				data.project_urls[label] = url
 			}
 		}
 	}

@@ -136,11 +136,7 @@ function toString(value: unknown): string | undefined {
 		return String(value)
 	}
 
-	if (value instanceof Date) {
-		return value.toISOString().slice(0, 10)
-	}
-
-	return undefined
+	return value instanceof Date ? value.toISOString().slice(0, 10) : undefined
 }
 
 /** Check if a value is a non-empty string. */
@@ -157,11 +153,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 /** Extract string array from a YAML value, filtering non-strings. */
 function toStringArray(value: unknown): string[] {
-	if (!Array.isArray(value)) {
-		return []
-	}
-
-	return value.filter((item): item is string => typeof item === 'string')
+	return Array.isArray(value)
+		? value.filter((item): item is string => typeof item === 'string')
+		: []
 }
 
 /** Parse a single dependency entry, returning undefined when it lacks a name. */

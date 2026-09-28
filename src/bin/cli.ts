@@ -29,11 +29,9 @@ const kebabToCamelSource = new Map<string, SourceName>(
 const kebabSourceNames = kebabToCamelSource.keys().toArray()
 
 function resolveSourceArgument(argument: string): SourceName | undefined {
-	if (sourceNames.includes(argument as SourceName)) {
-		return argument as SourceName
-	}
-
-	return kebabToCamelSource.get(argument)
+	return sourceNames.includes(argument as SourceName)
+		? (argument as SourceName)
+		: kebabToCamelSource.get(argument)
 }
 
 await yargsInstance
@@ -114,7 +112,7 @@ await yargsInstance
 
 						const values = Array.isArray(value) ? value : [value]
 						const strings = values.filter((v): v is string => typeof v === 'string')
-						return strings.length > 0 ? strings : true
+						return strings.length === 0 || strings
 					},
 					default: DEFAULT_GET_METADATA_OPTIONS.workspaces,
 					description:
@@ -190,7 +188,7 @@ await yargsInstance
 					offline: argv.offline,
 					path: argv.path,
 					recursive: argv.recursive,
-					respectIgnored: argv.noIgnore ? false : undefined,
+					respectIgnored: !argv.noIgnore,
 					sources: argv.sources as SourceName[] | undefined,
 					templateData,
 					workspaces: argv.workspaces as boolean | string[] | undefined,

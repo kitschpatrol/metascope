@@ -6,6 +6,11 @@
 
 <!-- badges({
   custom: {
+    "Homebrew": {
+      image:
+        "https://img.shields.io/badge/Homebrew-kitschpatrol%2Ftap%2Fmetascope-FBB040?logo=homebrew&logoColor=white",
+      link: "https://github.com/kitschpatrol/homebrew-tap/blob/main/Formula/metascope.rb",
+    },
     "Bundle Size": {
       image: "https://img.shields.io/bundlephobia/minzip/metascope?label=Size",
       link: "https://bundlephobia.com/package/metascope",
@@ -16,6 +21,7 @@
 [![NPM Package metascope](https://img.shields.io/npm/v/metascope.svg)](https://www.npmjs.com/package/metascope)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/metascope/actions/workflows/ci.yml)
+[![Homebrew](https://img.shields.io/badge/Homebrew-kitschpatrol%2Ftap%2Fmetascope-FBB040?logo=homebrew&logoColor=white)](https://github.com/kitschpatrol/homebrew-tap/blob/main/Formula/metascope.rb)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/metascope?label=Size)](https://bundlephobia.com/package/metascope)
 
 <!-- /badges -->
@@ -53,11 +59,17 @@ Highlights:
 - **CLI and library**\
   Use it as a command-line tool for quick inspection or pipe-friendly JSON output, or import it as a library for programmatic access with full type safety.
 
+Metascope is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+
 ## Getting started
+
+<!-- dependencies -->
 
 ### Dependencies
 
-Metascope requires [Node.js](https://nodejs.org/) 24.16+. It is implemented in TypeScript, ships as ESM, and bundles complete type definitions.
+- [Node.js](https://nodejs.org/) 24.16.0 or newer (specifically `^24.16.0 || >=26.3.0`)
+
+<!-- /dependencies -->
 
 Metascope also requires a recent version of [git](https://git-scm.com/) on your path for quickly identifying ignored files and aggregating repository statistics.
 
@@ -66,31 +78,41 @@ Optional external tools:
 - [GitHub CLI](https://cli.github.com)\
   Used as a fallback for GitHub API authentication if no token is provided via `--github-token` or `$GITHUB_TOKEN`. It's trivially installed from [Homebrew](https://brew.sh/): `brew install gh`.
 
+<!-- install -->
+
 ### Installation
 
-Invoke directly on the current directory:
+There are several ways to install metascope depending on how you're planning to use it:
+
+#### CLI
+
+Run it once without installing:
 
 ```sh
 npx metascope
 ```
 
-...or install locally:
+Or install it globally with Homebrew:
 
 ```sh
-npm install metascope
+brew install kitschpatrol/tap/metascope
 ```
 
-...or install globally:
+Or install it globally with npm:
 
 ```sh
 npm install --global metascope
 ```
 
-... or install globally with Homebrew:
+#### Library
+
+Add it to your project to import the TypeScript API. This also puts the `metascope` CLI on your project's path:
 
 ```sh
-brew install kitschpatrol/tap/metascope
+npm install metascope
 ```
+
+<!-- /install -->
 
 If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their bundled WASM implementations.
 
@@ -234,7 +256,7 @@ metascope --verbose
 
 Logs source availability checks, extraction durations, and other diagnostics to stderr.
 
-### API
+### Library
 
 The `metascope` library exports `getMetadata` as its primary function, `defineTemplate` for type-safe template authoring, and a `helpers` namespace with utility functions for working with metadata in templates.
 

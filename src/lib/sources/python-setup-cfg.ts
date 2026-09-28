@@ -107,12 +107,14 @@ export function parse(source: string): SetupCfg {
 	if (is.nonEmptyString(metadata.project_urls)) {
 		for (const line of splitMultiline(metadata.project_urls)) {
 			const eqIndex = line.indexOf('=')
-			if (eqIndex > 0) {
-				const label = line.slice(0, eqIndex).trim()
-				const url = line.slice(eqIndex + 1).trim()
-				if (url !== '') {
-					data.project_urls[label] = url
-				}
+			if (eqIndex <= 0) {
+				continue
+			}
+
+			const label = line.slice(0, eqIndex).trim()
+			const url = line.slice(eqIndex + 1).trim()
+			if (url !== '') {
+				data.project_urls[label] = url
 			}
 		}
 	}

@@ -162,11 +162,7 @@ function getString(value: unknown): string | undefined {
 	}
 
 	const trimmed = value.trim()
-	if (trimmed.length === 0) {
-		return undefined
-	}
-
-	return trimmed
+	return trimmed.length === 0 ? undefined : trimmed
 }
 
 /**
@@ -174,11 +170,7 @@ function getString(value: unknown): string | undefined {
  */
 function getCleanString(value: unknown): string | undefined {
 	const s = getString(value)
-	if (s?.includes('$')) {
-		return undefined
-	}
-
-	return s
+	return s?.includes('$') ? undefined : s
 }
 
 /**
@@ -216,11 +208,7 @@ function resolveName(
  * references.
  */
 function getNestedUrl(container: unknown): string | undefined {
-	if (!is.plainObject(container)) {
-		return undefined
-	}
-
-	return getCleanString(container.url)
+	return is.plainObject(container) ? getCleanString(container.url) : undefined
 }
 
 /**
@@ -322,11 +310,7 @@ function parseDependencies(project: Record<string, unknown>): {
  * Parse SCM URL, filtering out Maven variable references.
  */
 function parseScmUrl(project: Record<string, unknown>): string | undefined {
-	if (!is.plainObject(project.scm)) {
-		return undefined
-	}
-
-	return getCleanString(project.scm.url)
+	return is.plainObject(project.scm) ? getCleanString(project.scm.url) : undefined
 }
 
 /**
@@ -353,15 +337,11 @@ function parseOrganization(project: Record<string, unknown>): PomXmlOrganization
  * `maven.compiler.source`, and `java.compiler.source`.
  */
 function parseJavaVersion(project: Record<string, unknown>): string | undefined {
-	if (!is.plainObject(project.properties)) {
-		return undefined
-	}
-
-	return (
-		getCleanString(project.properties['java.version']) ??
-		getCleanString(project.properties['maven.compiler.source']) ??
-		getCleanString(project.properties['java.compiler.source'])
-	)
+	return is.plainObject(project.properties)
+		? (getCleanString(project.properties['java.version']) ??
+				getCleanString(project.properties['maven.compiler.source']) ??
+				getCleanString(project.properties['java.compiler.source']))
+		: undefined
 }
 
 // ─── Source ─────────────────────────────────────────────────────────

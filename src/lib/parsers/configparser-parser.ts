@@ -49,14 +49,16 @@ export function parseConfigparser(content: string): Record<string, Record<string
 
 		// Key = value pair (supports both = and : as delimiters)
 		const kvMatch = KEY_VALUE_PAIR_REGEX.exec(trimmed)
-		if (kvMatch && currentSection !== '') {
-			const key = (kvMatch[1] ?? '').trim()
-			const value = (kvMatch[2] ?? '').trim()
-			const section = sections[currentSection] ?? {}
-			sections[currentSection] = section
-			section[key] = value
-			lastKey = key
+		if (!kvMatch || currentSection === '') {
+			continue
 		}
+
+		const key = (kvMatch[1] ?? '').trim()
+		const value = (kvMatch[2] ?? '').trim()
+		const section = sections[currentSection] ?? {}
+		sections[currentSection] = section
+		section[key] = value
+		lastKey = key
 	}
 
 	return sections

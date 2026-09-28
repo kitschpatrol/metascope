@@ -42,11 +42,7 @@ function extractText(nodes: Nodes[] | PhrasingContent[]): string {
 				return node.value
 			}
 
-			if ('children' in node) {
-				return extractText(node.children)
-			}
-
-			return ''
+			return 'children' in node ? extractText(node.children) : ''
 		})
 		.join('')
 		.trim()
