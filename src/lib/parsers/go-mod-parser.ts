@@ -27,7 +27,7 @@ const HOST_SEGMENTS: Record<string, number> = {
 }
 
 /** Derive a repository URL from a Go module path, if on a known host. */
-function moduleToRepoUrl(modulePath: string): string | undefined {
+function moduleToRepositoryUrl(modulePath: string): string | undefined {
 	const segments = modulePath.split('/')
 	const host = segments[0]
 	if (host === undefined || host === '') {
@@ -39,11 +39,11 @@ function moduleToRepoUrl(modulePath: string): string | undefined {
 		return undefined
 	}
 
-	let repoPath = segments.slice(0, needed).join('/')
+	let repositoryPath = segments.slice(0, needed).join('/')
 	// Strip /vN major-version suffix
-	repoPath = repoPath.replace(MAJOR_VERSION_SUFFIX_REGEX, '')
+	repositoryPath = repositoryPath.replace(MAJOR_VERSION_SUFFIX_REGEX, '')
 
-	return `https://${repoPath}`
+	return `https://${repositoryPath}`
 }
 
 /** Strip inline comments and trim whitespace. */
@@ -269,7 +269,7 @@ export function parseGoMod(source: string): Record<string, unknown> {
 
 	// Derive repository URL
 	if (data.module !== undefined && data.module !== '') {
-		data.repository_url = moduleToRepoUrl(data.module)
+		data.repository_url = moduleToRepositoryUrl(data.module)
 	}
 
 	return data

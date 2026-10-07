@@ -420,7 +420,7 @@ export const codemeta = defineTemplate(
 
 		// ── Code ────────────────────────────────────────────────────
 
-		const codeRepo =
+		const codeRepository =
 			github?.data.url ??
 			cargo?.data.repository ??
 			pom?.data.scmUrl ??
@@ -429,7 +429,7 @@ export const codemeta = defineTemplate(
 			arduino?.data.repository ??
 			cinder?.data.git ??
 			cm?.data.codeRepository ??
-			repoUrlFromPackageJson(package_?.data.repository) ??
+			repositoryUrlFromPackageJson(package_?.data.repository) ??
 			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
 			poetry?.repository
 
@@ -650,7 +650,7 @@ export const codemeta = defineTemplate(
 		const readme =
 			readmeUrl(
 				firstOf(readmeFile),
-				codeRepo,
+				codeRepository,
 				github?.data.defaultBranch ?? git?.data.branchCurrent,
 				firstOf(metascope)?.data.options.path,
 			) ?? cm?.data.readme
@@ -675,7 +675,7 @@ export const codemeta = defineTemplate(
 			author,
 			buildInstructions,
 			// Source code
-			codeRepository: codeRepo,
+			codeRepository,
 			continuousIntegration,
 			contributor,
 			copyrightHolder,
@@ -1000,14 +1000,14 @@ function parsePep508Dependency(dependency: string): CodemetaDependencyLd {
 /**
  * Extract URL from package.json repository field (string or {url}).
  */
-function repoUrlFromPackageJson(
-	repo: string | undefined | { type: string; url: string },
+function repositoryUrlFromPackageJson(
+	repository: string | undefined | { type: string; url: string },
 ): string | undefined {
-	if (repo === undefined) {
+	if (repository === undefined) {
 		return undefined
 	}
 
-	return typeof repo === 'string' ? repo : repo.url
+	return typeof repository === 'string' ? repository : repository.url
 }
 
 /**
@@ -1165,7 +1165,7 @@ function inferTargetProduct(
  */
 function readmeUrl(
 	readmeRecord: ReturnType<typeof firstOf<{ source: string }>>,
-	repoUrl: string | undefined,
+	repositoryUrl: string | undefined,
 	defaultBranch: string | undefined,
 	basePath: string | undefined,
 ): string | undefined {
@@ -1173,18 +1173,18 @@ function readmeUrl(
 		return undefined
 	}
 
-	const repoRelativePath =
+	const repositoryRelativePath =
 		basePath === undefined
 			? basename(readmeRecord.source)
 			: relative(basePath, readmeRecord.source).replaceAll('\\', '/')
 
 	// Build a web URL if we have a GitHub-style repo URL
-	if (is.nonEmptyStringAndNotWhitespace(repoUrl) && repoUrl.includes('github.com')) {
+	if (is.nonEmptyStringAndNotWhitespace(repositoryUrl) && repositoryUrl.includes('github.com')) {
 		const branch = defaultBranch ?? 'main'
-		const base = repoUrl.replace(TRAILING_DOT_GIT_REGEX, '')
-		return `${base}/blob/${branch}/${repoRelativePath}`
+		const base = repositoryUrl.replace(TRAILING_DOT_GIT_REGEX, '')
+		return `${base}/blob/${branch}/${repositoryRelativePath}`
 	}
 
 	// Fall back to the repo-relative path
-	return repoRelativePath
+	return repositoryRelativePath
 }

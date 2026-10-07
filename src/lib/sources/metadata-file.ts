@@ -67,9 +67,10 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 		return undefined
 	}
 
-	const repo = isString(data.repository) ? normalizeRepoUrl(data.repository) : undefined
+	const repository = isString(data.repository) ? normalizeRepositoryUrl(data.repository) : undefined
 
-	const homepage = nonEmpty(data.homepage) ?? nonEmpty(data.url) ?? repo ?? nonEmpty(data.website)
+	const homepage =
+		nonEmpty(data.homepage) ?? nonEmpty(data.url) ?? repository ?? nonEmpty(data.website)
 
 	const keywords =
 		parseKeywords(data.keywords) ?? parseKeywords(data.tags) ?? parseKeywords(data.topics) ?? []
@@ -78,7 +79,7 @@ export function parse(content: string, format: 'json' | 'yaml'): Metadata | unde
 		description: data.description,
 		homepage,
 		keywords,
-		repository: repo,
+		repository,
 	})
 }
 
@@ -100,7 +101,7 @@ function isString(value: unknown): value is string {
 }
 
 /** Normalize a repository URL by stripping git+ prefix and .git suffix. */
-function normalizeRepoUrl(url: string): string {
+function normalizeRepositoryUrl(url: string): string {
 	let normalized = url
 	if (normalized.startsWith('git+')) {
 		normalized = normalized.slice(4)

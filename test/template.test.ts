@@ -573,7 +573,7 @@ describe('metadata template', () => {
 	})
 
 	it('should use codemeta url or codeRepository for homepage', () => {
-		const contextWithRepo: MetadataContext = {
+		const contextWithRepository: MetadataContext = {
 			...mockContext,
 			nodePackageJson: {
 				data: {
@@ -587,7 +587,7 @@ describe('metadata template', () => {
 				source: 'package.json',
 			},
 		}
-		const result = metadata(contextWithRepo, {})
+		const result = metadata(contextWithRepository, {})
 		expect(result.homepage).toBe('https://my-site.com')
 	})
 

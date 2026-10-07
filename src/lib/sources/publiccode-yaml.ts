@@ -357,7 +357,7 @@ export function parse(content: string): Publiccode | undefined {
 	// ─── Legal ─────────────────────────────────────────────────
 	let license: string | undefined
 	let mainCopyrightOwner: string | undefined
-	let repoOwner: string | undefined
+	let repositoryOwner: string | undefined
 	if (isPlainObject(data.legal)) {
 		const { legal } = data
 		if (isNonEmptyString(legal.license)) {
@@ -369,7 +369,7 @@ export function parse(content: string): Publiccode | undefined {
 		}
 
 		if (isNonEmptyString(legal.repoOwner)) {
-			repoOwner = legal.repoOwner
+			repositoryOwner = legal.repoOwner
 		}
 	}
 
@@ -404,7 +404,7 @@ export function parse(content: string): Publiccode | undefined {
 		...(publiccodeYmlVersion !== undefined &&
 			publiccodeYmlVersion !== '' && { publiccodeYmlVersion }),
 		...(releaseDate !== undefined && releaseDate !== '' && { releaseDate }),
-		...(repoOwner !== undefined && { repoOwner }),
+		...(repositoryOwner !== undefined && { repoOwner: repositoryOwner }),
 		...(isNonEmptyString(data.roadmap) && { roadmap: data.roadmap }),
 		...(isNonEmptyString(data.softwareType) && { softwareType: data.softwareType }),
 		...(version !== undefined && version !== '' && { softwareVersion: version }),

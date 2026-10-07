@@ -4,7 +4,7 @@
 import type { Mock } from 'vitest'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const repo = { owner: 'test', repo: 'example' }
+const repository = { owner: 'test', repo: 'example' }
 
 describe('GitHub client', () => {
 	let fetchMock: Mock<typeof fetch>
@@ -35,13 +35,13 @@ describe('GitHub client', () => {
 				.mockResolvedValueOnce(Response.json({ has_pages: true }))
 				.mockResolvedValueOnce(Response.json({ data: { repository: { name: 'example' } } }))
 
-			const restResult = client.request('GET /repos/{owner}/{repo}', repo)
+			const restResult = client.request('GET /repos/{owner}/{repo}', repository)
 			await vi.runAllTimersAsync()
 			await expect(restResult).resolves.toMatchObject({ data: { has_pages: true } })
 
 			const query =
 				'query($owner: String!, $repo: String!) { repository(owner: $owner, name: $repo) { name } }'
-			const graphqlResult = client.graphql(query, repo)
+			const graphqlResult = client.graphql(query, repository)
 			await vi.runAllTimersAsync()
 			await expect(graphqlResult).resolves.toEqual({ repository: { name: 'example' } })
 
@@ -63,7 +63,7 @@ describe('GitHub client', () => {
 			.mockResolvedValueOnce(Response.json({ message: 'Unavailable' }, { status: 503 }))
 			.mockResolvedValueOnce(Response.json({ has_pages: true }))
 
-		const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repo)
+		const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repository)
 		await vi.runAllTimersAsync()
 		await expect(result).resolves.toMatchObject({ data: { has_pages: true } })
 		expect(fetchMock).toHaveBeenCalledTimes(2)
@@ -73,7 +73,7 @@ describe('GitHub client', () => {
 		const { createGitHubClient } = await import('../src/lib/utilities/github-client')
 		fetchMock.mockImplementation(async () => Response.json({ message: 'Forbidden' }, { status }))
 
-		const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repo)
+		const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repository)
 		await Promise.all([expect(result).rejects.toMatchObject({ status }), vi.runAllTimersAsync()])
 		expect(fetchMock).toHaveBeenCalledTimes(1)
 	})
@@ -103,7 +103,7 @@ describe('GitHub client', () => {
 				),
 			)
 
-			const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repo)
+			const result = createGitHubClient().request('GET /repos/{owner}/{repo}', repository)
 			await Promise.all([
 				expect(result).rejects.toMatchObject({ status: 403 }),
 				vi.runAllTimersAsync(),

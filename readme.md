@@ -16,7 +16,7 @@
 
 <!-- short-description -->
 
-**A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.**
+**CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.**
 
 <!-- /short-description -->
 
@@ -118,7 +118,9 @@ ignoredBuiltDependencies:
 
 <!-- cli-help -->
 
-#### Command: `metascope`
+#### Commands
+
+##### Command: `metascope`
 
 Extract metadata from a code repository.
 
@@ -378,36 +380,37 @@ Metascope extracts data from a wide range of data sources:
 
 ### Local Files
 
-| Ecosystem  | Organization                                                                                            | Metascope Key                 | Source Specifications                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- |
-| Agnostic   |                                                                                                         | `readmeFile`                  | `README.md` (and variants)                                                                          |
-| Agnostic   | [CodeMeta (v1)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld)          |
-| Agnostic   | [CodeMeta (v2)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld)          |
-| Agnostic   | [CodeMeta (v3.1)](https://codemeta.github.io/)                                                          | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.1/codemeta.jsonld)          |
-| Agnostic   | [CodeMeta (v3)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)          |
-| Agnostic   | [Documented below](#about-metadatajson)                                                                 | `metadataFile`                | `metadata.json` (and `.yaml` / `.yml` variants)                                                     |
-| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                       |
-| Agnostic   | [Public Code](https://www.publiccode.net/)                                                              | `publiccodeYaml`              | [`publiccode.yml`](https://publiccodeyml.github.io/v0/schema.core.html) (Also matches `.yaml`)      |
-| Agnostic   | [SPDX](https://spdx.dev/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                            |
-| Apple      | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) | `xcodeInfoPlist`              | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list) |
-| Apple      | [Xcode Project](https://developer.apple.com/xcode/)                                                     | `xcodeProjectPbxproj`         | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                    |
-| C++        | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           | `arduinoLibraryProperties`    | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                  |
-| C++        | [Cinder CinderBlock](https://libcinder.org/docs/guides/cinder-blocks/index.html)                        | `cinderCinderblockXml`        | [`cinderblock.xml`](https://libcinder.org/docs/guides/cinder-blocks/index.html)                     |
-| C++        | [openFrameworks Addon (Legacy)](https://openframeworks.cc/)                                             | `openframeworksInstallXml`    | [`install.xml`](https://openframeworks.cc/) (Legacy format, replaced by `addon_config.mk`)          |
-| C++        | [openFrameworks Addon](https://openframeworks.cc/)                                                      | `openframeworksAddonConfigMk` | [`addon_config.mk`](https://github.com/openframeworks/ofxAddonTemplate)                             |
-| Go         | [Go Modules](https://go.dev/ref/mod)                                                                    | `goGoMod`                     | [`go.mod`](https://go.dev/doc/modules/gomod-ref)                                                    |
-| Go         | [GoReleaser](https://goreleaser.com/)                                                                   | `goGoreleaserYaml`            | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                   |
-| Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                      |
-| Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)               |
-| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)              |
-| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json/)                      |
-| Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                      |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://setuptools.pypa.io/en/latest/userguide/declarative_config.html)               |
-| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://setuptools.pypa.io/en/latest/references/keywords.html)                         |
-| Python     | [PyPi (pep-0621)](https://pypi.org/)                                                                    | `pythonPyprojectToml`         | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                               |
-| Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    | `pythonPkgInfo`               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                      |
-| Ruby       | [Ruby Gems](https://rubygems.org/)                                                                      | `rubyGemspec`                 | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                 |
-| Rust       | [Crates](https://crates.io/)                                                                            | `rustCargoToml`               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                             |
+| Ecosystem  | Organization                                                                                            | Metascope Key                 | Source Specifications                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agnostic   |                                                                                                         | `readmeFile`                  | `README.md` (and variants)                                                                                                                                                         |
+| Agnostic   | [CodeMeta (v1)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/1.0/codemeta.jsonld)                                                                                         |
+| Agnostic   | [CodeMeta (v2)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/2.0/codemeta.jsonld)                                                                                         |
+| Agnostic   | [CodeMeta (v3.1)](https://codemeta.github.io/)                                                          | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.1/codemeta.jsonld)                                                                                         |
+| Agnostic   | [CodeMeta (v3)](https://codemeta.github.io/)                                                            | `codemetaJson`                | [`codemeta.json`](https://raw.githubusercontent.com/codemeta/codemeta/3.0/codemeta.jsonld)                                                                                         |
+| Agnostic   | [Documented below](#about-metadatajson)                                                                 | `metadataFile`                | `metadata.json` (and `.yaml` / `.yml` variants)                                                                                                                                    |
+| Agnostic   | [Git](https://git-scm.com/)                                                                             | `gitConfig`                   | `.git/config`                                                                                                                                                                      |
+| Agnostic   | [GitHub Actions](https://docs.github.com/en/actions)                                                    | `githubActions`               | [`.github/workflows/*.{yml,yaml}`](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax) (latest run status fetched from the GitHub API when online) |
+| Agnostic   | [Public Code](https://www.publiccode.net/)                                                              | `publiccodeYaml`              | [`publiccode.yml`](https://publiccodeyml.github.io/v0/schema.core.html) (Also matches `.yaml`)                                                                                     |
+| Agnostic   | [SPDX](https://spdx.dev/)                                                                               | `licenseFile`                 | `LICENSE`, `LICENCE`, `COPYING`, `UNLICENSE` (and `.md`/`.txt` variants)                                                                                                           |
+| Apple      | [Apple Info.plist](https://developer.apple.com/documentation/bundleresources/information-property-list) | `xcodeInfoPlist`              | [`Info.plist`](https://developer.apple.com/documentation/bundleresources/information-property-list)                                                                                |
+| Apple      | [Xcode Project](https://developer.apple.com/xcode/)                                                     | `xcodeProjectPbxproj`         | [`*.xcodeproj/project.pbxproj`](https://developer.apple.com/documentation/xcode)                                                                                                   |
+| C++        | [Arduino Library](https://docs.arduino.cc/arduino-cli/library-specification/)                           | `arduinoLibraryProperties`    | [`library.properties`](https://docs.arduino.cc/arduino-cli/library-specification/)                                                                                                 |
+| C++        | [Cinder CinderBlock](https://libcinder.org/docs/guides/cinder-blocks/index.html)                        | `cinderCinderblockXml`        | [`cinderblock.xml`](https://libcinder.org/docs/guides/cinder-blocks/index.html)                                                                                                    |
+| C++        | [openFrameworks Addon (Legacy)](https://openframeworks.cc/)                                             | `openframeworksInstallXml`    | [`install.xml`](https://openframeworks.cc/) (Legacy format, replaced by `addon_config.mk`)                                                                                         |
+| C++        | [openFrameworks Addon](https://openframeworks.cc/)                                                      | `openframeworksAddonConfigMk` | [`addon_config.mk`](https://github.com/openframeworks/ofxAddonTemplate)                                                                                                            |
+| Go         | [Go Modules](https://go.dev/ref/mod)                                                                    | `goGoMod`                     | [`go.mod`](https://go.dev/doc/modules/gomod-ref)                                                                                                                                   |
+| Go         | [GoReleaser](https://goreleaser.com/)                                                                   | `goGoreleaserYaml`            | [`.goreleaser.yaml`](https://goreleaser.com/customization/) (Also matches `.yml`)                                                                                                  |
+| Java       | [Maven](https://search.maven.org/)                                                                      | `javaPomXml`                  | [`pom.xml`](https://maven.apache.org/pom.html)                                                                                                                                     |
+| Java       | [Processing Library](https://github.com/benfry/processing4/wiki/Library-Guidelines)                     | `processingLibraryProperties` | [`library.properties`](https://github.com/benfry/processing4/wiki/Library-Guidelines)                                                                                              |
+| Java       | [Processing Sketch](https://processing.org/)                                                            | `processingSketchProperties`  | [`sketch.properties`](https://github.com/benfry/processing4) (Not really specified...)                                                                                             |
+| JavaScript | [NPM](https://www.npmjs.com/)                                                                           | `nodePackageJson`             | [`package.json`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json/)                                                                                                     |
+| Obsidian   | [Obsidian](https://obsidian.md/)                                                                        | `obsidianPluginManifestJson`  | [`manifest.json`](https://docs.obsidian.md/Reference/Manifest)                                                                                                                     |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupCfg`              | [`setup.cfg`](https://setuptools.pypa.io/en/latest/userguide/declarative_config.html)                                                                                              |
+| Python     | [PyPi (Distutils)](https://pypi.org/)                                                                   | `pythonSetupPy`               | [`setup.py`](https://setuptools.pypa.io/en/latest/references/keywords.html)                                                                                                        |
+| Python     | [PyPi (pep-0621)](https://pypi.org/)                                                                    | `pythonPyprojectToml`         | [`pyproject.toml`](https://peps.python.org/pep-0621/)                                                                                                                              |
+| Python     | [PyPi (PKG-INFO)](https://pypi.org/)                                                                    | `pythonPkgInfo`               | [`.egg-info/PKG-INFO`](https://packaging.python.org/en/latest/specifications/)                                                                                                     |
+| Ruby       | [Ruby Gems](https://rubygems.org/)                                                                      | `rubyGemspec`                 | [`*.gemspec`](https://guides.rubygems.org/specification-reference/)                                                                                                                |
+| Rust       | [Crates](https://crates.io/)                                                                            | `rustCargoToml`               | [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html)                                                                                                            |
 
 ### Local Tools
 
@@ -551,10 +554,10 @@ import { defineTemplate, helpers } from 'metascope'
 export default defineTemplate(({ codemetaJson }, { authorName, githubAccount }) => {
   const codemeta = helpers.firstOf(codemetaJson)
   const authors = codemeta?.data.author?.map((a) => a.name) ?? []
-  const repo = codemeta?.data.codeRepository?.toLowerCase() ?? ''
+  const repository = codemeta?.data.codeRepository?.toLowerCase() ?? ''
   return {
     isMyProject: authors.includes(authorName),
-    isOnMyGitHub: typeof githubAccount === 'string' && repo.includes(`/${githubAccount}/`),
+    isOnMyGitHub: typeof githubAccount === 'string' && repository.includes(`/${githubAccount}/`),
     name: codemeta?.data.name,
   }
 })

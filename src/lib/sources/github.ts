@@ -176,7 +176,7 @@ export type GitHubInfo = {
 
 export type GitHubData = OneOrMany<SourceRecord<GitHubInfo>> | undefined
 
-const gitHubRepoSchema = z.object({
+const gitHubRepositorySchema = z.object({
 	repository: z.object({
 		allowUpdateBranch: z.boolean(),
 		archivedAt: z.string().nullable(),
@@ -410,23 +410,27 @@ const graphqlQuery = `
 `
 
 // GitHub Pages detection requires REST API
-async function checkHasPages(octokit: Octokit, owner: string, repo: string): Promise<boolean> {
+async function checkHasPages(
+	octokit: Octokit,
+	owner: string,
+	repository: string,
+): Promise<boolean> {
 	try {
-		const response = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo })
+		const response = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo: repository })
 		return response.data.has_pages
 	} catch {
 		return false
 	}
 }
 
-type GitHubRepoData = z.infer<typeof gitHubRepoSchema>['repository']
+type GitHubRepositoryData = z.infer<typeof gitHubRepositorySchema>['repository']
 
 async function getUpstreamComparison(
 	octokit: Octokit,
 	owner: string,
-	repo: string,
+	repository: string,
 	defaultBranch: string,
-	parent: NonNullable<GitHubRepoData['parent']>,
+	parent: NonNullable<GitHubRepositoryData['parent']>,
 ): Promise<undefined | { ahead: number; behind: number }> {
 	const parentBranch = parent.defaultBranchRef?.name
 	if (parentBranch === undefined || parentBranch === '') {
@@ -437,7 +441,7 @@ async function getUpstreamComparison(
 		const response = await octokit.request('GET /repos/{owner}/{repo}/compare/{basehead}', {
 			basehead: `${parent.owner.login}:${parentBranch}...${owner}:${defaultBranch}`,
 			owner,
-			repo,
+			repo: repository,
 		})
 		return { ahead: response.data.ahead_by, behind: response.data.behind_by }
 	} catch {
@@ -458,7 +462,7 @@ function detectLfs(gitattributesText: string | undefined): boolean {
 	return gitattributesText?.includes('filter=lfs') ?? false
 }
 
-function extractLanguages(data: GitHubRepoData): Record<string, number> {
+function extractLanguages(data: GitHubRepositoryData): Record<string, number> {
 	const languages: Record<string, number> = {}
 	if (data.languages?.edges) {
 		for (const edge of data.languages.edges) {
@@ -470,8 +474,8 @@ function extractLanguages(data: GitHubRepoData): Record<string, number> {
 }
 
 // eslint-disable-next-line complexity
-function mapRepoData(
-	data: GitHubRepoData,
+function mapRepositoryData(
+	data: GitHubRepositoryData,
 	extras: { commitsAheadUpstream?: number; commitsBehindUpstream?: number; hasPages: boolean },
 ): GitHubInfo {
 	const totalReleaseDownloads =
@@ -610,8 +614,8 @@ export const githubSource = defineSource<'github'>({
 	key: 'github',
 	async parse(input, context) {
 		log.debug('Extracting GitHub metadata...')
-		const [owner, repo] = input.split('/', 2)
-		if (owner === undefined || repo === undefined) {
+		const [owner, repository] = input.split('/', 2)
+		if (owner === undefined || repository === undefined) {
 			throw new Error(`Invalid GitHub repo identifier "${input}", expected "owner/repo"`)
 		}
 
@@ -619,11 +623,11 @@ export const githubSource = defineSource<'github'>({
 		const octokit = createGitHubClient(githubToken)
 
 		const [graphqlResult, hasPages] = await Promise.all([
-			octokit.graphql(graphqlQuery, { owner, repo }),
-			checkHasPages(octokit, owner, repo),
+			octokit.graphql(graphqlQuery, { owner, repo: repository }),
+			checkHasPages(octokit, owner, repository),
 		])
 
-		const parsed = gitHubRepoSchema.parse(graphqlResult)
+		const parsed = gitHubRepositorySchema.parse(graphqlResult)
 		const data = parsed.repository
 
 		// If the repo is a fork, check how many commits ahead/behind upstream
@@ -633,7 +637,7 @@ export const githubSource = defineSource<'github'>({
 			const comparison = await getUpstreamComparison(
 				octokit,
 				owner,
-				repo,
+				repository,
 				data.defaultBranchRef.name,
 				data.parent,
 			)
@@ -642,8 +646,8 @@ export const githubSource = defineSource<'github'>({
 		}
 
 		return {
-			data: mapRepoData(data, { commitsAheadUpstream, commitsBehindUpstream, hasPages }),
-			source: `https://github.com/${owner}/${repo}`,
+			data: mapRepositoryData(data, { commitsAheadUpstream, commitsBehindUpstream, hasPages }),
+			source: `https://github.com/${owner}/${repository}`,
 		}
 	},
 	phase: 2,

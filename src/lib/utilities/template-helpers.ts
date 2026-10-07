@@ -247,13 +247,13 @@ export function mixedStringsToArray(
  */
 export function toLocalUrl(
 	value: string | undefined,
-	repoPath: string | undefined,
+	repositoryPath: string | undefined,
 ): string | undefined {
-	if (value === undefined || repoPath === undefined) {
+	if (value === undefined || repositoryPath === undefined) {
 		return undefined
 	}
 
-	const relativePath = path.join(repoPath, path.basename(value)).replaceAll('\\', '/')
+	const relativePath = path.join(repositoryPath, path.basename(value)).replaceAll('\\', '/')
 	return `file://${relativePath.startsWith('/') ? '' : '/'}${relativePath}`
 }
 
@@ -430,19 +430,19 @@ export function isAuthoredBy(
  * True if project is on a specific GitHub account(s).
  */
 export function isOnGithubAccountOf(
-	codeRepo?: string,
+	codeRepository?: string,
 	githubUsername?: string | string[],
 ): boolean | undefined {
-	if (codeRepo === undefined || githubUsername === undefined) {
+	if (codeRepository === undefined || githubUsername === undefined) {
 		return undefined
 	}
 
-	const cleanRepo = codeRepo.toLocaleLowerCase().trim()
+	const cleanRepository = codeRepository.toLocaleLowerCase().trim()
 
 	return (
-		cleanRepo.includes('github.com/') &&
+		cleanRepository.includes('github.com/') &&
 		ensureArray(githubUsername).some((username) =>
-			cleanRepo.includes(`/${username.toLocaleLowerCase().trim()}/`),
+			cleanRepository.includes(`/${username.toLocaleLowerCase().trim()}/`),
 		)
 	)
 }
@@ -451,7 +451,7 @@ export function isOnGithubAccountOf(
  * Legacy heuristic project status based on authorship and GitHub account.
  */
 export function toStatusLegacy(
-	codeRepo?: string,
+	codeRepository?: string,
 	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	authorName?: string | string[],
 	githubUsername?: string | string[],
@@ -465,12 +465,12 @@ export function toStatusLegacy(
 			| 'unmaintained'
 	  )
 	| undefined {
-	if (codeRepo === undefined || authorName === undefined || githubUsername === undefined) {
+	if (codeRepository === undefined || authorName === undefined || githubUsername === undefined) {
 		return undefined
 	}
 
 	const isAuthoredByAuthorName = isAuthoredBy(codemetaAuthorName, authorName)
-	const isOnGithub = isOnGithubAccountOf(codeRepo, githubUsername)
+	const isOnGithub = isOnGithubAccountOf(codeRepository, githubUsername)
 
 	if (isAuthoredByAuthorName === undefined || isOnGithub === undefined) {
 		return undefined
@@ -487,7 +487,7 @@ export function toStatusLegacy(
  * Heuristic project status based on authorship and GitHub account.
  */
 export function toStatus(
-	codeRepo?: string,
+	codeRepository?: string,
 	codemetaAuthorName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	codemetaContributorOrMaintainerName?: CodeMetaPersonOrOrg | CodeMetaPersonOrOrg[],
 	isGitHubFork?: boolean,
@@ -500,7 +500,7 @@ export function toStatus(
 	| 'unknown' /** It's unclear */ {
 	const author = isAuthoredBy(codemetaAuthorName, myAuthorName)
 	const maintainer = isAuthoredBy(codemetaContributorOrMaintainerName, myAuthorName)
-	const githubStatus = isOnGithubAccountOf(codeRepo, myGithubUsername)
+	const githubStatus = isOnGithubAccountOf(codeRepository, myGithubUsername)
 
 	const github =
 		githubStatus === undefined

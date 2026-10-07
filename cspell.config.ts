@@ -1,7 +1,7 @@
 import { cspellConfig } from '@kitschpatrol/cspell-config'
 
 export default cspellConfig({
-	ignorePaths: ['codemeta.json', 'test/fixtures/**/*', 'scripts/data/**/*', 'src/lib/data/**/*'],
+	ignorePaths: ['test/fixtures/**/*', 'scripts/data/**/*', 'src/lib/data/**/*'],
 	words: [
 		'aenthill',
 		'armv',

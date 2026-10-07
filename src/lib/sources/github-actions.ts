@@ -81,7 +81,7 @@ type WorkflowRunInfo = {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 /** Resolve owner/repo from git config remotes in context. */
-async function resolveOwnerRepo(
+async function resolveOwnerRepository(
 	context: SourceContext,
 ): Promise<undefined | { owner: string; repo: string }> {
 	let gitRemotes = ensureArray(context.metadata?.gitConfig)
@@ -114,7 +114,7 @@ async function resolveOwnerRepo(
 async function fetchWorkflowRuns(
 	octokit: Octokit,
 	owner: string,
-	repo: string,
+	repository: string,
 	defaultBranch: string,
 ): Promise<Map<string, WorkflowRunInfo>> {
 	const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
@@ -122,7 +122,7 @@ async function fetchWorkflowRuns(
 		owner,
 		// eslint-disable-next-line ts/naming-convention
 		per_page: 100,
-		repo,
+		repo: repository,
 		status: 'completed',
 	})
 
@@ -204,8 +204,8 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 			log.debug('Skipping GitHub Actions run data (offline mode)')
 		} else {
 			try {
-				const ownerRepo = await resolveOwnerRepo(context)
-				if (ownerRepo) {
+				const ownerRepository = await resolveOwnerRepository(context)
+				if (ownerRepository) {
 					const githubToken = context.options.credentials?.githubToken
 					const octokit = createGitHubClient(githubToken)
 
@@ -214,17 +214,17 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 					let defaultBranch = githubData[0]?.data.defaultBranch
 
 					if (defaultBranch === undefined || defaultBranch === '') {
-						const repoResponse = await octokit.request('GET /repos/{owner}/{repo}', {
-							owner: ownerRepo.owner,
-							repo: ownerRepo.repo,
+						const repositoryResponse = await octokit.request('GET /repos/{owner}/{repo}', {
+							owner: ownerRepository.owner,
+							repo: ownerRepository.repo,
 						})
-						defaultBranch = repoResponse.data.default_branch
+						defaultBranch = repositoryResponse.data.default_branch
 					}
 
 					const runsByPath = await fetchWorkflowRuns(
 						octokit,
-						ownerRepo.owner,
-						ownerRepo.repo,
+						ownerRepository.owner,
+						ownerRepository.repo,
 						defaultBranch,
 					)
 
