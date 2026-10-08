@@ -2,7 +2,8 @@ import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
 import { existsSync } from 'node:fs'
-import { dirname, relative, resolve, sep } from 'node:path'
+import { stat } from 'node:fs/promises'
+import { dirname, join, relative, resolve, sep } from 'node:path'
 import picomatch from 'picomatch'
 import { exec } from 'tinyexec'
 import { escapePath, glob } from 'tinyglobby'
@@ -10,14 +11,16 @@ import { log } from './log'
 
 // ─── Caches ─────────────────────────────────────────────────────────
 
+const ignoreCache = new Map<string, string[]>()
 const matchCache = new Map<string, string[]>()
 const workspaceCache = new Map<string, string[]>()
 
 /**
- * Clear the memoized file tree and workspace caches. Call between test runs or
- * when the same path needs to be re-scanned.
+ * Clear the memoized ignore pattern, file tree, and workspace caches. Call
+ * between test runs or when the same path needs to be re-scanned.
  */
 export function resetMatchCache(): void {
+	ignoreCache.clear()
 	matchCache.clear()
 	workspaceCache.clear()
 }
@@ -33,17 +36,23 @@ const DEFAULT_IGNORE = [
 	'**/.DS_Store',
 ]
 
-/**
- * Get the full recursive file tree for a directory, memoized by path +
- * respectIgnored. Returns relative POSIX paths (internal to tinyglobby; callers
- * receive absolute paths via getMatches).
- */
-export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
-	const key = `${path}\0${respectIgnored ? '1' : '0'}`
-	let tree = matchCache.get(key)
+// Git's internal directory is never part of the project tree. Its object
+// store alone can hold more entries than the project itself, and nothing in it
+// is project metadata. Git-backed sources locate repositories via
+// `getGitConfigs` instead of the tree.
+const GIT_INTERNALS_IGNORE = '**/.git/**'
 
-	if (!tree) {
-		let ignore: string[] = []
+/**
+ * Glob patterns for paths excluded from the file tree: git-ignored paths when
+ * `respectIgnored` is set (falling back to a default list outside a git
+ * repository), or nothing. Memoized by path + respectIgnored.
+ */
+async function getIgnorePatterns(path: string, respectIgnored: boolean): Promise<string[]> {
+	const key = `${path}\0${respectIgnored ? '1' : '0'}`
+	let ignore = ignoreCache.get(key)
+
+	if (!ignore) {
+		ignore = []
 
 		if (respectIgnored) {
 			try {
@@ -73,10 +82,34 @@ export async function getTree(path: string, respectIgnored: boolean): Promise<st
 			}
 		}
 
+		ignoreCache.set(key, ignore)
+	}
+
+	return ignore
+}
+
+/**
+ * Get the full recursive file tree for a directory, memoized by path +
+ * respectIgnored. Returns relative POSIX paths (internal to tinyglobby; callers
+ * receive absolute paths via getMatches). Git's internal `.git` directory is
+ * always excluded.
+ */
+export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
+	const key = `${path}\0${respectIgnored ? '1' : '0'}`
+	let tree = matchCache.get(key)
+
+	if (!tree) {
+		const ignore = await getIgnorePatterns(path, respectIgnored)
+
 		// Never traverse into symlinked directories: pnpm layouts contain
 		// symlink cycles (e.g. monorepo test fixtures linking back to the
 		// repo root), which multiply the tree without bound
-		tree = await glob('**', { cwd: path, dot: true, followSymbolicLinks: false, ignore })
+		tree = await glob('**', {
+			cwd: path,
+			dot: true,
+			followSymbolicLinks: false,
+			ignore: [...ignore, GIT_INTERNALS_IGNORE],
+		})
 		matchCache.set(key, tree)
 	}
 
@@ -225,12 +258,67 @@ export async function getMatches(
 		}
 	}
 
-	// Sort by depth (shallowest first), then alphabetically
+	return sortByDepth(results)
+}
+
+/**
+ * Sort absolute paths by depth (shallowest first), then alphabetically.
+ */
+function sortByDepth(paths: string[]): string[] {
 	// Pre-compute depths to avoid repeated splitting in the comparator
-	const decorated = results.map((p) => ({ depth: p.split(sep).length, path: p }))
+	const decorated = paths.map((p) => ({ depth: p.split(sep).length, path: p }))
 	decorated.sort((a, b) => {
 		const depthDelta = a.depth - b.depth
 		return depthDelta === 0 ? a.path.localeCompare(b.path) : depthDelta
 	})
 	return decorated.map((d) => d.path)
+}
+
+// ─── Git Repositories ───────────────────────────────────────────────
+
+const GIT_CONFIG_PATH = '.git/config'
+
+/**
+ * Find git repositories under a directory by locating their `.git/config`
+ * files, which the file tree deliberately excludes. Returns absolute paths to
+ * the config files, shallowest first.
+ *
+ * - Non-recursive: checks the root and each workspace directory directly, with no
+ *   filesystem walk
+ * - Recursive: walks the tree for nested repositories, skipping git-ignored paths
+ *   like the file tree does
+ */
+export async function getGitConfigs(options: MatchOptions): Promise<string[]> {
+	const resolved = defu(options, DEFAULT_MATCH_OPTIONS)
+
+	if (resolved.recursive) {
+		const ignore = await getIgnorePatterns(resolved.path, resolved.respectIgnored)
+		const matches = await glob(`**/${GIT_CONFIG_PATH}`, {
+			cwd: resolved.path,
+			dot: true,
+			followSymbolicLinks: false,
+			ignore,
+		})
+		return sortByDepth(matches.map((match) => resolve(resolved.path, match)))
+	}
+
+	const directories =
+		resolved.workspaces === false
+			? [resolved.path]
+			: [resolved.path, ...getWorkspaces(resolved.path, resolved.workspaces)]
+
+	const results: string[] = []
+	for (const directory of directories) {
+		const configPath = join(directory, GIT_CONFIG_PATH)
+		try {
+			const configStat = await stat(configPath)
+			if (configStat.isFile()) {
+				results.push(configPath)
+			}
+		} catch {
+			// Not a git repository
+		}
+	}
+
+	return sortByDepth(results)
 }

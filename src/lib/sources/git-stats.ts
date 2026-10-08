@@ -3,7 +3,7 @@ import { stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { simpleGit } from 'simple-git'
 import type { OneOrMany, SourceRecord } from '../source'
-import { getMatches } from '../file-matching'
+import { getGitConfigs } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
@@ -66,11 +66,9 @@ export type GitStatsData = OneOrMany<SourceRecord<GitStatsInfo>> | undefined
 
 export const gitStatsSource = defineSource<'gitStats'>({
 	async discover(context) {
-		// Have to match actual file, not just folder
-		const temporary = await getMatches(context.options, ['.git/config'])
-
-		// Then pop up to the directory containing the `.git` folder
-		return temporary.map((value) => resolve(value, '../../'))
+		// Pop up from each config file to the directory containing the `.git` folder
+		const configs = await getGitConfigs(context.options)
+		return configs.map((value) => resolve(value, '../../'))
 	},
 	key: 'gitStats',
 	async parse(input, context) {

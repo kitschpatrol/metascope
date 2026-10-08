@@ -1,7 +1,7 @@
 import type { GitConfig } from 'pkg-types'
 import { readGitConfig } from 'pkg-types'
 import type { OneOrMany, SourceRecord } from '../source'
-import { getMatches } from '../file-matching'
+import { getGitConfigs } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 
@@ -11,7 +11,7 @@ export type GitConfigData = OneOrMany<SourceRecord<GitConfigInfo>> | undefined
 
 export const gitConfigSource = defineSource<'gitConfig'>({
 	async discover(context) {
-		return getMatches(context.options, ['.git/config'])
+		return getGitConfigs(context.options)
 	},
 	key: 'gitConfig',
 	async parse(input) {
