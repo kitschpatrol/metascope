@@ -1,18 +1,10 @@
 allowBuilds:
   esbuild: true
-  msw: true
-  tree-sitter-python: true
-  tree-sitter-ruby: true
+  tree-sitter-python: false
+  tree-sitter-ruby: false
   unrs-resolver: true
 ignoreWorkspaceRootCheck: true
 minimumReleaseAgeExclude:
-  - '@eslint-react/ast@5.24.5'
-  - '@eslint-react/core@5.24.5'
-  - '@eslint-react/eslint-plugin@5.24.5'
-  - '@eslint-react/eslint@5.24.5'
-  - '@eslint-react/jsx@5.24.5'
-  - '@eslint-react/shared@5.24.5'
-  - '@eslint-react/var@5.24.5'
   - '@kitschpatrol/cspell-config@8.13.1'
   - '@kitschpatrol/eslint-config@8.13.1'
   - '@kitschpatrol/knip-config@8.13.1'
@@ -23,13 +15,6 @@ minimumReleaseAgeExclude:
   - '@kitschpatrol/shared-config@8.13.1'
   - '@kitschpatrol/stylelint-config@8.13.1'
   - '@kitschpatrol/typescript-config@8.13.1'
-  - eslint-plugin-react-dom@5.24.5
-  - eslint-plugin-react-jsx@5.24.5
-  - eslint-plugin-react-naming-convention@5.24.5
-  - eslint-plugin-react-rsc@5.24.5
-  - eslint-plugin-react-web-api@5.24.5
-  - eslint-plugin-react-x@5.24.5
-  - read-pyproject@0.4.1
 packages:
   - '!test/fixtures/**'
   - '.'

@@ -484,6 +484,7 @@ Metascope extracts data from a wide range of data sources:
 | Agnostic  |                             | `fileStats`   | Filesystem metadata (file counts, directory counts, total size)                                                                                    |
 | Agnostic  | [Git](https://git-scm.com/) | `gitStats`    | Git CLI statistics (commits, branches, tags, contributors)                                                                                         |
 | Agnostic  | None                        | `codeStats`   | Lines of code analysis from [tokei](https://github.com/XAMPPRocky/tokei) via [bundled native bindings](https://github.com/kitschpatrol/napi-tokei) |
+| Agnostic  |                             | `metascope`   | Scan details (metascope version, timestamp, duration, resolved options, scanned workspaces, and remote repository info)                            |
 
 ### Remote Sources
 
