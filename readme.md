@@ -479,23 +479,23 @@ Metascope extracts data from a wide range of data sources:
 
 ### Local Tools
 
-| Ecosystem | Organization                | Metascope Key       | Source Specifications                                                                                                                              |
-| --------- | --------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Agnostic  |                             | `dependencyUpdates` | Dependency freshness (outdated packages, libyears)                                                                                                 |
-| Agnostic  |                             | `fileStats`         | Filesystem metadata (file counts, directory counts, total size)                                                                                    |
-| Agnostic  | [Git](https://git-scm.com/) | `gitStats`          | Git CLI statistics (commits, branches, tags, contributors)                                                                                         |
-| Agnostic  | None                        | `codeStats`         | Lines of code analysis from [tokei](https://github.com/XAMPPRocky/tokei) via [bundled native bindings](https://github.com/kitschpatrol/napi-tokei) |
+| Ecosystem | Organization                | Metascope Key | Source Specifications                                                                                                                              |
+| --------- | --------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agnostic  |                             | `fileStats`   | Filesystem metadata (file counts, directory counts, total size)                                                                                    |
+| Agnostic  | [Git](https://git-scm.com/) | `gitStats`    | Git CLI statistics (commits, branches, tags, contributors)                                                                                         |
+| Agnostic  | None                        | `codeStats`   | Lines of code analysis from [tokei](https://github.com/XAMPPRocky/tokei) via [bundled native bindings](https://github.com/kitschpatrol/napi-tokei) |
 
 ### Remote Sources
 
 You can skip network calls by passing `--offline` to the CLI.
 
-| Ecosystem  | Organization                                                                               | Metascope Key            | Source Specifications                                                |
-| ---------- | ------------------------------------------------------------------------------------------ | ------------------------ | -------------------------------------------------------------------- |
-| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/en/rest/repos/repos#get-a-repository) | `github`                 | _GitHub GraphQL metadata_                                            |
-| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                     | `nodeNpmRegistry`        | _NPM registry API_ (download counts, publish dates, latest version)  |
-| Obsidian   | [Obsidian Community Plugins](https://community.obsidian.md/)                               | `obsidianPluginRegistry` | _Obsidian community plugin stats_ (download counts)                  |
-| Python     | [PyPI Registry](https://pypi.org/)                                                         | `pythonPypiRegistry`     | _PyPI registry API_ (download counts, publish dates, latest version) |
+| Ecosystem  | Organization                                                                               | Metascope Key            | Source Specifications                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------ | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Agnostic   |                                                                                            | `dependencyUpdates`      | _Package registry APIs_ via [updates](https://github.com/silverwind/updates) (outdated packages, libyears) |
+| Agnostic   | [GitHub Repository Metadata](https://docs.github.com/en/rest/repos/repos#get-a-repository) | `github`                 | _GitHub GraphQL metadata_                                                                                  |
+| JavaScript | [NPM Registry](https://www.npmjs.com/)                                                     | `nodeNpmRegistry`        | _NPM registry API_ (download counts, publish dates, latest version)                                        |
+| Obsidian   | [Obsidian Community Plugins](https://community.obsidian.md/)                               | `obsidianPluginRegistry` | _Obsidian community plugin stats_ (download counts)                                                        |
+| Python     | [PyPI Registry](https://pypi.org/)                                                         | `pythonPypiRegistry`     | _PyPI registry API_ (download counts, publish dates, latest version)                                       |
 
 ### About metadata.json
 

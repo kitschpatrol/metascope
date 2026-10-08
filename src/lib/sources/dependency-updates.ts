@@ -156,6 +156,12 @@ function collectDependencyUpdates(
 export const dependencyUpdatesSource = defineSource<'dependencyUpdates'>({
 	// eslint-disable-next-line ts/require-await
 	async discover(context) {
+		// `updates` queries package registries to find newer versions
+		if (context.options.offline) {
+			log.debug("Skipping dependency updates source since we're in offline mode")
+			return []
+		}
+
 		return [context.options.path]
 	},
 	key: 'dependencyUpdates',

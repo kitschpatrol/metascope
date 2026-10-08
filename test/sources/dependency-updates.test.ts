@@ -1,5 +1,6 @@
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseAgeToYears } from '../../src/lib/sources/dependency-updates'
+import { dependencyUpdatesSource, parseAgeToYears } from '../../src/lib/sources/dependency-updates'
 
 const YEAR_DAYS = 365.25
 
@@ -36,5 +37,18 @@ describe('dependencyUpdates age parsing', () => {
 		expect(parseAgeToYears('12q')).toBe(0)
 		// The long-unit format used by updates v17 and earlier
 		expect(parseAgeToYears('2 weeks')).toBe(0)
+	})
+})
+
+describe('dependencyUpdates source', () => {
+	it('should discover the project directory when online', async () => {
+		const path = resolve('.')
+		expect(await dependencyUpdatesSource.discover({ options: { path } })).toEqual([path])
+	})
+
+	it('should skip extraction in offline mode', async () => {
+		const context = { options: { offline: true, path: resolve('.') } }
+		expect(await dependencyUpdatesSource.discover(context)).toEqual([])
+		expect(await dependencyUpdatesSource.extract(context)).toBeUndefined()
 	})
 })
