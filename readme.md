@@ -26,7 +26,7 @@
 
 ## Overview
 
-Metascope aggregates metadata from a local code repository into a single monolithic JSON object. Given a project directory, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a JSON object containing everything it could find.
+Metascope aggregates metadata from a code repository into a single monolithic JSON object. Given a project directory or a remote git URL, it checks multiple sources in parallel — local git history, package manifests, the GitHub API, the NPM registry, lines of code analysis, and more — and returns a JSON object containing everything it could find.
 
 From there, an (optional) template system lets you refine and transform the output to reflect exactly which fields you need, useful for archival purposes, populating dashboards, or feeding data into other tools. The template system also provides a spec-compliant implementation of the [CodeMeta](https://codemeta.github.io/) vocabulary, allowing easy generation of `codemeta.json` files for a semantically normalized view of a variety of project types.
 
@@ -130,9 +130,9 @@ Usage:
 metascope [path]
 ```
 
-| Positional Argument | Description            | Type     | Default |
-| ------------------- | ---------------------- | -------- | ------- |
-| `path`              | Project directory path | `string` | `"."`   |
+| Positional Argument | Description                                                                                                                                                                      | Type     | Default |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `path`              | Project directory path, or a remote git repository URL (e.g. `https://github.com/owner/repo`) to clone and scan. Append `#<ref>` to a URL to check out a branch, tag, or commit. | `string` | `"."`   |
 
 | Option                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Type      | Default |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ------- |
@@ -141,7 +141,8 @@ metascope [path]
 | `--author-name`        | Optional author name(s) for ownership checks in templates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `array`   |         |
 | `--github-account`     | Optional GitHub account name(s) for ownership checks in templates                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `array`   |         |
 | `--absolute`           | Output absolute paths. Use `--no-absolute` for relative paths.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `boolean` | `true`  |
-| `--offline`            | Skip sources requiring network requests                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `boolean` | `false` |
+| `--offline`            | Skip sources requiring network requests. Remote repository URLs are scanned from the cache if available, without fetching updates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `boolean` | `false` |
+| `--cache`              | Keep clones of remote repositories in the platform cache directory (e.g. `~/Library/Caches/metascope` on macOS) so later runs only fetch updates. Use `--no-cache` to clone into a temporary directory that is deleted when metascope exits.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `boolean` | `true`  |
 | `--sources`<br>`-s`    | Only run specific metadata sources (`arduino-library-properties`, `cinder-cinderblock-xml`, `codemeta-json`, `git-config`, `go-go-mod`, `go-goreleaser-yaml`, `java-pom-xml`, `license-file`, `metadata-file`, `metascope`, `node-package-json`, `obsidian-plugin-manifest-json`, `openframeworks-addon-config-mk`, `openframeworks-install-xml`, `processing-library-properties`, `processing-sketch-properties`, `publiccode-yaml`, `python-pkg-info`, `python-pyproject-toml`, `python-setup-cfg`, `python-setup-py`, `readme-file`, `ruby-gemspec`, `rust-cargo-toml`, `xcode-info-plist`, `xcode-project-pbxproj`, `github-actions`, `code-stats`, `dependency-updates`, `file-stats`, `git-stats`, `github`, `node-npm-registry`, `obsidian-plugin-registry`, `python-pypi-registry`); defaults to all | `array`   |         |
 | `--no-ignore`          | Include files ignored by .gitignore in the file tree                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `boolean` | `false` |
 | `--recursive`<br>`-r`  | Search for metadata files recursively in subdirectories                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `boolean` | `false` |
@@ -169,6 +170,24 @@ Output is pretty-printed JSON when writing to a terminal, compact JSON when pipe
 ```sh
 metascope /path/to/project
 ```
+
+##### Scan a remote repository
+
+Pass a git URL instead of a path and metascope clones it into a local cache, then scans the clone. GitHub, GitLab, and any other git host work, over HTTPS or SSH:
+
+```sh
+metascope https://github.com/kitschpatrol/metascope
+metascope git@github.com:kitschpatrol/metascope.git
+```
+
+Append `#<ref>` to scan a specific branch, tag, or commit, or paste a GitHub `/tree/` URL to scan a subdirectory at a given ref:
+
+```sh
+metascope https://github.com/kitschpatrol/metascope#v0.12.0
+metascope https://github.com/kitschpatrol/metascope/tree/main/src/lib
+```
+
+See [remote repositories](#remote-repositories) for details on caching.
 
 ##### Use a built-in template
 
@@ -373,6 +392,52 @@ import { getMetadata } from 'metascope'
 
 const result = await getMetadata({ path: '.', template: 'frontmatter' })
 ```
+
+##### Scan a remote repository
+
+```ts
+import { getMetadata, helpers } from 'metascope'
+
+const metadata = await getMetadata({
+  path: 'https://github.com/kitschpatrol/metascope#main',
+})
+
+// The scanned commit is recorded alongside the scan options
+console.log(metadata.metascope?.data.remote?.commit)
+console.log(helpers.firstOf(metadata.gitStats)?.data.commitCount)
+```
+
+Pass `cache: false` to clone into a temporary directory that is deleted when `getMetadata` returns. See [remote repositories](#remote-repositories) for details.
+
+### Remote repositories
+
+When `path` is a git URL rather than a local directory, metascope clones the repository and scans the clone. The following forms are recognized:
+
+- `https://github.com/owner/repo` (with or without `.git`), and the same for any other host
+- `git@github.com:owner/repo.git` and `ssh://git@github.com/owner/repo.git`
+- `git://` and `file://` URLs, and `git+https://` / `git+ssh://` as found in `package.json` repository fields
+- `<url>#<ref>` to check out a branch, tag, or commit instead of the default branch
+- GitHub `/tree/<ref>/<path>` and `/blob/<ref>/<path>` URLs, which set the ref and scope the scan to the subdirectory (`/commit/<sha>` and `/releases/tag/<tag>` URLs set the ref as well)
+
+Bare `owner/repo` shorthand is _not_ treated as a URL, since it is a valid relative path.
+
+Clones use git's partial clone feature (`--filter=blob:none`), so the full commit history is downloaded for git statistics while file contents are only fetched for the tree that is checked out. Clones are kept in a cache directory and reused: later runs against the same repository do a `git fetch` to pick up new commits instead of cloning again. Pass `--offline` to skip the fetch and scan whatever is cached.
+
+The cache lives in the platform cache directory:
+
+| Platform | Default cache directory                             |
+| -------- | --------------------------------------------------- |
+| macOS    | `~/Library/Caches/metascope`                        |
+| Linux    | `$XDG_CACHE_HOME/metascope` or `~/.cache/metascope` |
+| Windows  | `%LOCALAPPDATA%\metascope\Cache`                    |
+
+Each repository gets its own subdirectory under `repos/`, keyed by host and repository path. Delete the cache directory (or a single repository within it) at any time to free space; it will be recreated on the next run. Concurrent runs against the same repository are serialized with a lock file, so running metascope over a list of repositories in parallel is safe.
+
+If you'd rather not keep anything around, pass `--no-cache` (or `cache: false` in the API). The repository is then cloned into a temporary directory that is deleted as soon as the scan finishes, whether it succeeds or fails. Every run is a fresh clone in this mode, and it can't be combined with `--offline`, since there is nothing cached to scan.
+
+Cloning uses your regular git credentials (SSH keys, credential helpers), so private repositories work wherever `git clone` would. Git is run non-interactively and will fail rather than prompt for a password. The `--github-token` option only applies to the GitHub API source, not to cloning.
+
+In the output, the `metascope` source records the clone URL, requested ref, and the commit that was scanned under `remote`. Note that `source` paths point into the cache directory; pass `--no-absolute` for paths relative to the repository root.
 
 ## Sources
 

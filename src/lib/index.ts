@@ -1,6 +1,5 @@
 export { setLogger } from './log'
 export { getMetadata, sourceNames } from './metadata'
-
 export { DEFAULT_GET_METADATA_OPTIONS, defineTemplate } from './metadata-types'
 export type {
 	Credentials,
@@ -11,6 +10,9 @@ export type {
 	Template,
 	TemplateData,
 } from './metadata-types'
+
+export { getDefaultCacheDirectory, isRemoteRepositoryUrl } from './remote-repository'
+export type { RemoteRepositoryInfo } from './remote-repository'
 export type { OneOrMany, SourceRecord } from './source'
 export type { TemplateDataCodemeta } from './templates/codemeta'
 export type { TemplateDataCodemetaJson } from './templates/codemeta-json'

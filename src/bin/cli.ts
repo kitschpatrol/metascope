@@ -43,7 +43,8 @@ await yargsInstance
 			builder
 				.positional('path', {
 					default: DEFAULT_GET_METADATA_OPTIONS.path,
-					description: 'Project directory path',
+					description:
+						'Project directory path, or a remote git repository URL (e.g. `https://github.com/owner/repo`) to clone and scan. Append `#<ref>` to a URL to check out a branch, tag, or commit.',
 					type: 'string',
 				})
 				.option('template', {
@@ -72,7 +73,14 @@ await yargsInstance
 				})
 				.option('offline', {
 					default: DEFAULT_GET_METADATA_OPTIONS.offline,
-					description: 'Skip sources requiring network requests',
+					description:
+						'Skip sources requiring network requests. Remote repository URLs are scanned from the cache if available, without fetching updates.',
+					type: 'boolean',
+				})
+				.option('cache', {
+					default: DEFAULT_GET_METADATA_OPTIONS.cache,
+					description:
+						'Keep clones of remote repositories in the platform cache directory (e.g. `~/Library/Caches/metascope` on macOS) so later runs only fetch updates. Use `--no-cache` to clone into a temporary directory that is deleted when metascope exits.',
 					type: 'boolean',
 				})
 				.option('sources', {
@@ -184,6 +192,7 @@ await yargsInstance
 				}
 				const sharedOptions = {
 					absolute: argv.absolute,
+					cache: argv.cache,
 					credentials,
 					offline: argv.offline,
 					path: argv.path,

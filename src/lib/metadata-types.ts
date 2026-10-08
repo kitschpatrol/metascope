@@ -139,13 +139,29 @@ export type GetMetadataBaseOptions = {
 	 * the project directory.
 	 */
 	absolute?: boolean
+	/**
+	 * Keep clones of remote repositories in the platform cache directory (see
+	 * `getDefaultCacheDirectory`) so later runs can fetch updates instead of
+	 * cloning again. When false, the repository is cloned into a temporary
+	 * directory that is deleted when `getMetadata` returns. Defaults to true.
+	 */
+	cache?: boolean
 	/** API credentials for remote sources. */
 	credentials?: Credentials
-	/** Skip web sources (npm registry, GitHub API, PyPI, etc.). */
+	/**
+	 * Skip web sources (npm registry, GitHub API, PyPI, etc.). When `path` is a
+	 * remote git URL, use the cached clone without fetching updates.
+	 */
 	offline?: boolean
 	/**
-	 * Project directory path. Defaults to `'.'` (resolved to `process.cwd()` via
-	 * `path.resolve`).
+	 * Project directory path, or a remote git repository URL to clone and scan.
+	 * Defaults to `'.'` (resolved to `process.cwd()` via `path.resolve`).
+	 *
+	 * Remote URLs (`https://`, `ssh://`, `git://`, `file://`, or scp-style
+	 * `user@host:path`) are cloned into the cache directory and updated on
+	 * subsequent runs (see `cache`). Append `#<ref>` to check out a branch, tag,
+	 * or commit. GitHub `/tree/<ref>/<path>` URLs also scope the scan to a
+	 * subdirectory.
 	 */
 	path: string
 	/** Search for metadata files recursively in subdirectories. Defaults to false. */
@@ -172,6 +188,7 @@ export const DEFAULT_GET_METADATA_OPTIONS: Required<
 	Omit<GetMetadataBaseOptions, 'credentials' | 'sources' | 'templateData'>
 > = {
 	absolute: true,
+	cache: true,
 	offline: false,
 	path: '.',
 	recursive: false,

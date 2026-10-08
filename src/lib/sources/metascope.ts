@@ -1,4 +1,5 @@
 import type { GetMetadataBaseOptions } from '../metadata-types'
+import type { RemoteRepositoryInfo } from '../remote-repository'
 import type { SourceRecord } from '../source'
 import { version } from '../../../package.json'
 import { getWorkspaces } from '../file-matching'
@@ -10,6 +11,11 @@ export type MetascopeInfo = {
 	durationMs: number
 	/** Resolved options used for this scan (credentials excluded). */
 	options: Omit<GetMetadataBaseOptions, 'credentials'>
+	/**
+	 * The remote repository that was cloned and scanned, when `path` was a git
+	 * URL. Absent for local scans.
+	 */
+	remote?: RemoteRepositoryInfo
 	/** ISO 8601 timestamp of when the scan was performed. */
 	scannedAt: string
 	/** Version of the metascope library used. */
@@ -50,6 +56,7 @@ export const metascopeSource = defineSource<'metascope'>({
 					templateData,
 					workspaces,
 				},
+				remote: context.remote,
 				scannedAt: new Date().toISOString(),
 				version,
 				workspaceDirectories: getWorkspaces(basePath, workspaces).map((directory) =>

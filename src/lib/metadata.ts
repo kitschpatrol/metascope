@@ -17,6 +17,7 @@ import type { TemplateMap, TemplateName } from './templates/index.js'
 import { getTree, resetMatchCache } from './file-matching.js'
 import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
+import { checkoutRemoteRepository, parseRemoteRepository } from './remote-repository'
 import { arduinoLibraryPropertiesSource } from './sources/arduino-library-properties'
 import { cinderCinderblockXmlSource } from './sources/cinder-cinderblock-xml'
 import { codeStatsSource } from './sources/code-stats.js'
@@ -218,129 +219,146 @@ export async function getMetadata<T>(
 	const startTime = performance.now()
 
 	const resolvedOptions = defu(options ?? {}, DEFAULT_GET_METADATA_OPTIONS)
-	const inputPath = resolve(resolvedOptions.path)
 
-	// Resolve symlinks so every downstream source sees the canonical path.
-	// Some sources (e.g. `updates` via dependencyUpdates) reject symlinks with
-	// their own non-following stat check.
-	let absolutePath: string
+	// Remote git URLs are cloned into the cache directory and scanned from there.
+	// The lease locks the cache entry until extraction completes.
+	const remote = parseRemoteRepository(resolvedOptions.path)
+	const lease =
+		remote === undefined
+			? undefined
+			: await checkoutRemoteRepository(remote, {
+					cache: resolvedOptions.cache,
+					offline: resolvedOptions.offline,
+				})
+
 	try {
-		absolutePath = await realpath(inputPath)
-	} catch {
-		throw new Error(`Path does not exist: ${inputPath}`)
-	}
+		const inputPath = lease?.path ?? resolve(resolvedOptions.path)
 
-	const stats = await stat(absolutePath)
-	if (!stats.isDirectory()) {
-		throw new Error(`Path is not a directory: ${absolutePath}`)
-	}
-
-	resolvedOptions.path = absolutePath
-
-	// Resolve template from options (built-in name or function)
-	const template = resolveTemplate(resolvedOptions.template)
-
-	// Reset match cache to ensure fresh results for each getMetadata call
-	resetMatchCache()
-
-	// Resolve credentials and build file tree concurrently — they are independent
-	log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
-	const [credentials, rootTree] = await Promise.all([
-		resolveCredentials(resolvedOptions.credentials),
-		getTree(absolutePath, resolvedOptions.respectIgnored),
-	])
-	log.debug(`Root file tree contains ${rootTree.length} entries`)
-
-	// Assemble context with defaults
-	const context: MetadataContext = {
-		arduinoLibraryProperties: undefined,
-		cinderCinderblockXml: undefined,
-		codemetaJson: undefined,
-		codeStats: undefined,
-		dependencyUpdates: undefined,
-		fileStats: undefined,
-		gitConfig: undefined,
-		github: undefined,
-		githubActions: undefined,
-		gitStats: undefined,
-		goGoMod: undefined,
-		goGoreleaserYaml: undefined,
-		javaPomXml: undefined,
-		licenseFile: undefined,
-		metadataFile: undefined,
-		metascope: undefined,
-		nodeNpmRegistry: undefined,
-		nodePackageJson: undefined,
-		obsidianPluginManifestJson: undefined,
-		obsidianPluginRegistry: undefined,
-		openframeworksAddonConfigMk: undefined,
-		openframeworksInstallXml: undefined,
-		processingLibraryProperties: undefined,
-		processingSketchProperties: undefined,
-		publiccodeYaml: undefined,
-		pythonPkgInfo: undefined,
-		pythonPypiRegistry: undefined,
-		pythonPyprojectToml: undefined,
-		pythonSetupCfg: undefined,
-		pythonSetupPy: undefined,
-		readmeFile: undefined,
-		rubyGemspec: undefined,
-		rustCargoToml: undefined,
-		xcodeInfoPlist: undefined,
-		xcodeProjectPbxproj: undefined,
-	}
-
-	// Filter sources if a whitelist is provided
-	const activeSources = resolvedOptions.sources
-		? sources.filter((s) => resolvedOptions.sources!.includes(s.key))
-		: sources
-
-	// Group sources by phase and run each phase sequentially.
-	// Within a phase, all sources run in parallel.
-	// Each phase receives the accumulated context from all previous phases.
-	const completedSources = new Set<SourceName>()
-	const phases = new Set(activeSources.map((s) => s.phase))
-	const sortedPhases = [...phases].toSorted((a, b) => a - b)
-	for (const phase of sortedPhases) {
-		const phaseSources = activeSources.filter((s) => s.phase === phase)
-		log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
-		const sourceContext: SourceContext = {
-			completedSources,
-			metadata: { ...context },
-			options: {
-				...resolvedOptions,
-				credentials,
-				path: absolutePath,
-			},
+		// Resolve symlinks so every downstream source sees the canonical path.
+		// Some sources (e.g. `updates` via dependencyUpdates) reject symlinks with
+		// their own non-following stat check.
+		let absolutePath: string
+		try {
+			absolutePath = await realpath(inputPath)
+		} catch {
+			throw new Error(`Path does not exist: ${inputPath}`)
 		}
-		await runSources(phaseSources, sourceContext, context)
-		for (const source of phaseSources) {
-			completedSources.add(source.key)
+
+		const stats = await stat(absolutePath)
+		if (!stats.isDirectory()) {
+			throw new Error(`Path is not a directory: ${absolutePath}`)
 		}
-	}
 
-	const metadataDuration = performance.now() - startTime
-	if (context.metascope) {
-		context.metascope.data.durationMs = Math.round(metadataDuration)
-	}
+		resolvedOptions.path = absolutePath
 
-	log.debug(`Metadata duration: ${prettyMs(metadataDuration)}`)
+		// Resolve template from options (built-in name or function)
+		const template = resolveTemplate(resolvedOptions.template)
 
-	// Apply template if provided (pass raw context so all source keys exist)
-	if (template) {
-		const templateStartTime = performance.now()
+		// Reset match cache to ensure fresh results for each getMetadata call
+		resetMatchCache()
 
-		const finalTemplateResult = (stripUndefined(
-			template(context, resolvedOptions.templateData ?? {}),
-		) ?? {}) as unknown as T
-		const templateDuration = performance.now() - templateStartTime
-		log.debug(`Template duration: ${prettyMs(templateDuration)}`)
+		// Resolve credentials and build file tree concurrently — they are independent
+		log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
+		const [credentials, rootTree] = await Promise.all([
+			resolveCredentials(resolvedOptions.credentials),
+			getTree(absolutePath, resolvedOptions.respectIgnored),
+		])
+		log.debug(`Root file tree contains ${rootTree.length} entries`)
+
+		// Assemble context with defaults
+		const context: MetadataContext = {
+			arduinoLibraryProperties: undefined,
+			cinderCinderblockXml: undefined,
+			codemetaJson: undefined,
+			codeStats: undefined,
+			dependencyUpdates: undefined,
+			fileStats: undefined,
+			gitConfig: undefined,
+			github: undefined,
+			githubActions: undefined,
+			gitStats: undefined,
+			goGoMod: undefined,
+			goGoreleaserYaml: undefined,
+			javaPomXml: undefined,
+			licenseFile: undefined,
+			metadataFile: undefined,
+			metascope: undefined,
+			nodeNpmRegistry: undefined,
+			nodePackageJson: undefined,
+			obsidianPluginManifestJson: undefined,
+			obsidianPluginRegistry: undefined,
+			openframeworksAddonConfigMk: undefined,
+			openframeworksInstallXml: undefined,
+			processingLibraryProperties: undefined,
+			processingSketchProperties: undefined,
+			publiccodeYaml: undefined,
+			pythonPkgInfo: undefined,
+			pythonPypiRegistry: undefined,
+			pythonPyprojectToml: undefined,
+			pythonSetupCfg: undefined,
+			pythonSetupPy: undefined,
+			readmeFile: undefined,
+			rubyGemspec: undefined,
+			rustCargoToml: undefined,
+			xcodeInfoPlist: undefined,
+			xcodeProjectPbxproj: undefined,
+		}
+
+		// Filter sources if a whitelist is provided
+		const activeSources = resolvedOptions.sources
+			? sources.filter((s) => resolvedOptions.sources!.includes(s.key))
+			: sources
+
+		// Group sources by phase and run each phase sequentially.
+		// Within a phase, all sources run in parallel.
+		// Each phase receives the accumulated context from all previous phases.
+		const completedSources = new Set<SourceName>()
+		const phases = new Set(activeSources.map((s) => s.phase))
+		const sortedPhases = [...phases].toSorted((a, b) => a - b)
+		for (const phase of sortedPhases) {
+			const phaseSources = activeSources.filter((s) => s.phase === phase)
+			log.debug(`Phase ${phase}: Running ${phaseSources.length} sources...`)
+			const sourceContext: SourceContext = {
+				completedSources,
+				metadata: { ...context },
+				options: {
+					...resolvedOptions,
+					credentials,
+					path: absolutePath,
+				},
+				remote: lease?.info,
+			}
+			await runSources(phaseSources, sourceContext, context)
+			for (const source of phaseSources) {
+				completedSources.add(source.key)
+			}
+		}
+
+		const metadataDuration = performance.now() - startTime
+		if (context.metascope) {
+			context.metascope.data.durationMs = Math.round(metadataDuration)
+		}
+
+		log.debug(`Metadata duration: ${prettyMs(metadataDuration)}`)
+
+		// Apply template if provided (pass raw context so all source keys exist)
+		if (template) {
+			const templateStartTime = performance.now()
+
+			const finalTemplateResult = (stripUndefined(
+				template(context, resolvedOptions.templateData ?? {}),
+			) ?? {}) as unknown as T
+			const templateDuration = performance.now() - templateStartTime
+			log.debug(`Template duration: ${prettyMs(templateDuration)}`)
+			log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
+			return finalTemplateResult
+		}
+
+		// Strip undefined values and empty source objects from raw output
+		const finalResult = stripUndefined(context)
 		log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
-		return finalTemplateResult
+		return finalResult
+	} finally {
+		await lease?.release()
 	}
-
-	// Strip undefined values and empty source objects from raw output
-	const finalResult = stripUndefined(context)
-	log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
-	return finalResult
 }

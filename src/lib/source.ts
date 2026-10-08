@@ -1,4 +1,5 @@
 import type { GetMetadataBaseOptions, MetadataContext, SourceName } from './metadata-types'
+import type { RemoteRepositoryInfo } from './remote-repository'
 import { log } from './log'
 import { formatPath } from './utilities/formatting'
 
@@ -16,9 +17,12 @@ export type SourceContext = {
 	metadata?: Partial<MetadataContext>
 	/**
 	 * Options passed to `getMetadata`. May be partial; defaults are resolved by
-	 * `defineSource`.
+	 * `defineSource`. When scanning a remote repository, `options.path` is the
+	 * local path of the cached clone.
 	 */
 	options: GetMetadataBaseOptions
+	/** Set when the scan targets a remote repository URL. */
+	remote?: RemoteRepositoryInfo
 }
 
 /**
