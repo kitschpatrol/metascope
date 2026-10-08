@@ -101,7 +101,7 @@
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.5",
 		"@fast-csv/parse": "^5.0.8",
-		"@kitschpatrol/shared-config": "^8.12.1",
+		"@kitschpatrol/shared-config": "^8.13.1",
 		"@types/jsonld": "^1.5.15",
 		"@types/picomatch": "^4.0.3",
 		"@types/semver": "^7.8.0",
