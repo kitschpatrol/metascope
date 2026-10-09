@@ -526,9 +526,12 @@ describe('checkoutRemoteRepository', { timeout: 30_000 }, () => {
 	it('should delete the temporary clone when getMetadata returns', async () => {
 		const result = await getMetadata({ cache: false, path: url, sources: ['metascope'] })
 
+		// Reported paths always use forward slashes, even on Windows
 		const scannedPath = result.metascope?.data.options.path
+		const realTemporaryDirectory = await realpath(tmpdir())
+		const temporaryDirectory = realTemporaryDirectory.replaceAll('\\', '/')
 		expect(scannedPath).toBeDefined()
-		expect(scannedPath!.startsWith(await realpath(tmpdir()))).toBe(true)
+		expect(scannedPath!.startsWith(temporaryDirectory)).toBe(true)
 		expect(await exists(scannedPath!)).toBe(false)
 	})
 
