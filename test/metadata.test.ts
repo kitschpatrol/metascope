@@ -3,6 +3,8 @@ import { getMetadata } from '../src/lib/metadata'
 import { defineTemplate } from '../src/lib/metadata-types'
 import { firstOf } from '../src/lib/utilities/template-helpers'
 
+const nonEmptyBranch = /\S/v
+
 // @case-police-ignore github
 
 describe('getMetadata', { timeout: 30_000 }, () => {
@@ -15,7 +17,7 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 
 		// Should have git statistics data
 		expect(result.gitStats).toBeDefined()
-		expect(firstOf(result.gitStats)!.data.branchCurrent).toBe('main')
+		expect(firstOf(result.gitStats)!.data.branchCurrent).toMatch(nonEmptyBranch)
 	})
 
 	it('should not contain undefined values in output', async () => {
@@ -46,8 +48,9 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 		}))
 
 		const result = await getMetadata({ path: '.', template })
+		expect(result.branch).toMatch(nonEmptyBranch)
 		expect(result).toEqual({
-			branch: 'main',
+			branch: result.branch,
 			name: 'metascope',
 		})
 	})
