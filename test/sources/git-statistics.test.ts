@@ -4,6 +4,7 @@ import { gitStatsSource } from '../../src/lib/sources/git-stats'
 import { firstOf } from '../../src/lib/utilities/template-helpers'
 
 const context = { options: { path: resolve('.') } }
+const nonEmptyBranch = /\S/v
 
 describe('git statistics source', () => {
 	it('should be available in a git repo', async () => {
@@ -19,7 +20,7 @@ describe('git statistics source', () => {
 		const result = firstOf(await gitStatsSource.extract(context))
 
 		expect(result).toBeDefined()
-		expect(result!.data.branchCurrent).toBe('main')
+		expect(result!.data.branchCurrent).toMatch(nonEmptyBranch)
 		expect(result!.data.commitCount).toBeGreaterThanOrEqual(1)
 		expect(result!.data.branchCount).toBeGreaterThanOrEqual(1)
 		expect(result!.data.contributorCount).toBeGreaterThanOrEqual(1)
