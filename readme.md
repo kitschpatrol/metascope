@@ -102,16 +102,6 @@ npm install metascope
 
 <!-- /install -->
 
-If you're using PNPM, you can safely ignore the build scripts for the tree-sitter dependencies, since we're only interested in their bundled WASM implementations.
-
-In your `pnpm-workspace.yaml`:
-
-```yaml
-ignoredBuiltDependencies:
-  - tree-sitter-python
-  - tree-sitter-ruby
-```
-
 ## Usage
 
 ### CLI
