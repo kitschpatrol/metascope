@@ -1,9 +1,9 @@
 /* eslint-disable unicorn/no-useless-undefined */
 import { stat } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { join } from 'node:path'
 import { simpleGit } from 'simple-git'
 import type { OneOrMany, SourceRecord } from '../source'
-import { getGitConfigs } from '../file-matching'
+import { getGitRepositories } from '../file-matching'
 import { log } from '../log'
 import { defineSource } from '../source'
 import { batchMap } from '../utilities/formatting'
@@ -66,15 +66,18 @@ export type GitStatsData = OneOrMany<SourceRecord<GitStatsInfo>> | undefined
 
 export const gitStatsSource = defineSource<'gitStats'>({
 	async discover(context) {
-		// Pop up from each config file to the directory containing the `.git` folder
-		const configs = await getGitConfigs(context.options)
-		return configs.map((value) => resolve(value, '../../'))
+		return getGitRepositories(context.options)
 	},
 	key: 'gitStats',
-	async parse(input, context) {
+	async parse(input) {
 		log.debug('Extracting git statistics metadata...')
 
 		const git = simpleGit(input)
+
+		// Prints nothing without failing when HEAD is an unborn branch, as in a
+		// repository without commits, where history commands would fail
+		const head = await git.raw(['rev-parse', '--verify', '--quiet', 'HEAD'])
+		const hasCommits = head.trim().length > 0
 
 		const [
 			statusResult,
@@ -88,10 +91,14 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			hasLfs,
 		] = await Promise.all([
 			git.status(),
-			git.log(),
+			hasCommits ? git.log() : undefined,
 			git.branch(),
 			git.tags(),
 			(async () => {
+				if (!hasCommits) {
+					return undefined
+				}
+
 				const output = await git.raw(['rev-list', '--max-parents=0', 'HEAD', '--format=%aI'])
 				// Output is "commit <hash>\n<date>" pairs; take the last date line
 				const lines = output
@@ -124,7 +131,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 			})(),
 		])
 
-		const contributors = new Set(logResult.all.map((commit) => commit.author_email))
+		const contributors = new Set((logResult?.all ?? []).map((commit) => commit.author_email))
 		const tagNameLatest = tagResult.latest ?? undefined
 
 		// These four operations are independent — run them concurrently
@@ -134,7 +141,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				(async () => {
 					const sizes = await batchMap(trackedFiles, async (file) => {
 						try {
-							const fileStat = await stat(join(context.options.path, file))
+							const fileStat = await stat(join(input, file))
 							return fileStat.size
 						} catch {
 							return 0
@@ -185,7 +192,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				})(),
 				// 4. Remote status comparison
 				Promise.all(
-					remotes.map(async (remote) => {
+					(hasCommits ? remotes : []).map(async (remote) => {
 						for (const branch of ['main', 'master']) {
 							const reference = `${remote.name}/${branch}`
 							try {
@@ -231,10 +238,12 @@ export const gitStatsSource = defineSource<'gitStats'>({
 		return {
 			data: {
 				branchCount: branchResult.all.length,
-				branchCurrent: branchResult.current,
-				commitCount: logResult.total,
+				// Branch listing is empty on an unborn branch, but status still names it
+				branchCurrent:
+					branchResult.current === '' ? (statusResult.current ?? undefined) : branchResult.current,
+				commitCount: logResult?.total ?? 0,
 				commitDateFirst,
-				commitDateLast: logResult.latest?.date ?? undefined,
+				commitDateLast: logResult?.latest?.date ?? undefined,
 				contributorCount: contributors.size,
 				hasLfs,
 				isClean: statusResult.isClean(),

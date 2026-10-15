@@ -1,3 +1,4 @@
+import type { Stats } from 'node:fs'
 import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
@@ -39,7 +40,7 @@ const DEFAULT_IGNORE = [
 // Git's internal directory is never part of the project tree. Its object
 // store alone can hold more entries than the project itself, and nothing in it
 // is project metadata. Git-backed sources locate repositories via
-// `getGitConfigs` instead of the tree.
+// `getGitConfigs` and `getGitRepositories` instead of the tree.
 const GIT_INTERNALS_IGNORE = '**/.git/**'
 
 /**
@@ -276,44 +277,55 @@ function sortByDepth(paths: string[]): string[] {
 
 // ─── Git Repositories ───────────────────────────────────────────────
 
+const GIT_ENTRY = '.git'
 const GIT_CONFIG_PATH = '.git/config'
 
+// Keeps recursive crawls out of git's object store and other internals while
+// still matching `.git` itself and files directly inside it like `.git/config`
+const GIT_SUBDIRECTORIES_IGNORE = '**/.git/*/**'
+
 /**
- * Find git repositories under a directory by locating their `.git/config`
- * files, which the file tree deliberately excludes. Returns absolute paths to
- * the config files, shallowest first.
+ * Find a git entry such as `.git` or `.git/config` under a directory, which the
+ * file tree deliberately excludes. Returns absolute paths to the entries that
+ * exist and pass `accept`, shallowest first.
  *
  * - Non-recursive: checks the root and each workspace directory directly, with no
  *   filesystem walk
  * - Recursive: walks the tree for nested repositories, skipping git-ignored paths
  *   like the file tree does
  */
-export async function getGitConfigs(options: MatchOptions): Promise<string[]> {
+async function findGitEntries(
+	options: MatchOptions,
+	entry: string,
+	accept: (stats: Stats) => boolean,
+): Promise<string[]> {
 	const resolved = defu(options, DEFAULT_MATCH_OPTIONS)
 
+	let candidates: string[]
 	if (resolved.recursive) {
 		const ignore = await getIgnorePatterns(resolved.path, resolved.respectIgnored)
-		const matches = await glob(`**/${GIT_CONFIG_PATH}`, {
+		const matches = await glob(`**/${entry}`, {
 			cwd: resolved.path,
 			dot: true,
+			expandDirectories: false,
 			followSymbolicLinks: false,
-			ignore,
+			ignore: [...ignore, GIT_SUBDIRECTORIES_IGNORE],
+			onlyFiles: false,
 		})
-		return sortByDepth(matches.map((match) => resolve(resolved.path, match)))
+		candidates = matches.map((match) => resolve(resolved.path, match))
+	} else {
+		const directories =
+			resolved.workspaces === false
+				? [resolved.path]
+				: [resolved.path, ...getWorkspaces(resolved.path, resolved.workspaces)]
+		candidates = directories.map((directory) => join(directory, entry))
 	}
 
-	const directories =
-		resolved.workspaces === false
-			? [resolved.path]
-			: [resolved.path, ...getWorkspaces(resolved.path, resolved.workspaces)]
-
 	const results: string[] = []
-	for (const directory of directories) {
-		const configPath = join(directory, GIT_CONFIG_PATH)
+	for (const candidate of candidates) {
 		try {
-			const configStat = await stat(configPath)
-			if (configStat.isFile()) {
-				results.push(configPath)
+			if (accept(await stat(candidate))) {
+				results.push(candidate)
 			}
 		} catch {
 			// Not a git repository
@@ -321,4 +333,32 @@ export async function getGitConfigs(options: MatchOptions): Promise<string[]> {
 	}
 
 	return sortByDepth(results)
+}
+
+/**
+ * Find git repositories under a directory by locating their `.git/config`
+ * files. Returns absolute paths to the config files, shallowest first.
+ *
+ * Linked worktrees and submodules are excluded, since their `.git` is a file
+ * pointing at another repository's git directory rather than a directory with
+ * its own config.
+ */
+export async function getGitConfigs(options: MatchOptions): Promise<string[]> {
+	return findGitEntries(options, GIT_CONFIG_PATH, (stats) => stats.isFile())
+}
+
+/**
+ * Find git working trees under a directory by locating their `.git` entries.
+ * Returns absolute paths to the working tree roots, shallowest first.
+ *
+ * Includes linked worktrees and submodules, whose `.git` is a file rather than
+ * a directory.
+ */
+export async function getGitRepositories(options: MatchOptions): Promise<string[]> {
+	const entries = await findGitEntries(
+		options,
+		GIT_ENTRY,
+		(stats) => stats.isDirectory() || stats.isFile(),
+	)
+	return entries.map((entry) => dirname(entry))
 }

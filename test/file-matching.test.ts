@@ -3,7 +3,13 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { exec } from 'tinyexec'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { getGitConfigs, getMatches, getTree, resetMatchCache } from '../src/lib/file-matching'
+import {
+	getGitConfigs,
+	getGitRepositories,
+	getMatches,
+	getTree,
+	resetMatchCache,
+} from '../src/lib/file-matching'
 import { fileStatsSource } from '../src/lib/sources/file-stats'
 import { firstOf } from '../src/lib/utilities/template-helpers'
 
@@ -115,5 +121,71 @@ describe('getGitConfigs', () => {
 		// Counts packages/nested; only directories that directly contain files
 		// are counted, so packages itself is not
 		expect(result?.data.totalDirectoryCount).toBe(1)
+	})
+})
+
+describe('getGitRepositories', () => {
+	let root: string
+	let nested: string
+	let linked: string
+
+	beforeAll(async () => {
+		root = await mkdtemp(join(tmpdir(), 'metascope-git-repositories-'))
+		nested = join(root, 'packages', 'nested')
+		linked = join(root, 'linked')
+
+		await git(root, 'init', '-q', '-b', 'main')
+		await git(
+			root,
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit',
+			'-q',
+			'--allow-empty',
+			'-m',
+			'Initial commit',
+		)
+		await git(root, 'worktree', 'add', '-q', '--detach', linked)
+
+		await mkdir(nested, { recursive: true })
+		await git(nested, 'init', '-q', '-b', 'main')
+	})
+
+	afterAll(async () => {
+		await rm(root, { force: true, recursive: true })
+	})
+
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
+	it('should find the root repository', async () => {
+		expect(await getGitRepositories({ path: root, workspaces: false })).toEqual([root])
+	})
+
+	it('should return nothing for a directory without a repository', async () => {
+		expect(await getGitRepositories({ path: resolve('test/fixtures/_empty') })).toEqual([])
+	})
+
+	it('should find a linked worktree', async () => {
+		expect(await getGitRepositories({ path: linked })).toEqual([linked])
+	})
+
+	it('should find linked worktrees and nested repositories recursively', async () => {
+		expect(await getGitRepositories({ path: root, recursive: true })).toEqual([
+			root,
+			linked,
+			nested,
+		])
+	})
+
+	it('should leave linked worktrees out of git configs', async () => {
+		expect(await getGitConfigs({ path: linked })).toEqual([])
+		expect(await getGitConfigs({ path: root, recursive: true })).toEqual([
+			join(root, '.git/config'),
+			join(nested, '.git/config'),
+		])
 	})
 })
