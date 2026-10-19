@@ -66,6 +66,30 @@ describe('parse', () => {
 		])
 	})
 
+	it('should keep dependency authors', () => {
+		const result = parseCodemetaJson(
+			JSON.stringify({
+				softwareRequirements: [
+					{
+						author: { '@id': 'https://orcid.org/0000', '@type': 'Person', name: 'Ada' },
+						name: 'nn',
+					},
+					{ author: ['Grace', { '@type': 'Organization', name: 'Acme' }], name: 'Vendor SDK' },
+					{ author: [{ url: 'https://example.com' }], name: 'Anonymous' },
+				],
+			}),
+		)
+
+		expect(result!.softwareRequirements).toEqual([
+			{ author: [{ id: 'https://orcid.org/0000', name: 'Ada', type: 'Person' }], name: 'nn' },
+			{
+				author: [{ name: 'Grace' }, { name: 'Acme', type: 'Organization' }],
+				name: 'Vendor SDK',
+			},
+			{ name: 'Anonymous' },
+		])
+	})
+
 	it('should parse basic fields', () => {
 		const content = readFileSync(
 			resolve(fixturesDirectory, 'caltechlibrary-iga/codemeta.json'),

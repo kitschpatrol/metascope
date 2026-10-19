@@ -36,9 +36,11 @@
 import is from '@sindresorhus/is'
 import { basename, relative } from 'node:path'
 import type { MetadataContext } from '../metadata-types'
+import type { CodeMetaJsonDependency, CodeMetaJsonPersonOrOrg } from '../sources/codemeta-json'
 import type { CodemetaDependencyLd, CodemetaPersonOrOrgLd } from '../utilities/codemeta-helpers'
 import { defineTemplate } from '../metadata-types'
 import {
+	addCodemetaDependencyAuthors,
 	deduplicateDependencies,
 	deduplicatePersonsOrOrgs,
 	isProprietaryLicenseSentinel,
@@ -282,18 +284,7 @@ export const codemeta = defineTemplate(
 			),
 		]
 
-		const cmAuthors = cm?.data.author?.map((p) =>
-			toPersonOrOrgLd({
-				affiliation: p.affiliation,
-				email: p.email,
-				familyName: p.familyName,
-				givenName: p.givenName,
-				id: p.id,
-				name: p.name,
-				type: p.type,
-				url: p.url,
-			}),
-		)
+		const cmAuthors = codemetaPersonsOrOrgsToLd(cm?.data.author)
 
 		const author = resolvePersonsOrOrgs(ecosystemAuthors, cmAuthors)
 
@@ -315,18 +306,7 @@ export const codemeta = defineTemplate(
 			),
 		]
 
-		const cmContributors = cm?.data.contributor?.map((p) =>
-			toPersonOrOrgLd({
-				affiliation: p.affiliation,
-				email: p.email,
-				familyName: p.familyName,
-				givenName: p.givenName,
-				id: p.id,
-				name: p.name,
-				type: p.type,
-				url: p.url,
-			}),
-		)
+		const cmContributors = codemetaPersonsOrOrgsToLd(cm?.data.contributor)
 
 		const contributor = resolvePersonsOrOrgs(ecosystemContributors, cmContributors)
 
@@ -368,18 +348,7 @@ export const codemeta = defineTemplate(
 				: []),
 		]
 
-		const cmMaintainers = cm?.data.maintainer?.map((p) =>
-			toPersonOrOrgLd({
-				affiliation: p.affiliation,
-				email: p.email,
-				familyName: p.familyName,
-				givenName: p.givenName,
-				id: p.id,
-				name: p.name,
-				type: p.type,
-				url: p.url,
-			}),
-		)
+		const cmMaintainers = codemetaPersonsOrOrgsToLd(cm?.data.maintainer)
 
 		const maintainer = resolvePersonsOrOrgs(ecosystemMaintainers, cmMaintainers)
 
@@ -395,38 +364,13 @@ export const codemeta = defineTemplate(
 				: []),
 		]
 
-		const cmCopyrightHolders = cm?.data.copyrightHolder?.map((p) =>
-			toPersonOrOrgLd({
-				affiliation: p.affiliation,
-				email: p.email,
-				familyName: p.familyName,
-				givenName: p.givenName,
-				id: p.id,
-				name: p.name,
-				type: p.type,
-				url: p.url,
-			}),
-		)
+		const cmCopyrightHolders = codemetaPersonsOrOrgsToLd(cm?.data.copyrightHolder)
 
 		const copyrightHolder = resolvePersonsOrOrgs(ecosystemCopyrightHolders, cmCopyrightHolders)
 
 		// ── Funder ──────────────────────────────────────────────────
 
-		const funder = resolvePersonsOrOrgs(
-			[],
-			cm?.data.funder?.map((p) =>
-				toPersonOrOrgLd({
-					affiliation: p.affiliation,
-					email: p.email,
-					familyName: p.familyName,
-					givenName: p.givenName,
-					id: p.id,
-					name: p.name,
-					type: p.type,
-					url: p.url,
-				}),
-			),
-		)
+		const funder = resolvePersonsOrOrgs([], codemetaPersonsOrOrgsToLd(cm?.data.funder))
 
 		// ── Code ────────────────────────────────────────────────────
 
@@ -523,22 +467,21 @@ export const codemeta = defineTemplate(
 		})
 
 		const codemetaRequirements = (cm?.data.softwareRequirements ?? []).map((d) =>
-			toDependencyLd(d.name ?? d.identifier ?? '', d.version, d.identifier, d.runtimePlatform, {
-				codeRepository: d.codeRepository,
-				type: d.type,
-				url: d.url,
-			}),
+			codemetaDependencyToLd(d),
 		)
 
 		// Package manager manifests list every dependency, so they replace
-		// codemeta.json entries. Other manifests leave out the host platform
-		// (e.g. Cinder itself for a cinderblock.xml) and often list only ids, so
-		// codemeta.json entries enrich matching dependencies and the rest are
-		// appended.
+		// codemeta.json entries, keeping only the authors they can't declare.
+		// Other manifests leave out the host platform (e.g. Cinder itself for a
+		// cinderblock.xml) and often list only ids, so codemeta.json entries
+		// enrich matching dependencies and the rest are appended.
 		const { fromOtherManifests, fromPackageManager } = runtimeDependencies
 		const softwareRequirements = deduplicateDependencies(
 			fromPackageManager.length > 0
-				? [...fromPackageManager, ...fromOtherManifests]
+				? addCodemetaDependencyAuthors(
+						[...fromPackageManager, ...fromOtherManifests],
+						codemetaRequirements,
+					)
 				: mergeCodemetaDependencies(fromOtherManifests, codemetaRequirements),
 		)
 
@@ -550,22 +493,14 @@ export const codemeta = defineTemplate(
 			rubyGemspec,
 		})
 
+		const codemetaSuggestions = cm?.data.softwareSuggestions?.map((d) => codemetaDependencyToLd(d))
+
 		const softwareSuggestions =
 			developmentDependencies.length > 0
-				? deduplicateDependencies(developmentDependencies)
-				: cm?.data.softwareSuggestions?.map((d) =>
-						toDependencyLd(
-							d.name ?? d.identifier ?? '',
-							d.version,
-							d.identifier,
-							d.runtimePlatform,
-							{
-								codeRepository: d.codeRepository,
-								type: d.type,
-								url: d.url,
-							},
-						),
+				? deduplicateDependencies(
+						addCodemetaDependencyAuthors(developmentDependencies, codemetaSuggestions ?? []),
 					)
+				: codemetaSuggestions
 
 		// ── Dates ───────────────────────────────────────────────────
 
@@ -782,6 +717,29 @@ function gemspecAuthors(
 }
 
 /**
+ * Convert persons or organizations parsed from codemeta.json back to JSON-LD
+ * nodes, dropping any without identifying information.
+ */
+function codemetaPersonsOrOrgsToLd(
+	persons: CodeMetaJsonPersonOrOrg[] | undefined,
+): CodemetaPersonOrOrgLd[] {
+	return (persons ?? [])
+		.map((p) =>
+			toPersonOrOrgLd({
+				affiliation: p.affiliation,
+				email: p.email,
+				familyName: p.familyName,
+				givenName: p.givenName,
+				id: p.id,
+				name: p.name,
+				type: p.type,
+				url: p.url,
+			}),
+		)
+		.filter((p) => p !== undefined)
+}
+
+/**
  * Takes ecosystem persons (which may include undefined) and codemeta fallback
  * persons. Uses ecosystem if any are present, otherwise falls back. Always
  * deduplicates by name.
@@ -804,6 +762,25 @@ function resolvePersonsOrOrgs(
 }
 
 // ─── Dependency Helpers ─────────────────────────────────────────────
+
+/**
+ * Convert a dependency parsed from codemeta.json back to a JSON-LD dependency
+ * node.
+ */
+function codemetaDependencyToLd(dependency: CodeMetaJsonDependency): CodemetaDependencyLd {
+	return toDependencyLd(
+		dependency.name ?? dependency.identifier ?? '',
+		dependency.version,
+		dependency.identifier,
+		dependency.runtimePlatform,
+		{
+			author: deduplicatePersonsOrOrgs(codemetaPersonsOrOrgsToLd(dependency.author)),
+			codeRepository: dependency.codeRepository,
+			type: dependency.type,
+			url: dependency.url,
+		},
+	)
+}
 
 /**
  * Collect runtime dependencies from all ecosystem sources, split into

@@ -38,6 +38,7 @@ export type CodemetaPersonOrOrgLd = {
  */
 export type CodemetaDependencyLd = {
 	'@type': 'SoftwareApplication' | 'SoftwareSourceCode'
+	author?: CodemetaPersonOrOrgLd[]
 	codeRepository?: string
 	identifier?: string
 	name: string
@@ -142,6 +143,7 @@ export function toDependencyLd(
 	identifier?: string,
 	runtimePlatform?: string,
 	details?: {
+		author?: CodemetaPersonOrOrgLd[]
 		codeRepository?: string
 		type?: CodemetaDependencyLd['@type']
 		url?: string
@@ -169,6 +171,10 @@ export function toDependencyLd(
 
 	if (is.nonEmptyStringAndNotWhitespace(details?.url)) {
 		dependency.url = details.url
+	}
+
+	if (details?.author !== undefined && details.author.length > 0) {
+		dependency.author = details.author
 	}
 
 	return dependency
@@ -209,6 +215,25 @@ export function mergeCodemetaDependencies(
 	})
 
 	return [...merged, ...unmatched]
+}
+
+/**
+ * Copy authors from matching codemeta.json entries onto package manager
+ * dependencies, since package manager manifests can't declare dependency
+ * authors. Matching follows `mergeCodemetaDependencies`. Unmatched
+ * codemeta.json entries are dropped, because the manifest decides which
+ * dependencies exist.
+ */
+export function addCodemetaDependencyAuthors(
+	manifestDependencies: CodemetaDependencyLd[],
+	codemetaDependencies: CodemetaDependencyLd[],
+): CodemetaDependencyLd[] {
+	return manifestDependencies.map((manifestDependency) => {
+		const author = codemetaDependencies.find((codemetaDependency) =>
+			dependenciesMatch(manifestDependency, codemetaDependency),
+		)?.author
+		return author === undefined ? manifestDependency : { ...manifestDependency, author }
+	})
 }
 
 /**

@@ -218,6 +218,7 @@ const codeMetaPersonArray = z
 // ─── Dependency sub-schema ───────────────────────────────────────────
 
 const codeMetaDependencySchema = z.object({
+	author: codeMetaPersonArray,
 	codeRepository: optionalUrl,
 	identifier: nonEmptyString,
 	name: nonEmptyString,
@@ -229,7 +230,8 @@ const codeMetaDependencySchema = z.object({
 
 /**
  * Preprocess a raw dependency value into a normalized shape. Handles: plain
- * string → {name: string}, and `@type` → `type`.
+ * string → {name: string}, and `@type` → `type`. Authors are normalized by the
+ * schema's person array.
  */
 function preprocessDependency(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
@@ -274,6 +276,10 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 
 	if (typeof value.url === 'string') {
 		dependency.url = value.url
+	}
+
+	if (value.author !== undefined) {
+		dependency.author = value.author
 	}
 
 	const dependencyKey = dependency.name ?? dependency.identifier
@@ -356,6 +362,10 @@ export const codeMetaJsonDataSchema = z.object({
 })
 
 export type CodeMetaJson = z.infer<typeof codeMetaJsonDataSchema>
+
+export type CodeMetaJsonDependency = z.infer<typeof codeMetaDependencySchema>
+
+export type CodeMetaJsonPersonOrOrg = z.infer<typeof codeMetaPersonOrOrgSchema>
 
 export type CodeMetaJsonData = OneOrMany<SourceRecord<CodeMetaJson>> | undefined
 
