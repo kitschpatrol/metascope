@@ -3,6 +3,7 @@ import type { MetadataContext } from '../src/lib/metadata-types'
 import { sourceNames } from '../src/lib/metadata'
 import { parse as parseCodemetaJson } from '../src/lib/sources/codemeta-json'
 import { codemeta } from '../src/lib/templates/codemeta'
+import { metadata } from '../src/lib/templates/metadata'
 
 const emptyContext = Object.fromEntries(
 	sourceNames.map((name) => [name, undefined]),
@@ -26,6 +27,10 @@ function packageJsonRecord(
 		},
 		source: 'package.json',
 	}
+}
+
+function gitConfigRecord(remoteUrl: string): MetadataContext['gitConfig'] {
+	return { data: { remote: { origin: { url: remoteUrl } } }, source: '.git/config' }
 }
 
 const authoredRequirements = [
@@ -100,5 +105,41 @@ describe('dependency authors in the CodeMeta cascade', () => {
 		)
 
 		expect(regenerated.softwareRequirements).toEqual(generated.softwareRequirements)
+	})
+})
+
+describe('git remote in the CodeMeta cascade', () => {
+	it('should use the git remote when there is no GitHub data', () => {
+		const context = { ...emptyContext, gitConfig: gitConfigRecord('git@gitlab.com:owner/repo.git') }
+
+		expect(codemeta(context, {}).codeRepository).toBe('https://gitlab.com/owner/repo')
+	})
+
+	it('should prefer GitHub data over the git remote', () => {
+		const context = {
+			...emptyContext,
+			gitConfig: gitConfigRecord('git@github.com:owner/old-name.git'),
+			github: { data: { url: 'https://github.com/owner/new-name' }, source: 'owner/old-name' },
+		}
+
+		expect(codemeta(context, {}).codeRepository).toBe('https://github.com/owner/new-name')
+	})
+
+	it('should prefer the git remote over a manifest repository', () => {
+		const context = {
+			...emptyContext,
+			gitConfig: gitConfigRecord('git@github.com:fork/repo.git'),
+			nodePackageJson: packageJsonRecord({
+				repository: { type: 'git', url: 'https://github.com/upstream/repo' },
+			}),
+		}
+
+		expect(codemeta(context, {}).codeRepository).toBe('https://github.com/fork/repo')
+	})
+
+	it('should give metadata.json a homepage from the git remote', () => {
+		const context = { ...emptyContext, gitConfig: gitConfigRecord('git@github.com:owner/repo.git') }
+
+		expect(metadata(context, {}).homepage).toBe('https://github.com/owner/repo')
 	})
 })

@@ -3,6 +3,7 @@
  */
 
 import gitUrlParse from 'git-url-parse'
+import { remotesOriginFirst } from './git-remote'
 
 /**
  * Extract a GitHub owner/repo from git config remote URLs. Prefers the "origin"
@@ -15,17 +16,7 @@ export function getGitHubRemoteFromConfig(
 		return undefined
 	}
 
-	// Prefer "origin" remote, fall back to first GitHub remote
-	const sorted = Object.entries(remotes).toSorted(([a], [b]) => {
-		if (a === 'origin') {
-			return -1
-		}
-
-		return b === 'origin' ? 1 : 0
-	})
-
-	for (const [, remote] of sorted) {
-		const { url } = remote
+	for (const { url } of remotesOriginFirst(remotes)) {
 		if (url === undefined || url === '') {
 			continue
 		}

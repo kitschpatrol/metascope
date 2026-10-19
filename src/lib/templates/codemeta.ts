@@ -49,6 +49,7 @@ import {
 	toPersonOrOrgLd,
 	toSpdxLicenseUrl,
 } from '../utilities/codemeta-helpers'
+import { getRepositoryUrlFromConfig } from '../utilities/git-remote'
 import {
 	collectArrayField,
 	collectField,
@@ -81,6 +82,7 @@ export const codemeta = defineTemplate(
 		codemetaJson: codemetaRaw,
 		codeStats,
 		fileStats,
+		gitConfig,
 		github: githubRaw,
 		gitStats: gitRaw,
 		goGoMod,
@@ -374,8 +376,11 @@ export const codemeta = defineTemplate(
 
 		// ── Code ────────────────────────────────────────────────────
 
+		// GitHub data is looked up from the git remote, so the remote comes right
+		// after it to keep offline output in line with online output
 		const codeRepository =
 			github?.data.url ??
+			getRepositoryUrlFromConfig(firstOf(gitConfig)?.data.remote) ??
 			cargo?.data.repository ??
 			pom?.data.scmUrl ??
 			goMod?.data.repository_url ??
