@@ -42,6 +42,7 @@ import {
 	deduplicateDependencies,
 	deduplicatePersonsOrOrgs,
 	isProprietaryLicenseSentinel,
+	mergeCodemetaDependencies,
 	toDependencyLd,
 	toPersonOrOrgLd,
 	toSpdxLicenseUrl,
@@ -531,13 +532,14 @@ export const codemeta = defineTemplate(
 
 		// Package manager manifests list every dependency, so they replace
 		// codemeta.json entries. Other manifests leave out the host platform
-		// (e.g. Cinder itself for a cinderblock.xml), so codemeta.json entries are
-		// merged in after them, and the manifest wins when both name a dependency.
+		// (e.g. Cinder itself for a cinderblock.xml) and often list only ids, so
+		// codemeta.json entries enrich matching dependencies and the rest are
+		// appended.
 		const { fromOtherManifests, fromPackageManager } = runtimeDependencies
 		const softwareRequirements = deduplicateDependencies(
 			fromPackageManager.length > 0
 				? [...fromPackageManager, ...fromOtherManifests]
-				: [...fromOtherManifests, ...codemetaRequirements],
+				: mergeCodemetaDependencies(fromOtherManifests, codemetaRequirements),
 		)
 
 		const developmentDependencies = collectDevelopmentDependencies({
@@ -928,7 +930,9 @@ function collectRuntimeDependencies(sources: {
 	)
 
 	// Cinder requires
-	fromOtherManifests.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
+	fromOtherManifests.push(
+		...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d, undefined, d)),
+	)
 
 	// Publiccode.yml dependencies
 	fromOtherManifests.push(

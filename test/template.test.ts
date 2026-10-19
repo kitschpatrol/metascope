@@ -374,19 +374,26 @@ describe('codemeta template', () => {
 			{},
 		)
 		expect(result.softwareRequirements).toEqual([
-			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+			{ '@type': 'SoftwareApplication', identifier: 'com.example.osc', name: 'com.example.osc' },
 			{ '@type': 'SoftwareSourceCode', name: 'Cinder' },
 		])
 	})
 
-	it('should keep the cinderblock.xml entry when codemeta.json names the same dependency', () => {
+	it('should enrich a cinderblock.xml requires entry from a codemeta.json entry with the same name', () => {
 		const result = codemeta(
 			{
 				...mockContext,
 				cinderCinderblockXml: cinderblockWithRequires,
 				codemetaJson: {
 					data: {
-						softwareRequirements: [{ name: 'com.example.osc', version: '2.0.0' }],
+						softwareRequirements: [
+							{
+								codeRepository: 'https://github.com/example/osc.git',
+								name: 'com.example.osc',
+								type: 'SoftwareSourceCode',
+								url: 'https://example.com/osc',
+							},
+						],
 					},
 					source: 'codemeta.json',
 				},
@@ -395,7 +402,47 @@ describe('codemeta template', () => {
 			{},
 		)
 		expect(result.softwareRequirements).toEqual([
-			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+			{
+				'@type': 'SoftwareSourceCode',
+				codeRepository: 'https://github.com/example/osc.git',
+				identifier: 'com.example.osc',
+				name: 'com.example.osc',
+				url: 'https://example.com/osc',
+			},
+		])
+	})
+
+	it('should match a cinderblock.xml requires entry to a codemeta.json entry by identifier', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				cinderCinderblockXml: cinderblockWithRequires,
+				codemetaJson: {
+					data: {
+						softwareRequirements: [
+							{
+								codeRepository: 'https://github.com/example/Cinder-OSC.git',
+								identifier: 'COM.EXAMPLE.OSC',
+								name: 'Cinder-OSC',
+								type: 'SoftwareSourceCode',
+								version: '2.0.0',
+							},
+						],
+					},
+					source: 'codemeta.json',
+				},
+				nodePackageJson: undefined,
+			},
+			{},
+		)
+		expect(result.softwareRequirements).toEqual([
+			{
+				'@type': 'SoftwareSourceCode',
+				codeRepository: 'https://github.com/example/Cinder-OSC.git',
+				identifier: 'com.example.osc',
+				name: 'Cinder-OSC',
+				version: '2.0.0',
+			},
 		])
 	})
 
@@ -424,7 +471,7 @@ describe('codemeta template', () => {
 		)
 		expect(result.softwareRequirements).toEqual([
 			{ '@type': 'SoftwareApplication', name: 'express', version: '^4.18.0' },
-			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+			{ '@type': 'SoftwareApplication', identifier: 'com.example.osc', name: 'com.example.osc' },
 		])
 	})
 

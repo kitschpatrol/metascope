@@ -175,6 +175,57 @@ export function toDependencyLd(
 }
 
 /**
+ * Enrich manifest dependencies with matching codemeta.json entries, then append
+ * the codemeta.json entries that match nothing. Entries match when either one's
+ * name or identifier equals the other's (case-insensitive). The manifest keeps
+ * the fields it sets, except that a manifest name which is only its identifier
+ * (e.g. a cinderblock.xml block id) yields to the codemeta.json name. Manifests
+ * never declare a type, so the codemeta.json `@type` wins.
+ */
+export function mergeCodemetaDependencies(
+	manifestDependencies: CodemetaDependencyLd[],
+	codemetaDependencies: CodemetaDependencyLd[],
+): CodemetaDependencyLd[] {
+	const unmatched = [...codemetaDependencies]
+	const merged = manifestDependencies.map((manifestDependency) => {
+		const matchIndex = unmatched.findIndex((codemetaDependency) =>
+			dependenciesMatch(manifestDependency, codemetaDependency),
+		)
+		const codemetaDependency = unmatched[matchIndex]
+		if (codemetaDependency === undefined) {
+			return manifestDependency
+		}
+
+		unmatched.splice(matchIndex, 1)
+		const nameIsIdentifier =
+			manifestDependency.identifier !== undefined &&
+			manifestDependency.name === manifestDependency.identifier
+		return {
+			...codemetaDependency,
+			...manifestDependency,
+			'@type': codemetaDependency['@type'],
+			name: nameIsIdentifier ? codemetaDependency.name : manifestDependency.name,
+		}
+	})
+
+	return [...merged, ...unmatched]
+}
+
+/**
+ * True if either dependency's name or identifier equals one of the other's,
+ * ignoring case.
+ */
+function dependenciesMatch(a: CodemetaDependencyLd, b: CodemetaDependencyLd): boolean {
+	const keysOf = (dependency: CodemetaDependencyLd) =>
+		[dependency.name, dependency.identifier]
+			.filter((key) => key !== undefined)
+			.map((key) => key.toLowerCase().trim())
+			.filter((key) => key.length > 0)
+	const bKeys = new Set(keysOf(b))
+	return keysOf(a).some((key) => bKeys.has(key))
+}
+
+/**
  * Deduplicate dependencies by name (case-insensitive). Keeps the first
  * occurrence. Returns undefined if the result is empty.
  */
