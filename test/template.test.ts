@@ -219,7 +219,7 @@ describe('defineTemplate', () => {
 describe('codemeta template', () => {
 	it('should produce a valid JSON-LD structure', () => {
 		const result = codemeta(mockContext, {})
-		expect(result['@context']).toBe('https://w3id.org/codemeta/3.0')
+		expect(result['@context']).toBe('https://w3id.org/codemeta/3.1')
 		expect(result['@type']).toBe('SoftwareSourceCode')
 	})
 
@@ -579,6 +579,47 @@ describe('codemeta template', () => {
 		expect(result.dateModified).toBe('2025-06-20')
 	})
 
+	it('should prefer a declared creation date over the first commit date', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				codemetaJson: { data: { dateCreated: '2008-05-12' }, source: 'codemeta.json' },
+				gitStats: { data: { commitDateFirst: '2010-05-20T16:32:40-04:00' }, source: 'test' },
+			},
+			{},
+		)
+		expect(result.dateCreated).toBe('2008-05-12')
+	})
+
+	it('should prefer a declared codemeta license over a detected license file', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				codemetaJson: {
+					data: { license: 'https://spdx.org/licenses/LGPL-3.0-or-later' },
+					source: 'codemeta.json',
+				},
+				licenseFile: {
+					data: {
+						match: {
+							confidence: 1,
+							name: 'GNU Lesser General Public License v3.0 only',
+							osiApproved: true,
+							spdxId: 'LGPL-3.0-only',
+							spdxUrl: 'https://spdx.org/licenses/LGPL-3.0-only',
+							status: 'exact',
+						},
+						type: 'spdx',
+					},
+					source: 'COPYING.LESSER',
+				},
+				nodePackageJson: undefined,
+			},
+			{},
+		)
+		expect(result.license).toBe('https://spdx.org/licenses/LGPL-3.0-or-later')
+	})
+
 	it('should merge keywords from multiple sources and deduplicate', () => {
 		const contextWithKeywords: MetadataContext = {
 			...mockContext,
@@ -686,7 +727,7 @@ describe('codemeta template', () => {
 			nodePackageJson: undefined,
 		}
 		const result = codemeta(emptyContext, {})
-		expect(result['@context']).toBe('https://w3id.org/codemeta/3.0')
+		expect(result['@context']).toBe('https://w3id.org/codemeta/3.1')
 		expect(result['@type']).toBe('SoftwareSourceCode')
 		// Should just have the boilerplate, nothing else
 		expect(Object.keys(result)).toEqual(['@context', '@type'])

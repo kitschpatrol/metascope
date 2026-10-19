@@ -569,7 +569,9 @@ export const codemeta = defineTemplate(
 
 		// ── Dates ───────────────────────────────────────────────────
 
-		const dateCreated = git?.data.commitDateFirst ?? github?.data.createdAt ?? cm?.data.dateCreated
+		// A declared creation date wins, since projects often predate their
+		// repository
+		const dateCreated = cm?.data.dateCreated ?? git?.data.commitDateFirst ?? github?.data.createdAt
 
 		const dateModified = git?.data.commitDateLast ?? github?.data.pushedAt ?? cm?.data.dateModified
 
@@ -599,9 +601,11 @@ export const codemeta = defineTemplate(
 			arduino?.data.license ??
 			cinder?.data.license ??
 			publiccode?.data.license ??
+			// Declared licenses win over ones detected from license text, which
+			// can't tell `-only` from `-or-later`
+			resolveCmLicense(cm?.data.license) ??
 			github?.data.licenseSpdxId ??
-			collectField(licenseFile, (d) => (d.type === 'spdx' ? d.match?.spdxId : undefined))[0] ??
-			resolveCmLicense(cm?.data.license)
+			collectField(licenseFile, (d) => (d.type === 'spdx' ? d.match?.spdxId : undefined))[0]
 
 		const license = is.nonEmptyStringAndNotWhitespace(rawLicense)
 			? isProprietaryLicenseSentinel(rawLicense)
@@ -698,7 +702,7 @@ export const codemeta = defineTemplate(
 		// ── Build the JSON-LD object ────────────────────────────────
 
 		return stripUndefined({
-			'@context': 'https://w3id.org/codemeta/3.0',
+			'@context': 'https://w3id.org/codemeta/3.1',
 			'@type': 'SoftwareSourceCode',
 			// Application
 			applicationCategory: appCategory,

@@ -30,7 +30,29 @@ export type LicenseFileRecord = {
 
 export type LicenseFileData = OneOrMany<SourceRecord<LicenseFileRecord>> | undefined
 
-export const licenseFileSource = defineSource<'licenseFile'>({
+function isGpl(record: SourceRecord<LicenseFileRecord>): boolean {
+	return record.data.match?.spdxId.startsWith('GPL-') ?? false
+}
+
+function isLgpl(record: SourceRecord<LicenseFileRecord>): boolean {
+	return record.data.match?.spdxId.startsWith('LGPL-') ?? false
+}
+
+/**
+ * Put GPL records after the rest when a project also ships the LGPL, as in the
+ * GNU convention of COPYING (GPL) beside COPYING.LESSER (LGPL). The LGPL is the
+ * project's license; the GPL text is included because the LGPL incorporates it.
+ * Consumers that read the first record then see the operative license.
+ */
+function orderLicenseFiles(data: LicenseFileData): LicenseFileData {
+	const shipsBoth =
+		Array.isArray(data) &&
+		data.some((record) => isLgpl(record)) &&
+		data.some((record) => isGpl(record))
+	return shipsBoth ? data.toSorted((a, b) => Number(isGpl(a)) - Number(isGpl(b))) : data
+}
+
+const licenseFileBaseSource = defineSource<'licenseFile'>({
 	async discover(context) {
 		return getMatches(context.options, ['{,un}licen{c,s}e{,.*}', 'copying{,.lesser}{,.*}'])
 	},
@@ -51,3 +73,10 @@ export const licenseFileSource = defineSource<'licenseFile'>({
 	},
 	phase: 1,
 })
+
+export const licenseFileSource: typeof licenseFileBaseSource = {
+	...licenseFileBaseSource,
+	async extract(context) {
+		return orderLicenseFiles(await licenseFileBaseSource.extract(context))
+	},
+}

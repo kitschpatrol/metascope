@@ -153,17 +153,33 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	// Extended notices, translated text, and GNU supplements may score poorly
 	// against a full template. Prefer their explicit hints over a weak lexical
 	// guess, without treating a referenced license as confirmed.
-	const hintId = reference?.spdxId ?? identifyByHeader(text)
-	const hint = fingerprints.find((entry) => entry.spdxId === hintId)
+	const hint = matchHint(
+		reference?.spdxId ?? identifyByHeader(text),
+		inputBigrams,
+		normalized.length - 1,
+	)
 	if (hint) {
-		return buildMatch(
-			hint.spdxId,
-			licenseDiceScore(inputBigrams, normalized.length - 1, hint.bigrams, hint.totalBigrams),
-			'uncertain',
-		)
+		return hint
 	}
 
 	return best === undefined ? undefined : buildMatch(best.spdxId, best.confidence, 'uncertain')
+}
+
+/**
+ * Build an uncertain match for a hinted license, scored against its closest
+ * fingerprint (the full template or a standalone supplement).
+ */
+function matchHint(
+	spdxId: string | undefined,
+	inputBigrams: Map<string, number>,
+	inputTotal: number,
+): LicenseMatch | undefined {
+	const scores = getLicenseFingerprints()
+		.filter((entry) => entry.spdxId === spdxId)
+		.map((entry) => licenseDiceScore(inputBigrams, inputTotal, entry.bigrams, entry.totalBigrams))
+	return spdxId === undefined || scores.length === 0
+		? undefined
+		: buildMatch(spdxId, Math.max(...scores), 'uncertain')
 }
 
 /** Accept explicit license pointers, excluding extra conditions and negations. */

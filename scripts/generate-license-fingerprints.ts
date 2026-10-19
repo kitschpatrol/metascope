@@ -8,6 +8,7 @@ import type { FingerprintHeader } from '../src/lib/utilities/license-fingerprint
 import {
 	computeLicenseBigrams,
 	computeLicenseWordSignature,
+	getLicenseSupplements,
 	hashLicenseText,
 	normalizeLicenseText,
 } from '../src/lib/utilities/license-fingerprint'
@@ -18,10 +19,17 @@ export function generateLicenseFingerprints(): {
 	sourceVersion: string
 	version: number
 } {
-	const entries = Object.entries(licenses).map(([spdxId, entry]) => {
-		const normalized = normalizeLicenseText(entry.licenseText)
-		return { ...entry, bigrams: computeLicenseBigrams(normalized), normalized, spdxId }
-	})
+	const references = Object.entries(licenses).map(([spdxId, entry]) => ({
+		...entry,
+		normalized: normalizeLicenseText(entry.licenseText),
+		spdxId,
+	}))
+	// Supplements follow the full corpus, so each SPDX ID's first entry is its
+	// complete template
+	const entries = [...references, ...getLicenseSupplements(references)].map((entry) => ({
+		...entry,
+		bigrams: computeLicenseBigrams(entry.normalized),
+	}))
 	const dictionary = [
 		...new Set(entries.flatMap((entry) => entry.bigrams.keys().toArray())),
 	].toSorted()

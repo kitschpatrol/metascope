@@ -7,6 +7,7 @@ import { resetMatchCache } from '../../src/lib/file-matching'
 import { licenseFileSource } from '../../src/lib/sources/license-file'
 import { identifyLicense, spdxIdToUrl } from '../../src/lib/utilities/license-identification'
 
+// Fixture repository names: cspell:ignore flashspan
 const fixturesDirectory = resolve('test/fixtures/license-file')
 const OSI_LICENSE_PATH_REGEX = /^\/license\/[^\/]+$/v
 
@@ -79,6 +80,17 @@ describe('licenseFile source', () => {
 
 		// The multi/ directory has LICENSE (BSD-3-Clause) and COPYING.md (GPL), should have 2
 		expect(Array.isArray(result)).toBe(true)
+	})
+
+	it('should list an LGPL file before the GPL it supplements', async () => {
+		const result = await licenseFileSource.extract({
+			options: { absolute: false, path: resolve(fixturesDirectory, 'kitschpatrol-flashspan') },
+		})
+
+		expect(result).toMatchObject([
+			{ data: { match: { spdxId: 'LGPL-3.0-only' }, type: 'spdx' }, source: 'COPYING.LESSER' },
+			{ data: { match: { spdxId: 'GPL-3.0-only' }, type: 'spdx' }, source: 'COPYING' },
+		])
 	})
 })
 

@@ -4,12 +4,13 @@ import { join } from 'node:path'
 import licenses from 'spdx-license-list/full.js'
 import { describe, expect, it } from 'vitest'
 import { licenseFileSource } from '../src/lib/sources/license-file'
+import { normalizeLicenseText } from '../src/lib/utilities/license-fingerprint'
 import { identifyLicense } from '../src/lib/utilities/license-identification'
 import { getLicenseMutations } from './benchmarks/license-mutations'
 
 const cases = getLicenseMutations()
 
-// Fixture repository names: cspell:ignore baartel escrevenome jayman mahdimajidzadeh wikilicense mooculus opencfu pokefans swashdev
+// Fixture repository names: cspell:ignore baartel flashspan escrevenome jayman mahdimajidzadeh wikilicense mooculus opencfu pokefans swashdev
 
 describe('license mutation regression corpus', () => {
 	it.each(
@@ -69,17 +70,37 @@ describe('license mutation regression corpus', () => {
 	})
 
 	it('collapses near-tied variants of one license to its current ID', async () => {
-		// An older GPL v3 revision scores almost equally against the deprecated
-		// GPL-3.0+ template and the current GPL-3.0 templates
+		// An altered copy of the FSF's GPL v3 text scores almost equally against
+		// the deprecated GPL-3.0+ template and the current GPL-3.0 templates
 		const text = await readFile(
 			join('test/fixtures/license-file', 'kitschpatrol-cinder-opencfu/license.txt'),
 			'utf8',
 		)
-		expect(identifyLicense(text)).toMatchObject({
+		expect(identifyLicense(`${text}\nThis copy adds an extra clause.`)).toMatchObject({
 			spdxId: 'GPL-3.0-only',
 			spdxUrl: 'https://spdx.org/licenses/GPL-3.0-only',
 			status: 'modified',
 		})
+	})
+
+	it.each([
+		['COPYING', 'GPL-3.0-only'],
+		['COPYING.LESSER', 'LGPL-3.0-only'],
+	])('matches the verbatim FSF %s text exactly', async (file, spdxId) => {
+		// The FSF files indent their copyright line and use straight quotes, and
+		// the LGPL file is only the supplement to the GPL
+		const text = await readFile(
+			join('test/fixtures/license-file/kitschpatrol-flashspan', file),
+			'utf8',
+		)
+		expect(identifyLicense(text)).toMatchObject({ confidence: 1, spdxId, status: 'exact' })
+	})
+
+	it('keeps wrapped prose that starts a line with "copyright"', () => {
+		expect(normalizeLicenseText('granted for the term of\ncopyright on the Program')).toBe(
+			'granted for the term of copyright on the program',
+		)
+		expect(normalizeLicenseText('  Copyright (C) 2007 Free Software Foundation\nText')).toBe('text')
 	})
 
 	it('reports the current ID for text that only matches a deprecated variant template', () => {
