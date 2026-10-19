@@ -21,6 +21,9 @@
  * (developmentStatus, funding, buildInstructions, …) the existing codemeta.json
  * is the source of truth.
  *
+ * The GitHub-oriented metadata.json format supplies descriptions, homepages,
+ * keywords, and repository URLs as additional sources in the cascade.
+ *
  * ## Software type inference
  *
  * Set `INFER_TARGET_PRODUCT` to `true` to enable heuristic inference of
@@ -77,6 +80,7 @@ export const codemeta = defineTemplate(
 		goGoMod,
 		javaPomXml,
 		licenseFile,
+		metadataFile,
 		metascope,
 		nodeNpmRegistry: npmRaw,
 		nodePackageJson,
@@ -98,6 +102,7 @@ export const codemeta = defineTemplate(
 		// ── Extract first record from OneOrMany sources ──────────────
 
 		const cm = firstOf(codemetaRaw)
+		const metadata = firstOf(metadataFile)?.data
 		const github = firstOf(githubRaw)
 		const git = firstOf(gitRaw)
 		const npm = firstOf(npmRaw)
@@ -169,6 +174,7 @@ export const codemeta = defineTemplate(
 			obsidian?.data.description ??
 			publiccode?.data.description?.shortDescription ??
 			cm?.data.description ??
+			metadata?.description ??
 			github?.data.description
 
 		const version =
@@ -431,7 +437,8 @@ export const codemeta = defineTemplate(
 			cm?.data.codeRepository ??
 			repositoryUrlFromPackageJson(package_?.data.repository) ??
 			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
-			poetry?.repository
+			poetry?.repository ??
+			metadata?.repository
 
 		const programmingLanguage =
 			nonEmpty([
@@ -597,6 +604,7 @@ export const codemeta = defineTemplate(
 				...(publiccode?.data.categories ?? []),
 				...(github?.data.topics ?? []),
 				...(cm?.data.keywords ?? []),
+				...(metadata?.keywords ?? []),
 			]),
 		)
 
@@ -621,6 +629,7 @@ export const codemeta = defineTemplate(
 			publiccode?.data.landingUrl ??
 			github?.data.homepageUrl ??
 			cm?.data.url ??
+			metadata?.homepage ??
 			caseInsensitiveLookup(pyproject?.data.project?.urls, 'repository') ??
 			poetry?.repository
 

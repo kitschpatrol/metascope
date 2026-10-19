@@ -60,6 +60,31 @@ describe('metadataFile source', () => {
 })
 
 describe('parse', () => {
+	it('should keep the GitHub metadata schema narrow', () => {
+		const result = parseMetadata(
+			JSON.stringify({
+				author: [{ name: 'Ignored author' }],
+				codeRepository: 'https://example.com/ignored',
+				description: 'A light sculpture.',
+				homepage: 'https://example.com/sculpture',
+				license: 'MIT',
+				name: 'Ignored name',
+				runtimePlatform: ['Processing'],
+				topics: ['installation'],
+			}),
+			'json',
+		)
+
+		expect(result).toMatchObject({
+			description: 'A light sculpture.',
+			homepage: 'https://example.com/sculpture',
+			keywords: ['installation'],
+		})
+		for (const field of ['author', 'codeRepository', 'license', 'name', 'runtimePlatform']) {
+			expect(result).not.toHaveProperty(field)
+		}
+	})
+
 	it('should parse a JSON metadata file', async () => {
 		const content = await readFile(resolve(fixturesDirectory, 'basic/metadata.json'), 'utf8')
 		const result = parseMetadata(content, 'json')

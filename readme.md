@@ -504,6 +504,8 @@ If multiple key aliases are present in the object, priority for populating the a
 
 _If you have more metadata to define but your project lacks a canonical package specification format, then creating a `codemeta.json` file is recommended over the non-standard `metadata.json`._
 
+The `codemeta` and `codemetaJson` templates also aggregate these parsed fields: `description` supplies a description fallback, `homepage` maps to `url`, and an explicit `repository` maps to `codeRepository`. Keywords join the existing keyword aggregation and are deduplicated. Ecosystem manifests and existing `codemeta.json` values retain their precedence. This uses the same small metadata format; project names and richer metadata still come from the other sources.
+
 ## Templates
 
 Metascope provides a basic templating / output transformation functionality to compose its output into more compact and focused representations.
