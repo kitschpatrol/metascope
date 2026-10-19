@@ -9,7 +9,7 @@ import { getLicenseMutations } from './benchmarks/license-mutations'
 
 const cases = getLicenseMutations()
 
-// Fixture repository names: cspell:ignore baartel escrevenome jayman mahdimajidzadeh wikilicense mooculus pokefans swashdev
+// Fixture repository names: cspell:ignore baartel escrevenome jayman mahdimajidzadeh wikilicense mooculus opencfu pokefans swashdev
 
 describe('license mutation regression corpus', () => {
 	it.each(
@@ -66,6 +66,28 @@ describe('license mutation regression corpus', () => {
 	])('retains the explicit hint in %s as an uncertain candidate', async (path, spdxId) => {
 		const text = await readFile(join('test/fixtures/license-file', path), 'utf8')
 		expect(identifyLicense(text)).toMatchObject({ spdxId, status: 'uncertain' })
+	})
+
+	it('collapses near-tied variants of one license to its current ID', async () => {
+		// An older GPL v3 revision scores almost equally against the deprecated
+		// GPL-3.0+ template and the current GPL-3.0 templates
+		const text = await readFile(
+			join('test/fixtures/license-file', 'kitschpatrol-cinder-opencfu/license.txt'),
+			'utf8',
+		)
+		expect(identifyLicense(text)).toMatchObject({
+			spdxId: 'GPL-3.0-only',
+			spdxUrl: 'https://spdx.org/licenses/GPL-3.0-only',
+			status: 'modified',
+		})
+	})
+
+	it('reports the current ID for text that only matches a deprecated variant template', () => {
+		expect(identifyLicense(licenses['GPL-3.0+']!.licenseText)).toMatchObject({
+			confidence: 1,
+			spdxId: 'GPL-3.0-only',
+			status: 'exact',
+		})
 	})
 
 	it('exposes an altered license as a modified source record', async () => {

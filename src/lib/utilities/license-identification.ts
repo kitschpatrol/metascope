@@ -87,7 +87,7 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	}
 
 	if (exactId !== undefined) {
-		return buildMatch(exactId, 1, 'exact')
+		return buildMatch(preferCurrentVariant(exactId), 1, 'exact')
 	}
 
 	// A URL is sufficient for a short, explicit pointer. It must not override
@@ -129,17 +129,19 @@ export function identifyLicense(text: string): LicenseMatch | undefined {
 	}
 
 	const inputWords = computeLicenseWordSignature(normalized)
-	const ranked = candidates
-		.values()
-		.filter((candidate) => candidate.confidence >= CONFIDENCE_THRESHOLD)
-		.toArray()
-		.toSorted((a, b) => b.confidence - a.confidence)
-		.slice(0, 8)
-		.map((candidate) => {
-			const wordScore = licenseWordScore(inputWords, candidate.wordSignature)
-			return { ...candidate, rank: (candidate.confidence + wordScore) / 2, wordScore }
-		})
-		.toSorted((a, b) => b.rank - a.rank)
+	const ranked = collapseSpdxIdVariants(
+		candidates
+			.values()
+			.filter((candidate) => candidate.confidence >= CONFIDENCE_THRESHOLD)
+			.toArray()
+			.toSorted((a, b) => b.confidence - a.confidence)
+			.slice(0, 8)
+			.map((candidate) => {
+				const wordScore = licenseWordScore(inputWords, candidate.wordSignature)
+				return { ...candidate, rank: (candidate.confidence + wordScore) / 2, wordScore }
+			})
+			.toSorted((a, b) => b.rank - a.rank),
+	)
 	const best = ranked[0]
 	if (best) {
 		const margin = best.rank - (ranked[1]?.rank ?? 0)
@@ -373,6 +375,47 @@ function preferSpdxId(a: string, b: string): string {
 	}
 
 	return a < b ? a : b
+}
+
+const SPDX_VARIANT_SUFFIX_REGEX = /(?:\+|-only|-or-later)$/v
+
+/**
+ * Merge ranked candidates that are variants of one license (`GPL-3.0`,
+ * `GPL-3.0+`, `GPL-3.0-only`, `GPL-3.0-or-later`). Their templates can differ
+ * by text revision alone, so a near-tie between them is not real ambiguity.
+ * Each group keeps its best-ranked scores and the current form of the ID, the
+ * same choice made for variants whose templates are identical.
+ */
+function collapseSpdxIdVariants<T extends { spdxId: string }>(ranked: T[]): T[] {
+	const groups = new Map<string, T>()
+	for (const candidate of ranked) {
+		const stem = candidate.spdxId.replace(SPDX_VARIANT_SUFFIX_REGEX, '')
+		const existing = groups.get(stem)
+		if (existing) {
+			existing.spdxId = preferSpdxId(existing.spdxId, candidate.spdxId)
+		} else {
+			groups.set(stem, { ...candidate })
+		}
+	}
+
+	return groups.values().toArray()
+}
+
+/**
+ * Swap a deprecated variant ID (`GPL-3.0+`, bare `GPL-3.0`) for the current
+ * form of the same license, so an older revision of a license text that only
+ * matches the deprecated template still reports a current ID.
+ */
+function preferCurrentVariant(spdxId: string): string {
+	const stem = spdxId.replace(SPDX_VARIANT_SUFFIX_REGEX, '')
+	let preferred = spdxId
+	for (const { spdxId: candidate } of getLicenseFingerprints()) {
+		if (candidate.replace(SPDX_VARIANT_SUFFIX_REGEX, '') === stem) {
+			preferred = preferSpdxId(preferred, candidate)
+		}
+	}
+
+	return preferred
 }
 
 /** Lazy index of normalized URL → preferred SPDX ID. */
