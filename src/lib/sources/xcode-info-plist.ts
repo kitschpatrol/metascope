@@ -1,4 +1,4 @@
-// CSpell:words appletvos appletvsimulator Blacktree bundleid createdby iphoneos iphonesimulator plists TVOS watchos watchsimulator webaddress xros
+// CSpell:words appletvos appletvsimulator Blacktree bundleid createdby googleservice iphoneos iphonesimulator plists TVOS watchos watchsimulator webaddress xros yourcompany
 
 /**
  * Source and parser for Apple `Info.plist` files.
@@ -14,7 +14,7 @@
 
 import is from '@sindresorhus/is'
 import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 import { parse as parsePlist } from 'plist'
 import { z } from 'zod'
 import type { OneOrMany, SourceRecord } from '../source'
@@ -23,7 +23,7 @@ import { defineSource } from '../source'
 import { nonEmptyString, optionalUrl, stringArray } from '../utilities/schema-primitives'
 
 const COPYRIGHT_YEAR_REGEX = /(?:©|\(c\)|copyright)\s*(\d{4})/iv
-const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}\s*(.+)/iv
+const COPYRIGHT_HOLDER_REGEX = /(?:©|\(c\)|copyright)\s*\d{4}(?:\s*[\-–]\s*\d{4})?[\s,]*(.+)/iv
 const ALL_RIGHTS_RESERVED_REGEX = /\.\s*all\s+rights\s+reserved\.?/iv
 const TRAILING_PUNCTUATION_REGEX = /[.,;]+$/v
 const PROCESSOR_ARCH_REGEX = /^(?:arm|x86|i386)/iv
@@ -72,6 +72,19 @@ const XCODE_VARIABLE_RE = /\$[\(\{][^\)\}]+[\)\}]/v
 const XML_COMMENT_RE = /<!--[\s\S]*?-->/gv
 
 /**
+ * Bundle identifier left at a project template's default, e.g. the
+ * `com.yourcompany.openFrameworks` in openFrameworks'
+ * `openFrameworks-Info.plist`.
+ */
+const PLACEHOLDER_IDENTIFIER_RE = /^com\.yourcompany\./iv
+
+/**
+ * Plists whose names match `*-Info.plist` but don't describe a bundle, e.g.
+ * Firebase's `GoogleService-Info.plist`.
+ */
+const NON_BUNDLE_PLIST_RE = /^googleservice-info\.plist$/iv
+
+/**
  * Map DTPlatformName / CFBundleSupportedPlatforms values to human-readable OS
  * names.
  */
@@ -116,7 +129,11 @@ export function parse(content: string): InfoPlist | undefined {
 		getString(data, 'version') ??
 		getString(data, 'CFBundleVersion')
 
-	const identifier = getString(data, 'CFBundleIdentifier') ?? getString(data, 'bundleid')
+	const bundleIdentifier = getString(data, 'CFBundleIdentifier') ?? getString(data, 'bundleid')
+	const identifier =
+		bundleIdentifier === undefined || PLACEHOLDER_IDENTIFIER_RE.test(bundleIdentifier)
+			? undefined
+			: bundleIdentifier
 
 	const { copyrightHolder, copyrightYear } = parseCopyright(data)
 
@@ -336,7 +353,14 @@ function parseProcessorRequirements(data: PlistDict): string[] {
 
 export const xcodeInfoPlistSource = defineSource<'xcodeInfoPlist'>({
 	async discover(context) {
-		return getMatches(context.options, ['Info.plist'])
+		// Xcode keeps each target's plist in the target's folder, and older
+		// templates prefix it with the target name (e.g. `MyApp/MyApp-Info.plist`)
+		const matches = await getMatches(
+			context.options,
+			['Info.plist', '*-Info.plist', '*/Info.plist', '*/*-Info.plist'],
+			['**/Info.plist', '**/*-Info.plist'],
+		)
+		return matches.filter((file) => !NON_BUNDLE_PLIST_RE.test(basename(file)))
 	},
 	key: 'xcodeInfoPlist',
 	async parse(input, context) {
