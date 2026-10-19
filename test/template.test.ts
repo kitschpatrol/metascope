@@ -321,6 +321,61 @@ describe('codemeta template', () => {
 		expect(result.license).toBe('https://spdx.org/licenses/MIT')
 	})
 
+	it.each([
+		['mit', 'https://spdx.org/licenses/MIT'],
+		['https://spdx.org/licenses/Apache-2.0', 'https://spdx.org/licenses/Apache-2.0'],
+		['MIT OR Apache-2.0', 'MIT OR Apache-2.0'],
+		['MIT + Proprietary', 'MIT + Proprietary'],
+		['GPL', 'GPL'],
+	])('should only build an SPDX URL for a known SPDX ID (%s)', (input, expected) => {
+		const result = codemeta(
+			{
+				...mockContext,
+				cinderCinderblockXml: {
+					data: {
+						author: [],
+						id: 'com.example.fixture',
+						license: input,
+						name: 'Fixture',
+						requires: [],
+						supports: [],
+					},
+					source: 'cinderblock.xml',
+				},
+				nodePackageJson: undefined,
+			},
+			{},
+		)
+		expect(result.license).toBe(expected)
+	})
+
+	it('should use cinderblock.xml requires over codemeta.json softwareRequirements', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				cinderCinderblockXml: {
+					data: {
+						author: [],
+						id: 'com.example.fixture',
+						name: 'Fixture',
+						requires: ['com.example.osc'],
+						supports: [],
+					},
+					source: 'cinderblock.xml',
+				},
+				codemetaJson: {
+					data: { softwareRequirements: [{ name: 'Cinder', type: 'SoftwareSourceCode' }] },
+					source: 'codemeta.json',
+				},
+				nodePackageJson: undefined,
+			},
+			{},
+		)
+		expect(result.softwareRequirements).toEqual([
+			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+		])
+	})
+
 	it('should pass through UNLICENSED as a literal proprietary sentinel', () => {
 		const contextWithLicense: MetadataContext = {
 			...mockContext,

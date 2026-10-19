@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+		name="Fixture"
+		id="com.example.fixture"
+		git="https://github.com/example/Cinder-Fixture.git"
+		url="https://github.com/example/Cinder-Fixture"
+		author="Example Author"
+		summary="Fixture block with a companion codemeta.json."
+		version="1.0.0"
+		license="MIT + Proprietary"
+	>
+		<supports os="msw" />
+		<supports os="macosx" />
+		<headerPattern>src/*.h</headerPattern>
+	</block>
+</cinder>

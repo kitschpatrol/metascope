@@ -7,6 +7,7 @@
  */
 
 import is from '@sindresorhus/is'
+import { spdxIdToUrl, toCanonicalSpdxId } from './license-identification'
 
 // ─── JSON-LD Output Types ──────────────────────────────────────────
 
@@ -36,10 +37,12 @@ export type CodemetaPersonOrOrgLd = {
  * A software dependency node in codemeta JSON-LD.
  */
 export type CodemetaDependencyLd = {
-	'@type': 'SoftwareApplication'
+	'@type': 'SoftwareApplication' | 'SoftwareSourceCode'
+	codeRepository?: string
 	identifier?: string
 	name: string
 	runtimePlatform?: string
+	url?: string
 	version?: string
 }
 
@@ -130,15 +133,24 @@ export function deduplicatePersonsOrOrgs(
 // ─── Dependency Construction ────────────────────────────────────────
 
 /**
- * Build a codemeta JSON-LD SoftwareApplication dependency node.
+ * Build a codemeta JSON-LD dependency node. Defaults to `SoftwareApplication`
+ * unless `details.type` says otherwise, and omits empty fields.
  */
 export function toDependencyLd(
 	name: string,
 	version?: string,
 	identifier?: string,
 	runtimePlatform?: string,
+	details?: {
+		codeRepository?: string
+		type?: CodemetaDependencyLd['@type']
+		url?: string
+	},
 ): CodemetaDependencyLd {
-	const dependency: CodemetaDependencyLd = { '@type': 'SoftwareApplication', name }
+	const dependency: CodemetaDependencyLd = {
+		'@type': details?.type ?? 'SoftwareApplication',
+		name,
+	}
 	if (is.nonEmptyStringAndNotWhitespace(version)) {
 		dependency.version = version
 	}
@@ -149,6 +161,14 @@ export function toDependencyLd(
 
 	if (is.nonEmptyStringAndNotWhitespace(runtimePlatform)) {
 		dependency.runtimePlatform = runtimePlatform
+	}
+
+	if (is.nonEmptyStringAndNotWhitespace(details?.codeRepository)) {
+		dependency.codeRepository = details.codeRepository
+	}
+
+	if (is.nonEmptyStringAndNotWhitespace(details?.url)) {
+		dependency.url = details.url
 	}
 
 	return dependency
@@ -176,15 +196,18 @@ export function deduplicateDependencies(
 // ─── License ────────────────────────────────────────────────────────
 
 /**
- * Normalize a license identifier to an SPDX URL. Handles bare SPDX IDs ("MIT")
- * and existing SPDX URLs.
+ * Normalize a license identifier to an SPDX URL. Handles bare SPDX IDs ("MIT"),
+ * matched case-insensitively, and existing SPDX URLs. Anything that isn't a
+ * single known SPDX ID, like a license expression ("MIT OR Apache-2.0") or free
+ * text ("MIT + Proprietary"), is returned unchanged.
  */
-export function toSpdxLicenseUrl(spdxId: string): string {
-	const cleaned = spdxId
+export function toSpdxLicenseUrl(license: string): string {
+	const cleaned = license
 		.replace('https://spdx.org/licenses/', '')
 		// eslint-disable-next-line unicorn/prefer-https
 		.replace('http://spdx.org/licenses/', '')
-	return `https://spdx.org/licenses/${cleaned}`
+	const spdxId = toCanonicalSpdxId(cleaned)
+	return spdxId === undefined ? license : spdxIdToUrl(spdxId)
 }
 
 const SEE_LICENSE_IN_REGEX = /^see license in /iv

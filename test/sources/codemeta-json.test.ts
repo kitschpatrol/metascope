@@ -40,6 +40,32 @@ describe('codemeta-json source', () => {
 })
 
 describe('parse', () => {
+	it('should keep dependency node types and links', () => {
+		const result = parseCodemetaJson(
+			JSON.stringify({
+				softwareRequirements: [
+					{
+						'@type': 'SoftwareSourceCode',
+						codeRepository: 'https://github.com/cinder/Cinder.git',
+						name: 'Cinder',
+					},
+					{ '@type': 'SoftwareApplication', name: 'Vendor SDK', url: 'https://example.com/sdk' },
+					{ '@type': 'Thing', name: 'Untyped' },
+				],
+			}),
+		)
+
+		expect(result!.softwareRequirements).toEqual([
+			{
+				codeRepository: 'https://github.com/cinder/Cinder.git',
+				name: 'Cinder',
+				type: 'SoftwareSourceCode',
+			},
+			{ name: 'Vendor SDK', type: 'SoftwareApplication', url: 'https://example.com/sdk' },
+			{ name: 'Untyped' },
+		])
+	})
+
 	it('should parse basic fields', () => {
 		const content = readFileSync(
 			resolve(fixturesDirectory, 'caltechlibrary-iga/codemeta.json'),

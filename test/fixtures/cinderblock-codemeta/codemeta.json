@@ -1,0 +1,20 @@
+{
+  "@context": "https://w3id.org/codemeta/3.1",
+  "@type": "SoftwareSourceCode",
+  "name": "Cinder-Fixture",
+  "operatingSystem": ["Windows", "macOS"],
+  "programmingLanguage": "C++",
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Cinder",
+      "version": "0.9.1",
+      "codeRepository": "https://github.com/cinder/Cinder.git"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Vendor SDK",
+      "url": "https://example.com/sdk"
+    }
+  ]
+}

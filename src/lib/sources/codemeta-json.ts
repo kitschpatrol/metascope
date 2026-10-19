@@ -1,3 +1,5 @@
+// CSpell:words softwareapplication softwaresourcecode
+
 /**
  * CodeMeta JSON metadata source.
  *
@@ -216,15 +218,18 @@ const codeMetaPersonArray = z
 // ─── Dependency sub-schema ───────────────────────────────────────────
 
 const codeMetaDependencySchema = z.object({
+	codeRepository: optionalUrl,
 	identifier: nonEmptyString,
 	name: nonEmptyString,
 	runtimePlatform: nonEmptyString,
+	type: z.enum(['SoftwareApplication', 'SoftwareSourceCode']).optional(),
+	url: optionalUrl,
 	version: nonEmptyString,
 })
 
 /**
  * Preprocess a raw dependency value into a normalized shape. Handles: plain
- * string → {name: string}.
+ * string → {name: string}, and `@type` → `type`.
  */
 function preprocessDependency(value: unknown): Record<string, unknown> | undefined {
 	if (typeof value === 'string') {
@@ -236,6 +241,16 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 	}
 
 	const dependency: Record<string, unknown> = {}
+
+	// Normalize @type → type, keeping only the dependency node types codemeta uses
+	if (typeof value['@type'] === 'string') {
+		const rawType = value['@type'].toLowerCase()
+		if (rawType === 'softwareapplication') {
+			dependency.type = 'SoftwareApplication'
+		} else if (rawType === 'softwaresourcecode') {
+			dependency.type = 'SoftwareSourceCode'
+		}
+	}
 
 	if (typeof value.name === 'string') {
 		dependency.name = value.name
@@ -251,6 +266,14 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 
 	if (typeof value.runtimePlatform === 'string') {
 		dependency.runtimePlatform = value.runtimePlatform
+	}
+
+	if (typeof value.codeRepository === 'string') {
+		dependency.codeRepository = value.codeRepository
+	}
+
+	if (typeof value.url === 'string') {
+		dependency.url = value.url
 	}
 
 	const dependencyKey = dependency.name ?? dependency.identifier

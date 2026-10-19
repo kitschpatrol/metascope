@@ -213,6 +213,20 @@ function buildMatch(
 	}
 }
 
+/** Known SPDX IDs keyed by their lowercase form, for case-insensitive lookup. */
+const canonicalSpdxIds = new Map(
+	Object.keys(licenseUrls).map((spdxId) => [spdxId.toLowerCase(), spdxId]),
+)
+
+/**
+ * Resolve a value to its canonical SPDX license identifier, matching
+ * case-insensitively (e.g. "mit" → "MIT"). Returns undefined for anything that
+ * isn't a single known SPDX ID, including license expressions and free text.
+ */
+export function toCanonicalSpdxId(value: string): string | undefined {
+	return canonicalSpdxIds.get(value.trim().toLowerCase())
+}
+
 /**
  * Convert an SPDX license identifier to its canonical SPDX URL.
  */

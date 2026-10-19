@@ -441,48 +441,54 @@ export const codemeta = defineTemplate(
 			metadata?.repository
 
 		const programmingLanguage =
-			nonEmpty([
-				...(github?.data.primaryLanguage !== undefined && github.data.primaryLanguage !== ''
-					? [github.data.primaryLanguage]
-					: []),
-				...(cm?.data.programmingLanguage ?? []),
-			]) ??
+			nonEmpty(
+				deduplicateStrings([
+					...(github?.data.primaryLanguage !== undefined && github.data.primaryLanguage !== ''
+						? [github.data.primaryLanguage]
+						: []),
+					...(cm?.data.programmingLanguage ?? []),
+				]),
+			) ??
 			nonEmpty(Object.keys(github?.data.languages ?? {})) ??
 			loc?.data.total?.languages.slice(0, 1)
 
-		const runtimePlatform = nonEmpty([
-			...Object.keys(package_?.data.engines ?? {}),
-			...(goMod?.data.go_version !== undefined && goMod.data.go_version !== ''
-				? [`go ${goMod.data.go_version}`]
-				: []),
-			...(cargo?.data.rustVersion !== undefined && cargo.data.rustVersion !== ''
-				? [`rust ${cargo.data.rustVersion}`]
-				: []),
-			...(pyproject?.data.project?.requiresPython !== undefined &&
-			pyproject.data.project.requiresPython !== ''
-				? [`python ${pyproject.data.project.requiresPython}`]
-				: []),
-			...(setupPy?.data.python_requires !== undefined && setupPy.data.python_requires !== ''
-				? [`python ${setupPy.data.python_requires}`]
-				: []),
-			...(gem?.data.required_ruby_version !== undefined && gem.data.required_ruby_version !== ''
-				? [`ruby ${gem.data.required_ruby_version}`]
-				: []),
-			...(pom?.data.javaVersion !== undefined && pom.data.javaVersion !== ''
-				? [`java ${pom.data.javaVersion}`]
-				: []),
-			...(cm?.data.runtimePlatform ?? []),
-		])
+		const runtimePlatform = nonEmpty(
+			deduplicateStrings([
+				...Object.keys(package_?.data.engines ?? {}),
+				...(goMod?.data.go_version !== undefined && goMod.data.go_version !== ''
+					? [`go ${goMod.data.go_version}`]
+					: []),
+				...(cargo?.data.rustVersion !== undefined && cargo.data.rustVersion !== ''
+					? [`rust ${cargo.data.rustVersion}`]
+					: []),
+				...(pyproject?.data.project?.requiresPython !== undefined &&
+				pyproject.data.project.requiresPython !== ''
+					? [`python ${pyproject.data.project.requiresPython}`]
+					: []),
+				...(setupPy?.data.python_requires !== undefined && setupPy.data.python_requires !== ''
+					? [`python ${setupPy.data.python_requires}`]
+					: []),
+				...(gem?.data.required_ruby_version !== undefined && gem.data.required_ruby_version !== ''
+					? [`ruby ${gem.data.required_ruby_version}`]
+					: []),
+				...(pom?.data.javaVersion !== undefined && pom.data.javaVersion !== ''
+					? [`java ${pom.data.javaVersion}`]
+					: []),
+				...(cm?.data.runtimePlatform ?? []),
+			]),
+		)
 
 		// ── Application ─────────────────────────────────────────────
 
-		const operatingSystem = nonEmpty([
-			...(cm?.data.operatingSystem ?? []),
-			...(publiccode?.data.platforms ?? []),
-			...(ofInstall?.data.operatingSystems ?? []),
-			...(cinder?.data.supports ?? []),
-			...(xcode?.data.operatingSystems ?? []),
-		])
+		const operatingSystem = nonEmpty(
+			deduplicateStrings([
+				...(cm?.data.operatingSystem ?? []),
+				...(publiccode?.data.platforms ?? []),
+				...(ofInstall?.data.operatingSystems ?? []),
+				...(cinder?.data.supports ?? []),
+				...(xcode?.data.operatingSystems ?? []),
+			]),
+		)
 
 		const appCategory =
 			cm?.data.applicationCategory ??
@@ -521,6 +527,11 @@ export const codemeta = defineTemplate(
 							d.version,
 							d.identifier,
 							d.runtimePlatform,
+							{
+								codeRepository: d.codeRepository,
+								type: d.type,
+								url: d.url,
+							},
 						),
 					)
 
@@ -541,6 +552,11 @@ export const codemeta = defineTemplate(
 							d.version,
 							d.identifier,
 							d.runtimePlatform,
+							{
+								codeRepository: d.codeRepository,
+								type: d.type,
+								url: d.url,
+							},
 						),
 					)
 
