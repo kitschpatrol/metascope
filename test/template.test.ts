@@ -349,20 +349,22 @@ describe('codemeta template', () => {
 		expect(result.license).toBe(expected)
 	})
 
-	it('should use cinderblock.xml requires over codemeta.json softwareRequirements', () => {
+	const cinderblockWithRequires = {
+		data: {
+			author: [],
+			id: 'com.example.fixture',
+			name: 'Fixture',
+			requires: ['com.example.osc'],
+			supports: [],
+		},
+		source: 'cinderblock.xml',
+	}
+
+	it('should merge codemeta.json softwareRequirements after cinderblock.xml requires', () => {
 		const result = codemeta(
 			{
 				...mockContext,
-				cinderCinderblockXml: {
-					data: {
-						author: [],
-						id: 'com.example.fixture',
-						name: 'Fixture',
-						requires: ['com.example.osc'],
-						supports: [],
-					},
-					source: 'cinderblock.xml',
-				},
+				cinderCinderblockXml: cinderblockWithRequires,
 				codemetaJson: {
 					data: { softwareRequirements: [{ name: 'Cinder', type: 'SoftwareSourceCode' }] },
 					source: 'codemeta.json',
@@ -372,6 +374,56 @@ describe('codemeta template', () => {
 			{},
 		)
 		expect(result.softwareRequirements).toEqual([
+			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+			{ '@type': 'SoftwareSourceCode', name: 'Cinder' },
+		])
+	})
+
+	it('should keep the cinderblock.xml entry when codemeta.json names the same dependency', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				cinderCinderblockXml: cinderblockWithRequires,
+				codemetaJson: {
+					data: {
+						softwareRequirements: [{ name: 'com.example.osc', version: '2.0.0' }],
+					},
+					source: 'codemeta.json',
+				},
+				nodePackageJson: undefined,
+			},
+			{},
+		)
+		expect(result.softwareRequirements).toEqual([
+			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
+		])
+	})
+
+	it('should replace codemeta.json softwareRequirements with package.json dependencies', () => {
+		const result = codemeta(
+			{
+				...mockContext,
+				cinderCinderblockXml: cinderblockWithRequires,
+				codemetaJson: {
+					data: { softwareRequirements: [{ name: 'stale-dependency' }] },
+					source: 'codemeta.json',
+				},
+				nodePackageJson: {
+					data: {
+						// eslint-disable-next-line ts/naming-convention
+						_id: 'test@1.0.0',
+						dependencies: { express: '^4.18.0' },
+						name: 'test',
+						readme: '',
+						version: '1.0.0',
+					},
+					source: 'package.json',
+				},
+			},
+			{},
+		)
+		expect(result.softwareRequirements).toEqual([
+			{ '@type': 'SoftwareApplication', name: 'express', version: '^4.18.0' },
 			{ '@type': 'SoftwareApplication', name: 'com.example.osc' },
 		])
 	})

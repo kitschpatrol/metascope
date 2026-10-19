@@ -15,7 +15,10 @@
  * license, dependencies, keywords, …) the ecosystem manifest is canonical. This
  * keeps the output fresh when e.g. a new dependency is added to package.json,
  * and makes the round-trip stable: generate → save as codemeta.json →
- * regenerate → identical output.
+ * regenerate → identical output. The exception is runtime dependencies from
+ * manifests that aren't package managers (cinderblock.xml, openFrameworks
+ * addons, Arduino, publiccode.yml), which don't list the host platform, so
+ * codemeta.json softwareRequirements are merged in after them.
  *
  * For **codemeta-specific fields** that only exist in codemeta.json
  * (developmentStatus, funding, buildInstructions, …) the existing codemeta.json
@@ -518,22 +521,24 @@ export const codemeta = defineTemplate(
 			setupPy,
 		})
 
-		const softwareRequirements =
-			runtimeDependencies.length > 0
-				? deduplicateDependencies(runtimeDependencies)
-				: cm?.data.softwareRequirements?.map((d) =>
-						toDependencyLd(
-							d.name ?? d.identifier ?? '',
-							d.version,
-							d.identifier,
-							d.runtimePlatform,
-							{
-								codeRepository: d.codeRepository,
-								type: d.type,
-								url: d.url,
-							},
-						),
-					)
+		const codemetaRequirements = (cm?.data.softwareRequirements ?? []).map((d) =>
+			toDependencyLd(d.name ?? d.identifier ?? '', d.version, d.identifier, d.runtimePlatform, {
+				codeRepository: d.codeRepository,
+				type: d.type,
+				url: d.url,
+			}),
+		)
+
+		// Package manager manifests list every dependency, so they replace
+		// codemeta.json entries. Other manifests leave out the host platform
+		// (e.g. Cinder itself for a cinderblock.xml), so codemeta.json entries are
+		// merged in after them, and the manifest wins when both name a dependency.
+		const { fromOtherManifests, fromPackageManager } = runtimeDependencies
+		const softwareRequirements = deduplicateDependencies(
+			fromPackageManager.length > 0
+				? [...fromPackageManager, ...fromOtherManifests]
+				: [...fromOtherManifests, ...codemetaRequirements],
+		)
 
 		const developmentDependencies = collectDevelopmentDependencies({
 			cargo,
@@ -795,7 +800,9 @@ function resolvePersonsOrOrgs(
 // ─── Dependency Helpers ─────────────────────────────────────────────
 
 /**
- * Collect runtime dependencies from all ecosystem sources.
+ * Collect runtime dependencies from all ecosystem sources, split into
+ * dependencies from package manager manifests, which are exhaustive, and
+ * dependencies from other manifests, which may omit the host platform.
  */
 function collectRuntimeDependencies(sources: {
 	arduino: ReturnType<
@@ -829,49 +836,49 @@ function collectRuntimeDependencies(sources: {
 	rubyGemspec: MetadataContext['rubyGemspec']
 	setupCfg: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
 	setupPy: ReturnType<typeof firstOf<{ data: { install_requires: string[] } }>>
-}): CodemetaDependencyLd[] {
-	const dependencies: CodemetaDependencyLd[] = []
+}): { fromOtherManifests: CodemetaDependencyLd[]; fromPackageManager: CodemetaDependencyLd[] } {
+	const fromPackageManager: CodemetaDependencyLd[] = []
 
 	// Node package.json dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...collectArrayField(sources.nodePackageJson, (d) =>
 			objectEntriesToDependencies(d.dependencies),
 		),
 	)
 
 	// Python pyproject.toml dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...(sources.pyproject?.data.project?.dependencies ?? []).map((dependency) =>
 			parsePep508Dependency(dependency),
 		),
 	)
 
 	// Python setup.py / setup.cfg install_requires
-	dependencies.push(
+	fromPackageManager.push(
 		...(sources.setupPy?.data.install_requires ?? []).map((dependency) =>
 			parsePep508Dependency(dependency),
 		),
 	)
-	dependencies.push(
+	fromPackageManager.push(
 		...(sources.setupCfg?.data.install_requires ?? []).map((dependency) =>
 			parsePep508Dependency(dependency),
 		),
 	)
 
 	// Python PKG-INFO requires_dist
-	dependencies.push(
+	fromPackageManager.push(
 		...(sources.pkgInfo?.data.requires_dist ?? []).map((dependency) =>
 			parsePep508Dependency(dependency),
 		),
 	)
 
 	// Rust Cargo.toml dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...(sources.cargo?.data.dependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
 	// Ruby gemspec runtime dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...collectArrayField(sources.rubyGemspec, (d) =>
 			d.dependencies
 				.filter((dependency: { type: string }) => dependency.type === 'runtime')
@@ -882,7 +889,7 @@ function collectRuntimeDependencies(sources: {
 	)
 
 	// Java POM dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...collectArrayField(sources.javaPomXml, (d) =>
 			d.dependencies.map((dependency: { artifactId: string; groupId: string; version?: string }) =>
 				toDependencyLd(
@@ -895,7 +902,7 @@ function collectRuntimeDependencies(sources: {
 	)
 
 	// Go go.mod dependencies
-	dependencies.push(
+	fromPackageManager.push(
 		...collectArrayField(sources.goGoMod, (d) =>
 			d.dependencies.map((dependency: { module: string; version: string }) =>
 				toDependencyLd(dependency.module, dependency.version),
@@ -903,26 +910,32 @@ function collectRuntimeDependencies(sources: {
 		),
 	)
 
+	const fromOtherManifests: CodemetaDependencyLd[] = []
+
 	// Arduino depends
-	dependencies.push(
+	fromOtherManifests.push(
 		...(sources.arduino?.data.depends ?? []).map((d) =>
 			toDependencyLd(d.name, d.versionConstraint),
 		),
 	)
 
 	// OpenFrameworks
-	dependencies.push(...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)))
-	dependencies.push(...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)))
+	fromOtherManifests.push(
+		...(sources.ofAddon?.data.dependencies ?? []).map((d) => toDependencyLd(d)),
+	)
+	fromOtherManifests.push(
+		...(sources.ofInstall?.data.requirements ?? []).map((d) => toDependencyLd(d)),
+	)
 
 	// Cinder requires
-	dependencies.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
+	fromOtherManifests.push(...(sources.cinder?.data.requires ?? []).map((d) => toDependencyLd(d)))
 
 	// Publiccode.yml dependencies
-	dependencies.push(
+	fromOtherManifests.push(
 		...(sources.publiccode?.data.dependencies ?? []).map((d) => toDependencyLd(d.name, d.version)),
 	)
 
-	return dependencies
+	return { fromOtherManifests, fromPackageManager }
 }
 
 /**
