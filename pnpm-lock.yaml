@@ -244,9 +244,6 @@ importers:
       semver:
         specifier: ^7.8.5
         version: 7.8.5
-      simple-git:
-        specifier: ^4.0.2
-        version: 4.0.2(supports-color@10.2.2)
       smol-toml:
         specifier: ^1.9.1
         version: 1.9.1

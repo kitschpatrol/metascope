@@ -10,23 +10,30 @@ import { firstOf } from '../../src/lib/utilities/template-helpers'
 const context = { options: { path: resolve('.') } }
 const nonEmptyBranch = /\S/v
 
+type Identity = { date?: string; email?: string }
+
 async function git(cwd: string, ...gitArguments: string[]): Promise<void> {
 	await exec('git', gitArguments, { nodeOptions: { cwd }, throwOnError: true })
 }
 
-async function commit(cwd: string, message = 'Commit'): Promise<void> {
-	await git(
-		cwd,
-		'-c',
-		'user.name=Test',
-		'-c',
-		'user.email=test@example.com',
-		'commit',
-		'-q',
-		'--allow-empty',
-		'-m',
-		message,
-	)
+async function gitAs(
+	cwd: string,
+	{ date, email = 'test@example.com' }: Identity,
+	...gitArguments: string[]
+): Promise<void> {
+	const dates =
+		date === undefined
+			? {}
+			: // eslint-disable-next-line ts/naming-convention -- Environment variables
+				{ GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date }
+	await exec('git', ['-c', 'user.name=Test', '-c', `user.email=${email}`, ...gitArguments], {
+		nodeOptions: { cwd, env: { ...process.env, ...dates } },
+		throwOnError: true,
+	})
+}
+
+async function commit(cwd: string, message = 'Commit', identity: Identity = {}): Promise<void> {
+	await gitAs(cwd, identity, 'commit', '-q', '--allow-empty', '-m', message)
 }
 
 describe('git statistics source', () => {
@@ -160,6 +167,129 @@ describe('git statistics source', () => {
 			expect(result?.data.upstreamBranch).toBe('origin/deleted')
 			expect(result?.data.upstreamAhead).toBeUndefined()
 			expect(result?.data.upstreamBehind).toBeUndefined()
+		})
+
+		it('should read commit history', async () => {
+			await commit(root, 'First', { date: '2020-01-01T12:00:00-05:00', email: 'a@example.com' })
+			await commit(root, 'Second', { date: '2021-01-01T12:00:00-05:00', email: 'b@example.com' })
+			await commit(root, 'Third', { date: '2022-01-01T12:00:00-05:00', email: 'a@example.com' })
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data).toMatchObject({
+				commitCount: 3,
+				commitDateFirst: '2020-01-01T12:00:00-05:00',
+				commitDateLast: '2022-01-01T12:00:00-05:00',
+				contributorCount: 2,
+			})
+		})
+
+		it('should summarize tags', async () => {
+			await commit(root, 'First', { date: '2020-01-01T12:00:00-05:00' })
+			await gitAs(root, { date: '2021-01-01T12:00:00-05:00' }, 'tag', '-a', 'v10.0.0', '-m', 'Ten')
+			await commit(root, 'Second', { date: '2022-01-01T12:00:00-05:00' })
+			await git(root, 'tag', 'v2')
+			await git(root, 'tag', 'v2.0.0')
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data).toMatchObject({
+				tagCount: 3,
+				// Author date of the commit the annotated tag points to
+				tagDateLatest: '2020-01-01T12:00:00-05:00',
+				// Highest version number, regardless of major-only tags like v2
+				tagNameLatest: 'v10.0.0',
+				tagReleaseCount: 2,
+				// Most recently created version tag
+				tagVersionDateLatest: '2022-01-01T12:00:00-05:00',
+				tagVersionLatest: '2.0.0',
+			})
+		})
+
+		it('should name the ref a detached HEAD was checked out from', async () => {
+			await commit(root)
+			await git(root, 'tag', 'v1.0.0')
+			await commit(root)
+			await git(root, 'checkout', '-q', 'v1.0.0')
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data).toMatchObject({
+				// Counts main and the detached HEAD entry, as `git branch --all` lists them
+				branchCount: 2,
+				branchCurrent: 'v1.0.0',
+			})
+		})
+
+		it('should count each changed file once', async () => {
+			await writeFile(join(root, 'old.txt'), 'old\n')
+			await git(root, 'add', 'old.txt')
+			await commit(root)
+			await git(root, 'mv', 'old.txt', 'new.txt')
+			await mkdir(join(root, 'untracked', 'nested'), { recursive: true })
+			await writeFile(join(root, 'untracked', 'a.txt'), '')
+			await writeFile(join(root, 'untracked', 'nested', 'b.txt'), '')
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data).toMatchObject({
+				isClean: false,
+				isDirty: true,
+				uncommittedFileCount: 3,
+			})
+		})
+
+		it('should measure tracked files with non-ASCII names', async () => {
+			await writeFile(join(root, 'notes – draft.txt'), 'data\n')
+			await git(root, 'add', '.')
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data).toMatchObject({ trackedFileCount: 1, trackedSizeBytes: 5 })
+		})
+
+		it('should count only submodules registered in .gitmodules', async () => {
+			const library = await mkdtemp(join(tmpdir(), 'metascope-git-stats-library-'))
+			try {
+				await git(library, 'init', '-q', '-b', 'main')
+				await commit(library)
+				await commit(root)
+				await git(
+					root,
+					'-c',
+					'protocol.file.allow=always',
+					'submodule',
+					'add',
+					'-q',
+					library,
+					'registered',
+				)
+				const embedded = join(root, 'embedded')
+				await mkdir(embedded)
+				await git(embedded, 'init', '-q', '-b', 'main')
+				await commit(embedded)
+				await git(root, 'add', 'embedded')
+
+				const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+				expect(result?.data.submoduleCount).toBe(1)
+			} finally {
+				await rm(library, { force: true, recursive: true })
+			}
+		})
+
+		it('should detect Git LFS from gitattributes', async () => {
+			await writeFile(join(root, 'data.bin'), 'data')
+			await git(root, 'add', 'data.bin')
+
+			const before = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+			expect(before?.data.hasLfs).toBeUndefined()
+
+			// Written after staging, so adding data.bin never runs the LFS filter
+			await writeFile(join(root, '.gitattributes'), '*.bin filter=lfs diff=lfs merge=lfs -text\n')
+
+			const after = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+			expect(after?.data.hasLfs).toBe(true)
 		})
 
 		it('should measure tracked file sizes within each nested repository', async () => {
