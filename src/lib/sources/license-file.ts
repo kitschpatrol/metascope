@@ -9,8 +9,7 @@ import { identifyLicense } from '../utilities/license-identification'
 // ─── Types ──────────────────────────────────────────────────────────
 
 /**
- * A license file record. The `type` discriminator is always present so the
- * framework's deep-strip never collapses the record to a half-shape:
+ * A license file record. The `type` discriminator is always present:
  *
  * - `type: 'spdx'` — normalized text matches a template exactly, or the file
  *   explicitly points to a license.

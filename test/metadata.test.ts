@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { getMetadata } from '../src/lib/metadata'
+import type { MetadataContext } from '../src/lib/metadata-types'
+import { getMetadata, sourceNames } from '../src/lib/metadata'
 import { defineTemplate } from '../src/lib/metadata-types'
+import { templates } from '../src/lib/templates'
 import { firstOf } from '../src/lib/utilities/template-helpers'
+
+// Fixture repository names: cspell:ignore aisaac andrenth astewart ccfcheng colinduquesnoy dakomura flink histo managesieve misson nakagami ofxquick qdarkstylesheet reportlab thomasgeissl
 
 const nonEmptyBranch = /\S/v
 
@@ -126,13 +130,71 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 
 		// A license file present on disk but not SPDX-identifiable (e.g. a
 		// proprietary "All Rights Reserved" notice) records `type: 'unknown'`.
-		// The discriminator keeps `data` non-empty so the framework's
-		// deep-strip preserves the full record (including `source`). Consumers
-		// read `record.data.match?.<field>` for SPDX-derived data and can
-		// branch on `record.data.type` to detect proprietary projects.
+		// Consumers read `record.data.match?.<field>` for SPDX-derived data and
+		// can branch on `record.data.type` to detect proprietary projects.
 		expect(firstOf(result.licenseFile)).toEqual({
 			data: { type: 'unknown' },
 			source: 'license.txt',
 		})
 	})
+
+	it('should keep empty arrays in source records', async () => {
+		const result = await getMetadata({
+			absolute: false,
+			path: 'test/fixtures/xcode-info-plist-discovery/openframeworks-cmake-app',
+			sources: ['xcodeInfoPlist'],
+		})
+
+		// Every naming field in this plist is an Xcode build variable, leaving
+		// only the required arrays
+		expect(firstOf(result.xcodeInfoPlist)).toEqual({
+			data: { operatingSystems: [], processorRequirements: [] },
+			source: 'openFrameworks-Info.plist',
+		})
+	})
+
+	// Besides all-sources, each fixture's raw output once broke a template when
+	// empty arrays or objects were stripped from it
+	it.each([
+		'all-sources',
+		'go-go-mod/180yu-1',
+		'java-pom-xml/a466350665-smart-sso',
+		'java-pom-xml/astewart27-aem-component-generator',
+		'java-pom-xml/bss-t-flink-practice',
+		'openframeworks-addon-config-mk/thomasgeissl-ofxquick',
+		'python-pkg-info/nakagami-reportlab',
+		'python-setup-cfg/colinduquesnoy-qdarkstylesheet',
+		'python-setup-py/dakomura-histo-patch',
+		'ruby-gemspec/18810625123-ld',
+		'ruby-gemspec/a-rom-gem-team1misson2',
+		'ruby-gemspec/aisaac-lab-aisaac',
+		'ruby-gemspec/andrenth-ruby-managesieve',
+		'xcode-info-plist/ccfcheng-react-native-web-demo',
+		'xcode-info-plist-discovery/openframeworks-cmake-app',
+	])(
+		'should return raw output from %s that templates read like the live context',
+		async (fixture) => {
+			const options = {
+				offline: true,
+				path: `test/fixtures/${fixture}`,
+				// The metascope source records a duration that differs between runs
+				sources: sourceNames.filter((name) => name !== 'metascope'),
+				workspaces: false,
+			}
+			// eslint-disable-next-line unicorn/prefer-structured-clone -- The test needs JSON's lossy serialization, which structuredClone does not perform
+			const serialized = JSON.parse(JSON.stringify(await getMetadata(options))) as MetadataContext
+			let live: MetadataContext | undefined
+			await getMetadata({
+				...options,
+				template(context) {
+					live = context
+					return {}
+				},
+			})
+
+			for (const template of Object.values(templates)) {
+				expect(template(serialized, {})).toEqual(template(live!, {}))
+			}
+		},
+	)
 })

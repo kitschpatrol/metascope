@@ -1,3 +1,4 @@
+import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { execFile } from 'node:child_process'
 import { realpath, stat } from 'node:fs/promises'
@@ -196,6 +197,42 @@ async function runSources(
 	}
 }
 
+/**
+ * Recursively remove undefined values, which JSON can't represent. Unlike
+ * `stripUndefined`, this keeps empty objects and arrays, since source data
+ * types can require them and templates read them without checking.
+ */
+function removeUndefined(value: unknown): unknown {
+	if (Array.isArray(value)) {
+		return value.filter((item) => item !== undefined).map((item) => removeUndefined(item))
+	}
+
+	if (is.plainObject(value)) {
+		return Object.fromEntries(
+			Object.entries(value)
+				.filter(([, item]) => item !== undefined)
+				.map(([key, item]) => [key, removeUndefined(item)]),
+		)
+	}
+
+	return value
+}
+
+/**
+ * Drop unavailable sources and undefined values from the raw context. Source
+ * records otherwise keep their full shape, so the output stays valid template
+ * input after serialization. Returns undefined when no source produced a
+ * record.
+ */
+function stripContext(context: MetadataContext): MetadataContext {
+	const available = Object.entries(context).filter(
+		([, value]) => value !== undefined && (!Array.isArray(value) || value.length > 0),
+	)
+	return (
+		available.length > 0 ? removeUndefined(Object.fromEntries(available)) : undefined
+	) as MetadataContext
+}
+
 type PartialPath<T> = Omit<T, 'path'> & { path?: string }
 
 // Overload: built-in template name → mapped return type
@@ -354,8 +391,7 @@ export async function getMetadata<T>(
 			return finalTemplateResult
 		}
 
-		// Strip undefined values and empty source objects from raw output
-		const finalResult = stripUndefined(context)
+		const finalResult = stripContext(context)
 		log.debug(`Total duration: ${prettyMs(performance.now() - startTime)}`)
 		return finalResult
 	} finally {

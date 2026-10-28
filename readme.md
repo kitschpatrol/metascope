@@ -271,7 +271,7 @@ function getMetadata<T>(options: GetMetadataTemplateOptions<T>): Promise<T>
 
 The function accepts a project directory path, optional credentials, and an optional template (a built-in name or a template function). It returns a promise resolving to either the full `MetadataContext` or the shaped output of your template.
 
-All `undefined` values and empty source objects are deep-stripped from the output before returning.
+All `undefined` values are removed from the output before returning, and sources that found nothing are omitted. Source records in the full `MetadataContext` keep their empty arrays and objects, so a template applied to serialized output gives the same result as one passed to `getMetadata`. Template output also drops empty arrays and objects.
 
 To run only a subset of sources, pass a `sources` array with the desired source key names. When omitted, all sources run (the default). This is useful for faster extraction when you only need specific data:
 

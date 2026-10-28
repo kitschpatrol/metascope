@@ -1,5 +1,5 @@
 {
-	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
+	"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"homepage": "https://github.com/kitschpatrol/metascope",
 	"topics": [
 		"metadata",
@@ -9,6 +9,7 @@
 		"repository",
 		"software-analytics",
 		"metrics",
-		"npm-package"
+		"npm-package",
+		"homebrew-formula"
 	]
 }

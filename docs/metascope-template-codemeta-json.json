@@ -9,9 +9,9 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-08-25",
-	"datePublished": "2026-08-03",
-	"description": "A CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
+	"dateModified": "2026-10-28",
+	"datePublished": "2026-10-28",
+	"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
 	"identifier": "metascope",
 	"isAccessibleForFree": true,
@@ -24,7 +24,8 @@
 		"repository",
 		"software-analytics",
 		"metrics",
-		"npm-package"
+		"npm-package",
+		"homebrew-formula"
 	],
 	"license": "https://spdx.org/licenses/MIT",
 	"name": "metascope",
@@ -34,223 +35,292 @@
 	"softwareRequirements": [
 		{
 			"name": "@kitschpatrol/tokei",
+			"type": "SoftwareApplication",
 			"version": "^2.0.2"
 		},
 		{
 			"name": "@mshibanami-org/xcode",
+			"type": "SoftwareApplication",
 			"version": "^1.1.0"
 		},
 		{
+			"name": "@octokit/core",
+			"type": "SoftwareApplication",
+			"version": "^7.0.8"
+		},
+		{
+			"name": "@octokit/plugin-retry",
+			"type": "SoftwareApplication",
+			"version": "^8.1.1"
+		},
+		{
+			"name": "@octokit/plugin-throttling",
+			"type": "SoftwareApplication",
+			"version": "^11.0.5"
+		},
+		{
 			"name": "@sindresorhus/is",
+			"type": "SoftwareApplication",
 			"version": "^8.1.0"
 		},
 		{
 			"name": "@types/mdast",
+			"type": "SoftwareApplication",
 			"version": "^4.0.4"
 		},
 		{
 			"name": "@types/node",
-			"version": "~24.13.3"
+			"type": "SoftwareApplication",
+			"version": "~24.13.6"
 		},
 		{
 			"name": "@types/yargs",
+			"type": "SoftwareApplication",
 			"version": "^17.0.35"
 		},
 		{
 			"name": "case-police",
+			"type": "SoftwareApplication",
 			"version": "^2.2.1"
 		},
 		{
 			"name": "defu",
+			"type": "SoftwareApplication",
 			"version": "^6.1.7"
 		},
 		{
 			"name": "fast-xml-parser",
-			"version": "^5.11.0"
+			"type": "SoftwareApplication",
+			"version": "^5.11.2"
 		},
 		{
 			"name": "find-workspaces",
+			"type": "SoftwareApplication",
 			"version": "^0.3.1"
 		},
 		{
 			"name": "git-url-parse",
+			"type": "SoftwareApplication",
 			"version": "^16.1.0"
 		},
 		{
 			"name": "gray-matter-es",
+			"type": "SoftwareApplication",
 			"version": "^0.2.1"
 		},
 		{
 			"name": "jiti",
+			"type": "SoftwareApplication",
 			"version": "^2.7.0"
 		},
 		{
 			"name": "lognow",
-			"version": "^0.8.0"
-		},
-		{
-			"name": "octokit",
-			"version": "^5.0.5"
+			"type": "SoftwareApplication",
+			"version": "^0.8.5"
 		},
 		{
 			"name": "package-json",
+			"type": "SoftwareApplication",
 			"version": "^10.0.1"
 		},
 		{
 			"name": "picomatch",
+			"type": "SoftwareApplication",
 			"version": "^4.0.7"
 		},
 		{
 			"name": "pkg-types",
-			"version": "^2.3.1"
+			"type": "SoftwareApplication",
+			"version": "^2.3.3"
 		},
 		{
 			"name": "plist",
+			"type": "SoftwareApplication",
 			"version": "^5.0.0"
 		},
 		{
 			"name": "pretty-ms",
-			"version": "^9.3.0"
+			"type": "SoftwareApplication",
+			"version": "^9.3.1"
 		},
 		{
 			"name": "read-pkg",
+			"type": "SoftwareApplication",
 			"version": "^10.1.0"
 		},
 		{
 			"name": "read-pyproject",
-			"version": "^0.3.3"
+			"type": "SoftwareApplication",
+			"version": "^0.4.1"
 		},
 		{
 			"name": "remark-parse",
+			"type": "SoftwareApplication",
 			"version": "^11.0.0"
 		},
 		{
 			"name": "semver",
+			"type": "SoftwareApplication",
 			"version": "^7.8.5"
 		},
 		{
 			"name": "simple-git",
-			"version": "^3.36.0"
+			"type": "SoftwareApplication",
+			"version": "^4.0.2"
 		},
 		{
 			"name": "smol-toml",
-			"version": "^1.8.0"
-		},
-		{
-			"name": "spdx-license-list",
-			"version": "^6.12.0"
+			"type": "SoftwareApplication",
+			"version": "^1.9.1"
 		},
 		{
 			"name": "string-ts",
+			"type": "SoftwareApplication",
 			"version": "^2.3.1"
 		},
 		{
 			"name": "tinyexec",
-			"version": "^1.3.0"
+			"type": "SoftwareApplication",
+			"version": "^1.3.1"
 		},
 		{
 			"name": "tinyglobby",
+			"type": "SoftwareApplication",
 			"version": "^0.2.17"
 		},
 		{
 			"name": "unified",
+			"type": "SoftwareApplication",
 			"version": "^11.0.5"
 		},
 		{
 			"name": "updates",
-			"version": "^18.0.6"
+			"type": "SoftwareApplication",
+			"version": "^19.2.0"
 		},
 		{
 			"name": "web-tree-sitter",
-			"version": "^0.26.13"
+			"type": "SoftwareApplication",
+			"version": "^0.27.1"
 		},
 		{
 			"name": "yaml",
-			"version": "^2.9.0"
+			"type": "SoftwareApplication",
+			"version": "^2.9.1"
 		},
 		{
 			"name": "yargs",
-			"version": "^18.1.0"
+			"type": "SoftwareApplication",
+			"version": "^18.2.0"
 		},
 		{
 			"name": "zod",
-			"version": "^4.4.3"
+			"type": "SoftwareApplication",
+			"version": "^4.6.7"
 		}
 	],
 	"softwareSuggestions": [
 		{
 			"name": "@arethetypeswrong/core",
+			"type": "SoftwareApplication",
 			"version": "^0.18.5"
 		},
 		{
 			"name": "@fast-csv/parse",
-			"version": "^5.0.7"
+			"type": "SoftwareApplication",
+			"version": "^5.0.8"
 		},
 		{
 			"name": "@kitschpatrol/shared-config",
-			"version": "^8.6.0"
+			"type": "SoftwareApplication",
+			"version": "^8.14.0"
 		},
 		{
 			"name": "@types/jsonld",
+			"type": "SoftwareApplication",
 			"version": "^1.5.15"
 		},
 		{
 			"name": "@types/picomatch",
+			"type": "SoftwareApplication",
 			"version": "^4.0.3"
 		},
 		{
 			"name": "@types/semver",
+			"type": "SoftwareApplication",
 			"version": "^7.8.0"
 		},
 		{
+			"name": "brewpub",
+			"type": "SoftwareApplication",
+			"version": "^0.5.0"
+		},
+		{
 			"name": "bumpp",
-			"version": "^12.2.1"
+			"type": "SoftwareApplication",
+			"version": "^12.3.0"
 		},
 		{
 			"name": "jsonld",
+			"type": "SoftwareApplication",
 			"version": "^9.0.0"
 		},
 		{
 			"name": "mdat-plugin-cli-help",
-			"version": "^3.1.0"
+			"type": "SoftwareApplication",
+			"version": "^3.4.1"
 		},
 		{
 			"name": "msw",
-			"version": "^2.15.0"
+			"type": "SoftwareApplication",
+			"version": "^3.0.3"
 		},
 		{
 			"name": "publint",
-			"version": "^0.3.24"
+			"type": "SoftwareApplication",
+			"version": "^0.3.25"
 		},
 		{
 			"name": "shx",
+			"type": "SoftwareApplication",
 			"version": "^0.4.0"
 		},
 		{
+			"name": "spdx-license-list",
+			"type": "SoftwareApplication",
+			"version": "^6.12.0"
+		},
+		{
 			"name": "tree-sitter-python",
+			"type": "SoftwareApplication",
 			"version": "^0.25.0"
 		},
 		{
 			"name": "tree-sitter-ruby",
+			"type": "SoftwareApplication",
 			"version": "^0.23.1"
 		},
 		{
 			"name": "tsdown",
-			"version": "^0.22.14"
+			"type": "SoftwareApplication",
+			"version": "^0.23.1"
 		},
 		{
 			"name": "tsx",
-			"version": "^4.23.12"
+			"type": "SoftwareApplication",
+			"version": "^4.23.15"
 		},
 		{
 			"name": "typescript",
+			"type": "SoftwareApplication",
 			"version": "~6.0.3"
 		},
 		{
 			"name": "vitest",
-			"version": "^4.1.11"
+			"type": "SoftwareApplication",
+			"version": "^5.0.4"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.10.0"
+	"version": "0.13.6"
 }
