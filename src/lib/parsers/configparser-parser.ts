@@ -41,7 +41,7 @@ export function parseConfigparser(content: string): Record<string, Record<string
 			const continuation = trimmed.trim()
 			if (continuation !== '') {
 				continuationSection[lastKey] =
-					existing !== undefined && existing !== '' ? `${existing}\n${continuation}` : continuation
+					existing === undefined || existing === '' ? continuation : `${existing}\n${continuation}`
 			}
 
 			continue

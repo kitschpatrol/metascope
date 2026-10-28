@@ -31,6 +31,6 @@ const GitHubOctokit = Octokit.plugin(retry, throttling).defaults({
 /** Create a REST and GraphQL client with optional token authentication. */
 export function createGitHubClient(githubToken?: string): Octokit {
 	return new GitHubOctokit(
-		githubToken !== undefined && githubToken !== '' ? { auth: githubToken } : undefined,
+		githubToken === undefined || githubToken === '' ? undefined : { auth: githubToken },
 	)
 }

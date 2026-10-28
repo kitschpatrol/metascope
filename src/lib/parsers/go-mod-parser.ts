@@ -9,8 +9,6 @@ const WHITESPACE_REGEX = /\s+/v
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-type BlockState = 'none' | 'replace' | 'require' | 'skip' | 'tool'
-
 type Replacement = 'local' | { module: string; version: string }
 
 /**
@@ -147,6 +145,7 @@ export function parseGoMod(source: string): Record<string, unknown> {
 	const toolDependencies: string[] = []
 	const replacements = new Map<string, Replacement>()
 
+	type BlockState = 'none' | 'replace' | 'require' | 'skip' | 'tool'
 	let blockState: BlockState = 'none'
 
 	function handleBlockLine(state: Exclude<BlockState, 'none'>, blockLine: string): void {

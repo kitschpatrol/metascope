@@ -115,9 +115,9 @@ export const frontmatter = defineTemplate((context, templateData) => {
 
 		// ── Links ─────────────────────────────────────────────
 		'Homepage URL':
-			codemeta.url !== undefined && !codemeta.url.startsWith('https://github.com/')
-				? codemeta.url
-				: null,
+			codemeta.url === undefined || codemeta.url.startsWith('https://github.com/')
+				? null
+				: codemeta.url,
 		'Repo URL': codemeta.codeRepository ?? github?.url ?? null,
 		'Issues URL': codemeta.issueTracker ?? null,
 		'Readme URL':

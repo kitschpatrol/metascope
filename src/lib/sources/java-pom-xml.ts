@@ -137,7 +137,7 @@ export function parse(content: string): PomXml | undefined {
 		developers: parsePersonEntries(project.developers, 'developer'),
 		groupId,
 		identifier:
-			groupId !== undefined && artifactId !== undefined ? `${groupId}.${artifactId}` : undefined,
+			groupId === undefined || artifactId === undefined ? undefined : `${groupId}.${artifactId}`,
 		inceptionYear: getString(project.inceptionYear),
 		issueManagementUrl: getNestedUrl(project.issueManagement),
 		javaVersion: parseJavaVersion(project),

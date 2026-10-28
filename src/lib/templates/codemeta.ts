@@ -233,12 +233,17 @@ export const codemeta = defineTemplate(
 			),
 
 			// Python setup.py / setup.cfg
-			...(setupPy?.data.author !== undefined && setupPy.data.author !== ''
-				? [toPersonOrOrgLd({ email: setupPy.data.author_email, name: setupPy.data.author })]
-				: []),
-			...(setupConfig?.data.author !== undefined && setupConfig.data.author !== ''
-				? [toPersonOrOrgLd({ email: setupConfig.data.author_email, name: setupConfig.data.author })]
-				: []),
+			...(setupPy?.data.author === undefined || setupPy.data.author === ''
+				? []
+				: [toPersonOrOrgLd({ email: setupPy.data.author_email, name: setupPy.data.author })]),
+			...(setupConfig?.data.author === undefined || setupConfig.data.author === ''
+				? []
+				: [
+						toPersonOrOrgLd({
+							email: setupConfig.data.author_email,
+							name: setupConfig.data.author,
+						}),
+					]),
 
 			// Rust Cargo.toml
 			...(cargo?.data.authors ?? []).map((a) => toPersonOrOrgLd({ email: a.email, name: a.name })),
@@ -260,25 +265,25 @@ export const codemeta = defineTemplate(
 			...(processing?.data.authors ?? []).map((a) => toPersonOrOrgLd({ name: a.name, url: a.url })),
 
 			// OpenFrameworks
-			...(ofAddon?.data.author !== undefined && ofAddon.data.author !== ''
-				? [toPersonOrOrgLd({ name: ofAddon.data.author })]
-				: []),
-			...(ofInstall?.data.author !== undefined && ofInstall.data.author !== ''
-				? [toPersonOrOrgLd({ name: ofInstall.data.author })]
-				: []),
+			...(ofAddon?.data.author === undefined || ofAddon.data.author === ''
+				? []
+				: [toPersonOrOrgLd({ name: ofAddon.data.author })]),
+			...(ofInstall?.data.author === undefined || ofInstall.data.author === ''
+				? []
+				: [toPersonOrOrgLd({ name: ofInstall.data.author })]),
 
 			// Cinder
 			...(cinder?.data.author ?? []).map((a) => toPersonOrOrgLd({ name: a })),
 
 			// Xcode
-			...(xcode?.data.author !== undefined && xcode.data.author !== ''
-				? [toPersonOrOrgLd({ email: xcode.data.authorEmail, name: xcode.data.author })]
-				: []),
+			...(xcode?.data.author === undefined || xcode.data.author === ''
+				? []
+				: [toPersonOrOrgLd({ email: xcode.data.authorEmail, name: xcode.data.author })]),
 
 			// Obsidian
-			...(obsidian?.data.author !== undefined && obsidian.data.author !== ''
-				? [toPersonOrOrgLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]
-				: []),
+			...(obsidian?.data.author === undefined || obsidian.data.author === ''
+				? []
+				: [toPersonOrOrgLd({ name: obsidian.data.author, url: obsidian.data.authorUrl })]),
 
 			// Publiccode.yml contacts
 			...(publiccode?.data.contacts ?? []).map((c) =>
@@ -326,20 +331,30 @@ export const codemeta = defineTemplate(
 			...(pyproject?.data.project?.maintainers ?? []).map((m) =>
 				toPersonOrOrgLd(is.plainObject(m) ? { email: m.email, name: m.name } : { name: m }),
 			),
-			...(setupPy?.data.maintainer !== undefined && setupPy.data.maintainer !== ''
-				? [toPersonOrOrgLd({ email: setupPy.data.maintainer_email, name: setupPy.data.maintainer })]
-				: []),
-			...(setupConfig?.data.maintainer !== undefined && setupConfig.data.maintainer !== ''
-				? [
+			...(setupPy?.data.maintainer === undefined || setupPy.data.maintainer === ''
+				? []
+				: [
+						toPersonOrOrgLd({
+							email: setupPy.data.maintainer_email,
+							name: setupPy.data.maintainer,
+						}),
+					]),
+			...(setupConfig?.data.maintainer === undefined || setupConfig.data.maintainer === ''
+				? []
+				: [
 						toPersonOrOrgLd({
 							email: setupConfig.data.maintainer_email,
 							name: setupConfig.data.maintainer,
 						}),
-					]
-				: []),
-			...(pkgInfo?.data.maintainer !== undefined && pkgInfo.data.maintainer !== ''
-				? [toPersonOrOrgLd({ email: pkgInfo.data.maintainer_email, name: pkgInfo.data.maintainer })]
-				: []),
+					]),
+			...(pkgInfo?.data.maintainer === undefined || pkgInfo.data.maintainer === ''
+				? []
+				: [
+						toPersonOrOrgLd({
+							email: pkgInfo.data.maintainer_email,
+							name: pkgInfo.data.maintainer,
+						}),
+					]),
 			...(arduino?.data.maintainer
 				? [
 						toPersonOrOrgLd({
@@ -357,13 +372,13 @@ export const codemeta = defineTemplate(
 		// ── Copyright holder ────────────────────────────────────────
 
 		const ecosystemCopyrightHolders: Array<CodemetaPersonOrOrgLd | undefined> = [
-			...(publiccode?.data.mainCopyrightOwner !== undefined &&
-			publiccode.data.mainCopyrightOwner !== ''
-				? [toPersonOrOrgLd({ name: publiccode.data.mainCopyrightOwner })]
-				: []),
-			...(xcode?.data.copyrightHolder !== undefined && xcode.data.copyrightHolder !== ''
-				? [toPersonOrOrgLd({ name: xcode.data.copyrightHolder })]
-				: []),
+			...(publiccode?.data.mainCopyrightOwner === undefined ||
+			publiccode.data.mainCopyrightOwner === ''
+				? []
+				: [toPersonOrOrgLd({ name: publiccode.data.mainCopyrightOwner })]),
+			...(xcode?.data.copyrightHolder === undefined || xcode.data.copyrightHolder === ''
+				? []
+				: [toPersonOrOrgLd({ name: xcode.data.copyrightHolder })]),
 		]
 
 		const cmCopyrightHolders = codemetaPersonsOrOrgsToLd(cm?.data.copyrightHolder)
@@ -396,9 +411,9 @@ export const codemeta = defineTemplate(
 		const programmingLanguage =
 			nonEmpty(
 				deduplicateStrings([
-					...(github?.data.primaryLanguage !== undefined && github.data.primaryLanguage !== ''
-						? [github.data.primaryLanguage]
-						: []),
+					...(github?.data.primaryLanguage === undefined || github.data.primaryLanguage === ''
+						? []
+						: [github.data.primaryLanguage]),
 					...(cm?.data.programmingLanguage ?? []),
 				]),
 			) ??
@@ -408,25 +423,25 @@ export const codemeta = defineTemplate(
 		const runtimePlatform = nonEmpty(
 			deduplicateStrings([
 				...Object.keys(package_?.data.engines ?? {}),
-				...(goMod?.data.go_version !== undefined && goMod.data.go_version !== ''
-					? [`go ${goMod.data.go_version}`]
-					: []),
-				...(cargo?.data.rustVersion !== undefined && cargo.data.rustVersion !== ''
-					? [`rust ${cargo.data.rustVersion}`]
-					: []),
-				...(pyproject?.data.project?.requiresPython !== undefined &&
-				pyproject.data.project.requiresPython !== ''
-					? [`python ${pyproject.data.project.requiresPython}`]
-					: []),
-				...(setupPy?.data.python_requires !== undefined && setupPy.data.python_requires !== ''
-					? [`python ${setupPy.data.python_requires}`]
-					: []),
-				...(gem?.data.required_ruby_version !== undefined && gem.data.required_ruby_version !== ''
-					? [`ruby ${gem.data.required_ruby_version}`]
-					: []),
-				...(pom?.data.javaVersion !== undefined && pom.data.javaVersion !== ''
-					? [`java ${pom.data.javaVersion}`]
-					: []),
+				...(goMod?.data.go_version === undefined || goMod.data.go_version === ''
+					? []
+					: [`go ${goMod.data.go_version}`]),
+				...(cargo?.data.rustVersion === undefined || cargo.data.rustVersion === ''
+					? []
+					: [`rust ${cargo.data.rustVersion}`]),
+				...(pyproject?.data.project?.requiresPython === undefined ||
+				pyproject.data.project.requiresPython === ''
+					? []
+					: [`python ${pyproject.data.project.requiresPython}`]),
+				...(setupPy?.data.python_requires === undefined || setupPy.data.python_requires === ''
+					? []
+					: [`python ${setupPy.data.python_requires}`]),
+				...(gem?.data.required_ruby_version === undefined || gem.data.required_ruby_version === ''
+					? []
+					: [`ruby ${gem.data.required_ruby_version}`]),
+				...(pom?.data.javaVersion === undefined || pom.data.javaVersion === ''
+					? []
+					: [`java ${pom.data.javaVersion}`]),
 				...(cm?.data.runtimePlatform ?? []),
 			]),
 		)

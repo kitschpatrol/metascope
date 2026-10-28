@@ -103,7 +103,7 @@ export function parse(content: string): ArduinoLibraryProperties {
 		depends: parseDependencies(get(raw, 'depends') ?? get(raw, 'dependencies') ?? ''),
 		email: nonEmpty(get(raw, 'email')),
 		includes:
-			includesValue !== undefined && includesValue !== '' ? splitCommaSeparated(includesValue) : [],
+			includesValue === undefined || includesValue === '' ? [] : splitCommaSeparated(includesValue),
 		license: nonEmpty(get(raw, 'license')),
 		maintainer: parsePersonList(get(raw, 'maintainer') ?? '')[0],
 		name: nonEmpty(get(raw, 'name')),

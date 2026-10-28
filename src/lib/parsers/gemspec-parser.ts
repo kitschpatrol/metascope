@@ -84,12 +84,10 @@ function extractString(node: Node): string | undefined {
 		case 'string_content': {
 			// A string node wraps string_content children; grab all content fragments
 			const parts = children(current).filter((c) => c.type === 'string_content')
-			if (parts.length > 0) {
-				return parts.map((p) => p.text).join('')
-			}
-
-			// Simple string with no interpolation
-			return current.text.replaceAll(/^["']|["']$/gv, '')
+			// Simple string with no interpolation has no content fragments
+			return parts.length > 0
+				? parts.map((p) => p.text).join('')
+				: current.text.replaceAll(/^["']|["']$/gv, '')
 		}
 
 		default: {

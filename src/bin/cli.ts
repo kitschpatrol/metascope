@@ -183,9 +183,9 @@ await yargsInstance
 
 			try {
 				const credentials =
-					argv.githubToken !== undefined && argv.githubToken !== ''
-						? { githubToken: argv.githubToken }
-						: undefined
+					argv.githubToken === undefined || argv.githubToken === ''
+						? undefined
+						: { githubToken: argv.githubToken }
 				const templateData: TemplateData = {
 					...(argv.authorName && { authorName: argv.authorName }),
 					...(argv.githubAccount && { githubAccount: argv.githubAccount }),

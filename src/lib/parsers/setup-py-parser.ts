@@ -81,14 +81,7 @@ function extractString(node: Node): string | undefined {
 
 /** Extract a list of strings from an array/list literal node. */
 function extractStringList(node: Node): string[] {
-	if (node.type === 'list') {
-		return children(node)
-			.map((child) => extractString(child))
-			.filter((s): s is string => s !== undefined)
-	}
-
-	// Tuple
-	if (node.type === 'tuple') {
+	if (node.type === 'list' || node.type === 'tuple') {
 		return children(node)
 			.map((child) => extractString(child))
 			.filter((s): s is string => s !== undefined)

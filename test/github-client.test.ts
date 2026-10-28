@@ -51,7 +51,7 @@ describe('GitHub client', () => {
 			])
 			for (const [, options] of fetchMock.mock.calls) {
 				expect(new Headers(options?.headers).get('authorization') ?? undefined).toBe(
-					token !== undefined && token !== '' ? `token ${token}` : undefined,
+					token === undefined || token === '' ? undefined : `token ${token}`,
 				)
 			}
 		},

@@ -99,17 +99,17 @@ export function parse(content: string): ProcessingLibraryProperties {
 
 	const prettyVersionRaw = get(raw, 'prettyVersion')
 	const prettyVersion =
-		prettyVersionRaw !== undefined && prettyVersionRaw !== ''
-			? stripInlineComment(prettyVersionRaw)
-			: undefined
+		prettyVersionRaw === undefined || prettyVersionRaw === ''
+			? undefined
+			: stripInlineComment(prettyVersionRaw)
 
 	const minRevisionRaw = get(raw, 'minRevision')
 	const minParsed =
-		minRevisionRaw !== undefined && minRevisionRaw !== '' ? Math.trunc(Number(minRevisionRaw)) : 0
+		minRevisionRaw === undefined || minRevisionRaw === '' ? 0 : Math.trunc(Number(minRevisionRaw))
 
 	const maxRevisionRaw = get(raw, 'maxRevision')
 	const maxParsed =
-		maxRevisionRaw !== undefined && maxRevisionRaw !== '' ? Math.trunc(Number(maxRevisionRaw)) : 0
+		maxRevisionRaw === undefined || maxRevisionRaw === '' ? 0 : Math.trunc(Number(maxRevisionRaw))
 
 	return processingLibraryPropertiesSchema.parse({
 		authors: parseAuthors(get(raw, 'authors') ?? get(raw, 'authorList') ?? ''),

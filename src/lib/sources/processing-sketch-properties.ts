@@ -110,9 +110,9 @@ export function parse(content: string): ProcessingSketchProperties {
 
 	const prettyVersionRaw = raw.prettyVersion
 	const prettyVersion =
-		prettyVersionRaw !== undefined && prettyVersionRaw !== ''
-			? stripInlineComment(prettyVersionRaw)
-			: undefined
+		prettyVersionRaw === undefined || prettyVersionRaw === ''
+			? undefined
+			: stripInlineComment(prettyVersionRaw)
 
 	const manifestPermissions = splitCommaSeparated(raw['manifest.permissions'] ?? '')
 

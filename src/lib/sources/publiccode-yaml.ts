@@ -119,8 +119,6 @@ export type Publiccode = z.infer<typeof publiccodeSchema>
 
 export type PubliccodeYamlData = OneOrMany<SourceRecord<Publiccode>> | undefined
 
-type PubliccodeContactEntry = Publiccode['contacts'][number]
-type PubliccodeContractorEntry = Publiccode['contractors'][number]
 type PubliccodeDependencyEntry = Publiccode['dependencies'][number]
 type PubliccodeDescription = NonNullable<Publiccode['description']>
 
@@ -233,6 +231,8 @@ function parseDescription(data: Record<string, unknown>): PubliccodeDescription 
  *   invalid.
  */
 export function parse(content: string): Publiccode | undefined {
+	type PubliccodeContractorEntry = Publiccode['contractors'][number]
+	type PubliccodeContactEntry = Publiccode['contacts'][number]
 	let data: unknown
 	try {
 		data = parseYaml(content)

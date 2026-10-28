@@ -193,7 +193,7 @@ function preprocessPersonOrOrg(value: unknown): Record<string, unknown> | undefi
 
 	// Only return if we have some identifying info
 	const identifyingValue = result.name ?? result.givenName ?? result.familyName ?? result.email
-	return identifyingValue !== undefined && identifyingValue !== '' ? result : undefined
+	return identifyingValue === undefined || identifyingValue === '' ? undefined : result
 }
 
 /**
@@ -283,7 +283,7 @@ function preprocessDependency(value: unknown): Record<string, unknown> | undefin
 	}
 
 	const dependencyKey = dependency.name ?? dependency.identifier
-	return dependencyKey !== undefined && dependencyKey !== '' ? dependency : undefined
+	return dependencyKey === undefined || dependencyKey === '' ? undefined : dependency
 }
 
 /**
