@@ -1,4 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { delimiter, join } from 'node:path'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { MetadataContext } from '../src/lib/metadata-types'
 import { getMetadata, sourceNames } from '../src/lib/metadata'
 import { defineTemplate } from '../src/lib/metadata-types'
@@ -197,4 +200,61 @@ describe('getMetadata', { timeout: 30_000 }, () => {
 			}
 		},
 	)
+})
+
+// Windows can't run the shell script that stands in for the gh CLI
+describe.skipIf(process.platform === 'win32')('GitHub credential resolution', () => {
+	const originalPath = process.env.PATH
+	const originalToken = process.env.GITHUB_TOKEN
+	let fakeBin: string
+	let project: string
+
+	async function countGhCalls(): Promise<number> {
+		try {
+			const calls = await readFile(join(fakeBin, 'calls.log'), 'utf8')
+			return calls.split('\n').filter(Boolean).length
+		} catch {
+			return 0
+		}
+	}
+
+	beforeEach(async () => {
+		fakeBin = await mkdtemp(join(tmpdir(), 'metascope-fake-gh-'))
+		project = await mkdtemp(join(tmpdir(), 'metascope-project-'))
+		await writeFile(
+			join(fakeBin, 'gh'),
+			`#!/bin/sh\necho "$@" >> "${join(fakeBin, 'calls.log')}"\necho fake-token\n`,
+			{ mode: 0o755 },
+		)
+		process.env.PATH = `${fakeBin}${delimiter}${originalPath}`
+		delete process.env.GITHUB_TOKEN
+	})
+
+	afterEach(async () => {
+		process.env.PATH = originalPath
+		// Assigning undefined would store the string "undefined"
+		if (originalToken === undefined) {
+			delete process.env.GITHUB_TOKEN
+		} else {
+			process.env.GITHUB_TOKEN = originalToken
+		}
+
+		await rm(fakeBin, { force: true, recursive: true })
+		await rm(project, { force: true, recursive: true })
+	})
+
+	it('should ask gh for a token when an online source sends credentials', async () => {
+		await getMetadata({ offline: false, path: project, sources: ['github'] })
+		expect(await countGhCalls()).toBe(1)
+	})
+
+	it('should not ask gh for a token when offline', async () => {
+		await getMetadata({ offline: true, path: project, sources: ['github', 'githubActions'] })
+		expect(await countGhCalls()).toBe(0)
+	})
+
+	it('should not ask gh for a token when no selected source sends credentials', async () => {
+		await getMetadata({ offline: false, path: project, sources: ['gitStats', 'nodePackageJson'] })
+		expect(await countGhCalls()).toBe(0)
+	})
 })

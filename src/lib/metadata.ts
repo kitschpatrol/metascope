@@ -112,6 +112,12 @@ const sources: readonly MetadataSource[] = [
 export const sourceNames: SourceName[] = sources.map((s) => s.key)
 
 /**
+ * Sources that send `credentials` with API requests. Both skip their requests
+ * in offline mode.
+ */
+const CREDENTIAL_SOURCES = new Set<SourceName>(['github', 'githubActions'])
+
+/**
  * Resolve GitHub token from multiple sources, in precedence order.
  */
 async function resolveCredentials(credentials?: Credentials): Promise<Credentials> {
@@ -294,10 +300,22 @@ export async function getMetadata<T>(
 		// Reset match cache to ensure fresh results for each getMetadata call
 		resetMatchCache()
 
+		// Filter sources if a whitelist is provided
+		const activeSources = resolvedOptions.sources
+			? sources.filter((s) => resolvedOptions.sources!.includes(s.key))
+			: sources
+
+		// Resolving credentials can run `gh auth token`, so skip it unless a
+		// source will send them
+		const needsCredentials =
+			!resolvedOptions.offline && activeSources.some((s) => CREDENTIAL_SOURCES.has(s.key))
+
 		// Resolve credentials and build file tree concurrently — they are independent
 		log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
 		const [credentials, rootTree] = await Promise.all([
-			resolveCredentials(resolvedOptions.credentials),
+			needsCredentials
+				? resolveCredentials(resolvedOptions.credentials)
+				: resolvedOptions.credentials,
 			getTree(absolutePath, resolvedOptions.respectIgnored),
 		])
 		log.debug(`Root file tree contains ${rootTree.length} entries`)
@@ -340,11 +358,6 @@ export async function getMetadata<T>(
 			xcodeInfoPlist: undefined,
 			xcodeProjectPbxproj: undefined,
 		}
-
-		// Filter sources if a whitelist is provided
-		const activeSources = resolvedOptions.sources
-			? sources.filter((s) => resolvedOptions.sources!.includes(s.key))
-			: sources
 
 		// Group sources by phase and run each phase sequentially.
 		// Within a phase, all sources run in parallel.
