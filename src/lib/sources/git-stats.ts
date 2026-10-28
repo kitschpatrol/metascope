@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/no-useless-undefined */
+import type { SimpleGit } from 'simple-git'
 import { stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { simpleGit } from 'simple-git'
@@ -60,9 +61,60 @@ export type GitStatsInfo = {
 	trackedSizeBytes?: number
 	/** Number of files with staged or unstaged changes. */
 	uncommittedFileCount?: number
+	/**
+	 * Commits on the current branch that are not on its upstream. Undefined when
+	 * there is no upstream or its ref is missing locally.
+	 */
+	upstreamAhead?: number
+	/**
+	 * Commits on the upstream that are not on the current branch. Undefined when
+	 * there is no upstream or its ref is missing locally.
+	 */
+	upstreamBehind?: number
+	/** Upstream branch the current branch tracks, e.g. "origin/main". */
+	upstreamBranch?: string
 }
 
 export type GitStatsData = OneOrMany<SourceRecord<GitStatsInfo>> | undefined
+
+/**
+ * Count commits on HEAD and on `reference` that the other lacks.
+ *
+ * @returns Undefined when the reference does not resolve.
+ */
+async function compareWithHead(
+	git: SimpleGit,
+	reference: string,
+): Promise<undefined | { ahead: number; behind: number }> {
+	try {
+		const output = await git.raw(['rev-list', '--left-right', '--count', `HEAD...${reference}`])
+		const [ahead, behind] = output.trim().split('\t').map(Number)
+		if (ahead !== undefined && behind !== undefined) {
+			return { ahead, behind }
+		}
+	} catch {
+		// Reference doesn't exist locally
+	}
+
+	return undefined
+}
+
+/**
+ * Compare HEAD with the upstream branch it tracks. Counts are absent when the
+ * upstream ref is missing locally, e.g. deleted on the remote and pruned.
+ */
+async function getUpstreamInfo(
+	git: SimpleGit,
+	upstreamBranch: string | undefined,
+	hasCommits: boolean,
+): Promise<Pick<GitStatsInfo, 'upstreamAhead' | 'upstreamBehind' | 'upstreamBranch'>> {
+	if (upstreamBranch === undefined) {
+		return {}
+	}
+
+	const status = hasCommits ? await compareWithHead(git, '@{upstream}') : undefined
+	return { upstreamAhead: status?.ahead, upstreamBehind: status?.behind, upstreamBranch }
+}
 
 export const gitStatsSource = defineSource<'gitStats'>({
 	async discover(context) {
@@ -134,8 +186,8 @@ export const gitStatsSource = defineSource<'gitStats'>({
 		const contributors = new Set((logResult?.all ?? []).map((commit) => commit.author_email))
 		const tagNameLatest = tagResult.latest ?? undefined
 
-		// These four operations are independent — run them concurrently
-		const [trackedSizeBytes, tagDateLatest, versionTagInfo, remoteStatusEntries] =
+		// These five operations are independent — run them concurrently
+		const [trackedSizeBytes, tagDateLatest, versionTagInfo, remoteStatusEntries, upstreamInfo] =
 			await Promise.all([
 				// 1. Sum tracked file sizes
 				(async () => {
@@ -194,26 +246,17 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				Promise.all(
 					(hasCommits ? remotes : []).map(async (remote) => {
 						for (const branch of ['main', 'master']) {
-							const reference = `${remote.name}/${branch}`
-							try {
-								const output = await git.raw([
-									'rev-list',
-									'--left-right',
-									'--count',
-									`HEAD...${reference}`,
-								])
-								const [ahead, behind] = output.trim().split('\t').map(Number)
-								if (ahead !== undefined && behind !== undefined) {
-									return [remote.name, { ahead, behind }] as const
-								}
-							} catch {
-								// Branch doesn't exist on this remote
+							const status = await compareWithHead(git, `${remote.name}/${branch}`)
+							if (status !== undefined) {
+								return [remote.name, status] as const
 							}
 						}
 
 						return undefined
 					}),
 				),
+				// 5. Upstream comparison
+				getUpstreamInfo(git, statusResult.tracking ?? undefined, hasCommits),
 			])
 
 		const { tagReleaseCount, tagVersionDateLatest, tagVersionLatest } = versionTagInfo
@@ -263,6 +306,7 @@ export const gitStatsSource = defineSource<'gitStats'>({
 				trackedFileCount: trackedFiles.length,
 				trackedSizeBytes,
 				uncommittedFileCount: statusResult.files.length,
+				...upstreamInfo,
 			},
 			source: input,
 		}

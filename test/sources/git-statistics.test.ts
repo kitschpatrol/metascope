@@ -14,7 +14,7 @@ async function git(cwd: string, ...gitArguments: string[]): Promise<void> {
 	await exec('git', gitArguments, { nodeOptions: { cwd }, throwOnError: true })
 }
 
-async function commit(cwd: string): Promise<void> {
+async function commit(cwd: string, message = 'Commit'): Promise<void> {
 	await git(
 		cwd,
 		'-c',
@@ -25,7 +25,7 @@ async function commit(cwd: string): Promise<void> {
 		'-q',
 		'--allow-empty',
 		'-m',
-		'Commit',
+		message,
 	)
 }
 
@@ -110,6 +110,56 @@ describe('git statistics source', () => {
 				isClean: true,
 				trackedFileCount: 1,
 			})
+		})
+
+		it('should compare the current branch with its upstream only', async () => {
+			const remote = await mkdtemp(join(tmpdir(), 'metascope-git-stats-remote-'))
+			try {
+				await git(remote, 'init', '-q', '--bare')
+				await commit(root)
+				await commit(root)
+				await git(root, 'remote', 'add', 'origin', remote)
+				await git(root, 'remote', 'add', 'upstream', remote)
+				await git(root, 'push', '-q', '-u', 'origin', 'main')
+				await git(root, 'fetch', '-q', 'upstream')
+				await git(root, 'reset', '-q', '--hard', 'HEAD~1')
+				await commit(root, 'Diverge')
+
+				const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+				expect(result?.data).toMatchObject({
+					totalAhead: 2,
+					totalBehind: 2,
+					upstreamAhead: 1,
+					upstreamBehind: 1,
+					upstreamBranch: 'origin/main',
+				})
+			} finally {
+				await rm(remote, { force: true, recursive: true })
+			}
+		})
+
+		it('should omit upstream fields without an upstream', async () => {
+			await commit(root)
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data.upstreamBranch).toBeUndefined()
+			expect(result?.data.upstreamAhead).toBeUndefined()
+			expect(result?.data.upstreamBehind).toBeUndefined()
+		})
+
+		it('should omit upstream counts when the upstream ref is missing', async () => {
+			await commit(root)
+			await git(root, 'remote', 'add', 'origin', join(root, 'missing.git'))
+			await git(root, 'config', 'branch.main.remote', 'origin')
+			await git(root, 'config', 'branch.main.merge', 'refs/heads/deleted')
+
+			const result = firstOf(await gitStatsSource.extract({ options: { path: root } }))
+
+			expect(result?.data.upstreamBranch).toBe('origin/deleted')
+			expect(result?.data.upstreamAhead).toBeUndefined()
+			expect(result?.data.upstreamBehind).toBeUndefined()
 		})
 
 		it('should measure tracked file sizes within each nested repository', async () => {

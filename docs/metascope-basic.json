@@ -335,7 +335,10 @@
 			"totalBehind": 0,
 			"trackedFileCount": 3065,
 			"trackedSizeBytes": 9591819,
-			"uncommittedFileCount": 0
+			"uncommittedFileCount": 0,
+			"upstreamAhead": 2,
+			"upstreamBehind": 0,
+			"upstreamBranch": "origin/main"
 		},
 		"source": "/Users/Someone/metascope"
 	},
