@@ -12,8 +12,10 @@ import { log } from './log'
 
 // ─── Caches ─────────────────────────────────────────────────────────
 
-const ignoreCache = new Map<string, string[]>()
-const matchCache = new Map<string, string[]>()
+// The ignore and tree caches hold promises, so concurrent sources share one git
+// call and one filesystem walk
+const ignoreCache = new Map<string, Promise<string[]>>()
+const matchCache = new Map<string, Promise<string[]>>()
 const workspaceCache = new Map<string, string[]>()
 
 /**
@@ -46,43 +48,49 @@ const GIT_INTERNALS_IGNORE = '**/.git/**'
 /**
  * Glob patterns for paths excluded from the file tree: git-ignored paths when
  * `respectIgnored` is set (falling back to a default list outside a git
- * repository), or nothing. Memoized by path + respectIgnored.
+ * repository), or nothing.
+ */
+async function readIgnorePatterns(path: string, respectIgnored: boolean): Promise<string[]> {
+	if (!respectIgnored) {
+		return []
+	}
+
+	try {
+		// `-z` yields NUL-separated unquoted paths, so names with
+		// non-ASCII or special characters become valid glob patterns
+		const { stdout } = await exec(
+			'git',
+			['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'],
+			{
+				nodeOptions: { cwd: path, stdio: ['ignore', 'pipe', 'ignore'] },
+				throwOnError: true,
+			},
+		)
+
+		return stdout
+			.split('\0')
+			.filter(Boolean)
+			.map((p) => {
+				const escaped = escapePath(p)
+				// Directory paths from git (trailing /) must become glob patterns
+				// so tinyglobby skips them during traversal instead of walking into them
+				return escaped.endsWith('/') ? `${escaped}**` : escaped
+			})
+	} catch {
+		// Fallback to default ignore list if the command fails (e.g., not a git repository)
+		return [...DEFAULT_IGNORE]
+	}
+}
+
+/**
+ * Memoized `readIgnorePatterns`, keyed by path + respectIgnored.
  */
 async function getIgnorePatterns(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
 	let ignore = ignoreCache.get(key)
 
 	if (!ignore) {
-		ignore = []
-
-		if (respectIgnored) {
-			try {
-				// `-z` yields NUL-separated unquoted paths, so names with
-				// non-ASCII or special characters become valid glob patterns
-				const { stdout } = await exec(
-					'git',
-					['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'],
-					{
-						nodeOptions: { cwd: path, stdio: ['ignore', 'pipe', 'ignore'] },
-						throwOnError: true,
-					},
-				)
-
-				ignore = stdout
-					.split('\0')
-					.filter(Boolean)
-					.map((p) => {
-						const escaped = escapePath(p)
-						// Directory paths from git (trailing /) must become glob patterns
-						// so tinyglobby skips them during traversal instead of walking into them
-						return escaped.endsWith('/') ? `${escaped}**` : escaped
-					})
-			} catch {
-				// Fallback to default ignore list if the command fails (e.g., not a git repository)
-				ignore = [...DEFAULT_IGNORE]
-			}
-		}
-
+		ignore = readIgnorePatterns(path, respectIgnored)
 		ignoreCache.set(key, ignore)
 	}
 
@@ -90,27 +98,39 @@ async function getIgnorePatterns(path: string, respectIgnored: boolean): Promise
 }
 
 /**
+ * Walk a directory for its full recursive file tree, excluding ignored paths
+ * and git's internal `.git` directory.
+ */
+async function buildTree(path: string, respectIgnored: boolean): Promise<string[]> {
+	log.debug(`Building file tree (respectIgnored: ${respectIgnored})...`)
+	const ignore = await getIgnorePatterns(path, respectIgnored)
+
+	// Never traverse into symlinked directories: pnpm layouts contain
+	// symlink cycles (e.g. monorepo test fixtures linking back to the
+	// repo root), which multiply the tree without bound
+	const tree = await glob('**', {
+		cwd: path,
+		dot: true,
+		followSymbolicLinks: false,
+		ignore: [...ignore, GIT_INTERNALS_IGNORE],
+	})
+	log.debug(`File tree contains ${tree.length} entries`)
+	return tree
+}
+
+/**
  * Get the full recursive file tree for a directory, memoized by path +
- * respectIgnored. Returns relative POSIX paths (internal to tinyglobby; callers
- * receive absolute paths via getMatches). Git's internal `.git` directory is
- * always excluded.
+ * respectIgnored. The tree is built on first request, so scans with no
+ * file-matching sources never walk the filesystem. Returns relative POSIX paths
+ * (internal to tinyglobby; callers receive absolute paths via getMatches).
+ * Git's internal `.git` directory is always excluded.
  */
 export async function getTree(path: string, respectIgnored: boolean): Promise<string[]> {
 	const key = `${path}\0${respectIgnored ? '1' : '0'}`
 	let tree = matchCache.get(key)
 
 	if (!tree) {
-		const ignore = await getIgnorePatterns(path, respectIgnored)
-
-		// Never traverse into symlinked directories: pnpm layouts contain
-		// symlink cycles (e.g. monorepo test fixtures linking back to the
-		// repo root), which multiply the tree without bound
-		tree = await glob('**', {
-			cwd: path,
-			dot: true,
-			followSymbolicLinks: false,
-			ignore: [...ignore, GIT_INTERNALS_IGNORE],
-		})
+		tree = buildTree(path, respectIgnored)
 		matchCache.set(key, tree)
 	}
 

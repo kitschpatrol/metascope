@@ -1,8 +1,9 @@
+import type * as Tinyglobby from 'tinyglobby'
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { exec } from 'tinyexec'
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
 	getGitConfigs,
 	getGitRepositories,
@@ -10,14 +11,72 @@ import {
 	getTree,
 	resetMatchCache,
 } from '../src/lib/file-matching'
+import { getMetadata } from '../src/lib/metadata'
 import { fileStatsSource } from '../src/lib/sources/file-stats'
 import { firstOf } from '../src/lib/utilities/template-helpers'
+
+// Count full file tree walks without changing their results
+const treeWalks = vi.hoisted(() => ({ count: 0 }))
+vi.mock('tinyglobby', async (importOriginal) => {
+	const actual = await importOriginal<typeof Tinyglobby>()
+	return {
+		...actual,
+		async glob(patterns: string | string[], options?: Tinyglobby.GlobOptions) {
+			if (patterns === '**') {
+				treeWalks.count++
+			}
+
+			return actual.glob(patterns, options)
+		},
+	}
+})
 
 const projectRoot = resolve('.')
 
 async function git(cwd: string, ...gitArguments: string[]): Promise<void> {
 	await exec('git', gitArguments, { nodeOptions: { cwd }, throwOnError: true })
 }
+
+describe('file tree laziness', () => {
+	let project: string
+
+	beforeAll(async () => {
+		project = await mkdtemp(join(tmpdir(), 'metascope-lazy-tree-'))
+		await git(project, 'init', '-q', '-b', 'main')
+		await writeFile(join(project, 'package.json'), '{ "name": "lazy" }\n')
+		await writeFile(join(project, 'readme.md'), '# Lazy\n')
+	})
+
+	afterAll(async () => {
+		await rm(project, { force: true, recursive: true })
+	})
+
+	beforeEach(() => {
+		resetMatchCache()
+		treeWalks.count = 0
+	})
+
+	it('should share one walk between concurrent callers', async () => {
+		const [first, second] = await Promise.all([getTree(project, true), getTree(project, true)])
+		expect(first).toEqual(second)
+		expect(treeWalks.count).toBe(1)
+	})
+
+	it('should not walk the file tree when no selected source matches files', async () => {
+		await getMetadata({ offline: true, path: project, sources: ['gitStats', 'codeStats'] })
+		expect(treeWalks.count).toBe(0)
+	})
+
+	it('should walk the file tree once for several file-matching sources', async () => {
+		const result = await getMetadata({
+			offline: true,
+			path: project,
+			sources: ['licenseFile', 'nodePackageJson', 'readmeFile'],
+		})
+		expect(firstOf(result.nodePackageJson)?.data.name).toBe('lazy')
+		expect(treeWalks.count).toBe(1)
+	})
+})
 
 describe('getTree', () => {
 	beforeEach(() => {

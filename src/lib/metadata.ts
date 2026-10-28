@@ -15,7 +15,7 @@ import type {
 } from './metadata-types.js'
 import type { MetadataSource, SourceContext } from './source.js'
 import type { TemplateMap, TemplateName } from './templates/index.js'
-import { getTree, resetMatchCache } from './file-matching.js'
+import { resetMatchCache } from './file-matching.js'
 import { log } from './log'
 import { DEFAULT_GET_METADATA_OPTIONS } from './metadata-types.js'
 import { checkoutRemoteRepository, parseRemoteRepository } from './remote-repository'
@@ -306,19 +306,13 @@ export async function getMetadata<T>(
 			: sources
 
 		// Resolving credentials can run `gh auth token`, so skip it unless a
-		// source will send them
-		const needsCredentials =
-			!resolvedOptions.offline && activeSources.some((s) => CREDENTIAL_SOURCES.has(s.key))
-
-		// Resolve credentials and build file tree concurrently — they are independent
-		log.debug(`Building file tree (respectIgnored: ${resolvedOptions.respectIgnored})...`)
-		const [credentials, rootTree] = await Promise.all([
-			needsCredentials
+		// source will send them. It runs alongside earlier phases, and only phases
+		// with credential sources wait for it.
+		const usesCredentials = (source: MetadataSource) => CREDENTIAL_SOURCES.has(source.key)
+		const credentialsPromise =
+			!resolvedOptions.offline && activeSources.some((s) => usesCredentials(s))
 				? resolveCredentials(resolvedOptions.credentials)
-				: resolvedOptions.credentials,
-			getTree(absolutePath, resolvedOptions.respectIgnored),
-		])
-		log.debug(`Root file tree contains ${rootTree.length} entries`)
+				: Promise.resolve(resolvedOptions.credentials)
 
 		// Assemble context with defaults
 		const context: MetadataContext = {
@@ -373,7 +367,9 @@ export async function getMetadata<T>(
 				metadata: { ...context },
 				options: {
 					...resolvedOptions,
-					credentials,
+					credentials: phaseSources.some((s) => usesCredentials(s))
+						? await credentialsPromise
+						: resolvedOptions.credentials,
 					path: absolutePath,
 				},
 				remote: lease?.info,
