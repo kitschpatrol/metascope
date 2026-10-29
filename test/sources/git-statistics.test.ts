@@ -68,7 +68,9 @@ describe('git statistics source', () => {
 		expect(Number.isNaN(Date.parse(result!.data.commitDateLast!))).toBe(false)
 	})
 
-	describe('in temporary repositories', () => {
+	// Each test runs a dozen or more git commands, which can exceed the default
+	// timeout on a busy machine
+	describe('in temporary repositories', { timeout: 30_000 }, () => {
 		let root: string
 
 		beforeEach(async () => {
