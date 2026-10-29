@@ -5,26 +5,26 @@
 				{
 					"language": "JSON",
 					"files": 198,
-					"lines": 41001,
-					"code": 40986,
+					"lines": 41164,
+					"code": 41149,
 					"comments": 0,
 					"blanks": 15
 				},
 				{
 					"language": "YAML",
 					"files": 329,
-					"lines": 41395,
-					"code": 33706,
+					"lines": 41384,
+					"code": 33695,
 					"comments": 1915,
 					"blanks": 5774
 				},
 				{
 					"language": "TypeScript",
 					"files": 157,
-					"lines": 25239,
-					"code": 19014,
-					"comments": 3077,
-					"blanks": 3148
+					"lines": 25738,
+					"code": 19359,
+					"comments": 3160,
+					"blanks": 3219
 				},
 				{
 					"language": "XML",
@@ -84,9 +84,9 @@
 				}
 			],
 			"total": {
-				"blanks": 18059,
-				"code": 121253,
-				"comments": 28139,
+				"blanks": 18130,
+				"code": 121750,
+				"comments": 28222,
 				"files": 1708,
 				"languages": [
 					"JSON",
@@ -100,7 +100,7 @@
 					"Markdown",
 					"Plain Text"
 				],
-				"lines": 167451
+				"lines": 168102
 			}
 		},
 		"source": "/Users/Someone/metascope"
@@ -108,13 +108,6 @@
 	"dependencyUpdates": {
 		"data": {
 			"major": [
-				{
-					"name": "pretty-ms",
-					"new": "^10.0.0",
-					"old": "^9.3.1",
-					"age": "2w",
-					"info": "https://github.com/sindresorhus/pretty-ms"
-				},
 				{
 					"name": "typescript",
 					"new": "~7.0.2",
@@ -125,47 +118,26 @@
 			],
 			"minor": [
 				{
-					"name": "@kitschpatrol/tokei",
-					"new": "^2.1.0",
-					"old": "^2.0.2",
-					"age": "1w",
-					"info": "https://github.com/kitschpatrol/napi-tokei"
-				},
-				{
-					"name": "pkg-types",
-					"new": "^2.4.0",
-					"old": "^2.3.3",
-					"age": "1w",
-					"info": "https://github.com/unjs/pkg-types"
-				},
-				{
 					"name": "updates",
-					"new": "^19.3.0",
-					"old": "^19.2.0",
-					"age": "1w",
+					"new": "^19.4.0",
+					"old": "^19.3.0",
+					"age": "5h",
 					"info": "https://github.com/silverwind/updates"
 				}
 			],
 			"patch": [
 				{
 					"name": "tsdown",
-					"new": "^0.23.3",
-					"old": "^0.23.1",
-					"age": "4h",
+					"new": "^0.23.4",
+					"old": "^0.23.3",
+					"age": "3h",
 					"info": "https://github.com/rolldown/tsdown"
-				},
-				{
-					"name": "vitest",
-					"new": "^5.0.5",
-					"old": "^5.0.4",
-					"age": "1w",
-					"info": "https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest"
 				}
 			]
 		},
 		"extra": {
-			"libyears": 0.4,
-			"total": 7
+			"libyears": 0.3,
+			"total": 3
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -174,7 +146,7 @@
 			"folderName": "metascope",
 			"totalDirectoryCount": 2545,
 			"totalFileCount": 2736,
-			"totalSizeBytes": 10016387
+			"totalSizeBytes": 10037281
 		},
 		"source": "/Users/Someone/metascope"
 	},
@@ -223,6 +195,10 @@
 				"automation/ksc-update": {
 					"remote": "origin",
 					"merge": "refs/heads/automation/ksc-update"
+				},
+				"performance": {
+					"gtArchived": true,
+					"gtPinned": false
 				}
 			}
 		},
@@ -235,7 +211,7 @@
 			"defaultBranch": "main",
 			"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 			"discussionCount": 0,
-			"diskUsageBytes": 5343000,
+			"diskUsageBytes": 5500000,
 			"forkCount": 0,
 			"hasContributing": false,
 			"hasDiscussionsEnabled": false,
@@ -257,7 +233,7 @@
 			"issueCountOpen": 0,
 			"isTemplate": false,
 			"languages": {
-				"TypeScript": 814565,
+				"TypeScript": 817982,
 				"JavaScript": 149
 			},
 			"licenseKey": "mit",
@@ -266,17 +242,17 @@
 			"licenseUrl": "http://choosealicense.com/licenses/mit/",
 			"name": "metascope",
 			"nameWithOwner": "kitschpatrol/metascope",
-			"openGraphImageUrl": "https://opengraph.githubassets.com/b245e7db750b1d2660619abec7eadff7d0d504c80e8c4ddf8f45c57ade2e0622/kitschpatrol/metascope",
+			"openGraphImageUrl": "https://opengraph.githubassets.com/d14f20d10a52397bac673c3fa6270487fa59e1cddc5c2f13df13f3a04d4980d7/kitschpatrol/metascope",
 			"ownerLogin": "kitschpatrol",
 			"ownerType": "User",
 			"primaryLanguage": "TypeScript",
 			"pullRequestCountClosed": 0,
 			"pullRequestCountMerged": 2,
 			"pullRequestCountOpen": 0,
-			"pushedAt": "2026-10-28T03:47:37Z",
-			"releaseCount": 39,
-			"releaseDateLatest": "2026-10-28T03:47:35Z",
-			"releaseVersionLatest": "v0.13.6",
+			"pushedAt": "2026-10-28T06:39:40Z",
+			"releaseCount": 40,
+			"releaseDateLatest": "2026-10-28T06:39:37Z",
+			"releaseVersionLatest": "v0.13.7",
 			"settings": {
 				"allowUpdateBranch": false,
 				"autoMergeAllowed": false,
@@ -305,7 +281,7 @@
 				"software-analytics",
 				"homebrew-formula"
 			],
-			"updatedAt": "2026-10-28T03:47:40Z",
+			"updatedAt": "2026-10-28T06:39:42Z",
 			"url": "https://github.com/kitschpatrol/metascope",
 			"usesCustomOpenGraphImage": false,
 			"visibility": "PUBLIC",
@@ -321,9 +297,9 @@
 				"name": "Check Links",
 				"lastRunConclusion": "success",
 				"lastRunStatus": "completed",
-				"lastRunAt": "2026-10-28T03:48:00Z",
-				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40628690561",
-				"lastRunDurationMs": 22000
+				"lastRunAt": "2026-10-28T06:39:51Z",
+				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40645203697",
+				"lastRunDurationMs": 10000
 			},
 			"source": "/Users/Someone/metascope/.github/workflows/check-links.yml"
 		},
@@ -333,9 +309,9 @@
 				"name": "CI",
 				"lastRunConclusion": "success",
 				"lastRunStatus": "completed",
-				"lastRunAt": "2026-10-28T03:52:48Z",
-				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40628690496",
-				"lastRunDurationMs": 310000
+				"lastRunAt": "2026-10-28T06:43:49Z",
+				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40645203673",
+				"lastRunDurationMs": 248000
 			},
 			"source": "/Users/Someone/metascope/.github/workflows/ci.yml"
 		},
@@ -352,8 +328,8 @@
 				"name": "Set GitHub Metadata",
 				"lastRunConclusion": "success",
 				"lastRunStatus": "completed",
-				"lastRunAt": "2026-10-28T03:47:49Z",
-				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40628690409",
+				"lastRunAt": "2026-10-28T06:39:52Z",
+				"lastRunUrl": "https://github.com/kitschpatrol/metascope/actions/runs/40645203688",
 				"lastRunDurationMs": 11000
 			},
 			"source": "/Users/Someone/metascope/.github/workflows/set-github-metadata.yml"
@@ -373,33 +349,33 @@
 	],
 	"gitStats": {
 		"data": {
-			"branchCount": 7,
+			"branchCount": 8,
 			"branchCurrent": "main",
-			"commitCount": 279,
+			"commitCount": 286,
 			"commitDateFirst": "2026-02-24T12:07:53-05:00",
-			"commitDateLast": "2026-10-28T02:36:22-04:00",
+			"commitDateLast": "2026-10-29T12:03:30-04:00",
 			"contributorCount": 1,
 			"isClean": true,
 			"isDirty": false,
 			"remoteCount": 1,
 			"remoteStatus": {
 				"origin": {
-					"ahead": 1,
+					"ahead": 6,
 					"behind": 0
 				}
 			},
-			"tagCount": 39,
-			"tagDateLatest": "2026-10-27T23:47:35-04:00",
-			"tagNameLatest": "v0.13.6",
-			"tagReleaseCount": 39,
-			"tagVersionDateLatest": "2026-10-27T23:47:35-04:00",
-			"tagVersionLatest": "0.13.6",
-			"totalAhead": 1,
+			"tagCount": 40,
+			"tagDateLatest": "2026-10-28T02:39:37-04:00",
+			"tagNameLatest": "v0.13.7",
+			"tagReleaseCount": 40,
+			"tagVersionDateLatest": "2026-10-28T02:39:37-04:00",
+			"tagVersionLatest": "0.13.7",
+			"totalAhead": 6,
 			"totalBehind": 0,
 			"trackedFileCount": 3103,
-			"trackedSizeBytes": 10579789,
+			"trackedSizeBytes": 10600683,
 			"uncommittedFileCount": 0,
-			"upstreamAhead": 1,
+			"upstreamAhead": 6,
 			"upstreamBehind": 0,
 			"upstreamBranch": "origin/main"
 		},
@@ -421,7 +397,7 @@
 	},
 	"metascope": {
 		"data": {
-			"durationMs": 7509,
+			"durationMs": 5223,
 			"options": {
 				"absolute": true,
 				"offline": false,
@@ -430,31 +406,31 @@
 				"respectIgnored": true,
 				"workspaces": true
 			},
-			"scannedAt": "2026-10-28T06:36:31.071Z",
-			"version": "0.13.6",
+			"scannedAt": "2026-10-29T16:08:01.305Z",
+			"version": "0.13.7",
 			"workspaceDirectories": []
 		},
 		"source": "/Users/Someone/metascope"
 	},
 	"nodeNpmRegistry": {
 		"data": {
-			"downloadsMonthly": 2262,
-			"downloadsTotal": 12235,
-			"downloadsWeekly": 173,
-			"downloadsYearly": 12235,
+			"downloadsMonthly": 2859,
+			"downloadsTotal": 12967,
+			"downloadsWeekly": 905,
+			"downloadsYearly": 12967,
 			"fileCount": 136,
 			"hasTypes": true,
-			"publishDateLatest": "2026-10-28T03:50:25.483Z",
-			"unpackedSizeBytes": 7086957,
+			"publishDateLatest": "2026-10-28T07:05:11.422Z",
+			"unpackedSizeBytes": 7088603,
 			"url": "https://www.npmjs.com/package/metascope",
-			"versionLatest": "0.13.6"
+			"versionLatest": "0.13.7"
 		},
 		"source": "https://www.npmjs.com/package/metascope"
 	},
 	"nodePackageJson": {
 		"data": {
 			"name": "metascope",
-			"version": "0.13.6",
+			"version": "0.13.7",
 			"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 			"keywords": [
 				"metadata",
@@ -514,7 +490,7 @@
 				"update-license-urls": "tsx ./scripts/update-license-urls.ts"
 			},
 			"dependencies": {
-				"@kitschpatrol/tokei": "^2.0.2",
+				"@kitschpatrol/tokei": "^2.1.0",
 				"@mshibanami-org/xcode": "^1.1.0",
 				"@octokit/core": "^7.0.8",
 				"@octokit/plugin-retry": "^8.1.1",
@@ -530,23 +506,22 @@
 				"git-url-parse": "^16.1.0",
 				"gray-matter-es": "^0.2.1",
 				"jiti": "^2.7.0",
-				"lognow": "^0.8.5",
+				"lognow": "^0.8.7",
 				"package-json": "^10.0.1",
 				"picomatch": "^4.0.7",
-				"pkg-types": "^2.3.3",
+				"pkg-types": "^2.4.0",
 				"plist": "^5.0.0",
-				"pretty-ms": "^9.3.1",
+				"pretty-ms": "^10.0.0",
 				"read-pkg": "^10.1.0",
 				"read-pyproject": "^0.4.1",
 				"remark-parse": "^11.0.0",
 				"semver": "^7.8.5",
-				"simple-git": "^4.0.2",
 				"smol-toml": "^1.9.1",
 				"string-ts": "^2.3.1",
 				"tinyexec": "^1.3.1",
 				"tinyglobby": "^0.2.17",
 				"unified": "^11.0.5",
-				"updates": "^19.2.0",
+				"updates": "^19.3.0",
 				"web-tree-sitter": "^0.27.1",
 				"yaml": "^2.9.1",
 				"yargs": "^18.2.0",
@@ -569,17 +544,17 @@
 				"spdx-license-list": "^6.12.0",
 				"tree-sitter-python": "^0.25.0",
 				"tree-sitter-ruby": "^0.23.1",
-				"tsdown": "^0.23.1",
+				"tsdown": "^0.23.3",
 				"tsx": "^4.23.15",
 				"typescript": "~6.0.3",
-				"vitest": "^5.0.4"
+				"vitest": "^5.0.5"
 			},
-			"packageManager": "pnpm@12.15.0",
+			"packageManager": "pnpm@12.16.1",
 			"engines": {
 				"node": "^24.16.0 || >=26.3.0"
 			},
 			"readme": "ERROR: No README data found!",
-			"_id": "metascope@0.13.6"
+			"_id": "metascope@0.13.7"
 		},
 		"source": "/Users/Someone/metascope/package.json"
 	},

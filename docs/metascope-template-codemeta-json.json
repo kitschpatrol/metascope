@@ -9,7 +9,7 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-10-28",
+	"dateModified": "2026-10-29",
 	"datePublished": "2026-10-28",
 	"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
@@ -36,7 +36,7 @@
 		{
 			"name": "@kitschpatrol/tokei",
 			"type": "SoftwareApplication",
-			"version": "^2.0.2"
+			"version": "^2.1.0"
 		},
 		{
 			"name": "@mshibanami-org/xcode",
@@ -116,7 +116,7 @@
 		{
 			"name": "lognow",
 			"type": "SoftwareApplication",
-			"version": "^0.8.5"
+			"version": "^0.8.7"
 		},
 		{
 			"name": "package-json",
@@ -131,7 +131,7 @@
 		{
 			"name": "pkg-types",
 			"type": "SoftwareApplication",
-			"version": "^2.3.3"
+			"version": "^2.4.0"
 		},
 		{
 			"name": "plist",
@@ -141,7 +141,7 @@
 		{
 			"name": "pretty-ms",
 			"type": "SoftwareApplication",
-			"version": "^9.3.1"
+			"version": "^10.0.0"
 		},
 		{
 			"name": "read-pkg",
@@ -162,11 +162,6 @@
 			"name": "semver",
 			"type": "SoftwareApplication",
 			"version": "^7.8.5"
-		},
-		{
-			"name": "simple-git",
-			"type": "SoftwareApplication",
-			"version": "^4.0.2"
 		},
 		{
 			"name": "smol-toml",
@@ -196,7 +191,7 @@
 		{
 			"name": "updates",
 			"type": "SoftwareApplication",
-			"version": "^19.2.0"
+			"version": "^19.3.0"
 		},
 		{
 			"name": "web-tree-sitter",
@@ -303,7 +298,7 @@
 		{
 			"name": "tsdown",
 			"type": "SoftwareApplication",
-			"version": "^0.23.1"
+			"version": "^0.23.3"
 		},
 		{
 			"name": "tsx",
@@ -318,9 +313,9 @@
 		{
 			"name": "vitest",
 			"type": "SoftwareApplication",
-			"version": "^5.0.4"
+			"version": "^5.0.5"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.13.6"
+	"version": "0.13.7"
 }

@@ -11,7 +11,7 @@
 	],
 	"codeRepository": "https://github.com/kitschpatrol/metascope",
 	"dateCreated": "2026-02-24",
-	"dateModified": "2026-10-28",
+	"dateModified": "2026-10-29",
 	"datePublished": "2026-10-28",
 	"description": "CLI tool and TypeScript library to easily extract metadata from all kinds of software repositories.",
 	"downloadUrl": "https://www.npmjs.com/package/metascope",
@@ -38,7 +38,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "@kitschpatrol/tokei",
-			"version": "^2.0.2"
+			"version": "^2.1.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -118,7 +118,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "lognow",
-			"version": "^0.8.5"
+			"version": "^0.8.7"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -133,7 +133,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "pkg-types",
-			"version": "^2.3.3"
+			"version": "^2.4.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -143,7 +143,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "pretty-ms",
-			"version": "^9.3.1"
+			"version": "^10.0.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -164,11 +164,6 @@
 			"@type": "SoftwareApplication",
 			"name": "semver",
 			"version": "^7.8.5"
-		},
-		{
-			"@type": "SoftwareApplication",
-			"name": "simple-git",
-			"version": "^4.0.2"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -198,7 +193,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "updates",
-			"version": "^19.2.0"
+			"version": "^19.3.0"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -305,7 +300,7 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "tsdown",
-			"version": "^0.23.1"
+			"version": "^0.23.3"
 		},
 		{
 			"@type": "SoftwareApplication",
@@ -320,9 +315,9 @@
 		{
 			"@type": "SoftwareApplication",
 			"name": "vitest",
-			"version": "^5.0.4"
+			"version": "^5.0.5"
 		}
 	],
 	"url": "https://github.com/kitschpatrol/metascope",
-	"version": "0.13.6"
+	"version": "0.13.7"
 }
