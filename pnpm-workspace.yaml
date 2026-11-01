@@ -4,8 +4,6 @@ allowBuilds:
   tree-sitter-ruby: false
   unrs-resolver: true
 ignoreWorkspaceRootCheck: true
-minimumReleaseAgeExclude:
-  - lognow@0.8.7
 packages:
   - '!test/fixtures/**'
   - '.'
