@@ -76,7 +76,7 @@
 		"git-url-parse": "^16.1.0",
 		"gray-matter-es": "^0.2.1",
 		"jiti": "^2.7.0",
-		"lognow": "^0.8.7",
+		"lognow": "^0.8.8",
 		"package-json": "^10.0.1",
 		"picomatch": "^4.0.7",
 		"pkg-types": "^2.4.0",
