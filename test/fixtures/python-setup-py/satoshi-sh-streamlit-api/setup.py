@@ -12,7 +12,7 @@ setup(
         'blinker==1.6.2',
         'build==1.0.3',
         'cachetools==5.3.1',
-        'certifi==2023.7.22',
+        'certifi==2026.10.23',
         'charset-normalizer==3.2.0',
         'click==8.1.6',
         'contourpy==1.1.0',
