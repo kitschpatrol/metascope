@@ -7,5 +7,9 @@ export default knipConfig({
 		// Many exported types...
 		'./src/lib/sources/*.ts',
 	],
-	ignoreDependencies: ['tree-sitter-ruby', 'tree-sitter-python'],
+	ignoreDependencies: [
+		'tree-sitter-ruby',
+		'tree-sitter-python',
+		'@kitschpatrol/chagent', // Typically invoked through bumpp's --execute argument, which Knip doesn't parse
+	],
 })

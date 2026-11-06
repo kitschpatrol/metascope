@@ -2,7 +2,7 @@ import { eslintConfig } from '@kitschpatrol/eslint-config'
 
 export default eslintConfig(
 	{
-		ignores: ['test/fixtures/*'],
+		ignores: ['test/fixtures/*', '**/changelog.md'],
 		ts: {
 			overrides: {
 				'unicorn/name-replacements': [

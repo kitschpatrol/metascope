@@ -5,6 +5,7 @@ allowBuilds:
   unrs-resolver: true
 ignoreWorkspaceRootCheck: true
 minimumReleaseAgeExclude:
+  - '@kitschpatrol/chagent@0.4.0'
   - lognow@0.8.8
 packages:
   - '!test/fixtures/**'
