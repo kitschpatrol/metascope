@@ -2,12 +2,13 @@ import type { Stats } from 'node:fs'
 import is from '@sindresorhus/is'
 import { defu } from 'defu'
 import { findWorkspaces } from 'find-workspaces'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import picomatch from 'picomatch'
 import { exec } from 'tinyexec'
 import { escapePath, glob } from 'tinyglobby'
+import { parse as parseYaml } from 'yaml'
 import { log } from './log'
 
 // ─── Caches ─────────────────────────────────────────────────────────
@@ -176,6 +177,45 @@ function validateWorkspaces(directory: string, workspaces: unknown[]): string[] 
 	return validated
 }
 
+function readConfigFile(filePath: string, parse: (text: string) => unknown): unknown {
+	try {
+		return parse(readFileSync(filePath, 'utf8'))
+	} catch {
+		return undefined
+	}
+}
+
+/**
+ * As of pnpm 10, projects keep settings in `pnpm-workspace.yaml`, so
+ * single-package repos often have one without a `packages` field.
+ * `find-workspaces` treats such a file as the glob `**`, turning every named
+ * `package.json` below the root (`dist/`, test fixtures, scratch directories)
+ * into a phantom workspace. Lerna packages take precedence in
+ * `find-workspaces`, and repos that also declare package.json workspaces keep
+ * the `find-workspaces` result.
+ */
+function hasSettingsOnlyPnpmWorkspace(directory: string): boolean {
+	const pnpmWorkspace = readConfigFile(join(directory, 'pnpm-workspace.yaml'), parseYaml)
+	if (
+		pnpmWorkspace === undefined ||
+		(is.plainObject(pnpmWorkspace) && is.array(pnpmWorkspace.packages, is.string))
+	) {
+		return false
+	}
+
+	const lernaJson = readConfigFile(join(directory, 'lerna.json'), JSON.parse)
+	if (is.plainObject(lernaJson) && is.array(lernaJson.packages, is.string)) {
+		return false
+	}
+
+	const packageJson = readConfigFile(join(directory, 'package.json'), JSON.parse)
+	const declaresPackageWorkspaces =
+		is.plainObject(packageJson) &&
+		(packageJson.workspaces !== undefined || packageJson.bolt !== undefined)
+
+	return !declaresPackageWorkspaces
+}
+
 /**
  * Get workspace locations for a directory, memoized by directory path. Returns
  * all found workspace location paths as absolute paths.
@@ -195,14 +235,17 @@ export function getWorkspaces(directory: string, workspaces: boolean | string[] 
 
 	let locations = workspaceCache.get(directory)
 	if (!locations) {
-		locations = validateWorkspaces(
-			directory,
-			workspaces === true
-				? (findWorkspaces(directory, { stopDir: dirname(directory) })?.map(
-						(value) => value.location,
-					) ?? [])
-				: workspaces,
-		)
+		let candidates: unknown[] = []
+		if (workspaces !== true) {
+			candidates = workspaces
+		} else if (!hasSettingsOnlyPnpmWorkspace(directory)) {
+			candidates =
+				findWorkspaces(directory, { stopDir: dirname(directory) })?.map(
+					(value) => value.location,
+				) ?? []
+		}
+
+		locations = validateWorkspaces(directory, candidates)
 		workspaceCache.set(directory, locations)
 	}
 

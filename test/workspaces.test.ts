@@ -68,6 +68,37 @@ describe('getWorkspaces', () => {
 	})
 })
 
+describe('getWorkspaces with pnpm-workspace.yaml', () => {
+	const pnpmFixturesDirectory = resolve('test/fixtures/workspaces-pnpm')
+
+	beforeEach(() => {
+		resetMatchCache()
+	})
+
+	it('should not treat a settings-only pnpm-workspace.yaml as a monorepo', () => {
+		expect(getWorkspaces(resolve(pnpmFixturesDirectory, 'settings-only'), true)).toEqual([])
+	})
+
+	it('should not treat an empty pnpm-workspace.yaml as a monorepo', () => {
+		expect(getWorkspaces(resolve(pnpmFixturesDirectory, 'empty-file'), true)).toEqual([])
+	})
+
+	it('should only discover packages matching declared pnpm globs', () => {
+		const directory = resolve(pnpmFixturesDirectory, 'packages')
+		expect(getWorkspaces(directory, true)).toEqual([resolve(directory, 'packages/pkg-a')])
+	})
+
+	it('should use lerna packages alongside a settings-only pnpm-workspace.yaml', () => {
+		const directory = resolve(pnpmFixturesDirectory, 'lerna')
+		expect(getWorkspaces(directory, true)).toEqual([resolve(directory, 'packages/pkg-a')])
+	})
+
+	it('should still accept manual workspaces in a settings-only pnpm repo', () => {
+		const directory = resolve(pnpmFixturesDirectory, 'settings-only')
+		expect(getWorkspaces(directory, ['generated'])).toEqual([resolve(directory, 'generated')])
+	})
+})
+
 describe('getMatches with workspaces', () => {
 	beforeEach(() => {
 		resetMatchCache()
