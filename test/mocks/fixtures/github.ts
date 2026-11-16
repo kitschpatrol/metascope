@@ -111,6 +111,7 @@ export const githubActionsRuns: Record<
 		total_count: number
 		workflow_runs: Array<{
 			conclusion: string
+			head_sha: string
 			html_url: string
 			path: string
 			run_started_at: string
@@ -124,6 +125,7 @@ export const githubActionsRuns: Record<
 		workflow_runs: [
 			{
 				conclusion: 'success',
+				head_sha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
 				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12345',
 				path: '.github/workflows/ci.yml',
 				run_started_at: '2025-03-01T12:00:00Z',
@@ -132,6 +134,7 @@ export const githubActionsRuns: Record<
 			},
 			{
 				conclusion: 'success',
+				head_sha: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
 				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12344',
 				path: '.github/workflows/github-release.yml',
 				run_started_at: '2025-02-28T10:00:00Z',
@@ -140,6 +143,7 @@ export const githubActionsRuns: Record<
 			},
 			{
 				conclusion: 'success',
+				head_sha: 'cccccccccccccccccccccccccccccccccccccccc',
 				html_url: 'https://github.com/kitschpatrol/metascope/actions/runs/12343',
 				path: '.github/workflows/set-github-metadata.yml',
 				run_started_at: '2025-03-01T12:00:00Z',

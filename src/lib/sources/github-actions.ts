@@ -12,7 +12,7 @@
 
 import type { Octokit } from '@octokit/core'
 import { readFile } from 'node:fs/promises'
-import { relative } from 'node:path'
+import { basename, relative } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
 import type { MetadataSource, OneOrMany, SourceContext, SourceRecord } from '../source'
@@ -56,6 +56,8 @@ const githubActionSchema = z.object({
 	lastRunConclusion: workflowRunConclusion.optional(),
 	/** Duration of the latest run in milliseconds. */
 	lastRunDurationMs: z.number().optional(),
+	/** Commit SHA tested by the latest completed run on the default branch. */
+	lastRunSha: z.string().optional(),
 	/** Status of the latest run on the default branch. */
 	lastRunStatus: workflowRunStatus.optional(),
 	/** URL of the latest run on GitHub. */
@@ -73,6 +75,7 @@ export type GitHubActionsData = OneOrMany<SourceRecord<GitHubAction>> | undefine
 type WorkflowRunInfo = {
 	conclusion: z.infer<typeof workflowRunConclusion>
 	durationMs: number | undefined
+	sha: string
 	status: z.infer<typeof workflowRunStatus>
 	updatedAt: string
 	url: string
@@ -116,41 +119,52 @@ async function fetchWorkflowRuns(
 	owner: string,
 	repository: string,
 	defaultBranch: string,
+	workflowFiles: string[],
 ): Promise<Map<string, WorkflowRunInfo>> {
-	const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runs', {
-		branch: defaultBranch,
-		owner,
-		// eslint-disable-next-line ts/naming-convention
-		per_page: 100,
-		repo: repository,
-		status: 'completed',
-	})
-
-	// API returns newest-first — first occurrence per path is the latest run
 	const runsByPath = new Map<string, WorkflowRunInfo>()
-	for (const run of response.data.workflow_runs) {
-		if (runsByPath.has(run.path)) {
-			continue
-		}
+	for (const workflowFile of workflowFiles) {
+		try {
+			const response = await octokit.request(
+				'GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs',
+				{
+					branch: defaultBranch,
+					owner,
+					// eslint-disable-next-line ts/naming-convention
+					per_page: 1,
+					repo: repository,
+					status: 'completed',
+					// eslint-disable-next-line ts/naming-convention
+					workflow_id: workflowFile,
+				},
+			)
+			// Query each workflow independently so busy workflows cannot hide quieter ones.
+			const run = response.data.workflow_runs[0]
+			if (run === undefined) {
+				continue
+			}
 
-		let durationMs: number | undefined
-		if (run.run_started_at !== undefined && run.run_started_at !== '') {
-			durationMs = new Date(run.updated_at).getTime() - new Date(run.run_started_at).getTime()
-		}
+			let durationMs: number | undefined
+			if (run.run_started_at !== undefined && run.run_started_at !== '') {
+				durationMs = new Date(run.updated_at).getTime() - new Date(run.run_started_at).getTime()
+			}
 
-		const conclusion = workflowRunConclusion.safeParse(run.conclusion)
-		const status = workflowRunStatus.safeParse(run.status)
-		if (!conclusion.success || !status.success) {
-			continue
-		}
+			const conclusion = workflowRunConclusion.safeParse(run.conclusion)
+			const status = workflowRunStatus.safeParse(run.status)
+			if (!conclusion.success || !status.success) {
+				continue
+			}
 
-		runsByPath.set(run.path, {
-			conclusion: conclusion.data,
-			durationMs,
-			status: status.data,
-			updatedAt: run.updated_at,
-			url: run.html_url,
-		})
+			runsByPath.set(run.path, {
+				conclusion: conclusion.data,
+				durationMs,
+				sha: run.head_sha,
+				status: status.data,
+				updatedAt: run.updated_at,
+				url: run.html_url,
+			})
+		} catch (error) {
+			log.warn(`Failed to fetch GitHub Actions run for "${workflowFile}": ${String(error)}`)
+		}
 	}
 
 	return runsByPath
@@ -226,6 +240,7 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 						ownerRepository.owner,
 						ownerRepository.repo,
 						defaultBranch,
+						[...new Set(records.map((record) => basename(record.rawPath)))],
 					)
 
 					for (const record of records) {
@@ -237,6 +252,7 @@ export const githubActionsSource: MetadataSource<'githubActions'> = {
 						record.data.lastRunConclusion = runInfo.conclusion
 						record.data.lastRunStatus = runInfo.status
 						record.data.lastRunAt = runInfo.updatedAt
+						record.data.lastRunSha = runInfo.sha
 						record.data.lastRunUrl = runInfo.url
 						record.data.lastRunDurationMs = runInfo.durationMs
 					}

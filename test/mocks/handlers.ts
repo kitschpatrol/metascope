@@ -93,18 +93,28 @@ export const handlers = [
 			: HttpResponse.json({ data: fixture })
 	}),
 
-	http.get('https://api.github.com/repos/:owner/:repo/actions/runs', ({ params }) => {
-		if (!shouldMock()) {
-			return passthrough()
-		}
+	http.get(
+		'https://api.github.com/repos/:owner/:repo/actions/workflows/:workflow/runs',
+		({ params }) => {
+			if (!shouldMock()) {
+				return passthrough()
+			}
 
-		// eslint-disable-next-line ts/restrict-template-expressions
-		const key = `${params.owner}/${params.repo}`
+			// eslint-disable-next-line ts/restrict-template-expressions
+			const key = `${params.owner}/${params.repo}`
 
-		const fixture = githubActionsRuns[key]
+			const fixture = githubActionsRuns[key]
+			if (fixture === undefined) {
+				return new HttpResponse(null, { status: 404 })
+			}
 
-		return fixture ? HttpResponse.json(fixture) : new HttpResponse(null, { status: 404 })
-	}),
+			const runs = fixture.workflow_runs.filter((run) =>
+				run.path.endsWith(`/${String(params.workflow)}`),
+			)
+			// eslint-disable-next-line ts/naming-convention -- GitHub response fields
+			return HttpResponse.json({ total_count: runs.length, workflow_runs: runs.slice(0, 1) })
+		},
+	),
 
 	http.get('https://api.github.com/repos/:owner/:repo', ({ params }) => {
 		if (!shouldMock()) {
