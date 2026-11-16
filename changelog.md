@@ -5,12 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.13.10] - 2026-11-16
+
+### Added
+
+- Add `lastRunSha` to GitHub Actions metadata with the commit SHA of each workflow's latest completed run on the default branch.
+
+### Fixed
+
+- Prevent false monorepo detection from empty or settings-only `pnpm-workspace.yaml` files while preserving explicitly declared workspaces.
+- Fetch GitHub Actions runs per workflow so busy workflows cannot hide quieter ones and a failed lookup does not suppress other workflows' run metadata.
+
+### Documentation
+
+- Document the null-prototype, non-extensible `helpers` namespace and how to check exports or create an extensible copy.
+- Update metadata output examples to include GitHub Actions run commit SHAs.
 
 ### Maintenance
 
 - Integrate chagent into release preparation, update the release-changelog action, and adjust lint and dependency-analysis configuration.
 - Update the certifi pin in a Python parsing fixture to remove distrusted eMudhra root certificates.
+- Update fast-xml-parser, plist, read-pyproject, semver, updates, and web-tree-sitter requirements.
+- Refresh development dependencies and GitHub Actions, upgrade pnpm to 12.21.0, and update pnpm build permissions, release-age exceptions, and skill installation settings.
+- Override glob and minimatch requirements in lint tooling to address GHSA-3g3m-2fjr-6pw4 and GHSA-g3hv-75wg-m249.
+- Add Info.plist regression coverage for Unicode separators in bundle names and prototype keys in OpenStep dictionaries.
 
 ## [0.13.9] - 2026-11-01
 
@@ -600,7 +618,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Establish build, lint, fixture-based tests, declaration validation, example generation, and release tooling.
 
-[Unreleased]: https://github.com/kitschpatrol/metascope/compare/v0.13.9...HEAD
 [0.1.0]: https://github.com/kitschpatrol/metascope/releases/tag/v0.1.0
 [0.2.0]: https://github.com/kitschpatrol/metascope/compare/v0.1.0...v0.2.0
 [0.2.1]: https://github.com/kitschpatrol/metascope/compare/v0.2.0...v0.2.1
@@ -643,3 +660,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.13.7]: https://github.com/kitschpatrol/metascope/compare/v0.13.6...v0.13.7
 [0.13.8]: https://github.com/kitschpatrol/metascope/compare/v0.13.7...v0.13.8
 [0.13.9]: https://github.com/kitschpatrol/metascope/compare/v0.13.8...v0.13.9
+[0.13.10]: https://github.com/kitschpatrol/metascope/compare/v0.13.9...v0.13.10
