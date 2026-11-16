@@ -2,11 +2,15 @@ allowBuilds:
   esbuild: true
   tree-sitter-python: false
   tree-sitter-ruby: false
-  unrs-resolver: true
 ignoreWorkspaceRootCheck: true
-minimumReleaseAgeExclude:
-  - '@kitschpatrol/chagent@0.4.0'
-  - lognow@0.8.8
+overrides:
+  # Fix GHSA-3g3m-2fjr-6pw4 (glob) and GHSA-g3hv-75wg-m249 (minimatch).
+  # Remove each override when its parent accepts the patched major.
+  '@npmcli/map-workspaces@3.0.6>glob': 14.0.6
+  '@npmcli/map-workspaces@3.0.6>minimatch': 11.0.8
+  '@npmcli/package-json@5.2.1>glob': 14.0.6
+  '@typescript-eslint/typescript-estree@8.72.2>minimatch': 11.0.8
+  unified-engine@11.2.2>glob: 14.0.6
 packages:
   - '!test/fixtures/**'
   - '.'
@@ -18,6 +22,8 @@ peerDependencyRules:
     eslint-plugin-jsx-a11y@6>eslint: ^10.0.0
 permissions:
   '@kitschpatrol/shared-config':
+    skills: true
+  tsdown:
     skills: true
 publicHoistPattern:
   - '@kitschpatrol/repo-config'
@@ -33,4 +39,3 @@ publicHoistPattern:
 skills:
   dirs:
     - .agents/skills
-    - .claude/skills

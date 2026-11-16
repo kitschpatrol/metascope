@@ -179,6 +179,22 @@ describe('parse', () => {
 		expect(parse('not a plist')).toBeUndefined()
 	})
 
+	it.each(['\u{85}', '\u{2028}', '\u{2029}'])(
+		'should preserve a Unicode separator (%j) inside a bundle name',
+		(separator) => {
+			const name = `First${separator}Second`
+			const result = parse(
+				`<plist version="1.0"><dict><key>CFBundleName</key><string>${name}</string></dict></plist>`,
+			)
+
+			expect(result?.name).toBe(name)
+		},
+	)
+
+	it('should reject prototype keys in an OpenStep dictionary', () => {
+		expect(parse('{ "__proto__" = { CFBundleName = Injected; }; }')).toBeUndefined()
+	})
+
 	it('should return undefined for non-dictionary root', () => {
 		/* eslint-disable unicorn/prefer-https -- Canonical Apple DTD identifier is http */
 		const arrayPlist = `<?xml version="1.0" encoding="UTF-8"?>

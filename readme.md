@@ -258,6 +258,8 @@ Logs source availability checks, extraction durations, and other diagnostics to 
 
 The `metascope` library exports `getMetadata` as its primary function, `defineTemplate` for type-safe template authoring, and a `helpers` namespace with utility functions for working with metadata in templates.
 
+The `helpers` export is an ES module namespace with a null prototype and cannot be extended. Use `Object.hasOwn(helpers, 'firstOf')` to check exports, or `{ ...helpers, customHelper }` to create an extensible helper collection.
+
 #### `getMetadata`
 
 ```ts
