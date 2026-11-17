@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { MetadataContext, TemplateData } from '../src/lib/metadata-types'
+import { templates } from '../src/lib/index'
 import { defineTemplate } from '../src/lib/metadata-types'
+import { parse as parseArduinoLibraryProperties } from '../src/lib/sources/arduino-library-properties'
 import { codemeta } from '../src/lib/templates/codemeta'
 import { metadata } from '../src/lib/templates/metadata'
 import { firstOf } from '../src/lib/utilities/template-helpers'
@@ -731,6 +733,56 @@ describe('codemeta template', () => {
 		expect(result['@type']).toBe('SoftwareSourceCode')
 		// Should just have the boilerplate, nothing else
 		expect(Object.keys(result)).toEqual(['@context', '@type'])
+	})
+})
+
+describe('public person templates', () => {
+	it('should retain supplemental person fields in codemetaJson and plain names in frontmatter', () => {
+		const person = {
+			affiliation: 'Example Lab',
+			email: 'eric@ericmika.com',
+			familyName: 'Mika',
+			givenName: 'Eric',
+			id: 'https://example.com/people/eric',
+			name: 'Eric Mika',
+			type: 'Person' as const,
+			url: 'https://ericmika.com',
+		}
+		const context: MetadataContext = {
+			...mockContext,
+			arduinoLibraryProperties: {
+				data: parseArduinoLibraryProperties(
+					'name=Brain\nauthor=Eric Mika <eric@ericmika.com>\nmaintainer=Eric Mika <eric@ericmika.com>',
+				),
+				source: 'library.properties',
+			},
+			codemetaJson: {
+				data: { author: [person], contributor: [person], maintainer: [person] },
+				source: 'codemeta.json',
+			},
+			nodePackageJson: {
+				data: {
+					// eslint-disable-next-line ts/naming-convention
+					_id: 'brain@1.0.0',
+					contributors: [{ name: 'Eric Mika' }],
+					name: 'brain',
+					readme: '',
+					version: '1.0.0',
+				},
+				source: 'package.json',
+			},
+		}
+		const before = structuredClone(context)
+		const normalized = templates.codemetaJson(context, {})
+		const frontmatter = templates.frontmatter(context, {})
+
+		expect(normalized.author).toEqual([person])
+		expect(normalized.contributor).toEqual([person])
+		expect(normalized.maintainer).toEqual([person])
+		expect(frontmatter.Author).toEqual(['Eric Mika'])
+		expect(frontmatter.Contributor).toEqual(['Eric Mika'])
+		expect(frontmatter.Maintainer).toEqual(['Eric Mika'])
+		expect(context).toEqual(before)
 	})
 })
 

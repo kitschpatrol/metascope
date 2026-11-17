@@ -8,6 +8,10 @@
 
 import is from '@sindresorhus/is'
 import { spdxIdToUrl, toCanonicalSpdxId } from './license-identification'
+import { stripUndefined } from './template-helpers'
+
+const PERSON_EMAIL_PREFIX_REGEX = /^mailto:/iv
+const PERSON_NAME_WHITESPACE_REGEX = /\s+/gv
 
 // ─── JSON-LD Output Types ──────────────────────────────────────────
 
@@ -109,26 +113,114 @@ export function toPersonOrOrgLd(options: {
 }
 
 /**
- * Deduplicate persons by name (case-insensitive, trimmed). Keeps the first
- * occurrence, so callers should place higher-priority sources first. Returns
- * undefined if the result is empty.
+ * Deduplicate persons by name (case-insensitive, trimmed), keeping the first
+ * occurrence unless that name identifies conflicting people or organizations.
+ * Callers should place higher-priority sources first. Returns undefined if
+ * empty.
  */
 export function deduplicatePersonsOrOrgs(
 	persons: CodemetaPersonOrOrgLd[],
 ): CodemetaPersonOrOrgLd[] | undefined {
-	const seen = new Map<string, CodemetaPersonOrOrgLd>()
+	const groups = new Map<string, CodemetaPersonOrOrgLd[]>()
 	for (const person of persons) {
 		const fullName = [person.givenName, person.familyName].filter(Boolean).join(' ')
 		const key = (person.name ?? (fullName === '' ? undefined : fullName) ?? person.email ?? '')
 			.toLowerCase()
 			.trim()
-		if (key.length > 0 && !seen.has(key)) {
-			seen.set(key, person)
+		if (key.length === 0) {
+			continue
+		}
+
+		const group = groups.get(key) ?? []
+		group.push(person)
+		groups.set(key, group)
+	}
+
+	const retained = new Set<CodemetaPersonOrOrgLd>()
+	for (const group of groups.values()) {
+		const hasConflict = group.some((a) => group.some((b) => personMatchStrength(a, b) === 0))
+		const uniquePersons = hasConflict ? group : group.slice(0, 1)
+		for (const person of uniquePersons) {
+			retained.add(person)
 		}
 	}
 
-	const result = seen.values().toArray()
+	const result = persons.filter((person) => retained.delete(person))
 	return result.length > 0 ? result : undefined
+}
+
+/**
+ * Resolve one role's people or organizations, ignoring undefined entries.
+ * Ecosystem membership, order, and defined fields take precedence; CodeMeta
+ * fills missing fields only when both records have a unique best match. Exact
+ * JSON-LD `@id` matches outrank case-insensitive email matches, which outrank
+ * normalized names (including givenName plus familyName). Conflicting IDs or
+ * types never match, and conflicting emails prevent name-only matches. CodeMeta
+ * supplies the whole list when the ecosystem list is empty. Retains name
+ * deduplication for unambiguous identities and returns fresh JSON-LD records,
+ * including affiliations, without changing either input.
+ */
+export function resolvePersonsOrOrgs(
+	ecosystemPersons: Array<CodemetaPersonOrOrgLd | undefined>,
+	fallbackPersons: Array<CodemetaPersonOrOrgLd | undefined> = [],
+): CodemetaPersonOrOrgLd[] | undefined {
+	const ecosystem = deduplicatePersonsOrOrgs(ecosystemPersons.filter((p) => p !== undefined))
+	const fallback = fallbackPersons.filter((p) => p !== undefined)
+	if (ecosystem === undefined) {
+		return structuredClone(deduplicatePersonsOrOrgs(fallback))
+	}
+
+	// Keep all fallback candidates so duplicate names cannot hide ambiguity.
+	const strengths = ecosystem.map((person) =>
+		fallback.map((candidate) => personMatchStrength(person, candidate)),
+	)
+	return ecosystem.map((person, index) => {
+		const scores = strengths[index]!
+		const best = Math.max(0, ...scores)
+		const matchIndex = scores.indexOf(best)
+		const reverseScores = strengths.map((row) => row[matchIndex] ?? 0)
+		const isUniqueMatch =
+			best > 0 &&
+			scores.filter((score) => score === best).length === 1 &&
+			Math.max(...reverseScores) === best &&
+			reverseScores.filter((score) => score === best).length === 1
+		const match = isUniqueMatch ? fallback[matchIndex] : undefined
+		return structuredClone({ ...match, ...stripUndefined(person) })
+	})
+}
+
+/** Compare identities without changing their original field values. */
+function personMatchStrength(a: CodemetaPersonOrOrgLd, b: CodemetaPersonOrOrgLd): number {
+	if (a['@type'] !== b['@type']) {
+		return 0
+	}
+
+	const aId = a['@id']?.trim()
+	const bId = b['@id']?.trim()
+	if (is.nonEmptyString(aId) && is.nonEmptyString(bId)) {
+		return aId === bId ? 3 : 0
+	}
+
+	const aEmail = normalizePersonEmail(a.email)
+	const bEmail = normalizePersonEmail(b.email)
+	if (aEmail !== '' && bEmail !== '') {
+		return aEmail === bEmail ? 2 : 0
+	}
+
+	const bNames = personNames(b)
+	return personNames(a).some((name) => bNames.includes(name)) ? 1 : 0
+}
+
+function normalizePersonEmail(email = ''): string {
+	return email.trim().replace(PERSON_EMAIL_PREFIX_REGEX, '').toLowerCase()
+}
+
+function personNames(person: CodemetaPersonOrOrgLd): string[] {
+	return [person.name ?? '', [person.givenName, person.familyName].filter(Boolean).join(' ')]
+		.map((name) =>
+			name.normalize('NFC').trim().replaceAll(PERSON_NAME_WHITESPACE_REGEX, ' ').toLowerCase(),
+		)
+		.filter((name) => name !== '')
 }
 
 // ─── Dependency Construction ────────────────────────────────────────

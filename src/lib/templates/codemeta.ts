@@ -15,10 +15,14 @@
  * license, dependencies, keywords, …) the ecosystem manifest is canonical. This
  * keeps the output fresh when e.g. a new dependency is added to package.json,
  * and makes the round-trip stable: generate → save as codemeta.json →
- * regenerate → identical output. The exception is runtime dependencies from
- * manifests that aren't package managers (cinderblock.xml, openFrameworks
- * addons, Arduino, publiccode.yml), which don't list the host platform, so
- * codemeta.json softwareRequirements are merged in after them.
+ * regenerate → identical output. For people, ecosystem membership, order, and
+ * existing fields take precedence, while matching codemeta.json records fill
+ * missing fields within each role. Identifiers and emails take priority over
+ * unambiguous normalized names; conflicting identities are kept separate.
+ * Runtime dependencies from manifests that aren't package managers
+ * (cinderblock.xml, openFrameworks addons, Arduino, publiccode.yml) don't list
+ * the host platform, so codemeta.json softwareRequirements are merged in after
+ * them.
  *
  * For **codemeta-specific fields** that only exist in codemeta.json
  * (developmentStatus, funding, buildInstructions, …) the existing codemeta.json
@@ -45,6 +49,7 @@ import {
 	deduplicatePersonsOrOrgs,
 	isProprietaryLicenseSentinel,
 	mergeCodemetaDependencies,
+	resolvePersonsOrOrgs,
 	toDependencyLd,
 	toPersonOrOrgLd,
 	toSpdxLicenseUrl,
@@ -757,28 +762,6 @@ function codemetaPersonsOrOrgsToLd(
 			}),
 		)
 		.filter((p) => p !== undefined)
-}
-
-/**
- * Takes ecosystem persons (which may include undefined) and codemeta fallback
- * persons. Uses ecosystem if any are present, otherwise falls back. Always
- * deduplicates by name.
- */
-function resolvePersonsOrOrgs(
-	ecosystemPersons: Array<CodemetaPersonOrOrgLd | undefined>,
-	fallbackPersons?: Array<CodemetaPersonOrOrgLd | undefined>,
-): CodemetaPersonOrOrgLd[] | undefined {
-	const ecosystem = ecosystemPersons.filter((p): p is CodemetaPersonOrOrgLd => p !== undefined)
-
-	if (ecosystem.length > 0) {
-		return deduplicatePersonsOrOrgs(ecosystem)
-	}
-
-	const fallback = (fallbackPersons ?? []).filter(
-		(p): p is CodemetaPersonOrOrgLd => p !== undefined,
-	)
-
-	return deduplicatePersonsOrOrgs(fallback)
 }
 
 // ─── Dependency Helpers ─────────────────────────────────────────────
